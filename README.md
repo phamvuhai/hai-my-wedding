@@ -18,3 +18,6 @@ Framework preset: Other / Static.
 ## Domain riêng
 Trong Vercel: Project → Settings → Domains → Add Domain.
 Sau đó cập nhật DNS theo hướng dẫn Vercel.
+
+## Thay ảnh cưới
+Hiện 4 ô gallery dùng gradient placeholder. Có thể thay bằng ảnh thật bằng CSS `background-image: url(...)` hoặc đổi thành thẻ `<img>`.
