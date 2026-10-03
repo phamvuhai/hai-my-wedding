@@ -8,7 +8,55 @@
   <title>Hải & Mỹ | Wedding Invitation</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
-<body>
+<body class="invitation-locked">
+  <section class="invitation-intro" id="invitationIntro" aria-label="Wedding invitation">
+    <div class="intro-atmosphere" aria-hidden="true">
+      <span class="intro-letter intro-letter-h">H</span>
+      <span class="intro-letter intro-letter-amp">&</span>
+      <span class="intro-letter intro-letter-m">M</span>
+      <i class="intro-glow intro-glow-one"></i>
+      <i class="intro-glow intro-glow-two"></i>
+    </div>
+
+    <div class="intro-scene">
+      <p class="intro-save">SAVE THE DATE</p>
+
+      <div class="intro-card-stage">
+        <div class="intro-card">
+          <div class="intro-paper">
+            <p class="intro-invite" data-i18n="intro.invite">TRÂN TRỌNG KÍNH MỜI</p>
+
+            <div class="intro-photo-wrap">
+              <div class="intro-photo-polaroid">
+                <img id="introImage" src="./images/hero-couple.jpg" alt="Hải & Mỹ" loading="eager" decoding="async" />
+              </div>
+              <span class="intro-botanical intro-botanical-left" aria-hidden="true"></span>
+              <span class="intro-botanical intro-botanical-right" aria-hidden="true"></span>
+
+              <div class="intro-envelope" aria-hidden="true">
+                <span class="intro-envelope-back"></span>
+                <span class="intro-envelope-left"></span>
+                <span class="intro-envelope-right"></span>
+                <span class="intro-envelope-front"></span>
+                <span class="intro-seal">H<span>♥</span>M</span>
+              </div>
+            </div>
+
+            <h1 class="intro-names">Hải <span>&</span> Mỹ</h1>
+            <p class="intro-date" data-i18n="intro.date">18 · 12 · 2026 — 20 · 12 · 2026</p>
+          </div>
+        </div>
+      </div>
+
+      <button class="intro-open-btn" id="openInvitation" type="button">
+        <span data-i18n="intro.open">MỞ THIỆP</span>
+        <i aria-hidden="true">↗</i>
+      </button>
+
+      <p class="intro-audio-note" aria-hidden="true">♪</p>
+    </div>
+  </section>
+
   <nav class="nav" aria-label="Main navigation">
     <div class="nav-inner container">
       <a class="brand" href="#home">H & M</a>
@@ -17,11 +65,6 @@
           <a href="#story" data-i18n="nav.story">Câu chuyện</a>
           <a href="#events" data-i18n="nav.events">Lịch cưới</a>
           <a href="#rsvp" data-i18n="nav.rsvp">Xác nhận</a>
-        </div>
-        <div class="language-switcher" aria-label="Language">
-          <button type="button" data-lang="vi">VI</button>
-          <button type="button" data-lang="en">EN</button>
-          <button type="button" data-lang="ja">日本語</button>
         </div>
       </div>
     </div>
@@ -451,5 +494,6 @@
   <script src="./app.js"></script>
   <script src="./motion.js"></script>
   <script src="./music.js"></script>
+  <script src="./invitation.js"></script>
 </body>
 </html>
