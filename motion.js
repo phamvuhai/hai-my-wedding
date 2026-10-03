@@ -16,7 +16,9 @@
     body.classList.add('motion-ready');
 
     initEntrance();
+    initTypography();
     initReveal();
+    initScrollDecorations();
     initCountdown();
     initParallax();
     initScrollCue();
@@ -84,9 +86,78 @@
   }, { threshold:.14, rootMargin:'0px 0px -5% 0px' });
 
   function initReveal() {
-    qsa('.section-heading, .intro .narrow, .event-family, .countdown > div, .home-photo, .rsvp-copy, .rsvp-form')
+    qsa('.section-heading, .story-side, .story-copy, .gallery-display, .countdown-heading, .event-family, .countdown > div, .home-photo, .rsvp-copy, .rsvp-display, .rsvp-form')
       .forEach((el,i) => observeRevealElement(el,i));
     initGalleryCuriosity();
+  }
+
+  function escapeText(value='') {
+    return String(value)
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;')
+      .replaceAll('"','&quot;')
+      .replaceAll("'","&#039;");
+  }
+
+  function wrapMotionLines(el) {
+    if (!el) return;
+    const raw = el.textContent.trim().replace(/\s+/g,' ');
+    if (!raw) return;
+    if (el.dataset.motionWrappedSource === raw && el.querySelector('.motion-line-inner')) return;
+
+    let parts;
+    if (/^H[1-6]$/.test(el.tagName)) {
+      parts = raw.split(/,\s*/).map((part,index,arr) => index < arr.length-1 ? part + ',' : part);
+    } else {
+      parts = raw.match(/[^.!?。！？]+[.!?。！？]?/g)?.map(x=>x.trim()).filter(Boolean) || [raw];
+    }
+
+    el.dataset.motionWrappedSource = raw;
+    el.innerHTML = parts.map(part =>
+      `<span class="motion-line"><span class="motion-line-inner">${escapeText(part)}</span></span>`
+    ).join('');
+  }
+
+  function initTypography() {
+    qsa('[data-motion-lines]').forEach(wrapMotionLines);
+  }
+
+  function initScrollDecorations() {
+    if (body.dataset.scrollDecorInit) return;
+    body.dataset.scrollDecorInit = '1';
+
+    const floating = qsa('.floating-word');
+    const progress = qs('.page-progress');
+    const side = qs('.side-note');
+    let decorRaf = 0;
+
+    const update = () => {
+      cancelAnimationFrame(decorRaf);
+      decorRaf = requestAnimationFrame(() => {
+        const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+        const p = Math.max(0, Math.min(1, scrollY / max));
+        root.style.setProperty('--page-progress', p.toFixed(4));
+
+        floating.forEach((el,index) => {
+          const direction = index % 2 ? -1 : 1;
+          const x = direction * (p * 34);
+          const y = (p - .5) * (index % 2 ? 28 : 46);
+          el.style.transform = `translate3d(${x}px,${y}px,0)`;
+        });
+
+        if (side) {
+          side.style.opacity = String(.22 + Math.min(.28,p*.5));
+        }
+        if (progress) {
+          progress.classList.toggle('near-end', p > .9);
+        }
+      });
+    };
+
+    addEventListener('scroll',update,{passive:true});
+    addEventListener('resize',update,{passive:true});
+    update();
   }
 
   function initCountdown() {
@@ -388,7 +459,10 @@
     }).observe(galleryRoot,{childList:true,subtree:true});
   }
 
-  document.addEventListener('wedding:language',()=>setTimeout(initReveal,0));
+  document.addEventListener('wedding:language',()=>setTimeout(() => {
+    initTypography();
+    initReveal();
+  },0));
 
   if ('startViewTransition' in document) {
     document.addEventListener('click', e => {
