@@ -114,7 +114,7 @@ async function loadHomeGallery() {
         img.is_featured ? 'large' : ((img.width || 1) / (img.height || 1) > 1.35 ? 'wide' : ((img.height || 1) / (img.width || 1) > 1.28 ? 'tall' : 'small'))
       );
       return `
-        <a class="home-photo size-${size} reveal visible" href="/album" aria-label="Hải & Mỹ album">
+        <a class="home-photo size-${size} ${index === 0 ? 'editorial-featured' : ''} reveal visible" href="/album" aria-label="Hải & Mỹ album">
           <img loading="lazy" decoding="async" src="${url}" alt="${esc(alt || 'Hải & Mỹ')}" style="object-position:${Number(img.focus_x ?? 50)}% ${Number(img.focus_y ?? 50)}%">
           <span class="home-photo-copy">
             <strong>${esc(title || '')}</strong>
