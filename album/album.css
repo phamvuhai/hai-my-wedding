@@ -43,3 +43,32 @@
   .nav-btn{width:40px;height:40px}.prev{left:8px}.next{right:8px}.close-btn{right:10px;top:10px}
   .lightbox img{max-width:96vw;max-height:80vh}.album-end-mark{margin-top:38px}
 }
+
+/* V7 responsive hardening */
+html,body{max-width:100%;overflow-x:hidden}
+@media(max-width:900px){
+  .album-nav{gap:14px}
+  .album-nav-right{gap:12px}
+  .language-switcher button{min-width:34px;padding:0 7px}
+}
+@media(max-width:650px){
+  .album-nav{
+    padding-top:max(16px,env(safe-area-inset-top));
+    gap:10px;
+  }
+  .brand{font-size:1.35rem;white-space:nowrap}
+  .album-nav-right{margin-left:auto}
+  .language-switcher{padding:2px}
+  .language-switcher button{
+    min-width:30px;
+    height:28px;
+    padding:0 6px;
+    font-size:.62rem;
+  }
+  .album-hero-copy{padding:48px 0 42px}
+  .album-hero-copy>p:last-child{font-size:.92rem}
+  .filters{max-width:100%;scrollbar-width:none}
+  .filters::-webkit-scrollbar{display:none}
+  .photo-card{max-width:100%}
+  .lightbox figure{max-width:100vw}
+}
