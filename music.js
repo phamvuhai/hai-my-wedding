@@ -1,8 +1,8 @@
 (() => {
   const tracks = {
-    vi: { id:'__kGJZ-kPno', title:'Hơn Cả Yêu', artist:'Đức Phúc', label:'VIETNAMESE WEDDING SONG' },
-    ja: { id:'ljDRzQz3ULE', title:'115万キロのフィルム', artist:'Official髭男dism', label:'JAPANESE WEDDING SONG' },
-    en: { id:'2Vv-BfVoq4g', title:'Perfect', artist:'Ed Sheeran', label:'ENGLISH WEDDING SONG' }
+    vi: { id:'__kGJZ-kPno', title:'Hơn Cả Yêu', artist:'Đức Phúc', label:'VIETNAMESE WEDDING SONG', start:48, end:125 },
+    ja: { id:'ljDRzQz3ULE', title:'115万キロのフィルム', artist:'Official髭男dism', label:'JAPANESE WEDDING SONG', start:55, end:140, alternate:{start:215,end:295} },
+    en: { id:'2Vv-BfVoq4g', title:'Perfect', artist:'Ed Sheeran', label:'ENGLISH WEDDING SONG', start:48, end:125 }
   };
 
   const dock = document.getElementById('musicDock');
@@ -16,20 +16,13 @@
 
   let currentLang = window.WeddingI18n?.language || 'vi';
   let playing = false;
+  let player = null;
+  let apiReady = false;
+  let pendingStart = null;
+  let fadeTimer = 0;
 
-  function embedUrl(id) {
-    const params = new URLSearchParams({
-      autoplay:'1',
-      playsinline:'1',
-      rel:'0',
-      modestbranding:'1',
-      controls:'0',
-      disablekb:'1',
-      fs:'0',
-      loop:'1',
-      playlist:id
-    });
-    return `https://www.youtube-nocookie.com/embed/${id}?${params.toString()}`;
+  function currentTrack(lang=currentLang) {
+    return tracks[lang] || tracks.vi;
   }
 
   function setPlaying(next) {
@@ -41,7 +34,7 @@
   }
 
   function updateMeta(lang) {
-    const track = tracks[lang] || tracks.vi;
+    const track = currentTrack(lang);
     currentLang = tracks[lang] ? lang : 'vi';
     dock.dataset.lang = currentLang;
     title.textContent = track.title;
@@ -50,27 +43,127 @@
     return track;
   }
 
-  function start(lang=currentLang) {
+  function clearFade() {
+    if (fadeTimer) {
+      clearInterval(fadeTimer);
+      fadeTimer = 0;
+    }
+  }
+
+  function monitorFade(track) {
+    clearFade();
+    fadeTimer = setInterval(() => {
+      if (!player || typeof player.getCurrentTime !== 'function') return;
+      const now = Number(player.getCurrentTime() || 0);
+      const remain = track.end - now;
+
+      if (remain <= 3 && remain > 0) {
+        const volume = Math.max(0, Math.min(100, Math.round((remain / 3) * 100)));
+        try { player.setVolume(volume); } catch {}
+      }
+
+      if (now >= track.end - .08) {
+        clearFade();
+        try { player.pauseVideo(); player.seekTo(track.start, true); player.setVolume(100); } catch {}
+        setPlaying(false);
+      }
+    }, 180);
+  }
+
+  function loadTrack(lang=currentLang) {
     const track = updateMeta(lang);
-    frame.src = embedUrl(track.id);
-    setPlaying(true);
+    if (!player || !apiReady) {
+      pendingStart = currentLang;
+      return;
+    }
+
+    clearFade();
+    try {
+      player.setVolume(100);
+      player.loadVideoById({
+        videoId: track.id,
+        startSeconds: track.start,
+        endSeconds: track.end,
+        suggestedQuality: 'small'
+      });
+      setPlaying(true);
+      monitorFade(track);
+    } catch {
+      setPlaying(false);
+    }
   }
 
   function stop() {
-    frame.src = 'about:blank';
+    clearFade();
+    if (player) {
+      try { player.pauseVideo(); } catch {}
+    }
     setPlaying(false);
   }
 
   function toggle() {
-    if (playing) stop();
-    else start(currentLang);
+    if (playing) {
+      stop();
+    } else {
+      loadTrack(currentLang);
+    }
+  }
+
+  function setupPlayer() {
+    if (!window.YT?.Player || player) return;
+    player = new window.YT.Player('musicFrame', {
+      width:'1',
+      height:'1',
+      playerVars:{
+        autoplay:0,
+        controls:0,
+        disablekb:1,
+        fs:0,
+        playsinline:1,
+        rel:0,
+        modestbranding:1,
+        origin:location.origin
+      },
+      events:{
+        onReady() {
+          apiReady = true;
+          if (pendingStart) {
+            const lang = pendingStart;
+            pendingStart = null;
+            loadTrack(lang);
+          }
+        },
+        onStateChange(event) {
+          if (event.data === window.YT.PlayerState.ENDED) {
+            clearFade();
+            setPlaying(false);
+          }
+        }
+      }
+    });
+  }
+
+  const priorReady = window.onYouTubeIframeAPIReady;
+  window.onYouTubeIframeAPIReady = () => {
+    if (typeof priorReady === 'function') priorReady();
+    setupPlayer();
+  };
+
+  if (window.YT?.Player) {
+    setupPlayer();
+  } else if (!document.querySelector('script[data-wedding-youtube-api]')) {
+    const script = document.createElement('script');
+    script.src = 'https://www.youtube.com/iframe_api';
+    script.async = true;
+    script.dataset.weddingYoutubeApi = '1';
+    document.head.appendChild(script);
   }
 
   document.addEventListener('wedding:language', event => {
     const lang = event.detail?.lang || window.WeddingI18n?.language || 'vi';
     const wasPlaying = playing;
     updateMeta(lang);
-    if (wasPlaying) start(lang);
+    if (wasPlaying) loadTrack(lang);
   });
 
   toggleButton.addEventListener('click', toggle);
@@ -79,7 +172,7 @@
   setPlaying(false);
 
   window.WeddingMusic = {
-    start,
+    start: loadTrack,
     stop,
     toggle,
     get playing(){ return playing; },
