@@ -131,28 +131,61 @@ loadHomeGallery();
 document.addEventListener('wedding:language', loadHomeGallery);
 
 
+function heroRatioCss(value, fallback, width, height) {
+  if (!value || value === 'auto') {
+    if (width && height) return `${width} / ${height}`;
+    return fallback;
+  }
+  const [a,b] = String(value).split(':').map(Number);
+  return `${a} / ${b}`;
+}
+
 async function loadHeroPhoto() {
-  const img = document.querySelector('.hero-feature-photo img');
-  if (!img) return;
+  const hero = document.getElementById('home');
+  const framedImg = document.getElementById('heroImage');
+  const fullImg = document.getElementById('heroFullImage');
+  if (!hero || !framedImg || !fullImg) return;
+
   const cfg = window.WEDDING_CONFIG || {};
   if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.supabase) return;
+
   try {
     const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
     const { data, error } = await client
       .from('gallery_images')
-      .select('image_path,alt_text,title,alt_text_en,title_en,alt_text_ja,title_ja,focus_x,focus_y')
+      .select('image_path,alt_text,title,alt_text_en,title_en,alt_text_ja,title_ja,focus_x,focus_y,width,height,hero_layout,hero_desktop_ratio,hero_mobile_ratio,hero_zoom')
       .eq('is_hero', true)
       .eq('is_published', true)
       .limit(1)
       .maybeSingle();
+
     if (error || !data) return;
+
     const lang = window.WeddingI18n?.language || 'vi';
     const alt = lang === 'en' ? (data.alt_text_en || data.title_en || data.alt_text || data.title) :
       lang === 'ja' ? (data.alt_text_ja || data.title_ja || data.alt_text || data.title) :
       (data.alt_text || data.title);
-    img.src = client.storage.from('wedding-gallery').getPublicUrl(data.image_path).data.publicUrl;
-    img.alt = alt || 'Hải & Mỹ';
-    img.style.objectPosition = `${Number(data.focus_x ?? 50)}% ${Number(data.focus_y ?? 50)}%`;
+
+    const url = client.storage.from('wedding-gallery').getPublicUrl(data.image_path).data.publicUrl;
+    const layout = ['full','framed','split','minimal'].includes(data.hero_layout) ? data.hero_layout : 'full';
+
+    hero.classList.remove('hero-layout-full','hero-layout-framed','hero-layout-split','hero-layout-minimal');
+    hero.classList.add(`hero-layout-${layout}`);
+
+    const fx = Number(data.focus_x ?? 50);
+    const fy = Number(data.focus_y ?? 50);
+    const zoom = Math.max(1, Math.min(1.6, Number(data.hero_zoom ?? 1)));
+
+    hero.style.setProperty('--hero-focus-x', `${fx}%`);
+    hero.style.setProperty('--hero-focus-y', `${fy}%`);
+    hero.style.setProperty('--hero-zoom', zoom);
+    hero.style.setProperty('--hero-desktop-ratio', heroRatioCss(data.hero_desktop_ratio, '16 / 9', data.width, data.height));
+    hero.style.setProperty('--hero-mobile-ratio', heroRatioCss(data.hero_mobile_ratio, '4 / 5', data.width, data.height));
+
+    framedImg.src = url;
+    framedImg.alt = alt || 'Hải & Mỹ';
+    fullImg.src = url;
+    fullImg.alt = '';
   } catch (error) {
     console.error('Hero photo error:', error);
   }
