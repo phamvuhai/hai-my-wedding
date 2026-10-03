@@ -6,6 +6,7 @@
   const cfg = window.WEDDING_CONFIG || {};
   let mode = 'elegant';
   let scrollRaf = 0;
+  const replayTimers = new WeakMap();
 
   const qs = (s, ctx=document) => ctx.querySelector(s);
   const qsa = (s, ctx=document) => [...ctx.querySelectorAll(s)];
@@ -16,7 +17,9 @@
     body.classList.add('motion-ready');
 
     initEntrance();
+    initHeroReplay();
     initTypography();
+    initMarquees();
     initReveal();
     initScrollDecorations();
     initSectionMotion();
@@ -70,6 +73,65 @@
     requestAnimationFrame(() => hero.classList.add('hero-entered'));
   }
 
+  function initHeroReplay() {
+    const hero = qs('.hero');
+    if (!hero || hero.dataset.replayInit) return;
+    hero.dataset.replayInit = '1';
+
+    let resetTimer = 0;
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        clearTimeout(resetTimer);
+        if (entry.isIntersecting) {
+          requestAnimationFrame(() => hero.classList.add('hero-entered'));
+        } else {
+          resetTimer = setTimeout(() => {
+            if (!body.classList.contains('invitation-locked')) hero.classList.remove('hero-entered');
+          }, 280);
+        }
+      });
+    }, {threshold:.28});
+    io.observe(hero);
+  }
+
+  function initMarquees() {
+    if (body.dataset.marqueeInit) return;
+    body.dataset.marqueeInit = '1';
+
+    const tracks = () => qsa('.motion-marquee .marquee-track, .forever-rail .marquee-track');
+
+    const build = track => {
+      if (!track._marqueeSeedHTML) track._marqueeSeedHTML = track.innerHTML;
+      const seed = track._marqueeSeedHTML;
+      track.innerHTML = '';
+
+      const group = document.createElement('div');
+      group.className = 'marquee-group';
+      group.innerHTML = seed;
+      track.appendChild(group);
+
+      let copies = 1;
+      const minWidth = Math.max(innerWidth * 1.25, 720);
+      while (group.scrollWidth < minWidth && copies < 8) {
+        group.insertAdjacentHTML('beforeend', seed);
+        copies++;
+      }
+
+      const clone = group.cloneNode(true);
+      clone.setAttribute('aria-hidden','true');
+      track.appendChild(clone);
+    };
+
+    const rebuildAll = () => tracks().forEach(build);
+    rebuildAll();
+
+    let resizeTimer = 0;
+    addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(rebuildAll, 180);
+    }, {passive:true});
+  }
+
   function observeRevealElement(el, index=0) {
     if (!el || el.dataset.motionObserved) return;
     el.dataset.motionObserved = '1';
@@ -81,11 +143,24 @@
 
   const revealObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add('motion-in');
-      revealObserver.unobserve(entry.target);
+      const el = entry.target;
+      const prior = replayTimers.get(el);
+      if (prior) clearTimeout(prior);
+
+      if (entry.isIntersecting) {
+        el.dataset.motionVisible = '1';
+        el.classList.add('motion-in');
+        return;
+      }
+
+      el.dataset.motionVisible = '0';
+      const timer = setTimeout(() => {
+        if (el.dataset.motionVisible === '0') el.classList.remove('motion-in');
+        replayTimers.delete(el);
+      }, 240);
+      replayTimers.set(el, timer);
     });
-  }, { threshold:.14, rootMargin:'0px 0px -5% 0px' });
+  }, { threshold:.14, rootMargin:'-3% 0px -7% 0px' });
 
   function initReveal() {
     qsa('.section-heading, .story-side, .story-copy, .gallery-display, .countdown-heading, .event-family, .countdown > div, .guide-card, .schedule-head, .schedule-day, .travel-heading, .travel-card, .city-notes, .faq-heading, .faq-item, .wishes-display, .wishes-card, .home-photo, .rsvp-copy, .rsvp-display, .rsvp-form')
@@ -550,11 +625,15 @@
     if (!footer || footer.dataset.signatureInit) return;
     footer.dataset.signatureInit = '1';
 
+    let resetTimer = 0;
     const io = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        footer.classList.add('signature-in');
-        io.disconnect();
+        clearTimeout(resetTimer);
+        if (entry.isIntersecting) {
+          footer.classList.add('signature-in');
+        } else {
+          resetTimer = setTimeout(() => footer.classList.remove('signature-in'), 260);
+        }
       });
     },{threshold:.3});
     io.observe(footer);
