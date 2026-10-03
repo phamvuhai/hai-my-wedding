@@ -27,7 +27,7 @@
     cmsView.classList.remove('hidden');
     try {
       await A.loadData();
-      document.dispatchEvent(new Event('admin:overview'));
+      renderOverview();
     } catch (e) {
       const el = document.getElementById('uploadStatus');
       if (el) A.setStatus(el, e.message, 'error');
@@ -59,6 +59,20 @@
     A.setStatus(status, 'Đã gửi liên kết đăng nhập. Hãy mở email và bấm vào liên kết để vào Admin.', 'success');
   });
 
+  function renderOverview() {
+    const stats = document.getElementById('dashboardStats');
+    const recent = document.getElementById('recentRsvp');
+    if (stats) {
+      const published = (A.images || []).filter((x) => x.is_published).length;
+      stats.innerHTML =
+        '<div class="stat"><span>Album</span><strong>' + (A.albums || []).length + '</strong></div>' +
+        '<div class="stat"><span>Tổng ảnh</span><strong>' + (A.images || []).length + '</strong></div>' +
+        '<div class="stat"><span>Đã publish</span><strong>' + published + '</strong></div>' +
+        '<div class="stat"><span>Bản nháp</span><strong>' + ((A.images || []).length - published) + '</strong></div>';
+    }
+    if (recent) recent.innerHTML = '<p class="muted">Mở tab RSVP để xem phản hồi khách mời chi tiết.</p>';
+  }
+
   document.getElementById('logoutBtn').onclick = async () => {
     await db.auth.signOut();
     location.reload();
@@ -70,7 +84,7 @@
     document.getElementById('albumTab').classList.toggle('hidden', tab !== 'album');
     document.getElementById('rsvpTab').classList.toggle('hidden', tab !== 'rsvp');
     document.getElementById('pageTitle').textContent = tab === 'overview' ? 'Tổng quan' : tab === 'album' ? 'Album' : 'RSVP';
-    if (tab === 'overview') document.dispatchEvent(new Event('admin:overview'));
+    if (tab === 'overview') renderOverview();
     if (tab === 'rsvp') document.dispatchEvent(new Event('admin:rsvp'));
   }
 
