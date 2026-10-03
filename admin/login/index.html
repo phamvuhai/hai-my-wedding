@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex,nofollow" />
   <title>Admin Login | Hải & Mỹ</title>
-  <link rel="stylesheet" href="./login.css" />
+  <link rel="stylesheet" href="/admin/login/login.css" />
 </head>
 <body>
   <main class="login-page">
     <section class="visual">
-      <a class="brand" href="../../">H & M</a>
+      <a class="brand" href="/">H & M</a>
       <div class="visual-copy">
         <p class="eyebrow">WEDDING ADMIN</p>
         <h1>Hải & Mỹ</h1>
@@ -33,7 +33,10 @@
             </div>
           </label>
           <button class="primary" type="submit">Đăng nhập</button>
-          <button class="link-btn" id="forgotBtn" type="button">Quên mật khẩu?</button>
+          <div class="login-links">
+            <button class="link-btn" id="forgotBtn" type="button">Quên mật khẩu?</button>
+            <button class="link-btn" id="setupBtn" type="button">Thiết lập tài khoản lần đầu</button>
+          </div>
           <p id="status" class="status" aria-live="polite"></p>
         </form>
 
@@ -49,13 +52,13 @@
           <p id="resetStatus" class="status" aria-live="polite"></p>
         </form>
 
-        <a class="back" href="../../">← Quay lại website</a>
+        <a class="back" href="/">← Quay lại website</a>
       </div>
     </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../../config.js"></script>
-  <script src="./login.js"></script>
+  <script src="/config.js"></script>
+  <script src="/admin/login/login.js"></script>
 </body>
 </html>
