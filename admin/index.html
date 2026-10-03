@@ -12,12 +12,10 @@
     <section id="authView" class="auth-view">
       <div class="auth-card">
         <div class="brand">H & M</div><p class="eyebrow">PRIVATE WEDDING CMS</p><h1>Admin</h1>
-        <p class="muted">Đăng nhập để quản lý album và RSVP.</p>
+        <p class="muted">Đăng nhập bằng liên kết bảo mật gửi tới email quản trị.</p>
         <form id="authForm">
           <label>Email<input id="authEmail" type="email" required autocomplete="email"></label>
-          <label>Mật khẩu<input id="authPassword" type="password" required minlength="8" autocomplete="current-password"></label>
-          <button class="btn primary" type="submit">Đăng nhập</button>
-          <button class="btn ghost" id="signupBtn" type="button">Tạo tài khoản lần đầu</button>
+          <button class="btn primary" type="submit">Gửi liên kết đăng nhập</button>
           <p id="authStatus" class="status"></p>
         </form>
       </div>
@@ -25,12 +23,21 @@
     <section id="cmsView" class="cms hidden">
       <aside class="sidebar">
         <a class="brand" href="../">H & M</a>
-        <nav><button class="nav-item active" data-tab="album">Album</button><button class="nav-item" data-tab="rsvp">RSVP</button></nav>
+        <nav><button class="nav-item active" data-tab="overview">Tổng quan</button><button class="nav-item" data-tab="album">Album</button><button class="nav-item" data-tab="rsvp">RSVP</button></nav>
         <div class="sidebar-bottom"><span id="userEmail"></span><button id="logoutBtn" class="text-btn">Đăng xuất</button></div>
       </aside>
       <div class="content">
-        <header class="topbar"><div><p class="eyebrow">WEDDING CMS</p><h2 id="pageTitle">Album</h2></div><a class="btn ghost" href="../album/" target="_blank">Xem album ↗</a></header>
-        <section id="albumTab" class="tab-panel">
+        <header class="topbar"><div><p class="eyebrow">WEDDING CMS</p><h2 id="pageTitle">Tổng quan</h2></div><a class="btn ghost" href="../" target="_blank">Xem website ↗</a></header>
+        <section id="overviewTab" class="tab-panel">
+          <div class="panel">
+            <p class="eyebrow">OVERVIEW</p>
+            <h3>Wedding Dashboard</h3>
+            <p class="muted">Theo dõi nhanh RSVP và nội dung album.</p>
+          </div>
+          <div id="dashboardStats" class="stats"></div>
+          <section class="panel"><div class="panel-head"><div><p class="eyebrow">RECENT RSVP</p><h3>Phản hồi gần đây</h3></div></div><div id="recentRsvp"></div></section>
+        </section>
+        <section id="albumTab" class="tab-panel hidden">
           <div class="stats" id="albumStats"></div>
           <section class="panel upload-panel">
             <div><p class="eyebrow">UPLOAD & EDIT</p><h3>Thêm ảnh mới</h3><p class="muted">Ảnh được crop, resize và nén ngay trên thiết bị trước khi upload.</p></div>
@@ -86,6 +93,7 @@
   <script src="./library.js"></script>
   <script src="./editor.js"></script>
   <script src="./rsvp.js"></script>
+  <script src="./dashboard.js"></script>
   <script src="./auth.js"></script>
 </body>
 </html>
