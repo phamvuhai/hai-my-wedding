@@ -101,6 +101,16 @@
     else startTrack(currentLang);
   });
 
+  // Browsers do not reliably allow audible autoplay before any interaction.
+  // Start the current-language song on the first normal user gesture instead.
+  const startOnFirstGesture = event => {
+    if (playing) return;
+    if (event.target.closest?.('[data-lang], #musicToggle')) return;
+    startTrack(currentLang);
+  };
+  document.addEventListener('pointerdown', startOnFirstGesture, { capture:true, once:true });
+  document.addEventListener('keydown', startOnFirstGesture, { capture:true, once:true });
+
   updateMeta(currentLang);
   setPlaying(false);
 })();
