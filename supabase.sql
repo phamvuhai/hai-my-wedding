@@ -271,3 +271,27 @@ alter table public.gallery_images
 alter table public.gallery_images
   add constraint gallery_images_focus_x_check check (focus_x between 0 and 100),
   add constraint gallery_images_focus_y_check check (focus_y between 0 and 100);
+
+
+-- Hero display settings
+alter table public.gallery_images
+  add column if not exists hero_layout text not null default 'full',
+  add column if not exists hero_desktop_ratio text not null default '16:9',
+  add column if not exists hero_mobile_ratio text not null default '4:5',
+  add column if not exists hero_zoom numeric(4,2) not null default 1.00;
+
+alter table public.gallery_images
+  drop constraint if exists gallery_images_hero_layout_check,
+  drop constraint if exists gallery_images_hero_desktop_ratio_check,
+  drop constraint if exists gallery_images_hero_mobile_ratio_check,
+  drop constraint if exists gallery_images_hero_zoom_check;
+
+alter table public.gallery_images
+  add constraint gallery_images_hero_layout_check
+    check (hero_layout in ('full','framed','split','minimal')),
+  add constraint gallery_images_hero_desktop_ratio_check
+    check (hero_desktop_ratio in ('auto','16:9','3:2','4:3','4:5')),
+  add constraint gallery_images_hero_mobile_ratio_check
+    check (hero_mobile_ratio in ('auto','4:5','3:4','1:1')),
+  add constraint gallery_images_hero_zoom_check
+    check (hero_zoom between 1 and 1.6);
