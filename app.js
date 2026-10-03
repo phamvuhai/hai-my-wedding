@@ -123,9 +123,9 @@ async function loadHomeGallery() {
   }
 }
 
-async function loadEventFeatureImage() {
-  const root = document.getElementById('eventFeaturePhoto');
-  const imageEl = document.getElementById('eventFeatureImage');
+async function loadHeroFeatureImage() {
+  const root = document.getElementById('heroFeaturePhoto');
+  const imageEl = document.getElementById('heroFeatureImage');
   if (!root || !imageEl) return;
 
   const cfg = window.WEDDING_CONFIG || {};
@@ -157,13 +157,13 @@ async function loadEventFeatureImage() {
     imageEl.alt = alt || 'Hải & Mỹ';
     root.hidden = false;
   } catch (error) {
-    console.error('Event feature image error:', error);
+    console.error('Hero feature image error:', error);
   }
 }
 
 loadHomeGallery();
-loadEventFeatureImage();
+loadHeroFeatureImage();
 document.addEventListener('wedding:language', () => {
   loadHomeGallery();
-  loadEventFeatureImage();
+  loadHeroFeatureImage();
 });
