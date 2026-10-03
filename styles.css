@@ -3482,3 +3482,137 @@ html,body{
     font-size:.6rem;
   }
 }
+
+
+/* =========================================
+   V8 — seamless continuous marquees + replay-safe motion
+   ========================================= */
+.motion-marquee{
+  --marquee-gap:24px;
+  --marquee-duration:28s;
+  width:100%;
+  max-width:100vw;
+  overflow:hidden;
+}
+.hero-marquee{--marquee-duration:27s}
+.love-marquee{
+  --marquee-gap:32px;
+  --marquee-duration:32s;
+}
+.promise-marquee{--marquee-duration:35s}
+
+.motion-marquee .marquee-track,
+.forever-rail .marquee-track{
+  display:flex;
+  align-items:center;
+  width:max-content;
+  min-width:0;
+  gap:0;
+  padding-left:0;
+  padding-right:0;
+  will-change:transform;
+  animation-name:marqueeSeamlessLeft;
+  animation-duration:var(--marquee-duration,32s);
+  animation-timing-function:linear;
+  animation-iteration-count:infinite;
+  animation-play-state:running;
+}
+
+.marquee-group{
+  display:flex;
+  flex:0 0 auto;
+  align-items:center;
+  gap:var(--marquee-gap,24px);
+  padding-right:var(--marquee-gap,24px);
+  white-space:nowrap;
+}
+
+.marquee-reverse .marquee-track{
+  animation-name:marqueeSeamlessRight;
+}
+
+@keyframes marqueeSeamlessLeft{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(-50%,0,0)}
+}
+@keyframes marqueeSeamlessRight{
+  from{transform:translate3d(-50%,0,0)}
+  to{transform:translate3d(0,0,0)}
+}
+
+/* Never pause continuous marquees because of hover or motion mode. */
+html[data-motion] .motion-marquee .marquee-track,
+html[data-motion="wow"] .motion-marquee:hover .marquee-track,
+html[data-motion="minimal"] .motion-marquee .marquee-track{
+  animation-play-state:running!important;
+}
+html[data-motion="minimal"] .motion-marquee .marquee-track{
+  animation-duration:42s!important;
+}
+
+/* FOREVER rails combine scroll-offset on the parent with auto movement on the child. */
+.forever-rail{
+  --marquee-gap:clamp(24px,4vw,58px);
+  --marquee-duration:42s;
+  left:-10vw;
+  width:120vw;
+  overflow:hidden;
+}
+.forever-rail .marquee-track{
+  font:inherit;
+  letter-spacing:inherit;
+  color:inherit;
+}
+.forever-rail .marquee-group{
+  gap:var(--marquee-gap);
+  padding-right:var(--marquee-gap);
+}
+.forever-rail .marquee-track span{
+  font:inherit;
+  letter-spacing:inherit;
+  color:inherit;
+  white-space:nowrap;
+}
+.forever-rail .marquee-track i{
+  color:rgba(214,184,156,.28);
+  font-style:normal;
+  font-size:.32em;
+}
+.forever-rail-bottom{--marquee-duration:48s}
+
+/* Entrance elements reset when they leave the viewport, then replay on re-entry. */
+.motion-item{
+  will-change:transform,opacity;
+}
+
+/* Tablet/mobile keep the marquee alive, only adjust pacing and spacing. */
+@media(max-width:1024px){
+  .motion-marquee{--marquee-gap:20px;--marquee-duration:24s}
+  .hero-marquee{--marquee-duration:23s}
+  .love-marquee{--marquee-gap:25px;--marquee-duration:27s}
+  .promise-marquee{--marquee-duration:29s}
+  .forever-rail{--marquee-duration:36s}
+  .forever-rail-bottom{--marquee-duration:40s}
+}
+@media(max-width:680px){
+  .motion-marquee{--marquee-gap:15px;--marquee-duration:20s}
+  .hero-marquee{--marquee-duration:19s}
+  .love-marquee{--marquee-gap:18px;--marquee-duration:23s}
+  .promise-marquee{--marquee-duration:25s}
+  .forever-rail{
+    --marquee-gap:18px;
+    --marquee-duration:30s;
+    left:-18vw;
+    width:136vw;
+  }
+  .forever-rail-bottom{--marquee-duration:34s}
+}
+
+/* Accessibility remains respected if the OS explicitly requests reduced motion. */
+@media(prefers-reduced-motion:reduce){
+  .motion-marquee .marquee-track,
+  .forever-rail .marquee-track{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+  }
+}
