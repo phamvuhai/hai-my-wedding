@@ -257,3 +257,17 @@ alter table public.gallery_images
 create unique index if not exists gallery_one_hero_idx
   on public.gallery_images ((is_hero))
   where is_hero = true;
+
+
+-- Display focus point shared by desktop/mobile crops
+alter table public.gallery_images
+  add column if not exists focus_x numeric(5,2) not null default 50,
+  add column if not exists focus_y numeric(5,2) not null default 50;
+
+alter table public.gallery_images
+  drop constraint if exists gallery_images_focus_x_check,
+  drop constraint if exists gallery_images_focus_y_check;
+
+alter table public.gallery_images
+  add constraint gallery_images_focus_x_check check (focus_x between 0 and 100),
+  add constraint gallery_images_focus_y_check check (focus_y between 0 and 100);
