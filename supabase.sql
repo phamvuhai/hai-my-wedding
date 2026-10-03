@@ -95,33 +95,36 @@ grant insert, update, delete on table public.gallery_images to authenticated;
 
 drop policy if exists gallery_albums_public_read on public.gallery_albums;
 create policy gallery_albums_public_read on public.gallery_albums
-for select to anon, authenticated
+for select to anon
 using (is_published = true);
 
 drop policy if exists gallery_albums_admin_read on public.gallery_albums;
 create policy gallery_albums_admin_read on public.gallery_albums
 for select to authenticated
-using ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com');
+using (
+  is_published = true
+  or ((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com'
+);
 
 drop policy if exists gallery_albums_admin_insert on public.gallery_albums;
 create policy gallery_albums_admin_insert on public.gallery_albums
 for insert to authenticated
-with check ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com');
+with check (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com');
 
 drop policy if exists gallery_albums_admin_update on public.gallery_albums;
 create policy gallery_albums_admin_update on public.gallery_albums
 for update to authenticated
-using ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com')
-with check ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com');
+using (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com')
+with check (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com');
 
 drop policy if exists gallery_albums_admin_delete on public.gallery_albums;
 create policy gallery_albums_admin_delete on public.gallery_albums
 for delete to authenticated
-using ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com');
+using (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com');
 
 drop policy if exists gallery_images_public_read on public.gallery_images;
 create policy gallery_images_public_read on public.gallery_images
-for select to anon, authenticated
+for select to anon
 using (
   is_published = true
   and exists (
@@ -133,23 +136,32 @@ using (
 drop policy if exists gallery_images_admin_read on public.gallery_images;
 create policy gallery_images_admin_read on public.gallery_images
 for select to authenticated
-using ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com');
+using (
+  (
+    is_published = true
+    and exists (
+      select 1 from public.gallery_albums a
+      where a.id = album_id and a.is_published = true
+    )
+  )
+  or ((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com'
+);
 
 drop policy if exists gallery_images_admin_insert on public.gallery_images;
 create policy gallery_images_admin_insert on public.gallery_images
 for insert to authenticated
-with check ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com');
+with check (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com');
 
 drop policy if exists gallery_images_admin_update on public.gallery_images;
 create policy gallery_images_admin_update on public.gallery_images
 for update to authenticated
-using ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com')
-with check ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com');
+using (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com')
+with check (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com');
 
 drop policy if exists gallery_images_admin_delete on public.gallery_images;
 create policy gallery_images_admin_delete on public.gallery_images
 for delete to authenticated
-using ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com');
+using (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com');
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values
@@ -165,7 +177,7 @@ create policy wedding_media_admin_select on storage.objects
 for select to authenticated
 using (
   bucket_id in ('wedding-originals','wedding-gallery')
-  and (auth.jwt()->>'email') = 'phamvuhai23@gmail.com'
+  and ((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com'
 );
 
 drop policy if exists wedding_media_admin_insert on storage.objects;
@@ -173,7 +185,7 @@ create policy wedding_media_admin_insert on storage.objects
 for insert to authenticated
 with check (
   bucket_id in ('wedding-originals','wedding-gallery')
-  and (auth.jwt()->>'email') = 'phamvuhai23@gmail.com'
+  and ((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com'
 );
 
 drop policy if exists wedding_media_admin_update on storage.objects;
@@ -181,11 +193,11 @@ create policy wedding_media_admin_update on storage.objects
 for update to authenticated
 using (
   bucket_id in ('wedding-originals','wedding-gallery')
-  and (auth.jwt()->>'email') = 'phamvuhai23@gmail.com'
+  and ((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com'
 )
 with check (
   bucket_id in ('wedding-originals','wedding-gallery')
-  and (auth.jwt()->>'email') = 'phamvuhai23@gmail.com'
+  and ((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com'
 );
 
 drop policy if exists wedding_media_admin_delete on storage.objects;
@@ -193,7 +205,7 @@ create policy wedding_media_admin_delete on storage.objects
 for delete to authenticated
 using (
   bucket_id in ('wedding-originals','wedding-gallery')
-  and (auth.jwt()->>'email') = 'phamvuhai23@gmail.com'
+  and ((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com'
 );
 
 insert into public.gallery_albums (title, slug, description, sort_order)
@@ -209,4 +221,4 @@ grant select on table public.rsvp to authenticated;
 drop policy if exists admin_can_read_rsvp on public.rsvp;
 create policy admin_can_read_rsvp on public.rsvp
 for select to authenticated
-using ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com');
+using (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com');
