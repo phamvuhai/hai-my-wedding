@@ -654,3 +654,90 @@ textarea { resize: vertical; }
     width:min(78vw,350px);
   }
 }
+
+
+/* Hero height/spacing normalization */
+.hero{
+  --hero-frame-max:680px;
+  --hero-pad-top:58px;
+  --hero-pad-bottom:56px;
+  --hero-photo-gap:30px;
+}
+.hero-spacing-compact{
+  --hero-pad-top:42px;
+  --hero-pad-bottom:40px;
+  --hero-photo-gap:24px;
+}
+.hero-spacing-normal{
+  --hero-pad-top:58px;
+  --hero-pad-bottom:56px;
+  --hero-photo-gap:30px;
+}
+.hero-spacing-spacious{
+  --hero-pad-top:76px;
+  --hero-pad-bottom:72px;
+  --hero-photo-gap:36px;
+}
+.hero:not(.hero-layout-full){
+  min-height:0;
+}
+.hero:not(.hero-layout-full) .hero-content{
+  min-height:0;
+  padding-top:var(--hero-pad-top);
+  padding-bottom:var(--hero-pad-bottom);
+}
+.hero-layout-framed .hero-feature-photo{
+  width:min(88vw,var(--hero-frame-max));
+  margin-top:var(--hero-photo-gap);
+}
+.hero-layout-split .hero-content{
+  padding-top:var(--hero-pad-top);
+  padding-bottom:var(--hero-pad-bottom);
+}
+.hero-layout-split .hero-feature-photo{
+  margin:0;
+}
+.hero-layout-minimal .hero-feature-photo{
+  margin-top:var(--hero-photo-gap);
+}
+.hero-layout-full{
+  min-height:100svh;
+}
+.hero-layout-full .hero-content{
+  min-height:calc(100svh - var(--header-h));
+}
+@media(max-width:900px){
+  .hero:not(.hero-layout-full) .hero-content{
+    padding-top:44px;
+    padding-bottom:42px;
+  }
+  .hero-layout-split .hero-feature-photo{
+    width:min(90vw,620px);
+  }
+}
+@media(max-width:600px){
+  .hero-spacing-compact{
+    --hero-pad-top:26px;
+    --hero-pad-bottom:30px;
+    --hero-photo-gap:20px;
+  }
+  .hero-spacing-normal{
+    --hero-pad-top:32px;
+    --hero-pad-bottom:36px;
+    --hero-photo-gap:24px;
+  }
+  .hero-spacing-spacious{
+    --hero-pad-top:40px;
+    --hero-pad-bottom:44px;
+    --hero-photo-gap:28px;
+  }
+  .hero:not(.hero-layout-full) .hero-content{
+    padding-top:var(--hero-pad-top);
+    padding-bottom:var(--hero-pad-bottom);
+  }
+  .hero-layout-framed .hero-feature-photo,
+  .hero-layout-minimal .hero-feature-photo{
+    width:min(90vw,420px);
+    margin-top:var(--hero-photo-gap);
+  }
+}
