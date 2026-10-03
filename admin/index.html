@@ -119,12 +119,52 @@
             <div>
               <p class="eyebrow">UPLOAD & EDIT</p>
               <h3>Thêm ảnh mới</h3>
-              <p class="muted">Ảnh được crop, resize và nén ngay trên thiết bị trước khi upload.</p>
+              <p class="muted">Public tối đa 2400px · WebP 84% · Master tối đa 3000px. Focus dùng chung cho PC và mobile.</p>
             </div>
             <div class="upload-grid">
-              <div class="editor-stage">
-                <canvas id="editorCanvas" width="1200" height="900"></canvas>
-                <div id="dropHint" class="drop-hint">Kéo ảnh vào đây hoặc chọn file</div>
+              <div class="editor-visuals">
+                <div class="editor-stage" id="editorStage">
+                  <canvas id="editorCanvas" width="1200" height="900"></canvas>
+                  <button id="focusMarker" class="focus-marker hidden" type="button" aria-label="Điểm focus">⊕</button>
+                  <div id="dropHint" class="drop-hint">Kéo ảnh vào đây hoặc chọn file</div>
+                </div>
+
+                <div class="focus-panel">
+                  <div class="focus-heading">
+                    <div>
+                      <p class="field-group-title">DISPLAY FOCUS</p>
+                      <strong>Chọn vùng muốn luôn nhìn thấy</strong>
+                    </div>
+                    <button id="focusReset" class="btn ghost compact" type="button">Center</button>
+                  </div>
+                  <p class="focus-help">Click, chạm hoặc kéo dấu ⊕ trực tiếp trên ảnh.</p>
+                  <label>Focus X
+                    <div class="focus-range">
+                      <input id="focusX" type="range" min="0" max="100" step="1" value="50">
+                      <output id="focusXValue">50%</output>
+                    </div>
+                  </label>
+                  <label>Focus Y
+                    <div class="focus-range">
+                      <input id="focusY" type="range" min="0" max="100" step="1" value="50">
+                      <output id="focusYValue">50%</output>
+                    </div>
+                  </label>
+                </div>
+
+                <div class="preview-section">
+                  <div class="preview-heading">
+                    <p class="field-group-title">LIVE PREVIEW</p>
+                    <span>PC & mobile dùng cùng focus point</span>
+                  </div>
+                  <div class="focus-previews">
+                    <figure class="focus-preview preview-hero"><img alt=""><figcaption>Hero · 4:5</figcaption></figure>
+                    <figure class="focus-preview preview-large"><img alt=""><figcaption>Large · 1:1</figcaption></figure>
+                    <figure class="focus-preview preview-wide"><img alt=""><figcaption>Wide · 2:1</figcaption></figure>
+                    <figure class="focus-preview preview-tall"><img alt=""><figcaption>Tall · 1:2</figcaption></figure>
+                    <figure class="focus-preview preview-small"><img alt=""><figcaption>Small · 1:1</figcaption></figure>
+                  </div>
+                </div>
               </div>
               <div class="editor-controls">
                 <label>Ảnh<input id="fileInput" type="file" accept="image/*" multiple></label>
