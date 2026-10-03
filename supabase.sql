@@ -238,3 +238,22 @@ alter table public.gallery_images
   add column if not exists caption_ja text,
   add column if not exists alt_text_en text,
   add column if not exists alt_text_ja text;
+
+
+-- Homepage / editorial gallery controls
+alter table public.gallery_images
+  add column if not exists show_on_homepage boolean not null default true,
+  add column if not exists display_size text not null default 'auto',
+  add column if not exists is_featured boolean not null default false,
+  add column if not exists is_hero boolean not null default false;
+
+alter table public.gallery_images
+  drop constraint if exists gallery_images_display_size_check;
+
+alter table public.gallery_images
+  add constraint gallery_images_display_size_check
+  check (display_size in ('auto','small','tall','wide','large'));
+
+create unique index if not exists gallery_one_hero_idx
+  on public.gallery_images ((is_hero))
+  where is_hero = true;
