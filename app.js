@@ -126,6 +126,7 @@ async function loadHomeGallery() {
 async function loadHeroFeatureImage() {
   const root = document.getElementById('heroFeaturePhoto');
   const imageEl = document.getElementById('heroFeatureImage');
+  const placeholderEl = document.getElementById('heroPhotoPlaceholder');
   if (!root || !imageEl) return;
 
   const cfg = window.WEDDING_CONFIG || {};
@@ -155,7 +156,8 @@ async function loadHeroFeatureImage() {
 
     imageEl.src = client.storage.from('wedding-gallery').getPublicUrl(img.image_path).data.publicUrl;
     imageEl.alt = alt || 'Hải & Mỹ';
-    root.hidden = false;
+    imageEl.hidden = false;
+    if (placeholderEl) placeholderEl.hidden = true;
   } catch (error) {
     console.error('Hero feature image error:', error);
   }
