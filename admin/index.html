@@ -9,40 +9,109 @@
 </head>
 <body>
   <main class="admin-shell">
-    <section id="authView" class="auth-view">
-      <div class="auth-card">
-        <div class="brand">H & M</div><p class="eyebrow">PRIVATE WEDDING CMS</p><h1>Admin</h1>
-        <p class="muted">Đăng nhập bằng liên kết bảo mật gửi tới email quản trị.</p>
-        <form id="authForm">
-          <label>Email<input id="authEmail" type="email" required autocomplete="email"></label>
-          <button class="btn primary" type="submit">Gửi liên kết đăng nhập</button>
-          <p id="authStatus" class="status"></p>
-        </form>
-      </div>
-    </section>
-    <section id="cmsView" class="cms hidden">
+    <section id="cmsView" class="cms">
       <aside class="sidebar">
         <a class="brand" href="../">H & M</a>
-        <nav><button class="nav-item active" data-tab="overview">Tổng quan</button><button class="nav-item" data-tab="album">Album</button><button class="nav-item" data-tab="rsvp">RSVP</button></nav>
-        <div class="sidebar-bottom"><span id="userEmail"></span><button id="logoutBtn" class="text-btn">Đăng xuất</button></div>
+        <div class="sidebar-kicker">ADMIN PANEL</div>
+        <nav>
+          <button class="nav-item active" data-tab="overview">Tổng quan</button>
+          <button class="nav-item" data-tab="rsvp">RSVP</button>
+          <button class="nav-item" data-tab="album">Album</button>
+        </nav>
+        <div class="sidebar-bottom">
+          <span id="userEmail"></span>
+          <button id="logoutBtn" class="text-btn">Đăng xuất</button>
+        </div>
       </aside>
+
       <div class="content">
-        <header class="topbar"><div><p class="eyebrow">WEDDING CMS</p><h2 id="pageTitle">Tổng quan</h2></div><a class="btn ghost" href="../" target="_blank">Xem website ↗</a></header>
-        <section id="overviewTab" class="tab-panel">
-          <div class="panel">
-            <p class="eyebrow">OVERVIEW</p>
-            <h3>Wedding Dashboard</h3>
-            <p class="muted">Theo dõi nhanh RSVP và nội dung album.</p>
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">WEDDING CMS</p>
+            <h2 id="pageTitle">Tổng quan</h2>
           </div>
-          <div id="dashboardStats" class="stats"></div>
-          <section class="panel"><div class="panel-head"><div><p class="eyebrow">RECENT RSVP</p><h3>Phản hồi gần đây</h3></div></div><div id="recentRsvp"></div></section>
+          <div class="topbar-actions">
+            <a class="btn ghost" href="../" target="_blank" rel="noreferrer">Xem website ↗</a>
+            <a class="btn ghost" href="../album/" target="_blank" rel="noreferrer">Xem album ↗</a>
+          </div>
+        </header>
+
+        <section id="overviewTab" class="tab-panel">
+          <div class="dashboard-hero">
+            <div>
+              <p class="eyebrow">WELCOME BACK</p>
+              <h3>Wedding Dashboard</h3>
+              <p>Theo dõi khách mời, RSVP và nội dung album tại một nơi.</p>
+            </div>
+            <span class="date-badge">December 2026</span>
+          </div>
+
+          <div id="dashboardStats" class="stats dashboard-stats">
+            <div class="stat"><span>Đang tải</span><strong>—</strong></div>
+          </div>
+
+          <div class="dashboard-grid">
+            <section class="panel">
+              <div class="panel-head">
+                <div><p class="eyebrow">QUICK ACTIONS</p><h3>Thao tác nhanh</h3></div>
+              </div>
+              <div class="quick-actions">
+                <button class="quick-card" data-go="rsvp">
+                  <span class="quick-icon">✓</span>
+                  <strong>Xem RSVP</strong>
+                  <small>Kiểm tra danh sách khách phản hồi</small>
+                </button>
+                <button class="quick-card" data-go="album">
+                  <span class="quick-icon">＋</span>
+                  <strong>Thêm ảnh</strong>
+                  <small>Upload và chỉnh sửa album cưới</small>
+                </button>
+                <a class="quick-card" href="../" target="_blank" rel="noreferrer">
+                  <span class="quick-icon">↗</span>
+                  <strong>Mở website</strong>
+                  <small>Xem giao diện dành cho khách mời</small>
+                </a>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head">
+                <div><p class="eyebrow">RECENT RSVP</p><h3>Phản hồi gần đây</h3></div>
+              </div>
+              <div id="recentRsvp" class="recent-list"><p class="muted">Đang tải...</p></div>
+            </section>
+          </div>
         </section>
+
+        <section id="rsvpTab" class="tab-panel hidden">
+          <div id="rsvpStats" class="stats"></div>
+          <section class="panel">
+            <div class="panel-head">
+              <div><p class="eyebrow">GUEST LIST</p><h3>RSVP</h3></div>
+              <input id="rsvpSearch" type="search" placeholder="Tìm tên / số điện thoại">
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Khách</th><th>Điện thoại</th><th>Tham dự</th><th>Số người</th><th>Sự kiện</th><th>Lời nhắn</th><th>Ngày</th></tr></thead>
+                <tbody id="rsvpBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
         <section id="albumTab" class="tab-panel hidden">
           <div class="stats" id="albumStats"></div>
           <section class="panel upload-panel">
-            <div><p class="eyebrow">UPLOAD & EDIT</p><h3>Thêm ảnh mới</h3><p class="muted">Ảnh được crop, resize và nén ngay trên thiết bị trước khi upload.</p></div>
+            <div>
+              <p class="eyebrow">UPLOAD & EDIT</p>
+              <h3>Thêm ảnh mới</h3>
+              <p class="muted">Ảnh được crop, resize và nén ngay trên thiết bị trước khi upload.</p>
+            </div>
             <div class="upload-grid">
-              <div class="editor-stage"><canvas id="editorCanvas" width="1200" height="900"></canvas><div id="dropHint" class="drop-hint">Kéo ảnh vào đây hoặc chọn file</div></div>
+              <div class="editor-stage">
+                <canvas id="editorCanvas" width="1200" height="900"></canvas>
+                <div id="dropHint" class="drop-hint">Kéo ảnh vào đây hoặc chọn file</div>
+              </div>
               <div class="editor-controls">
                 <label>Ảnh<input id="fileInput" type="file" accept="image/*" multiple></label>
                 <label>Album<select id="albumSelect"></select></label>
@@ -78,21 +147,26 @@
               </div>
             </div>
           </section>
-          <section class="panel"><div class="panel-head"><div><p class="eyebrow">LIBRARY</p><h3>Thư viện ảnh</h3></div><select id="libraryAlbumFilter"><option value="all">Tất cả album</option></select></div><div id="adminGallery" class="admin-gallery"></div></section>
-        </section>
-        <section id="rsvpTab" class="tab-panel hidden">
-          <div id="rsvpStats" class="stats"></div>
-          <section class="panel"><div class="panel-head"><div><p class="eyebrow">GUEST LIST</p><h3>RSVP</h3></div><input id="rsvpSearch" type="search" placeholder="Tìm tên / số điện thoại"></div><div class="table-wrap"><table><thead><tr><th>Khách</th><th>Điện thoại</th><th>Tham dự</th><th>Số người</th><th>Sự kiện</th><th>Lời nhắn</th><th>Ngày</th></tr></thead><tbody id="rsvpBody"></tbody></table></div></section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div><p class="eyebrow">LIBRARY</p><h3>Thư viện ảnh</h3></div>
+              <select id="libraryAlbumFilter"><option value="all">Tất cả album</option></select>
+            </div>
+            <div id="adminGallery" class="admin-gallery"></div>
+          </section>
         </section>
       </div>
     </section>
   </main>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../config.js"></script>
   <script src="./state.js"></script>
   <script src="./library.js"></script>
   <script src="./editor.js"></script>
   <script src="./rsvp.js"></script>
+  <script src="./dashboard.js"></script>
   <script src="./auth.js"></script>
 </body>
 </html>

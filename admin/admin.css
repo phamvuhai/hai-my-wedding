@@ -5,3 +5,18 @@
 .language-details summary{cursor:pointer;padding:11px 12px;font-size:.82rem;font-weight:800;color:var(--ink)}
 .language-details[open] summary{border-bottom:1px solid var(--line)}
 .language-details .language-fields{border:0;border-radius:0;background:transparent}
+
+.sidebar-kicker{margin-top:38px;color:rgba(255,255,255,.35);font-size:.62rem;font-weight:800;letter-spacing:.16em}
+.sidebar nav{margin-top:12px}
+.topbar-actions{display:flex;gap:10px;flex-wrap:wrap}
+.dashboard-hero{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-bottom:18px;padding:28px 30px;border-radius:22px;color:#fff;background:linear-gradient(135deg,#6f5245,#382f2a);box-shadow:var(--shadow)}
+.dashboard-hero .eyebrow{color:#e8cdbc}.dashboard-hero h3{margin:0 0 8px;font:400 2.2rem Georgia,serif}.dashboard-hero p:last-child{margin:0;color:rgba(255,255,255,.72)}
+.date-badge{flex:0 0 auto;padding:9px 13px;border:1px solid rgba(255,255,255,.2);border-radius:999px;font-size:.72rem;letter-spacing:.08em}
+.dashboard-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+.quick-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.quick-card{display:grid;gap:6px;min-height:145px;padding:18px;text-align:left;border:1px solid var(--line);border-radius:16px;background:#fcfaf8;color:var(--ink);cursor:pointer;text-decoration:none}
+.quick-card:hover{border-color:#cdbbae;transform:translateY(-1px)}
+.quick-icon{font:400 1.8rem Georgia,serif;color:var(--accent)}.quick-card small{color:var(--muted);line-height:1.5}
+.recent-list{display:grid;gap:0}.recent-item{padding:12px 0;border-bottom:1px solid var(--line)}.recent-item:last-child{border-bottom:0}.recent-head{display:flex;justify-content:space-between;gap:12px}.recent-item small{display:block;margin-top:4px;color:var(--muted)}
+@media(max-width:1000px){.dashboard-grid{grid-template-columns:1fr}}
+@media(max-width:720px){.topbar-actions{display:none}.dashboard-hero{align-items:flex-start;flex-direction:column}.date-badge{display:none}.quick-actions{grid-template-columns:1fr}.sidebar{overflow-x:auto}.sidebar-kicker{display:none}.sidebar nav{flex-wrap:nowrap}.nav-item{white-space:nowrap}}
