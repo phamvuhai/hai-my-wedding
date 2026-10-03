@@ -122,3 +122,17 @@
   max-width:180px;
   width:100%;
 }
+
+.hero-setting-note{
+  margin:0;
+  padding:9px 10px;
+  border-radius:9px;
+  background:#f8f3ef;
+  color:var(--muted);
+  font-size:.72rem;
+  line-height:1.5;
+}
+.hero-settings[data-spacing="compact"]{--hero-preview-gap:6px}
+.hero-settings[data-spacing="normal"]{--hero-preview-gap:10px}
+.hero-settings[data-spacing="spacious"]{--hero-preview-gap:16px}
+.hero-preview-grid{gap:var(--hero-preview-gap,10px)}
