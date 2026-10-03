@@ -199,6 +199,51 @@
                   <label class="check"><input id="homepageCheck" type="checkbox" checked> Hiển thị ở trang chủ</label>
                   <label class="check"><input id="featuredCheck" type="checkbox"> Featured</label>
                   <label class="check"><input id="heroCheck" type="checkbox"> Dùng làm Hero cover</label>
+                  <div id="heroSettings" class="hero-settings hidden">
+                    <div class="hero-settings-head">
+                      <div>
+                        <p class="field-group-title">HERO SETTINGS</p>
+                        <strong>Thiết lập riêng cho Hero</strong>
+                      </div>
+                    </div>
+                    <label>Hero layout
+                      <select id="heroLayout">
+                        <option value="full">Full background</option>
+                        <option value="framed">Framed photo</option>
+                        <option value="split">Split layout</option>
+                        <option value="minimal">Minimal</option>
+                      </select>
+                    </label>
+                    <div class="hero-setting-grid">
+                      <label>Desktop ratio
+                        <select id="heroDesktopRatio">
+                          <option value="auto">Auto</option>
+                          <option value="16:9">16:9</option>
+                          <option value="3:2">3:2</option>
+                          <option value="4:3">4:3</option>
+                          <option value="4:5">4:5</option>
+                        </select>
+                      </label>
+                      <label>Mobile ratio
+                        <select id="heroMobileRatio">
+                          <option value="auto">Auto</option>
+                          <option value="4:5">4:5</option>
+                          <option value="3:4">3:4</option>
+                          <option value="1:1">1:1</option>
+                        </select>
+                      </label>
+                    </div>
+                    <label>Hero zoom
+                      <div class="focus-range">
+                        <input id="heroZoom" type="range" min="1" max="1.6" step="0.01" value="1">
+                        <output id="heroZoomValue">1.00×</output>
+                      </div>
+                    </label>
+                    <div class="hero-preview-grid">
+                      <figure class="hero-setting-preview desktop"><img alt=""><figcaption>Desktop preview</figcaption></figure>
+                      <figure class="hero-setting-preview mobile"><img alt=""><figcaption>Mobile preview</figcaption></figure>
+                    </div>
+                  </div>
                   <label>Kích thước layout
                     <select id="displaySize">
                       <option value="auto">Auto</option>
