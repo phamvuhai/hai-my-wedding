@@ -87,7 +87,7 @@ async function loadHomeGallery() {
     const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
     const { data: images, error } = await client
       .from('gallery_images')
-      .select('id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,is_hero,show_on_homepage,created_at')
+      .select('id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,is_hero,show_on_homepage,focus_x,focus_y,created_at')
       .eq('show_on_homepage', true)
       .order('is_featured', { ascending: false })
       .order('sort_order', { ascending: true })
@@ -115,7 +115,7 @@ async function loadHomeGallery() {
       );
       return `
         <a class="home-photo size-${size} reveal visible" href="/album" aria-label="Hải & Mỹ album">
-          <img loading="lazy" decoding="async" src="${url}" alt="${esc(alt || 'Hải & Mỹ')}">
+          <img loading="lazy" decoding="async" src="${url}" alt="${esc(alt || 'Hải & Mỹ')}" style="object-position:${Number(img.focus_x ?? 50)}% ${Number(img.focus_y ?? 50)}%">
           <span class="home-photo-copy">
             <strong>${esc(title || '')}</strong>
             <small>${esc(caption || '')}</small>
@@ -140,7 +140,7 @@ async function loadHeroPhoto() {
     const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
     const { data, error } = await client
       .from('gallery_images')
-      .select('image_path,alt_text,title,alt_text_en,title_en,alt_text_ja,title_ja')
+      .select('image_path,alt_text,title,alt_text_en,title_en,alt_text_ja,title_ja,focus_x,focus_y')
       .eq('is_hero', true)
       .eq('is_published', true)
       .limit(1)
@@ -152,6 +152,7 @@ async function loadHeroPhoto() {
       (data.alt_text || data.title);
     img.src = client.storage.from('wedding-gallery').getPublicUrl(data.image_path).data.publicUrl;
     img.alt = alt || 'Hải & Mỹ';
+    img.style.objectPosition = `${Number(data.focus_x ?? 50)}% ${Number(data.focus_y ?? 50)}%`;
   } catch (error) {
     console.error('Hero photo error:', error);
   }
