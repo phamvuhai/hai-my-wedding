@@ -28,6 +28,10 @@ document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 const form = document.getElementById('rsvpForm');
 const statusEl = document.getElementById('formStatus');
 
+function tr(key, fallback = '') {
+  return window.WeddingI18n?.t(key) || fallback || key;
+}
+
 function setStatus(message, type = '') {
   statusEl.textContent = message;
   statusEl.className = `form-status ${type}`;
@@ -35,7 +39,7 @@ function setStatus(message, type = '') {
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
-  setStatus('Đang gửi xác nhận...');
+  setStatus(tr('rsvp.sending', 'Đang gửi xác nhận...'));
 
   const data = Object.fromEntries(new FormData(form).entries());
   data.guest_count = Number(data.guest_count || 1);
@@ -64,10 +68,10 @@ form.addEventListener('submit', async (event) => {
     }
 
     form.reset();
-    setStatus('Cảm ơn bạn! Hải & Mỹ đã nhận được xác nhận ❤️', 'success');
+    setStatus(tr('rsvp.success', 'Cảm ơn bạn! Hải & Mỹ đã nhận được xác nhận ❤️'), 'success');
   } catch (err) {
     console.error(err);
-    setStatus('Chưa gửi được xác nhận. Vui lòng thử lại hoặc liên hệ trực tiếp với cô dâu/chú rể.', 'error');
+    setStatus(tr('rsvp.error', 'Chưa gửi được xác nhận. Vui lòng thử lại hoặc liên hệ trực tiếp với cô dâu/chú rể.'), 'error');
   }
 });
 
