@@ -1151,8 +1151,8 @@ html[data-motion="wow"] .monogram span{
   animation:heartParticle 1s cubic-bezier(.2,.7,.2,1) forwards;
 }
 @keyframes heartParticle{
-  from{opacity:1;transform:rotate(var(--angle)) translateX(0) rotate(calc(var(--angle) * -1)) scale(.7)}
-  to{opacity:0;transform:rotate(var(--angle)) translateX(var(--distance)) rotate(calc(var(--angle) * -1)) scale(1.2)}
+  from{opacity:1;transform:rotate(var(--angle)) translateX(0) scale(.7)}
+  to{opacity:0;transform:rotate(var(--angle)) translateX(var(--distance)) scale(1.2)}
 }
 
 .signature-line{
@@ -1173,7 +1173,7 @@ html[data-motion="wow"] .monogram span{
 @keyframes signatureDraw{to{transform:scaleX(1)}}
 @keyframes signatureName{from{opacity:.2;letter-spacing:.28em}to{opacity:1;letter-spacing:.12em}}
 
-html[data-motion="wow"] .section-heading h2::after{
+html[data-motion="wow"] .section-heading.motion-in h2::after{
   content:"";
   display:block;
   width:76px;
