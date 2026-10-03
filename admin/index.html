@@ -154,7 +154,24 @@
                     <label>Alt text<input id="imageAltJa" maxlength="180"></label>
                   </div>
                 </details>
-                <label class="check"><input id="publishCheck" type="checkbox" checked> Hiển thị trên album</label>
+                <div class="display-options">
+                  <label class="check"><input id="publishCheck" type="checkbox" checked> Hiển thị trên album</label>
+                  <label class="check"><input id="homepageCheck" type="checkbox" checked> Hiển thị ở trang chủ</label>
+                  <label class="check"><input id="featuredCheck" type="checkbox"> Featured</label>
+                  <label class="check"><input id="heroCheck" type="checkbox"> Dùng làm Hero cover</label>
+                  <label>Kích thước layout
+                    <select id="displaySize">
+                      <option value="auto">Auto</option>
+                      <option value="small">Small</option>
+                      <option value="tall">Tall</option>
+                      <option value="wide">Wide</option>
+                      <option value="large">Large</option>
+                    </select>
+                  </label>
+                  <label>Thứ tự hiển thị
+                    <input id="sortOrder" type="number" value="0" step="1">
+                  </label>
+                </div>
                 <button id="saveImageBtn" class="btn primary" type="button">Lưu ảnh</button>
                 <button id="cancelEditBtn" class="btn ghost hidden" type="button">Hủy chỉnh sửa</button>
                 <p id="uploadStatus" class="status"></p>
