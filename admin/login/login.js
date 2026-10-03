@@ -1,6 +1,7 @@
 (() => {
   const cfg = window.WEDDING_CONFIG || {};
   const ADMIN_EMAIL = 'phamvuhai23@gmail.com';
+  const APP_ORIGIN = 'https://hai-my-wedding.vercel.app';
   const status = document.getElementById('status');
   const resetStatus = document.getElementById('resetStatus');
   const loginForm = document.getElementById('loginForm');
@@ -87,7 +88,7 @@
 
     setStatus(status, 'Đang gửi email đặt lại mật khẩu...');
     const { error } = await db.auth.resetPasswordForEmail(email, {
-      redirectTo: location.origin + '/admin/login/'
+      redirectTo: APP_ORIGIN + '/admin/login/'
     });
 
     if (error) {
@@ -111,7 +112,7 @@
       email,
       options: {
         shouldCreateUser: true,
-        emailRedirectTo: location.origin + '/admin/login/?setup=1'
+        emailRedirectTo: APP_ORIGIN + '/admin/login/?setup=1'
       }
     });
 
