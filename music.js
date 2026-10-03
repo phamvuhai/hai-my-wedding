@@ -1,50 +1,33 @@
 (() => {
   const tracks = {
-    vi: {
-      id: '__kGJZ-kPno',
-      title: 'Hơn Cả Yêu',
-      artist: 'Đức Phúc',
-      label: 'VIETNAMESE WEDDING SONG'
-    },
-    ja: {
-      id: 'ljDRzQz3ULE',
-      title: '115万キロのフィルム',
-      artist: 'Official髭男dism',
-      label: 'JAPANESE WEDDING SONG'
-    },
-    en: {
-      id: '2Vv-BfVoq4g',
-      title: 'Perfect',
-      artist: 'Ed Sheeran',
-      label: 'ENGLISH WEDDING SONG'
-    }
+    vi: { id:'__kGJZ-kPno', title:'Hơn Cả Yêu', artist:'Đức Phúc', label:'VIETNAMESE WEDDING SONG' },
+    ja: { id:'ljDRzQz3ULE', title:'115万キロのフィルム', artist:'Official髭男dism', label:'JAPANESE WEDDING SONG' },
+    en: { id:'2Vv-BfVoq4g', title:'Perfect', artist:'Ed Sheeran', label:'ENGLISH WEDDING SONG' }
   };
 
   const dock = document.getElementById('musicDock');
-  const toggle = document.getElementById('musicToggle');
+  const toggleButton = document.getElementById('musicToggle');
   const frame = document.getElementById('musicFrame');
   const title = document.getElementById('musicTitle');
   const artist = document.getElementById('musicArtist');
   const label = document.getElementById('musicLabel');
   const state = document.getElementById('musicState');
-  if (!dock || !toggle || !frame) return;
+  if (!dock || !toggleButton || !frame) return;
 
   let currentLang = window.WeddingI18n?.language || 'vi';
   let playing = false;
-  let languageGesture = false;
-  let gestureTimer = 0;
 
-  function embedUrl(id, autoplay) {
+  function embedUrl(id) {
     const params = new URLSearchParams({
-      autoplay: autoplay ? '1' : '0',
-      playsinline: '1',
-      rel: '0',
-      modestbranding: '1',
-      controls: '0',
-      disablekb: '1',
-      fs: '0',
-      loop: '1',
-      playlist: id
+      autoplay:'1',
+      playsinline:'1',
+      rel:'0',
+      modestbranding:'1',
+      controls:'0',
+      disablekb:'1',
+      fs:'0',
+      loop:'1',
+      playlist:id
     });
     return `https://www.youtube-nocookie.com/embed/${id}?${params.toString()}`;
   }
@@ -52,7 +35,8 @@
   function setPlaying(next) {
     playing = !!next;
     dock.classList.toggle('is-playing', playing);
-    toggle.setAttribute('aria-pressed', playing ? 'true' : 'false');
+    toggleButton.setAttribute('aria-pressed', playing ? 'true' : 'false');
+    toggleButton.setAttribute('aria-label', playing ? 'Pause wedding music' : 'Play wedding music');
     if (state) state.textContent = playing ? '■' : '▶';
   }
 
@@ -66,51 +50,39 @@
     return track;
   }
 
-  function startTrack(lang=currentLang) {
+  function start(lang=currentLang) {
     const track = updateMeta(lang);
-    // This is intentionally triggered from a user gesture whenever possible.
-    frame.src = embedUrl(track.id, true);
+    frame.src = embedUrl(track.id);
     setPlaying(true);
   }
 
-  function stopTrack() {
+  function stop() {
     frame.src = 'about:blank';
     setPlaying(false);
   }
 
-  // Capture the language button gesture before i18n dispatches its custom event.
-  document.querySelectorAll('[data-lang]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      languageGesture = true;
-      clearTimeout(gestureTimer);
-      gestureTimer = setTimeout(() => { languageGesture = false; }, 700);
-    }, { capture:true });
-  });
+  function toggle() {
+    if (playing) stop();
+    else start(currentLang);
+  }
 
   document.addEventListener('wedding:language', event => {
     const lang = event.detail?.lang || window.WeddingI18n?.language || 'vi';
+    const wasPlaying = playing;
     updateMeta(lang);
-
-    // Initial page load only updates metadata. A real language-button click
-    // immediately switches and starts the selected song.
-    if (languageGesture) startTrack(lang);
+    if (wasPlaying) start(lang);
   });
 
-  toggle.addEventListener('click', () => {
-    if (playing) stopTrack();
-    else startTrack(currentLang);
-  });
-
-  // Browsers do not reliably allow audible autoplay before any interaction.
-  // Start the current-language song on the first normal user gesture instead.
-  const startOnFirstGesture = event => {
-    if (playing) return;
-    if (event.target.closest?.('[data-lang], #musicToggle')) return;
-    startTrack(currentLang);
-  };
-  document.addEventListener('pointerdown', startOnFirstGesture, { capture:true, once:true });
-  document.addEventListener('keydown', startOnFirstGesture, { capture:true, once:true });
+  toggleButton.addEventListener('click', toggle);
 
   updateMeta(currentLang);
   setPlaying(false);
+
+  window.WeddingMusic = {
+    start,
+    stop,
+    toggle,
+    get playing(){ return playing; },
+    get language(){ return currentLang; }
+  };
 })();
