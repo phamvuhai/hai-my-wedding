@@ -36,7 +36,7 @@
     <div class="hero-content container reveal">
       <div class="hero-copy">
         <p class="eyebrow">SAVE THE DATE</p>
-        <h1>Hải <span>&</span> Mỹ</h1>
+        <h1 class="kinetic-names"><span class="hero-name hero-name-left">Hải</span> <span class="hero-amp">&</span> <span class="hero-name hero-name-right">Mỹ</span></h1>
         <p class="hero-date">18 · 12 · 2026 — 20 · 12 · 2026</p>
         <p class="hero-note" data-i18n="hero.note">Trân trọng kính mời bạn đến chung vui trong ngày hạnh phúc của chúng tôi.</p>
         <a class="btn btn-primary" href="#events" data-i18n="hero.cta">Xem lịch cưới</a>
@@ -55,20 +55,43 @@
     <div class="hero-curtain" aria-hidden="true"></div>
   </header>
 
+  <div class="motion-marquee hero-marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>HẢI & MỸ</span><i>•</i><span>SAVE THE DATE</span><i>•</i><span>18.12.2026</span><i>•</i><span>20.12.2026</span><i>•</i>
+      <span>HẢI & MỸ</span><i>•</i><span>SAVE THE DATE</span><i>•</i><span>18.12.2026</span><i>•</i><span>20.12.2026</span><i>•</i>
+    </div>
+  </div>
+
   <main>
-    <section class="section intro" id="story">
-      <div class="container narrow reveal">
-        <p class="eyebrow">OUR STORY</p>
-        <h2 data-i18n="story.title">Một hành trình, một lời hẹn</h2>
-        <p data-i18n="story.text">Có những cuộc gặp gỡ làm thay đổi cả một hành trình. Sau những ngày đồng hành, chúng tôi chọn bước tiếp cùng nhau bằng một lời hứa giản dị: luôn là gia đình của nhau.</p>
-        <div class="monogram">H<span>♥</span>M</div>
+    <section class="section intro editorial-story" id="story">
+      <span class="floating-word floating-love" aria-hidden="true">TOGETHER</span>
+      <div class="container story-grid">
+        <div class="story-side reveal">
+          <p class="eyebrow">OUR STORY</p>
+          <div class="story-display" aria-hidden="true"><span>OUR</span><span>STORY</span></div>
+          <div class="monogram">H<span>♥</span>M</div>
+        </div>
+        <div class="story-copy reveal">
+          <h2 data-i18n="story.title" data-motion-lines>Một hành trình, một lời hẹn</h2>
+          <p data-i18n="story.text" data-motion-lines>Có những cuộc gặp gỡ làm thay đổi cả một hành trình. Sau những ngày đồng hành, chúng tôi chọn bước tiếp cùng nhau bằng một lời hứa giản dị: luôn là gia đình của nhau.</p>
+        </div>
       </div>
     </section>
 
+    <div class="love-marquee motion-marquee marquee-reverse" aria-hidden="true">
+      <div class="marquee-track">
+        <span>LOVE</span><i>♥</i><span>TOGETHER</span><i>♥</i><span>FOREVER</span><i>♥</i><span>FAMILY</span><i>♥</i>
+        <span>LOVE</span><i>♥</i><span>TOGETHER</span><i>♥</i><span>FOREVER</span><i>♥</i><span>FAMILY</span><i>♥</i>
+      </div>
+    </div>
+
     <section class="section countdown-section">
-      <div class="container reveal">
-        <p class="eyebrow">COUNTDOWN</p>
-        <h2 data-i18n="countdown.title">Đếm ngược đến ngày vui</h2>
+      <span class="floating-word countdown-word" aria-hidden="true">FOREVER</span>
+      <div class="container reveal countdown-layout">
+        <div class="countdown-heading">
+          <p class="eyebrow">COUNTDOWN</p>
+          <h2 data-i18n="countdown.title">Đếm ngược đến ngày vui</h2>
+        </div>
         <div class="countdown" id="countdown">
           <div><strong id="days">00</strong><span data-i18n="countdown.days">Ngày</span></div>
           <div><strong id="hours">00</strong><span data-i18n="countdown.hours">Giờ</span></div>
@@ -88,6 +111,7 @@
 
         <div class="event-families">
           <section class="event-family bride-side reveal">
+            <span class="event-bg-date" aria-hidden="true">18</span>
             <div class="family-header">
               <div>
                 <p class="family-kicker">BRIDE'S FAMILY</p>
@@ -126,6 +150,7 @@
           </section>
 
           <section class="event-family groom-side reveal">
+            <span class="event-bg-date" aria-hidden="true">20</span>
             <div class="family-header">
               <div>
                 <p class="family-kicker">GROOM'S FAMILY</p>
@@ -169,10 +194,13 @@
 
     <section class="section gallery-section">
       <div class="container">
-        <div class="section-heading reveal">
-          <p class="eyebrow">MEMORIES</p>
-          <h2 data-i18n="gallery.title">Khoảnh khắc của chúng tôi</h2>
-          <p data-i18n="gallery.subtitle">Những hình ảnh được Hải & Mỹ lưu lại trong hành trình về chung một nhà.</p>
+        <div class="gallery-editorial-head">
+          <div class="gallery-display reveal" aria-hidden="true"><span>OUR</span><span>MOMENTS</span></div>
+          <div class="section-heading reveal">
+            <p class="eyebrow">MEMORIES</p>
+            <h2 data-i18n="gallery.title">Khoảnh khắc của chúng tôi</h2>
+            <p data-i18n="gallery.subtitle">Những hình ảnh được Hải & Mỹ lưu lại trong hành trình về chung một nhà.</p>
+          </div>
         </div>
         <div id="homeGallery" class="home-gallery">
           <div class="gallery-empty" data-i18n="gallery.empty">Album đang được chuẩn bị ♡</div>
@@ -183,9 +211,17 @@
       </div>
     </section>
 
+    <div class="motion-marquee promise-marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>OUR STORY</span><i>•</i><span>OUR PEOPLE</span><i>•</i><span>OUR FOREVER</span><i>•</i><span>DECEMBER 2026</span><i>•</i>
+        <span>OUR STORY</span><i>•</i><span>OUR PEOPLE</span><i>•</i><span>OUR FOREVER</span><i>•</i><span>DECEMBER 2026</span><i>•</i>
+      </div>
+    </div>
+
     <section class="section rsvp-section" id="rsvp">
       <div class="container rsvp-wrap">
         <div class="rsvp-copy reveal">
+          <div class="rsvp-display" aria-hidden="true"><span>SAY</span><em>YES</em></div>
           <p class="eyebrow">RSVP</p>
           <h2 data-i18n="rsvp.title">Bạn sẽ đến chung vui cùng chúng tôi chứ?</h2>
           <p data-i18n="rsvp.subtitle">Phản hồi của bạn giúp chúng tôi chuẩn bị chu đáo hơn cho ngày đặc biệt này.</p>
@@ -241,6 +277,9 @@
       </div>
     </section>
   </main>
+
+  <div class="side-note" aria-hidden="true">HẢI & MỸ — DECEMBER 2026</div>
+  <div class="page-progress" aria-hidden="true"><span></span><i></i></div>
 
   <footer class="footer">
     <div class="container">
