@@ -1,30 +1,39 @@
 (() => {
   const A = window.AdminApp;
   const db = A?.db;
-  if (!db) {
+  const cms = document.getElementById('cmsView');
+
+  function goLogin() {
     location.replace('/admin/login/');
+  }
+
+  if (!db) {
+    goLogin();
     return;
   }
 
   async function guard() {
-    const { data: { session } } = await db.auth.getSession();
-    const user = session?.user;
+    const { data, error } = await db.auth.getUser();
+    const user = data?.user;
 
-    if (!user || user.email?.toLowerCase() !== A.ADMIN_EMAIL.toLowerCase()) {
-      if (session) await db.auth.signOut();
-      location.replace('/admin/login/');
-      return false;
+    if (error || !user || user.email?.toLowerCase() !== A.ADMIN_EMAIL.toLowerCase()) {
+      const { data: sessionData } = await db.auth.getSession();
+      if (sessionData?.session) await db.auth.signOut();
+      goLogin();
+      return;
     }
 
     document.getElementById('userEmail').textContent = user.email || '';
+    cms.classList.remove('hidden');
+
     try {
       await A.loadData();
       document.dispatchEvent(new Event('admin:overview'));
     } catch (error) {
+      console.error('Admin data error:', error);
       const el = document.getElementById('uploadStatus');
-      if (el) A.setStatus(el, error.message, 'error');
+      if (el) A.setStatus(el, 'Không tải được dữ liệu quản trị: ' + error.message, 'error');
     }
-    return true;
   }
 
   function switchTab(tab) {
@@ -51,11 +60,15 @@
 
   document.getElementById('logoutBtn').addEventListener('click', async () => {
     await db.auth.signOut();
-    location.replace('/admin/login/');
+    goLogin();
   });
 
-  db.auth.onAuthStateChange((_event, session) => {
-    if (!session) location.replace('/admin/login/');
+  db.auth.onAuthStateChange(async (_event, session) => {
+    const email = session?.user?.email?.toLowerCase();
+    if (!session || email !== A.ADMIN_EMAIL.toLowerCase()) {
+      if (session) await db.auth.signOut();
+      goLogin();
+    }
   });
 
   guard();
