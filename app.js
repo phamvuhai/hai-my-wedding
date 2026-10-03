@@ -153,7 +153,7 @@ async function loadHeroPhoto() {
     const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
     const { data, error } = await client
       .from('gallery_images')
-      .select('image_path,alt_text,title,alt_text_en,title_en,alt_text_ja,title_ja,focus_x,focus_y,width,height,hero_layout,hero_desktop_ratio,hero_mobile_ratio,hero_zoom')
+      .select('image_path,alt_text,title,alt_text_en,title_en,alt_text_ja,title_ja,focus_x,focus_y,width,height,hero_layout,hero_desktop_ratio,hero_mobile_ratio,hero_zoom,hero_spacing')
       .eq('is_hero', true)
       .eq('is_published', true)
       .limit(1)
@@ -169,8 +169,13 @@ async function loadHeroPhoto() {
     const url = client.storage.from('wedding-gallery').getPublicUrl(data.image_path).data.publicUrl;
     const layout = ['full','framed','split','minimal'].includes(data.hero_layout) ? data.hero_layout : 'full';
 
-    hero.classList.remove('hero-layout-full','hero-layout-framed','hero-layout-split','hero-layout-minimal');
+    hero.classList.remove(
+      'hero-layout-full','hero-layout-framed','hero-layout-split','hero-layout-minimal',
+      'hero-spacing-compact','hero-spacing-normal','hero-spacing-spacious'
+    );
     hero.classList.add(`hero-layout-${layout}`);
+    const spacing = ['compact','normal','spacious'].includes(data.hero_spacing) ? data.hero_spacing : 'normal';
+    hero.classList.add(`hero-spacing-${spacing}`);
 
     const fx = Number(data.focus_x ?? 50);
     const fy = Number(data.focus_y ?? 50);
@@ -181,6 +186,14 @@ async function loadHeroPhoto() {
     hero.style.setProperty('--hero-zoom', zoom);
     hero.style.setProperty('--hero-desktop-ratio', heroRatioCss(data.hero_desktop_ratio, '16 / 9', data.width, data.height));
     hero.style.setProperty('--hero-mobile-ratio', heroRatioCss(data.hero_mobile_ratio, '4 / 5', data.width, data.height));
+    const ratioWidths = {
+      '16:9':'860px',
+      '3:2':'760px',
+      '4:3':'650px',
+      '4:5':'500px',
+      'auto':'680px'
+    };
+    hero.style.setProperty('--hero-frame-max', ratioWidths[data.hero_desktop_ratio] || '680px');
 
     framedImg.src = url;
     framedImg.alt = alt || 'Hải & Mỹ';
