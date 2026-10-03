@@ -35,3 +35,34 @@
 .media-tags span{padding:3px 7px;border-radius:999px;background:#f0e7e0;color:var(--accent);font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
 .media-actions{grid-template-columns:repeat(2,1fr)}
 @media(max-width:540px){.display-options{grid-template-columns:1fr}.display-options>label:not(.check){grid-column:auto}}
+
+.editor-visuals{display:grid;gap:14px;align-content:start}
+.editor-stage{touch-action:none}
+.focus-marker{
+  position:absolute;z-index:5;transform:translate(-50%,-50%);
+  width:38px;height:38px;border-radius:50%;border:2px solid #fff;
+  background:rgba(31,24,20,.72);color:#fff;font-size:1.35rem;line-height:1;
+  display:grid;place-items:center;cursor:grab;box-shadow:0 6px 18px rgba(0,0,0,.25);
+  backdrop-filter:blur(6px)
+}
+.focus-marker:active{cursor:grabbing;transform:translate(-50%,-50%) scale(.96)}
+.focus-panel,.preview-section{
+  border:1px solid var(--line);border-radius:14px;background:#fcfaf8;padding:14px
+}
+.focus-heading,.preview-heading{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.focus-heading strong{font-size:.9rem}.focus-help{margin:7px 0 12px;color:var(--muted);font-size:.78rem}
+.btn.compact{min-height:32px;padding:0 10px;font-size:.74rem}
+.focus-range{display:grid;grid-template-columns:1fr 48px;gap:10px;align-items:center}
+.focus-range input{padding:0;border:0;box-shadow:none}
+.focus-range output{font-size:.75rem;font-weight:800;color:var(--accent);text-align:right}
+.preview-heading span{color:var(--muted);font-size:.72rem}
+.focus-previews{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:12px;align-items:start}
+.focus-preview{margin:0}
+.focus-preview img{width:100%;display:block;object-fit:cover;background:#e9e1db;border-radius:9px;border:1px solid var(--line)}
+.focus-preview figcaption{margin-top:5px;color:var(--muted);font-size:.62rem;text-align:center}
+.preview-hero img{aspect-ratio:4/5}
+.preview-large img,.preview-small img{aspect-ratio:1/1}
+.preview-wide img{aspect-ratio:2/1}
+.preview-tall img{aspect-ratio:1/2}
+@media(max-width:1100px){.focus-previews{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:720px){.focus-previews{grid-template-columns:repeat(2,1fr)}.focus-marker{width:34px;height:34px}}
