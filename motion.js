@@ -148,6 +148,12 @@
     hero.appendChild(layer);
   }
 
+  const galleryRoot = document.getElementById('homeGallery');
+  if (galleryRoot) {
+    new MutationObserver(() => initReveal()).observe(galleryRoot,{childList:true,subtree:true});
+  }
+  document.addEventListener('wedding:language',()=> setTimeout(initReveal,0));
+
   function initRsvpSuccess() {
     const status = document.getElementById('formStatus');
     const form = document.getElementById('rsvpForm');
