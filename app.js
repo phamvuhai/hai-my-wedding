@@ -116,6 +116,7 @@ async function loadHomeGallery() {
       return `
         <a class="home-photo size-${size} ${index === 0 ? 'editorial-featured' : ''} reveal visible" href="/album" aria-label="Hải & Mỹ album">
           <img loading="lazy" decoding="async" src="${url}" alt="${esc(alt || 'Hải & Mỹ')}" style="object-position:${Number(img.focus_x ?? 50)}% ${Number(img.focus_y ?? 50)}%">
+          <span class="photo-curtain" aria-hidden="true"></span>
           <span class="home-photo-copy">
             <strong>${esc(title || '')}</strong>
             <small>${esc(caption || '')}</small>
