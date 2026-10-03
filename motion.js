@@ -86,7 +86,7 @@
   }, { threshold:.14, rootMargin:'0px 0px -5% 0px' });
 
   function initReveal() {
-    qsa('.section-heading, .story-side, .story-copy, .gallery-display, .countdown-heading, .event-family, .countdown > div, .home-photo, .rsvp-copy, .rsvp-display, .rsvp-form')
+    qsa('.section-heading, .story-side, .story-copy, .gallery-display, .countdown-heading, .event-family, .countdown > div, .guide-card, .schedule-head, .schedule-day, .travel-heading, .travel-card, .city-notes, .faq-heading, .faq-item, .wishes-display, .wishes-card, .home-photo, .rsvp-copy, .rsvp-display, .rsvp-form')
       .forEach((el,i) => observeRevealElement(el,i));
     initGalleryCuriosity();
   }
