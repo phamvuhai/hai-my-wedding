@@ -5,9 +5,29 @@
   const recentEl = document.getElementById('recentRsvp');
 
   document.addEventListener('admin:overview', loadOverview);
+  const animationMode = document.getElementById('animationMode');
+  const animationStatus = document.getElementById('animationStatus');
+
+  async function loadAnimationMode() {
+    if (!db || !animationMode) return;
+    const { data, error } = await db.from('site_settings').select('animation_mode').eq('id', 1).maybeSingle();
+    if (!error && data?.animation_mode) animationMode.value = data.animation_mode;
+  }
+
+  animationMode?.addEventListener('change', async () => {
+    if (!db) return;
+    animationStatus.textContent = 'Đang lưu...';
+    const { error } = await db.from('site_settings').update({
+      animation_mode: animationMode.value,
+      updated_at: new Date().toISOString()
+    }).eq('id', 1);
+    animationStatus.textContent = error ? error.message : 'Đã lưu. Website sẽ áp dụng ngay khi tải lại.';
+    animationStatus.className = 'status ' + (error ? 'error' : 'success');
+  });
 
   async function loadOverview() {
     if (!db || !statsEl || !recentEl) return;
+    loadAnimationMode();
 
     const published = (A.images || []).filter((img) => img.is_published).length;
     const { data: rsvps, error } = await db
