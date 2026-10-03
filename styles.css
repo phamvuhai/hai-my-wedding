@@ -912,3 +912,295 @@ html[data-motion="wow"] .hero::after{
   .motion-item,.hero-animate{opacity:1!important;transform:none!important;filter:none!important}
   .motion-particles{display:none!important}
 }
+
+
+/* ================================
+   Curiosity / Wow interactions v2
+   ================================ */
+.scroll-curiosity{
+  position:absolute;
+  z-index:6;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  color:rgba(255,255,255,.72);
+  transition:opacity .35s ease,transform .35s ease;
+}
+.scroll-curiosity.is-hidden{
+  opacity:0;
+  transform:translate(-50%,12px);
+  pointer-events:none;
+}
+.scroll-curiosity-label{
+  font-size:.58rem;
+  font-weight:800;
+  letter-spacing:.24em;
+}
+.scroll-curiosity-track{
+  width:20px;
+  height:34px;
+  border:1px solid rgba(255,255,255,.36);
+  border-radius:999px;
+  position:relative;
+}
+.scroll-curiosity-track i{
+  position:absolute;
+  left:50%;
+  top:6px;
+  width:3px;
+  height:3px;
+  border-radius:50%;
+  background:#fff;
+  transform:translateX(-50%);
+  animation:scrollDot 1.7s ease-in-out infinite;
+}
+.scroll-curiosity-arrow{
+  font-size:.72rem;
+  animation:scrollArrow 1.7s ease-in-out infinite;
+}
+@keyframes scrollDot{
+  0%{opacity:0;transform:translate(-50%,0)}
+  25%{opacity:1}
+  75%{opacity:1}
+  100%{opacity:0;transform:translate(-50%,16px)}
+}
+@keyframes scrollArrow{
+  0%,100%{transform:translateY(0);opacity:.45}
+  50%{transform:translateY(4px);opacity:1}
+}
+
+.hero-curtain{
+  position:absolute;
+  z-index:4;
+  left:0;
+  right:0;
+  bottom:-1px;
+  height:84px;
+  pointer-events:none;
+  background:var(--paper);
+  clip-path:ellipse(calc(26% + var(--curtain-progress,0) * 58%) calc(2% + var(--curtain-progress,0) * 96%) at 50% 100%);
+  opacity:calc(.1 + var(--curtain-progress,0) * .9);
+}
+html[data-motion="minimal"] .hero-curtain{display:none}
+
+html[data-motion="wow"] .hero-full-photo{
+  transform:translate3d(var(--mouse-x,0),var(--mouse-y,0),0) scale(1.01);
+  transition:transform .3s ease-out;
+}
+html[data-motion="wow"] .hero-feature-photo{
+  transform:translate3d(calc(var(--mouse-x,0) * -.35),calc(var(--mouse-y,0) * -.35),0);
+  transition:transform .3s ease-out;
+}
+
+.events::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:220px;
+  bottom:120px;
+  width:1px;
+  background:rgba(155,109,85,.16);
+  transform:translateX(-50%);
+}
+.events::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:220px;
+  width:2px;
+  height:calc((100% - 340px) * var(--event-progress,0));
+  background:linear-gradient(to bottom,var(--accent),rgba(155,109,85,.18));
+  transform:translateX(-50%);
+  transform-origin:top;
+  transition:height .08s linear;
+}
+.event-families{position:relative;z-index:2}
+html[data-motion="wow"] .event-family{
+  transform:perspective(1200px) rotateX(var(--tilt-x,0deg)) rotateY(var(--tilt-y,0deg));
+  transition:transform .22s ease,box-shadow .25s ease;
+  will-change:transform;
+}
+html[data-motion="wow"] .event-family:hover{
+  box-shadow:0 34px 90px rgba(68,48,37,.14);
+}
+html[data-motion="wow"] .event-index{
+  animation:indexFloat 4.8s ease-in-out infinite alternate;
+}
+@keyframes indexFloat{to{transform:translateY(-3px)}}
+
+.map-link{
+  transform:translate(var(--magnetic-x,0),var(--magnetic-y,0));
+}
+html[data-motion="wow"] .map-link:hover span:last-child{
+  animation:mapArrowLoop .55s ease both;
+}
+@keyframes mapArrowLoop{
+  0%{opacity:1;transform:translate(0,0)}
+  45%{opacity:0;transform:translate(7px,-7px)}
+  46%{opacity:0;transform:translate(-6px,6px)}
+  100%{opacity:1;transform:translate(3px,-3px)}
+}
+
+.hero .btn,
+.gallery-cta .btn{
+  position:relative;
+  overflow:hidden;
+  transform:translate(var(--magnetic-x,0),var(--magnetic-y,0));
+}
+.motion-ripple{
+  position:absolute;
+  width:16px;
+  height:16px;
+  margin:-8px;
+  border-radius:50%;
+  pointer-events:none;
+  background:rgba(255,255,255,.44);
+  animation:rippleBloom .68s ease-out forwards;
+}
+.btn-outline .motion-ripple{background:rgba(155,109,85,.22)}
+@keyframes rippleBloom{
+  from{opacity:.8;transform:scale(.5)}
+  to{opacity:0;transform:scale(18)}
+}
+
+html[data-motion="wow"] .home-photo.motion-item:not(.motion-in){
+  transform:translateX(var(--scatter-x,0)) rotate(var(--scatter-rotate,0deg)) scale(.955);
+  filter:blur(4px) brightness(.95);
+}
+html[data-motion="wow"] .home-photo.motion-in{
+  transform:none;
+  transition:
+    opacity .82s cubic-bezier(.18,.8,.2,1),
+    transform .95s cubic-bezier(.18,.8,.2,1),
+    filter .75s ease,
+    box-shadow .35s ease;
+  transition-delay:calc(var(--stagger-index,0) * 75ms);
+}
+html[data-motion="wow"] .home-photo:nth-child(3n+1){
+  animation:featuredFloat 7s ease-in-out infinite alternate;
+}
+@keyframes featuredFloat{
+  from{translate:0 0}
+  to{translate:0 -4px}
+}
+
+.motion-cursor{
+  position:fixed;
+  z-index:5000;
+  left:0;
+  top:0;
+  width:58px;
+  height:58px;
+  margin:-29px 0 0 -29px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  pointer-events:none;
+  opacity:0;
+  background:rgba(43,34,30,.84);
+  color:#fff;
+  backdrop-filter:blur(8px);
+  transition:opacity .18s ease,width .18s ease,height .18s ease;
+  will-change:transform;
+}
+.motion-cursor.visible{opacity:1}
+.motion-cursor span{
+  font-size:.55rem;
+  letter-spacing:.13em;
+  font-weight:800;
+}
+
+.monogram{
+  cursor:default;
+  user-select:none;
+}
+html[data-motion="wow"] .monogram span{
+  display:inline-block;
+  animation:heartPulse 2.8s ease-in-out 2;
+}
+@keyframes heartPulse{
+  0%,100%{transform:scale(1)}
+  45%{transform:scale(1.22)}
+  60%{transform:scale(.95)}
+}
+.monogram-bloom{
+  animation:monogramBloom .7s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes monogramBloom{
+  50%{transform:scale(1.08);letter-spacing:.23em}
+}
+
+.heart-burst{
+  position:fixed;
+  z-index:6000;
+  width:1px;
+  height:1px;
+  pointer-events:none;
+}
+.heart-burst span{
+  position:absolute;
+  left:0;
+  top:0;
+  color:#b57f67;
+  font-family:Georgia,serif;
+  font-size:16px;
+  animation:heartParticle 1s cubic-bezier(.2,.7,.2,1) forwards;
+}
+@keyframes heartParticle{
+  from{opacity:1;transform:rotate(var(--angle)) translateX(0) rotate(calc(var(--angle) * -1)) scale(.7)}
+  to{opacity:0;transform:rotate(var(--angle)) translateX(var(--distance)) rotate(calc(var(--angle) * -1)) scale(1.2)}
+}
+
+.signature-line{
+  display:block;
+  width:min(240px,60vw);
+  height:1px;
+  margin:8px auto 18px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);
+  transform:scaleX(0);
+  transform-origin:left;
+}
+.footer.signature-in .signature-line{
+  animation:signatureDraw 1.2s cubic-bezier(.2,.8,.2,1) .22s forwards;
+}
+.footer.signature-in .signature-name{
+  animation:signatureName .8s ease both;
+}
+@keyframes signatureDraw{to{transform:scaleX(1)}}
+@keyframes signatureName{from{opacity:.2;letter-spacing:.28em}to{opacity:1;letter-spacing:.12em}}
+
+html[data-motion="wow"] .section-heading h2::after{
+  content:"";
+  display:block;
+  width:76px;
+  height:1px;
+  margin:18px auto 0;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  transform:scaleX(0);
+  animation:headingLine 1s ease .35s forwards;
+}
+@keyframes headingLine{to{transform:scaleX(1)}}
+
+@media(max-width:900px){
+  .events::before,.events::after{display:none}
+  .scroll-curiosity{bottom:10px}
+}
+@media(max-width:700px){
+  .motion-cursor{display:none}
+  html[data-motion="wow"] .event-family{transform:none!important}
+  html[data-motion="wow"] .home-photo:nth-child(3n+1){animation:none}
+  .hero-curtain{height:52px}
+}
+@media(prefers-reduced-motion:reduce){
+  .scroll-curiosity-track i,
+  .scroll-curiosity-arrow,
+  .signature-line,
+  .monogram span{
+    animation:none!important;
+  }
+  .motion-cursor,.heart-burst,.hero-curtain{display:none!important}
+}
