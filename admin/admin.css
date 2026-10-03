@@ -28,3 +28,10 @@
 .empty-cell{text-align:center!important;color:var(--muted);padding:28px!important}
 @media(max-width:1000px){.rsvp-head{align-items:flex-start;flex-direction:column}.rsvp-filters{width:100%;min-width:0}}
 @media(max-width:720px){.rsvp-filters{grid-template-columns:1fr}.rsvp-filters input,.rsvp-filters select{width:100%}}
+
+.display-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#faf8f6}
+.display-options>label:not(.check){grid-column:span 1}
+.media-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.media-tags span{padding:3px 7px;border-radius:999px;background:#f0e7e0;color:var(--accent);font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.media-actions{grid-template-columns:repeat(2,1fr)}
+@media(max-width:540px){.display-options{grid-template-columns:1fr}.display-options>label:not(.check){grid-column:auto}}
