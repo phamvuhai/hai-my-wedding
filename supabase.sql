@@ -42,3 +42,171 @@ with check (
   and event_choice in ('bride', 'groom', 'both')
   and (message is null or char_length(message) <= 1000)
 );
+
+
+-- =========================================================
+-- Wedding Gallery CMS (free-tier friendly)
+-- =========================================================
+create table if not exists public.gallery_albums (
+  id uuid primary key default gen_random_uuid(),
+  title text not null check (char_length(title) between 1 and 120),
+  slug text not null unique check (slug ~ '^[a-z0-9-]+$'),
+  description text,
+  sort_order integer not null default 0,
+  is_published boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.gallery_images (
+  id uuid primary key default gen_random_uuid(),
+  album_id uuid not null references public.gallery_albums(id) on delete cascade,
+  original_path text not null,
+  image_path text not null,
+  title text,
+  caption text,
+  alt_text text,
+  width integer check (width is null or width > 0),
+  height integer check (height is null or height > 0),
+  sort_order integer not null default 0,
+  is_cover boolean not null default false,
+  is_published boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists gallery_images_album_sort_idx
+  on public.gallery_images(album_id, sort_order, created_at);
+
+create unique index if not exists gallery_one_cover_per_album_idx
+  on public.gallery_images(album_id)
+  where is_cover = true;
+
+alter table public.gallery_albums enable row level security;
+alter table public.gallery_images enable row level security;
+
+revoke all on table public.gallery_albums from anon, authenticated;
+revoke all on table public.gallery_images from anon, authenticated;
+
+grant select on table public.gallery_albums to anon, authenticated;
+grant select on table public.gallery_images to anon, authenticated;
+grant insert, update, delete on table public.gallery_albums to authenticated;
+grant insert, update, delete on table public.gallery_images to authenticated;
+
+drop policy if exists gallery_albums_public_read on public.gallery_albums;
+create policy gallery_albums_public_read on public.gallery_albums
+for select to anon, authenticated
+using (is_published = true);
+
+drop policy if exists gallery_albums_admin_read on public.gallery_albums;
+create policy gallery_albums_admin_read on public.gallery_albums
+for select to authenticated
+using ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com');
+
+drop policy if exists gallery_albums_admin_insert on public.gallery_albums;
+create policy gallery_albums_admin_insert on public.gallery_albums
+for insert to authenticated
+with check ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com');
+
+drop policy if exists gallery_albums_admin_update on public.gallery_albums;
+create policy gallery_albums_admin_update on public.gallery_albums
+for update to authenticated
+using ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com')
+with check ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com');
+
+drop policy if exists gallery_albums_admin_delete on public.gallery_albums;
+create policy gallery_albums_admin_delete on public.gallery_albums
+for delete to authenticated
+using ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com');
+
+drop policy if exists gallery_images_public_read on public.gallery_images;
+create policy gallery_images_public_read on public.gallery_images
+for select to anon, authenticated
+using (
+  is_published = true
+  and exists (
+    select 1 from public.gallery_albums a
+    where a.id = album_id and a.is_published = true
+  )
+);
+
+drop policy if exists gallery_images_admin_read on public.gallery_images;
+create policy gallery_images_admin_read on public.gallery_images
+for select to authenticated
+using ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com');
+
+drop policy if exists gallery_images_admin_insert on public.gallery_images;
+create policy gallery_images_admin_insert on public.gallery_images
+for insert to authenticated
+with check ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com');
+
+drop policy if exists gallery_images_admin_update on public.gallery_images;
+create policy gallery_images_admin_update on public.gallery_images
+for update to authenticated
+using ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com')
+with check ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com');
+
+drop policy if exists gallery_images_admin_delete on public.gallery_images;
+create policy gallery_images_admin_delete on public.gallery_images
+for delete to authenticated
+using ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com');
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values
+  ('wedding-originals', 'wedding-originals', false, 20971520, array['image/jpeg','image/png','image/webp','image/heic']),
+  ('wedding-gallery', 'wedding-gallery', true, 6291456, array['image/jpeg','image/png','image/webp'])
+on conflict (id) do update
+set public = excluded.public,
+    file_size_limit = excluded.file_size_limit,
+    allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists wedding_media_admin_select on storage.objects;
+create policy wedding_media_admin_select on storage.objects
+for select to authenticated
+using (
+  bucket_id in ('wedding-originals','wedding-gallery')
+  and (auth.jwt()->>'email') = 'phamvuhai23@gmail.com'
+);
+
+drop policy if exists wedding_media_admin_insert on storage.objects;
+create policy wedding_media_admin_insert on storage.objects
+for insert to authenticated
+with check (
+  bucket_id in ('wedding-originals','wedding-gallery')
+  and (auth.jwt()->>'email') = 'phamvuhai23@gmail.com'
+);
+
+drop policy if exists wedding_media_admin_update on storage.objects;
+create policy wedding_media_admin_update on storage.objects
+for update to authenticated
+using (
+  bucket_id in ('wedding-originals','wedding-gallery')
+  and (auth.jwt()->>'email') = 'phamvuhai23@gmail.com'
+)
+with check (
+  bucket_id in ('wedding-originals','wedding-gallery')
+  and (auth.jwt()->>'email') = 'phamvuhai23@gmail.com'
+);
+
+drop policy if exists wedding_media_admin_delete on storage.objects;
+create policy wedding_media_admin_delete on storage.objects
+for delete to authenticated
+using (
+  bucket_id in ('wedding-originals','wedding-gallery')
+  and (auth.jwt()->>'email') = 'phamvuhai23@gmail.com'
+);
+
+insert into public.gallery_albums (title, slug, description, sort_order)
+values
+  ('Pre-Wedding', 'pre-wedding', 'Khoảnh khắc trước ngày cưới của Hải & Mỹ', 10),
+  ('Nhà gái', 'nha-gai', 'Lễ Vu Quy và tiệc cưới nhà gái', 20),
+  ('Nhà trai', 'nha-trai', 'Lễ Thành Hôn và tiệc cưới nhà trai', 30)
+on conflict (slug) do nothing;
+
+-- Admin may read RSVP, guests remain write-only.
+grant select on table public.rsvp to authenticated;
+
+drop policy if exists admin_can_read_rsvp on public.rsvp;
+create policy admin_can_read_rsvp on public.rsvp
+for select to authenticated
+using ((auth.jwt()->>'email') = 'phamvuhai23@gmail.com');
