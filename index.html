@@ -27,18 +27,23 @@
     </div>
   </nav>
 
-  <header class="hero" id="home">
+  <header class="hero hero-layout-framed" id="home">
+    <div class="hero-full-photo" aria-hidden="true">
+      <img id="heroFullImage" src="./images/hero-couple.jpg" loading="eager" decoding="async" alt="" />
+    </div>
     <div class="hero-overlay"></div>
 
     <div class="hero-content container reveal">
-      <p class="eyebrow">SAVE THE DATE</p>
-      <h1>Hải <span>&</span> Mỹ</h1>
-      <p class="hero-date">18 · 12 · 2026 — 20 · 12 · 2026</p>
-      <p class="hero-note" data-i18n="hero.note">Trân trọng kính mời bạn đến chung vui trong ngày hạnh phúc của chúng tôi.</p>
-      <a class="btn btn-primary" href="#events" data-i18n="hero.cta">Xem lịch cưới</a>
+      <div class="hero-copy">
+        <p class="eyebrow">SAVE THE DATE</p>
+        <h1>Hải <span>&</span> Mỹ</h1>
+        <p class="hero-date">18 · 12 · 2026 — 20 · 12 · 2026</p>
+        <p class="hero-note" data-i18n="hero.note">Trân trọng kính mời bạn đến chung vui trong ngày hạnh phúc của chúng tôi.</p>
+        <a class="btn btn-primary" href="#events" data-i18n="hero.cta">Xem lịch cưới</a>
+      </div>
 
       <div class="hero-feature-photo reveal">
-        <img src="./images/hero-couple.jpg" loading="eager" decoding="async" alt="Hải & Mỹ" />
+        <img id="heroImage" src="./images/hero-couple.jpg" loading="eager" decoding="async" alt="Hải & Mỹ" />
       </div>
     </div>
   </header>
