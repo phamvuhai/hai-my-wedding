@@ -16,6 +16,15 @@
   const focusXValue = document.getElementById('focusXValue');
   const focusYValue = document.getElementById('focusYValue');
   const previewImages = [...document.querySelectorAll('.focus-preview img')];
+  const heroCheck = document.getElementById('heroCheck');
+  const heroSettings = document.getElementById('heroSettings');
+  const heroLayout = document.getElementById('heroLayout');
+  const heroDesktopRatio = document.getElementById('heroDesktopRatio');
+  const heroMobileRatio = document.getElementById('heroMobileRatio');
+  const heroZoom = document.getElementById('heroZoom');
+  const heroZoomValue = document.getElementById('heroZoomValue');
+  const heroDesktopPreview = document.querySelector('.hero-setting-preview.desktop img');
+  const heroMobilePreview = document.querySelector('.hero-setting-preview.mobile img');
 
   A.fileQueue = [];
   A.focusX = 50;
@@ -91,6 +100,27 @@
     updatePreviews();
   }
 
+  function ratioCss(value, fallback) {
+    if (!value || value === 'auto') return fallback;
+    const [a,b] = value.split(':').map(Number);
+    return `${a} / ${b}`;
+  }
+
+  function updateHeroSettingsUI() {
+    if (!heroCheck) return;
+    heroSettings.classList.toggle('hidden', !heroCheck.checked);
+    heroZoomValue.value = `${Number(heroZoom.value || 1).toFixed(2)}×`;
+    const desktopBox = heroDesktopPreview?.parentElement;
+    const mobileBox = heroMobilePreview?.parentElement;
+    if (desktopBox) desktopBox.style.setProperty('--preview-ratio', ratioCss(heroDesktopRatio.value, '16 / 9'));
+    if (mobileBox) mobileBox.style.setProperty('--preview-ratio', ratioCss(heroMobileRatio.value, '4 / 5'));
+    [heroDesktopPreview, heroMobilePreview].forEach(img => {
+      if (!img) return;
+      img.style.objectPosition = `${A.focusX}% ${A.focusY}%`;
+      img.style.transform = `scale(${Number(heroZoom.value || 1)})`;
+    });
+  }
+
   let previewFrame = 0;
   function updatePreviews() {
     cancelAnimationFrame(previewFrame);
@@ -101,6 +131,11 @@
         img.src = url;
         img.style.objectPosition = `${A.focusX}% ${A.focusY}%`;
       });
+      [heroDesktopPreview, heroMobilePreview].forEach(img => {
+        if (!img) return;
+        img.src = url;
+      });
+      updateHeroSettingsUI();
     });
   }
 
@@ -155,6 +190,11 @@
   focusX.addEventListener('input', () => setFocus(focusX.value, A.focusY));
   focusY.addEventListener('input', () => setFocus(A.focusX, focusY.value));
   document.getElementById('focusReset').onclick = () => setFocus(50, 50);
+  heroCheck.addEventListener('change', updateHeroSettingsUI);
+  heroLayout.addEventListener('change', updateHeroSettingsUI);
+  heroDesktopRatio.addEventListener('change', updateHeroSettingsUI);
+  heroMobileRatio.addEventListener('change', updateHeroSettingsUI);
+  heroZoom.addEventListener('input', updateHeroSettingsUI);
 
   function loadBlob(blob, name='image') {
     return new Promise((ok, no) => {
@@ -267,11 +307,16 @@
     document.getElementById('homepageCheck').checked = img.show_on_homepage !== false;
     document.getElementById('featuredCheck').checked = !!img.is_featured;
     document.getElementById('heroCheck').checked = !!img.is_hero;
+    heroLayout.value = img.hero_layout || 'full';
+    heroDesktopRatio.value = img.hero_desktop_ratio || '16:9';
+    heroMobileRatio.value = img.hero_mobile_ratio || '4:5';
+    heroZoom.value = Number(img.hero_zoom || 1);
     document.getElementById('displaySize').value = img.display_size || 'auto';
     document.getElementById('sortOrder').value = Number(img.sort_order || 0);
     document.getElementById('cancelEditBtn').classList.remove('hidden');
 
     draw();
+    updateHeroSettingsUI();
     document.querySelector('.upload-panel').scrollIntoView({ behavior:'smooth' });
     A.setStatus(status, 'Đang chỉnh sửa ảnh hiện có.', 'success');
   });
@@ -295,6 +340,10 @@
     document.getElementById('homepageCheck').checked = true;
     document.getElementById('featuredCheck').checked = false;
     document.getElementById('heroCheck').checked = false;
+    heroLayout.value = 'full';
+    heroDesktopRatio.value = '16:9';
+    heroMobileRatio.value = '4:5';
+    heroZoom.value = '1';
     document.getElementById('displaySize').value = 'auto';
     document.getElementById('sortOrder').value = '0';
     document.getElementById('cancelEditBtn').classList.add('hidden');
@@ -303,6 +352,7 @@
     marker.classList.add('hidden');
     previewImages.forEach(img => img.removeAttribute('src'));
     updateFocusUI();
+    updateHeroSettingsUI();
     A.setStatus(status, '');
   }
 
@@ -328,6 +378,10 @@
     const showHomepage = document.getElementById('homepageCheck').checked;
     const featured = document.getElementById('featuredCheck').checked;
     const hero = document.getElementById('heroCheck').checked;
+    const selectedHeroLayout = heroLayout.value;
+    const selectedHeroDesktopRatio = heroDesktopRatio.value;
+    const selectedHeroMobileRatio = heroMobileRatio.value;
+    const selectedHeroZoom = Number(heroZoom.value || 1);
     const displaySize = document.getElementById('displaySize').value;
     const sortOrder = Number(document.getElementById('sortOrder').value || 0);
 
@@ -378,6 +432,10 @@
       show_on_homepage:showHomepage,
       is_featured:featured,
       is_hero:hero,
+      hero_layout:selectedHeroLayout,
+      hero_desktop_ratio:selectedHeroDesktopRatio,
+      hero_mobile_ratio:selectedHeroMobileRatio,
+      hero_zoom:selectedHeroZoom,
       display_size:displaySize,
       sort_order:sortOrder,
       updated_at:new Date().toISOString()
