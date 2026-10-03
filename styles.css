@@ -3225,8 +3225,9 @@ body.invitation-locked{
   width:1px!important;
   height:1px!important;
   opacity:0!important;
-  visibility:hidden!important;
+  clip-path:inset(50%)!important;
   pointer-events:none!important;
+  overflow:hidden!important;
   border:0!important;
 }
 .music-dock{
