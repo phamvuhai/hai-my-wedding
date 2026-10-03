@@ -95,3 +95,30 @@
 .hero-setting-preview figcaption{margin-top:5px;color:var(--muted);font-size:.66rem;text-align:center}
 .hero-setting-preview.mobile{max-width:180px;justify-self:center;width:100%}
 @media(max-width:720px){.hero-setting-grid{grid-template-columns:1fr}.hero-preview-grid{grid-template-columns:1fr 120px}}
+
+/* Fix Hero zoom preview overflow */
+.hero-setting-preview{
+  position:relative;
+  overflow:hidden;
+  aspect-ratio:var(--preview-ratio,16 / 9);
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:#e9e1db;
+}
+.hero-setting-preview img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  max-width:none;
+  display:block;
+  object-fit:cover;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  will-change:transform;
+}
+.hero-setting-preview.mobile{
+  max-width:180px;
+  width:100%;
+}
