@@ -70,3 +70,49 @@ form.addEventListener('submit', async (event) => {
     setStatus('Chưa gửi được xác nhận. Vui lòng thử lại hoặc liên hệ trực tiếp với cô dâu/chú rể.', 'error');
   }
 });
+
+
+async function loadHomeGallery() {
+  const root = document.getElementById('homeGallery');
+  if (!root) return;
+
+  const cfg = window.WEDDING_CONFIG || {};
+  if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.supabase) return;
+
+  try {
+    const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+    const { data: images, error } = await client
+      .from('gallery_images')
+      .select('id,image_path,title,caption,alt_text,width,height,sort_order,created_at')
+      .order('is_cover', { ascending: false })
+      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: false })
+      .limit(8);
+
+    if (error) throw error;
+    if (!images?.length) return;
+
+    const esc = (value = '') => String(value)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+
+    root.innerHTML = images.map((img, index) => {
+      const url = client.storage.from('wedding-gallery').getPublicUrl(img.image_path).data.publicUrl;
+      return `
+        <a class="home-photo home-photo-${(index % 6) + 1} reveal visible" href="./album/" aria-label="Mở album ảnh cưới">
+          <img loading="lazy" decoding="async" src="${url}" alt="${esc(img.alt_text || img.title || 'Ảnh cưới Hải và Mỹ')}">
+          <span class="home-photo-copy">
+            <strong>${esc(img.title || '')}</strong>
+            <small>${esc(img.caption || '')}</small>
+          </span>
+        </a>`;
+    }).join('');
+  } catch (error) {
+    console.error('Home gallery error:', error);
+  }
+}
+
+loadHomeGallery();
