@@ -295,3 +295,15 @@ alter table public.gallery_images
     check (hero_mobile_ratio in ('auto','4:5','3:4','1:1')),
   add constraint gallery_images_hero_zoom_check
     check (hero_zoom between 1 and 1.6);
+
+
+-- Hero spacing control
+alter table public.gallery_images
+  add column if not exists hero_spacing text not null default 'normal';
+
+alter table public.gallery_images
+  drop constraint if exists gallery_images_hero_spacing_check;
+
+alter table public.gallery_images
+  add constraint gallery_images_hero_spacing_check
+    check (hero_spacing in ('compact','normal','spacious'));
