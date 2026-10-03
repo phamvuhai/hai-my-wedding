@@ -136,3 +136,7 @@
 .hero-settings[data-spacing="normal"]{--hero-preview-gap:10px}
 .hero-settings[data-spacing="spacious"]{--hero-preview-gap:16px}
 .hero-preview-grid{gap:var(--hero-preview-gap,10px)}
+
+.animation-panel .panel-head{margin-bottom:10px}
+.animation-panel select{max-width:180px}
+.animation-panel .muted{margin:0;line-height:1.55}
