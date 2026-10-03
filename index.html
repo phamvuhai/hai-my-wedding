@@ -13,10 +13,17 @@
     <div class="hero-overlay"></div>
     <nav class="nav container">
       <a class="brand" href="#home">H & M</a>
-      <div class="nav-links">
-        <a href="#story">Câu chuyện</a>
-        <a href="#events">Lịch cưới</a>
-        <a href="#rsvp">Xác nhận</a>
+      <div class="nav-right">
+        <div class="nav-links">
+          <a href="#story" data-i18n="nav.story">Câu chuyện</a>
+          <a href="#events" data-i18n="nav.events">Lịch cưới</a>
+          <a href="#rsvp" data-i18n="nav.rsvp">Xác nhận</a>
+        </div>
+        <div class="language-switcher" aria-label="Language">
+          <button type="button" data-lang="vi">VI</button>
+          <button type="button" data-lang="en">EN</button>
+          <button type="button" data-lang="ja">日本語</button>
+        </div>
       </div>
     </nav>
 
@@ -24,8 +31,8 @@
       <p class="eyebrow">SAVE THE DATE</p>
       <h1>Hải <span>&</span> Mỹ</h1>
       <p class="hero-date">18 · 12 · 2026 — 20 · 12 · 2026</p>
-      <p class="hero-note">Trân trọng kính mời bạn đến chung vui trong ngày hạnh phúc của chúng tôi.</p>
-      <a class="btn btn-primary" href="#events">Xem lịch cưới</a>
+      <p class="hero-note" data-i18n="hero.note">Trân trọng kính mời bạn đến chung vui trong ngày hạnh phúc của chúng tôi.</p>
+      <a class="btn btn-primary" href="#events" data-i18n="hero.cta">Xem lịch cưới</a>
     </div>
   </header>
 
@@ -33,11 +40,8 @@
     <section class="section intro" id="story">
       <div class="container narrow reveal">
         <p class="eyebrow">OUR STORY</p>
-        <h2>Một hành trình, một lời hẹn</h2>
-        <p>
-          Có những cuộc gặp gỡ làm thay đổi cả một hành trình. Sau những ngày đồng hành,
-          chúng tôi chọn bước tiếp cùng nhau bằng một lời hứa giản dị: luôn là gia đình của nhau.
-        </p>
+        <h2 data-i18n="story.title">Một hành trình, một lời hẹn</h2>
+        <p data-i18n="story.text">Có những cuộc gặp gỡ làm thay đổi cả một hành trình. Sau những ngày đồng hành, chúng tôi chọn bước tiếp cùng nhau bằng một lời hứa giản dị: luôn là gia đình của nhau.</p>
         <div class="monogram">H<span>♥</span>M</div>
       </div>
     </section>
@@ -45,12 +49,12 @@
     <section class="section countdown-section">
       <div class="container reveal">
         <p class="eyebrow">COUNTDOWN</p>
-        <h2>Đếm ngược đến ngày vui</h2>
+        <h2 data-i18n="countdown.title">Đếm ngược đến ngày vui</h2>
         <div class="countdown" id="countdown">
-          <div><strong id="days">00</strong><span>Ngày</span></div>
-          <div><strong id="hours">00</strong><span>Giờ</span></div>
-          <div><strong id="minutes">00</strong><span>Phút</span></div>
-          <div><strong id="seconds">00</strong><span>Giây</span></div>
+          <div><strong id="days">00</strong><span data-i18n="countdown.days">Ngày</span></div>
+          <div><strong id="hours">00</strong><span data-i18n="countdown.hours">Giờ</span></div>
+          <div><strong id="minutes">00</strong><span data-i18n="countdown.minutes">Phút</span></div>
+          <div><strong id="seconds">00</strong><span data-i18n="countdown.seconds">Giây</span></div>
         </div>
       </div>
     </section>
@@ -59,8 +63,8 @@
       <div class="container">
         <div class="section-heading reveal">
           <p class="eyebrow">WEDDING EVENTS</p>
-          <h2>Lịch cưới</h2>
-          <p>Hai ngày đặc biệt, cùng một niềm vui.</p>
+          <h2 data-i18n="events.title">Lịch cưới</h2>
+          <p data-i18n="events.subtitle">Hai ngày đặc biệt, cùng một niềm vui.</p>
         </div>
 
         <div class="event-families">
@@ -68,7 +72,7 @@
             <div class="family-header">
               <div>
                 <p class="family-kicker">BRIDE'S FAMILY</p>
-                <h3>Nhà gái</h3>
+                <h3 data-i18n="family.bride">Nhà gái</h3>
               </div>
               <span class="family-date">18.12.2026</span>
             </div>
@@ -77,26 +81,26 @@
               <article class="event-card event-home">
                 <div class="event-topline">
                   <span class="event-index">01</span>
-                  <span class="event-type">TƯ GIA</span>
+                  <span class="event-type" data-i18n="event.home">TƯ GIA</span>
                 </div>
-                <h4>Lễ Vu Quy</h4>
-                <p class="event-date">Thứ Sáu · 18.12.2026</p>
+                <h4 data-i18n="event.vuquy">Lễ Vu Quy</h4>
+                <p class="event-date" data-i18n="event.friday">Thứ Sáu · 18.12.2026</p>
                 <p class="event-meta">D21 Điện Biên Phủ, Thạnh Mỹ Tây, Hồ Chí Minh, Vietnam</p>
                 <div class="event-actions">
-                  <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=D21+%C4%90i%E1%BB%87n+Bi%C3%AAn+Ph%E1%BB%A7+Th%E1%BA%A1nh+M%E1%BB%B9+T%C3%A2y+H%E1%BB%93+Ch%C3%AD+Minh+Vietnam" target="_blank" rel="noreferrer">Mở bản đồ <span>↗</span></a>
+                  <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=D21+%C4%90i%E1%BB%87n+Bi%C3%AAn+Ph%E1%BB%A7+Th%E1%BA%A1nh+M%E1%BB%B9+T%C3%A2y+H%E1%BB%93+Ch%C3%AD+Minh+Vietnam" target="_blank" rel="noreferrer"><span data-i18n="map.open">Mở bản đồ</span> <span>↗</span></a>
                 </div>
               </article>
 
               <article class="event-card event-reception">
                 <div class="event-topline">
                   <span class="event-index">02</span>
-                  <span class="event-type">TIỆC CƯỚI</span>
+                  <span class="event-type" data-i18n="event.reception">TIỆC CƯỚI</span>
                 </div>
                 <h4>Wedding Reception</h4>
                 <p class="event-date">17:00 · 18.12.2026</p>
                 <p class="event-meta">Gold Palace · 329 Nơ Trang Long, Bình Lợi Trung, TP.HCM</p>
                 <div class="event-actions">
-                  <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Gold+Palace+329+N%C6%A1+Trang+Long+B%C3%ACnh+L%E1%BB%A3i+Trung+TPHCM" target="_blank" rel="noreferrer">Chỉ đường <span>↗</span></a>
+                  <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Gold+Palace+329+N%C6%A1+Trang+Long+B%C3%ACnh+L%E1%BB%A3i+Trung+TPHCM" target="_blank" rel="noreferrer"><span data-i18n="map.directions">Chỉ đường</span> <span>↗</span></a>
                 </div>
               </article>
             </div>
@@ -106,7 +110,7 @@
             <div class="family-header">
               <div>
                 <p class="family-kicker">GROOM'S FAMILY</p>
-                <h3>Nhà trai</h3>
+                <h3 data-i18n="family.groom">Nhà trai</h3>
               </div>
               <span class="family-date">20.12.2026</span>
             </div>
@@ -115,26 +119,26 @@
               <article class="event-card event-home">
                 <div class="event-topline">
                   <span class="event-index">03</span>
-                  <span class="event-type">TƯ GIA</span>
+                  <span class="event-type" data-i18n="event.home">TƯ GIA</span>
                 </div>
-                <h4>Lễ Thành Hôn</h4>
-                <p class="event-date">Chủ Nhật · 20.12.2026</p>
+                <h4 data-i18n="event.thanhhon">Lễ Thành Hôn</h4>
+                <p class="event-date" data-i18n="event.sunday">Chủ Nhật · 20.12.2026</p>
                 <p class="event-meta">B1 Căn 6 đường Chế Lan Viên, Rạch Giá, An Giang</p>
                 <div class="event-actions">
-                  <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=B1+C%C4%83n+6+%C4%91%C6%B0%E1%BB%9Dng+Ch%E1%BA%BF+Lan+Vi%C3%AAn+R%E1%BA%A1ch+Gi%C3%A1+An+Giang" target="_blank" rel="noreferrer">Mở bản đồ <span>↗</span></a>
+                  <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=B1+C%C4%83n+6+%C4%91%C6%B0%E1%BB%9Dng+Ch%E1%BA%BF+Lan+Vi%C3%AAn+R%E1%BA%A1ch+Gi%C3%A1+An+Giang" target="_blank" rel="noreferrer"><span data-i18n="map.open">Mở bản đồ</span> <span>↗</span></a>
                 </div>
               </article>
 
               <article class="event-card event-reception">
                 <div class="event-topline">
                   <span class="event-index">04</span>
-                  <span class="event-type">TIỆC CƯỚI</span>
+                  <span class="event-type" data-i18n="event.reception">TIỆC CƯỚI</span>
                 </div>
                 <h4>Wedding Reception</h4>
-                <p class="event-date">Chủ Nhật · 20.12.2026</p>
+                <p class="event-date" data-i18n="event.sunday">Chủ Nhật · 20.12.2026</p>
                 <p class="event-meta">Nhà hàng Năm Nhỏ · Rạch Giá, An Giang</p>
                 <div class="event-actions">
-                  <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Nh%C3%A0+h%C3%A0ng+N%C4%83m+Nh%E1%BB%8F+R%E1%BA%A1ch+Gi%C3%A1+An+Giang" target="_blank" rel="noreferrer">Chỉ đường <span>↗</span></a>
+                  <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Nh%C3%A0+h%C3%A0ng+N%C4%83m+Nh%E1%BB%8F+R%E1%BA%A1ch+Gi%C3%A1+An+Giang" target="_blank" rel="noreferrer"><span data-i18n="map.directions">Chỉ đường</span> <span>↗</span></a>
                 </div>
               </article>
             </div>
@@ -147,14 +151,14 @@
       <div class="container">
         <div class="section-heading reveal">
           <p class="eyebrow">MEMORIES</p>
-          <h2>Khoảnh khắc của chúng tôi</h2>
-          <p>Những hình ảnh được Hải & Mỹ lưu lại trong hành trình về chung một nhà.</p>
+          <h2 data-i18n="gallery.title">Khoảnh khắc của chúng tôi</h2>
+          <p data-i18n="gallery.subtitle">Những hình ảnh được Hải & Mỹ lưu lại trong hành trình về chung một nhà.</p>
         </div>
         <div id="homeGallery" class="home-gallery">
-          <div class="gallery-empty">Album đang được chuẩn bị ♡</div>
+          <div class="gallery-empty" data-i18n="gallery.empty">Album đang được chuẩn bị ♡</div>
         </div>
         <div class="gallery-cta">
-          <a class="btn btn-outline" href="./album/">Xem toàn bộ album →</a>
+          <a class="btn btn-outline" href="./album/" data-i18n="gallery.view">Xem toàn bộ album →</a>
         </div>
       </div>
     </section>
@@ -163,55 +167,55 @@
       <div class="container rsvp-wrap">
         <div class="rsvp-copy reveal">
           <p class="eyebrow">RSVP</p>
-          <h2>Bạn sẽ đến chung vui cùng chúng tôi chứ?</h2>
-          <p>Phản hồi của bạn giúp chúng tôi chuẩn bị chu đáo hơn cho ngày đặc biệt này.</p>
+          <h2 data-i18n="rsvp.title">Bạn sẽ đến chung vui cùng chúng tôi chứ?</h2>
+          <p data-i18n="rsvp.subtitle">Phản hồi của bạn giúp chúng tôi chuẩn bị chu đáo hơn cho ngày đặc biệt này.</p>
         </div>
 
         <form class="rsvp-form reveal" id="rsvpForm">
           <label>
-            Họ và tên
+            <span data-i18n="rsvp.name">Họ và tên</span>
             <input type="text" name="name" placeholder="Nguyễn Văn A" required />
           </label>
 
           <label>
-            Số điện thoại <span class="optional">(không bắt buộc)</span>
+            <span><span data-i18n="rsvp.phone">Số điện thoại</span> <span class="optional" data-i18n="rsvp.optional">(không bắt buộc)</span></span>
             <input type="tel" name="phone" placeholder="09xx xxx xxx" />
           </label>
 
           <div class="field-group">
-            <span>Bạn có thể tham dự?</span>
+            <span data-i18n="rsvp.attend">Bạn có thể tham dự?</span>
             <div class="radio-row">
-              <label class="radio"><input type="radio" name="attending" value="yes" required /> Có, tôi sẽ đến</label>
-              <label class="radio"><input type="radio" name="attending" value="no" required /> Rất tiếc, tôi không thể</label>
+              <label class="radio"><input type="radio" name="attending" value="yes" required /> <span data-i18n="rsvp.yes">Có, tôi sẽ đến</span></label>
+              <label class="radio"><input type="radio" name="attending" value="no" required /> <span data-i18n="rsvp.no">Rất tiếc, tôi không thể</span></label>
             </div>
           </div>
 
           <label>
-            Số người tham dự
+            <span data-i18n="rsvp.count">Số người tham dự</span>
             <select name="guest_count">
-              <option value="1">1 người</option>
-              <option value="2">2 người</option>
-              <option value="3">3 người</option>
-              <option value="4">4 người</option>
-              <option value="5">5 người</option>
+              <option value="1" data-i18n="rsvp.guest1">1 người</option>
+              <option value="2" data-i18n="rsvp.guest2">2 người</option>
+              <option value="3" data-i18n="rsvp.guest3">3 người</option>
+              <option value="4" data-i18n="rsvp.guest4">4 người</option>
+              <option value="5" data-i18n="rsvp.guest5">5 người</option>
             </select>
           </label>
 
           <label>
-            Tham dự sự kiện
+            <span data-i18n="rsvp.event">Tham dự sự kiện</span>
             <select name="event_choice">
-              <option value="bride">Nhà gái — 18/12/2026</option>
-              <option value="groom">Nhà trai — 20/12/2026</option>
-              <option value="both">Cả hai ngày</option>
+              <option value="bride" data-i18n="rsvp.bride">Nhà gái — 18/12/2026</option>
+              <option value="groom" data-i18n="rsvp.groom">Nhà trai — 20/12/2026</option>
+              <option value="both" data-i18n="rsvp.both">Cả hai ngày</option>
             </select>
           </label>
 
           <label>
-            Lời nhắn cho Hải & Mỹ
+            <span data-i18n="rsvp.message">Lời nhắn cho Hải & Mỹ</span>
             <textarea name="message" rows="4" placeholder="Gửi một lời chúc đến cô dâu chú rể..."></textarea>
           </label>
 
-          <button class="btn btn-primary btn-full" type="submit">Gửi xác nhận</button>
+          <button class="btn btn-primary btn-full" type="submit" data-i18n="rsvp.submit">Gửi xác nhận</button>
           <p class="form-status" id="formStatus" aria-live="polite"></p>
         </form>
       </div>
@@ -221,13 +225,14 @@
   <footer class="footer">
     <div class="container">
       <p class="footer-names">Hải <span>&</span> Mỹ</p>
-      <p>Thank you for being part of our story.</p>
-      <p class="footer-small">December 2026</p>
+      <p data-i18n="footer.thanks">Thank you for being part of our story.</p>
+      <p class="footer-small" data-i18n="footer.month">December 2026</p>
     </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./config.js"></script>
+  <script src="./i18n.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>
