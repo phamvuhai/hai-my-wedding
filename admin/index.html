@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex,nofollow" />
   <title>Wedding Admin | Hải & Mỹ</title>
-  <link rel="stylesheet" href="./admin.css" />
+  <link rel="stylesheet" href="/admin/admin.css" />
 </head>
 <body>
   <main class="admin-shell">
-    <section id="cmsView" class="cms">
+    <section id="cmsView" class="cms hidden">
       <aside class="sidebar">
-        <a class="brand" href="../">H & M</a>
+        <a class="brand" href="/">H & M</a>
         <div class="sidebar-kicker">ADMIN PANEL</div>
         <nav>
           <button class="nav-item active" data-tab="overview">Tổng quan</button>
@@ -31,8 +31,8 @@
             <h2 id="pageTitle">Tổng quan</h2>
           </div>
           <div class="topbar-actions">
-            <a class="btn ghost" href="../" target="_blank" rel="noreferrer">Xem website ↗</a>
-            <a class="btn ghost" href="../album/" target="_blank" rel="noreferrer">Xem album ↗</a>
+            <a class="btn ghost" href="/" target="_blank" rel="noreferrer">Xem website ↗</a>
+            <a class="btn ghost" href="/album/" target="_blank" rel="noreferrer">Xem album ↗</a>
           </div>
         </header>
 
@@ -66,7 +66,7 @@
                   <strong>Thêm ảnh</strong>
                   <small>Upload và chỉnh sửa album cưới</small>
                 </button>
-                <a class="quick-card" href="../" target="_blank" rel="noreferrer">
+                <a class="quick-card" href="/" target="_blank" rel="noreferrer">
                   <span class="quick-icon">↗</span>
                   <strong>Mở website</strong>
                   <small>Xem giao diện dành cho khách mời</small>
@@ -86,9 +86,23 @@
         <section id="rsvpTab" class="tab-panel hidden">
           <div id="rsvpStats" class="stats"></div>
           <section class="panel">
-            <div class="panel-head">
+            <div class="panel-head rsvp-head">
               <div><p class="eyebrow">GUEST LIST</p><h3>RSVP</h3></div>
-              <input id="rsvpSearch" type="search" placeholder="Tìm tên / số điện thoại">
+              <div class="rsvp-filters">
+                <input id="rsvpSearch" type="search" placeholder="Tìm tên / số điện thoại">
+                <select id="rsvpStatusFilter" aria-label="Lọc trạng thái">
+                  <option value="all">Tất cả trạng thái</option>
+                  <option value="yes">Có tham dự</option>
+                  <option value="no">Không tham dự</option>
+                  <option value="maybe">Chưa chắc</option>
+                </select>
+                <select id="rsvpEventFilter" aria-label="Lọc sự kiện">
+                  <option value="all">Tất cả sự kiện</option>
+                  <option value="bride">Nhà gái</option>
+                  <option value="groom">Nhà trai</option>
+                  <option value="both">Cả hai</option>
+                </select>
+              </div>
             </div>
             <div class="table-wrap">
               <table>
@@ -161,12 +175,12 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config.js"></script>
-  <script src="./state.js"></script>
-  <script src="./library.js"></script>
-  <script src="./editor.js"></script>
-  <script src="./rsvp.js"></script>
-  <script src="./dashboard.js"></script>
-  <script src="./auth.js"></script>
+  <script src="/config.js"></script>
+  <script src="/admin/state.js"></script>
+  <script src="/admin/library.js"></script>
+  <script src="/admin/editor.js"></script>
+  <script src="/admin/rsvp.js"></script>
+  <script src="/admin/dashboard.js"></script>
+  <script src="/admin/auth.js"></script>
 </body>
 </html>
