@@ -145,6 +145,7 @@ async function loadHeroPhoto() {
   const hero = document.getElementById('home');
   const framedImg = document.getElementById('heroImage');
   const fullImg = document.getElementById('heroFullImage');
+  const introImg = document.getElementById('introImage');
   if (!hero || !framedImg || !fullImg) return;
 
   const cfg = window.WEDDING_CONFIG || {};
@@ -200,6 +201,11 @@ async function loadHeroPhoto() {
     framedImg.alt = alt || 'Hải & Mỹ';
     fullImg.src = url;
     fullImg.alt = '';
+    if (introImg) {
+      introImg.src = url;
+      introImg.alt = alt || 'Hải & Mỹ';
+      introImg.style.objectPosition = `${fx}% ${fy}%`;
+    }
   } catch (error) {
     console.error('Hero photo error:', error);
   }
