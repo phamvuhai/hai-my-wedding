@@ -1,7 +1,45 @@
-:root{--bg:#f7f3ee;--paper:#fffdf9;--ink:#2f2a27;--muted:#786f68;--accent:#9b6d55;--line:#ded3ca;--shadow:0 20px 60px rgba(59,44,34,.12)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}.shell{width:min(1180px,calc(100% - 32px));margin:auto}a{color:inherit;text-decoration:none}.album-hero{min-height:42vh;background:linear-gradient(135deg,#6f5547,#302824 68%,#211c19);color:#fff;display:flex;flex-direction:column}.album-nav{display:flex;justify-content:space-between;align-items:center;padding-top:28px}.brand{font:400 1.6rem Georgia,serif;letter-spacing:.16em}.back{font-size:.86rem;opacity:.76}.album-hero-copy{padding:78px 0 68px}.eyebrow{color:#e1bca7;font-size:.72rem;font-weight:800;letter-spacing:.24em;margin:0 0 10px}.album-hero h1{font:400 clamp(3rem,8vw,6.8rem)/.95 Georgia,serif;margin:0 0 20px;letter-spacing:-.04em}.album-hero-copy>p:last-child{color:rgba(255,255,255,.72)}.album-main{padding:54px 0 90px}.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px}.filter-btn{border:1px solid var(--line);background:rgba(255,255,255,.62);padding:10px 16px;border-radius:999px;cursor:pointer;color:var(--muted);font-weight:700}.filter-btn.active{background:var(--ink);color:#fff;border-color:var(--ink)}.status{color:var(--muted);font-size:.9rem}.masonry{columns:3 280px;column-gap:16px}.photo-card{break-inside:avoid;margin:0 0 16px;position:relative;overflow:hidden;border-radius:20px;background:#e9dfd6;cursor:zoom-in;box-shadow:0 8px 30px rgba(52,39,31,.06)}.photo-card img{width:100%;height:auto;display:block;transition:transform .45s ease}.photo-card:hover img{transform:scale(1.025)}.photo-overlay{position:absolute;inset:auto 0 0;padding:38px 18px 16px;background:linear-gradient(transparent,rgba(0,0,0,.58));color:#fff;opacity:0;transition:.25s}.photo-card:hover .photo-overlay{opacity:1}.photo-overlay strong{display:block;font:400 1.05rem Georgia,serif}.photo-overlay span{font-size:.76rem;opacity:.76}.empty{padding:70px 20px;text-align:center;background:rgba(255,255,255,.55);border:1px dashed var(--line);border-radius:24px;color:var(--muted)}.lightbox{width:100vw;height:100vh;max-width:none;max-height:none;margin:0;border:0;background:rgba(18,15,14,.96);padding:0;color:#fff}.lightbox[open]{display:grid;place-items:center}.lightbox::backdrop{background:#000}.lightbox figure{margin:0;max-width:min(92vw,1400px);max-height:92vh;display:grid;gap:12px;place-items:center}.lightbox img{max-width:92vw;max-height:82vh;object-fit:contain;border-radius:8px}.lightbox figcaption{text-align:center;color:rgba(255,255,255,.72);font-size:.88rem}.icon-btn{position:fixed;border:0;background:rgba(255,255,255,.1);color:#fff;width:46px;height:46px;border-radius:50%;font-size:2rem;cursor:pointer;backdrop-filter:blur(8px)}.close-btn{right:20px;top:20px}.nav-btn{top:50%;transform:translateY(-50%)}.prev{left:20px}.next{right:20px}@media(max-width:650px){.album-hero{min-height:36vh}.album-hero-copy{padding:58px 0}.masonry{columns:2 150px;column-gap:9px}.photo-card{border-radius:13px;margin-bottom:9px}.photo-overlay{display:none}.nav-btn{width:40px;height:40px}.prev{left:8px}.next{right:8px}.close-btn{right:10px;top:10px}}
+:root{
+  --bg:#f7f3ee;--paper:#fffdf9;--ink:#2f2a27;--muted:#786f68;--accent:#9b6d55;--line:#ded3ca;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+.shell{width:min(1220px,calc(100% - 32px));margin:auto}a{color:inherit;text-decoration:none}
+.album-hero{min-height:46vh;background:linear-gradient(135deg,#76594a,#382e29 66%,#211c19);color:#fff;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.album-hero:after{content:"";position:absolute;width:520px;height:520px;border:1px solid rgba(255,255,255,.12);border-radius:50%;right:-210px;bottom:-320px}
+.album-nav{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;padding-top:28px}
+.brand{font:400 1.6rem Georgia,serif;letter-spacing:.16em}.back{font-size:.86rem;opacity:.76}
 .album-nav-right{display:flex;align-items:center;gap:18px}
 .language-switcher{display:inline-flex;align-items:center;padding:3px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.08);backdrop-filter:blur(10px)}
 .language-switcher button{border:0;background:transparent;color:rgba(255,255,255,.68);min-width:38px;height:30px;padding:0 9px;border-radius:999px;cursor:pointer;font-size:.7rem;font-weight:800}
 .language-switcher button.active{background:#fff;color:#4d3c33}
-@media(max-width:650px){.album-nav-right{gap:10px}.back{display:none}.language-switcher button{min-width:34px;padding:0 7px}}
+.album-hero-copy{position:relative;z-index:2;padding:82px 0 74px;max-width:900px}
+.eyebrow{color:#e1bca7;font-size:.72rem;font-weight:800;letter-spacing:.24em;margin:0 0 12px}
+.album-hero h1{font:400 clamp(3.2rem,8vw,7rem)/.94 Georgia,serif;margin:0 0 22px;letter-spacing:-.045em}
+.album-hero-copy>p:last-child{color:rgba(255,255,255,.72);font-size:1.02rem}
+.album-main{padding:48px 0 86px}.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;position:sticky;top:12px;z-index:5;padding:10px;border-radius:18px;background:rgba(247,243,238,.86);backdrop-filter:blur(12px)}
+.filter-btn{border:1px solid var(--line);background:#fff;padding:10px 16px;border-radius:999px;cursor:pointer;color:var(--muted);font-weight:700;transition:.2s}
+.filter-btn:hover{border-color:#bda99d;color:var(--ink)}.filter-btn.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.status{margin:8px 2px 24px;color:var(--muted);font-size:.88rem}
+.masonry{columns:4 250px;column-gap:14px}
+.photo-card{break-inside:avoid;margin:0 0 14px;position:relative;overflow:hidden;border-radius:18px;background:#e9dfd6;cursor:zoom-in;box-shadow:0 8px 26px rgba(52,39,31,.06)}
+.photo-card img{width:100%;height:auto;display:block;transition:transform .45s ease,filter .3s ease}
+.photo-card:hover img{transform:scale(1.025);filter:brightness(.96)}
+.photo-overlay{position:absolute;inset:auto 0 0;padding:50px 16px 15px;background:linear-gradient(transparent,rgba(0,0,0,.62));color:#fff;opacity:0;transition:.25s}
+.photo-card:hover .photo-overlay{opacity:1}.photo-overlay strong{display:block;font:400 1.02rem Georgia,serif}.photo-overlay span{display:block;margin-top:3px;font-size:.74rem;opacity:.78}
+.empty{column-span:all;padding:80px 20px;text-align:center;background:rgba(255,255,255,.55);border:1px dashed var(--line);border-radius:24px;color:var(--muted)}
+.album-end-mark{text-align:center;margin:54px 0 0;color:#a28f84;font:400 1rem Georgia,serif;letter-spacing:.18em}
+.lightbox{width:100vw;height:100vh;max-width:none;max-height:none;margin:0;border:0;background:rgba(15,13,12,.96);padding:0;color:#fff}
+.lightbox[open]{display:grid;place-items:center}.lightbox::backdrop{background:#000}
+.lightbox figure{margin:0;max-width:min(92vw,1500px);max-height:92vh;display:grid;gap:12px;place-items:center}
+.lightbox img{max-width:92vw;max-height:82vh;object-fit:contain;border-radius:10px;box-shadow:0 20px 70px rgba(0,0,0,.34)}
+.lightbox figcaption{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;text-align:center;color:rgba(255,255,255,.76);font-size:.88rem}
+.lightbox-counter{opacity:.56}.icon-btn{position:fixed;border:0;background:rgba(255,255,255,.1);color:#fff;width:46px;height:46px;border-radius:50%;font-size:2rem;cursor:pointer;backdrop-filter:blur(8px);z-index:4}
+.icon-btn:hover{background:rgba(255,255,255,.18)}.close-btn{right:20px;top:20px}.nav-btn{top:50%;transform:translateY(-50%)}.prev{left:20px}.next{right:20px}
+@media(max-width:900px){.masonry{columns:3 210px}.album-hero{min-height:40vh}}
+@media(max-width:650px){
+  .shell{width:min(100% - 22px,1220px)}.album-hero{min-height:34vh}.album-hero-copy{padding:58px 0 50px}.album-hero h1{font-size:clamp(3rem,14vw,5rem)}
+  .album-nav-right{gap:10px}.back{display:none}.language-switcher button{min-width:34px;padding:0 7px}
+  .album-main{padding-top:26px}.filters{top:8px;margin-bottom:14px;padding:7px;gap:7px;overflow-x:auto;flex-wrap:nowrap}.filter-btn{white-space:nowrap;padding:9px 13px}
+  .masonry{columns:2 145px;column-gap:8px}.photo-card{border-radius:12px;margin-bottom:8px}.photo-overlay{display:none}
+  .nav-btn{width:40px;height:40px}.prev{left:8px}.next{right:8px}.close-btn{right:10px;top:10px}
+  .lightbox img{max-width:96vw;max-height:80vh}.album-end-mark{margin-top:38px}
+}
