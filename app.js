@@ -123,5 +123,47 @@ async function loadHomeGallery() {
   }
 }
 
+async function loadEventFeatureImage() {
+  const root = document.getElementById('eventFeaturePhoto');
+  const imageEl = document.getElementById('eventFeatureImage');
+  if (!root || !imageEl) return;
+
+  const cfg = window.WEDDING_CONFIG || {};
+  if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.supabase) return;
+
+  try {
+    const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+    const { data: images, error } = await client
+      .from('gallery_images')
+      .select('image_path,title,alt_text,title_en,alt_text_en,title_ja,alt_text_ja')
+      .order('is_cover', { ascending: false })
+      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: false })
+      .limit(1);
+
+    if (error) throw error;
+    const img = images?.[0];
+    if (!img) return;
+
+    const lang = window.WeddingI18n?.language || 'vi';
+    const title = lang === 'en' ? (img.title_en || img.title) : lang === 'ja' ? (img.title_ja || img.title) : img.title;
+    const alt = lang === 'en'
+      ? (img.alt_text_en || img.alt_text || title)
+      : lang === 'ja'
+        ? (img.alt_text_ja || img.alt_text || title)
+        : (img.alt_text || title);
+
+    imageEl.src = client.storage.from('wedding-gallery').getPublicUrl(img.image_path).data.publicUrl;
+    imageEl.alt = alt || 'Hải & Mỹ';
+    root.hidden = false;
+  } catch (error) {
+    console.error('Event feature image error:', error);
+  }
+}
+
 loadHomeGallery();
-document.addEventListener('wedding:language', loadHomeGallery);
+loadEventFeatureImage();
+document.addEventListener('wedding:language', () => {
+  loadHomeGallery();
+  loadEventFeatureImage();
+});
