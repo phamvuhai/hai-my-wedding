@@ -20,3 +20,11 @@
 .recent-list{display:grid;gap:0}.recent-item{padding:12px 0;border-bottom:1px solid var(--line)}.recent-item:last-child{border-bottom:0}.recent-head{display:flex;justify-content:space-between;gap:12px}.recent-item small{display:block;margin-top:4px;color:var(--muted)}
 @media(max-width:1000px){.dashboard-grid{grid-template-columns:1fr}}
 @media(max-width:720px){.topbar-actions{display:none}.dashboard-hero{align-items:flex-start;flex-direction:column}.date-badge{display:none}.quick-actions{grid-template-columns:1fr}.sidebar{overflow-x:auto}.sidebar-kicker{display:none}.sidebar nav{flex-wrap:nowrap}.nav-item{white-space:nowrap}}
+
+.rsvp-filters{display:grid;grid-template-columns:minmax(220px,1.3fr) minmax(150px,.8fr) minmax(150px,.8fr);gap:10px;min-width:min(100%,650px)}
+.rsvp-filters input,.rsvp-filters select{max-width:none}
+.status-pill{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:.7rem;font-weight:800;white-space:nowrap}
+.status-pill.yes{background:#e7f3ec;color:#356b54}.status-pill.no{background:#f8eaea;color:#984747}.status-pill.maybe{background:#fff1d8;color:#7b5d19}
+.empty-cell{text-align:center!important;color:var(--muted);padding:28px!important}
+@media(max-width:1000px){.rsvp-head{align-items:flex-start;flex-direction:column}.rsvp-filters{width:100%;min-width:0}}
+@media(max-width:720px){.rsvp-filters{grid-template-columns:1fr}.rsvp-filters input,.rsvp-filters select{width:100%}}
