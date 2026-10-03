@@ -117,6 +117,7 @@
     [heroDesktopPreview, heroMobilePreview].forEach(img => {
       if (!img) return;
       img.style.objectPosition = `${A.focusX}% ${A.focusY}%`;
+      img.style.transformOrigin = `${A.focusX}% ${A.focusY}%`;
       img.style.transform = `scale(${Number(heroZoom.value || 1)})`;
     });
   }
@@ -152,6 +153,11 @@
     marker.style.top = `${cr.top - sr.top + cr.height * A.focusY / 100}px`;
     previewImages.forEach(img => {
       img.style.objectPosition = `${A.focusX}% ${A.focusY}%`;
+    });
+    [heroDesktopPreview, heroMobilePreview].forEach(img => {
+      if (!img) return;
+      img.style.objectPosition = `${A.focusX}% ${A.focusY}%`;
+      img.style.transformOrigin = `${A.focusX}% ${A.focusY}%`;
     });
   }
 
