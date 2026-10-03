@@ -66,6 +66,12 @@ create table if not exists public.gallery_images (
   title text,
   caption text,
   alt_text text,
+  title_en text,
+  title_ja text,
+  caption_en text,
+  caption_ja text,
+  alt_text_en text,
+  alt_text_ja text,
   width integer check (width is null or width > 0),
   height integer check (height is null or height > 0),
   sort_order integer not null default 0,
@@ -222,3 +228,13 @@ drop policy if exists admin_can_read_rsvp on public.rsvp;
 create policy admin_can_read_rsvp on public.rsvp
 for select to authenticated
 using (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com');
+
+
+-- Multilingual gallery metadata
+alter table public.gallery_images
+  add column if not exists title_en text,
+  add column if not exists title_ja text,
+  add column if not exists caption_en text,
+  add column if not exists caption_ja text,
+  add column if not exists alt_text_en text,
+  add column if not exists alt_text_ja text;
