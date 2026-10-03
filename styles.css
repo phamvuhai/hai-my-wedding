@@ -73,19 +73,23 @@ h3 { font-size: 2rem; margin: 4px 0 14px; }
 }
 .nav {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
-  width: 100%;
-  max-width: none;
   height: var(--header-h);
-  margin: 0;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 max(20px, calc((100vw - 1120px) / 2));
-  background: rgba(63, 51, 45, .92);
+  color: #fff;
+  background: rgba(63, 51, 45, .94);
   border-bottom: 1px solid rgba(255,255,255,.10);
-  box-shadow: 0 8px 24px rgba(34,30,27,.12);
+  box-shadow: 0 8px 24px rgba(34,30,27,.14);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+}
+.nav-inner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .brand { font-size: 1.65rem; letter-spacing: .15em; }
 .nav-right { display: flex; align-items: center; gap: 22px; }
@@ -319,38 +323,20 @@ h1 span { color: #e9cbbb; font-style: italic; }
 .hero-feature-photo {
   position: relative;
   z-index: 2;
-  margin: 34px auto 0;
-  width: min(100%, 760px);
-  aspect-ratio: 16 / 9;
+  margin: 30px auto 0;
+  width: min(88vw, 520px);
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: 28px;
   background: rgba(255,255,255,.08);
   border: 1px solid rgba(255,255,255,.16);
   box-shadow: 0 24px 70px rgba(20,14,10,.24);
 }
-.hero-photo-placeholder {
-  width: 100%;
-  height: 100%;
-  display: grid;
-  place-content: center;
-  gap: 8px;
-  color: rgba(255,255,255,.72);
-  font-size: .82rem;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-.hero-photo-heart {
-  display: block;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 2.2rem;
-  line-height: 1;
-  letter-spacing: 0;
-}
 .hero-feature-photo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: center 62%;
 }
 
 .gallery-section { background: var(--paper); }
@@ -471,10 +457,7 @@ textarea { resize: vertical; }
 @media (max-width: 600px) {
   :root { --header-h: 66px; }
   .container { width: min(100% - 28px, 1120px); }
-  .nav {
-    padding-left: 14px;
-    padding-right: 14px;
-  }
+  .nav-inner { width: calc(100% - 28px); }
   .brand { font-size: 1.28rem; }
   .language-switcher { padding: 2px; }
   .language-switcher button {
@@ -505,9 +488,9 @@ textarea { resize: vertical; }
   .event-topline { margin-bottom: 20px; }
   .event-actions { padding-top: 22px; }
   .hero-feature-photo {
-    margin-top: 26px;
-    width: min(100%, 420px);
-    aspect-ratio: 4 / 3;
+    margin-top: 24px;
+    width: min(86vw, 390px);
+    aspect-ratio: 1 / 1;
     border-radius: 22px;
   }
   .home-gallery { grid-template-columns: 1fr 1fr; grid-auto-rows: 190px; gap: 9px; }
