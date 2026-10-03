@@ -19,6 +19,8 @@
     initTypography();
     initReveal();
     initScrollDecorations();
+    initSectionMotion();
+    initNavThemes();
     initCountdown();
     initParallax();
     initScrollCue();
@@ -158,6 +160,129 @@
     addEventListener('scroll',update,{passive:true});
     addEventListener('resize',update,{passive:true});
     update();
+  }
+
+  function sectionProgress(el) {
+    if (!el) return 0;
+    const r = el.getBoundingClientRect();
+    const vh = innerHeight || 1;
+    const start = vh;
+    const end = -r.height;
+    return Math.max(0, Math.min(1, (start - r.top) / (start - end)));
+  }
+
+  function initSectionMotion() {
+    if (body.dataset.sectionMotionInit) return;
+    body.dataset.sectionMotionInit = '1';
+
+    const guide = qs('.guide-grid');
+    const travel = qs('.travel-cards');
+    const forever = qs('.forever-transition');
+    const topRail = qs('.forever-rail-top');
+    const bottomRail = qs('.forever-rail-bottom');
+    const foreverWord = qs('.forever-copy strong');
+    const scheduleDays = qs('.schedule-days');
+    let sectionRaf = 0;
+
+    const update = () => {
+      cancelAnimationFrame(sectionRaf);
+      sectionRaf = requestAnimationFrame(() => {
+        if (guide) {
+          const p = sectionProgress(guide);
+          const shift = (p - .5) * 34;
+          guide.style.setProperty('--guide-shift', `${shift.toFixed(2)}px`);
+        }
+
+        if (travel) {
+          const p = sectionProgress(travel);
+          const shift = (p - .5) * 38;
+          travel.style.setProperty('--travel-shift', `${shift.toFixed(2)}px`);
+        }
+
+        if (scheduleDays) {
+          const p = sectionProgress(scheduleDays);
+          scheduleDays.style.setProperty('--schedule-progress', p.toFixed(3));
+        }
+
+        if (forever) {
+          const p = sectionProgress(forever);
+          forever.style.setProperty('--forever-progress', p.toFixed(3));
+          const horizontal = (p - .5) * 150;
+          if (topRail) topRail.style.transform = `translate3d(${-horizontal}px,0,0)`;
+          if (bottomRail) bottomRail.style.transform = `translate3d(${horizontal}px,0,0)`;
+          if (foreverWord) {
+            const scale = .88 + p * .2;
+            const tracking = Math.max(-.04, .12 - p * .16);
+            foreverWord.style.transform = `scale(${scale.toFixed(3)})`;
+            foreverWord.style.letterSpacing = `${tracking.toFixed(3)}em`;
+          }
+        }
+      });
+    };
+
+    addEventListener('scroll',update,{passive:true});
+    addEventListener('resize',update,{passive:true});
+    update();
+  }
+
+  function initNavThemes() {
+    const nav = qs('.nav');
+    if (!nav || nav.dataset.themeInit) return;
+    nav.dataset.themeInit = '1';
+
+    const themeTargets = [
+      ['#home','dark'],
+      ['#story','light'],
+      ['.countdown-section','dark'],
+      ['#events','light'],
+      ['#guide','light'],
+      ['#schedule','light'],
+      ['#travel','dark'],
+      ['#forever','dark'],
+      ['.gallery-section','light'],
+      ['#wishes','light'],
+      ['#rsvp','light'],
+      ['.footer','dark']
+    ];
+
+    const navTargets = [
+      ['#story','story'],
+      ['#events','events'],
+      ['#rsvp','rsvp']
+    ];
+
+    const themeObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const theme = entry.target.dataset.navTheme || 'light';
+        nav.classList.toggle('nav-theme-light', theme === 'light');
+        nav.classList.toggle('nav-theme-dark', theme === 'dark');
+      });
+    }, { rootMargin:'-25% 0px -65% 0px', threshold:0 });
+
+    themeTargets.forEach(([selector,theme]) => {
+      const el = qs(selector);
+      if (!el) return;
+      el.dataset.navTheme = theme;
+      themeObserver.observe(el);
+    });
+
+    const activeObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const key = entry.target.dataset.navKey;
+        qsa('.nav-links a').forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === `#${key}`);
+        });
+      });
+    }, { rootMargin:'-35% 0px -55% 0px', threshold:0 });
+
+    navTargets.forEach(([selector,key]) => {
+      const el = qs(selector);
+      if (!el) return;
+      el.dataset.navKey = key;
+      activeObserver.observe(el);
+    });
   }
 
   function initCountdown() {
