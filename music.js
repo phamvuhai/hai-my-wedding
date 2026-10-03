@@ -58,8 +58,11 @@
     label.textContent = track.label;
     external.href = `https://www.youtube.com/watch?v=${track.id}`;
 
-    const next = embedUrl(track.id, autoplay);
-    if (frame.src !== next) frame.src = next;
+    frame.dataset.videoId = track.id;
+    if (autoplay || dock.classList.contains('open')) {
+      const next = embedUrl(track.id, autoplay);
+      if (frame.src !== next) frame.src = next;
+    }
 
     const labels = {
       vi: autoplay ? 'Đang mở bài hát theo ngôn ngữ đã chọn' : 'Bấm để mở nhạc cưới',
@@ -85,8 +88,11 @@
 
   toggle.addEventListener('click', () => {
     const open = !dock.classList.contains('open');
-    if (!frame.src) applyTrack(currentLang, false);
     setOpen(open);
+    if (open && (frame.src === 'about:blank' || frame.src.endsWith('/about:blank'))) {
+      const track = tracks[currentLang] || tracks.vi;
+      frame.src = embedUrl(track.id, false);
+    }
   });
 
   applyTrack(currentLang, false);
