@@ -1,6 +1,14 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "rewrites": [
+    { "source": "/album", "destination": "/album/index.html" },
+    { "source": "/album/", "destination": "/album/index.html" },
+    { "source": "/admin", "destination": "/admin/index.html" },
+    { "source": "/admin/", "destination": "/admin/index.html" },
+    { "source": "/admin/login", "destination": "/admin/login/index.html" },
+    { "source": "/admin/login/", "destination": "/admin/login/index.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
