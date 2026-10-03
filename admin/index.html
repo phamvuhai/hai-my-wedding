@@ -2,33 +2,71 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex,nofollow" />
-  <title>Admin RSVP | Hải & Mỹ</title>
+  <title>Wedding Admin | Hải & Mỹ</title>
   <link rel="stylesheet" href="./admin.css" />
 </head>
 <body>
-  <main class="shell">
-    <section class="auth-card">
-      <div class="brand">H & M</div>
-      <p class="eyebrow">WEDDING ADMIN</p>
-      <h1>Quản lý RSVP</h1>
-      <p class="muted">
-        Danh sách khách được bảo vệ trong Supabase. Mở khu vực quản trị để xem,
-        lọc và quản lý dữ liệu RSVP.
-      </p>
-      <p>
-        <a class="btn primary" href="https://supabase.com/dashboard/project/uxyfhgtxfodnjzwlggnc/editor" target="_blank" rel="noreferrer">
-          Mở Supabase RSVP Admin
-        </a>
-      </p>
-      <p class="status">
-        Project: hai-my-wedding
-      </p>
-      <p>
-        <a href="../">← Quay lại thiệp cưới</a>
-      </p>
+  <main class="admin-shell">
+    <section id="authView" class="auth-view">
+      <div class="auth-card">
+        <div class="brand">H & M</div><p class="eyebrow">PRIVATE WEDDING CMS</p><h1>Admin</h1>
+        <p class="muted">Đăng nhập để quản lý album và RSVP.</p>
+        <form id="authForm">
+          <label>Email<input id="authEmail" type="email" required autocomplete="email"></label>
+          <label>Mật khẩu<input id="authPassword" type="password" required minlength="8" autocomplete="current-password"></label>
+          <button class="btn primary" type="submit">Đăng nhập</button>
+          <button class="btn ghost" id="signupBtn" type="button">Tạo tài khoản lần đầu</button>
+          <p id="authStatus" class="status"></p>
+        </form>
+      </div>
+    </section>
+    <section id="cmsView" class="cms hidden">
+      <aside class="sidebar">
+        <a class="brand" href="../">H & M</a>
+        <nav><button class="nav-item active" data-tab="album">Album</button><button class="nav-item" data-tab="rsvp">RSVP</button></nav>
+        <div class="sidebar-bottom"><span id="userEmail"></span><button id="logoutBtn" class="text-btn">Đăng xuất</button></div>
+      </aside>
+      <div class="content">
+        <header class="topbar"><div><p class="eyebrow">WEDDING CMS</p><h2 id="pageTitle">Album</h2></div><a class="btn ghost" href="../album/" target="_blank">Xem album ↗</a></header>
+        <section id="albumTab" class="tab-panel">
+          <div class="stats" id="albumStats"></div>
+          <section class="panel upload-panel">
+            <div><p class="eyebrow">UPLOAD & EDIT</p><h3>Thêm ảnh mới</h3><p class="muted">Ảnh được crop, resize và nén ngay trên thiết bị trước khi upload.</p></div>
+            <div class="upload-grid">
+              <div class="editor-stage"><canvas id="editorCanvas" width="1200" height="900"></canvas><div id="dropHint" class="drop-hint">Kéo ảnh vào đây hoặc chọn file</div></div>
+              <div class="editor-controls">
+                <label>Ảnh<input id="fileInput" type="file" accept="image/*" multiple></label>
+                <label>Album<select id="albumSelect"></select></label>
+                <label>Tỉ lệ<select id="ratioSelect"><option value="free">Giữ nguyên</option><option value="4:5">4:5 Portrait</option><option value="1:1">1:1 Square</option><option value="3:2">3:2 Landscape</option><option value="16:9">16:9 Wide</option></select></label>
+                <label>Zoom<input id="zoomRange" type="range" min="1" max="2" step="0.01" value="1"></label>
+                <div class="inline-actions"><button id="rotateLeft" class="btn ghost" type="button">↶ Rotate</button><button id="rotateRight" class="btn ghost" type="button">↷ Rotate</button></div>
+                <label>Tiêu đề<input id="imageTitle" maxlength="120"></label>
+                <label>Caption<textarea id="imageCaption" rows="3" maxlength="500"></textarea></label>
+                <label>Alt text<input id="imageAlt" maxlength="180" placeholder="Mô tả ngắn cho ảnh"></label>
+                <label class="check"><input id="publishCheck" type="checkbox" checked> Hiển thị trên album</label>
+                <button id="saveImageBtn" class="btn primary" type="button">Lưu ảnh</button>
+                <button id="cancelEditBtn" class="btn ghost hidden" type="button">Hủy chỉnh sửa</button>
+                <p id="uploadStatus" class="status"></p>
+              </div>
+            </div>
+          </section>
+          <section class="panel"><div class="panel-head"><div><p class="eyebrow">LIBRARY</p><h3>Thư viện ảnh</h3></div><select id="libraryAlbumFilter"><option value="all">Tất cả album</option></select></div><div id="adminGallery" class="admin-gallery"></div></section>
+        </section>
+        <section id="rsvpTab" class="tab-panel hidden">
+          <div id="rsvpStats" class="stats"></div>
+          <section class="panel"><div class="panel-head"><div><p class="eyebrow">GUEST LIST</p><h3>RSVP</h3></div><input id="rsvpSearch" type="search" placeholder="Tìm tên / số điện thoại"></div><div class="table-wrap"><table><thead><tr><th>Khách</th><th>Điện thoại</th><th>Tham dự</th><th>Số người</th><th>Sự kiện</th><th>Lời nhắn</th><th>Ngày</th></tr></thead><tbody id="rsvpBody"></tbody></table></div></section>
+        </section>
+      </div>
     </section>
   </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../config.js"></script>
+  <script src="./state.js"></script>
+  <script src="./library.js"></script>
+  <script src="./editor.js"></script>
+  <script src="./rsvp.js"></script>
+  <script src="./auth.js"></script>
 </body>
 </html>
