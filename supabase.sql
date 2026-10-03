@@ -307,3 +307,37 @@ alter table public.gallery_images
 alter table public.gallery_images
   add constraint gallery_images_hero_spacing_check
     check (hero_spacing in ('compact','normal','spacious'));
+
+
+-- Global website presentation settings
+create table if not exists public.site_settings (
+  id integer primary key default 1 check (id = 1),
+  animation_mode text not null default 'elegant',
+  updated_at timestamptz not null default now()
+);
+
+alter table public.site_settings
+  drop constraint if exists site_settings_animation_mode_check;
+
+alter table public.site_settings
+  add constraint site_settings_animation_mode_check
+  check (animation_mode in ('minimal','elegant','wow'));
+
+insert into public.site_settings (id, animation_mode)
+values (1, 'elegant')
+on conflict (id) do nothing;
+
+alter table public.site_settings enable row level security;
+revoke all on table public.site_settings from anon, authenticated;
+grant select on table public.site_settings to anon, authenticated;
+grant update on table public.site_settings to authenticated;
+
+drop policy if exists site_settings_public_read on public.site_settings;
+create policy site_settings_public_read on public.site_settings
+for select to anon, authenticated using (true);
+
+drop policy if exists site_settings_admin_update on public.site_settings;
+create policy site_settings_admin_update on public.site_settings
+for update to authenticated
+using (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com')
+with check (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com');
