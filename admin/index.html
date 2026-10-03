@@ -42,9 +42,28 @@
                 <label>Tỉ lệ<select id="ratioSelect"><option value="free">Giữ nguyên</option><option value="4:5">4:5 Portrait</option><option value="1:1">1:1 Square</option><option value="3:2">3:2 Landscape</option><option value="16:9">16:9 Wide</option></select></label>
                 <label>Zoom<input id="zoomRange" type="range" min="1" max="2" step="0.01" value="1"></label>
                 <div class="inline-actions"><button id="rotateLeft" class="btn ghost" type="button">↶ Rotate</button><button id="rotateRight" class="btn ghost" type="button">↷ Rotate</button></div>
-                <label>Tiêu đề<input id="imageTitle" maxlength="120"></label>
-                <label>Caption<textarea id="imageCaption" rows="3" maxlength="500"></textarea></label>
-                <label>Alt text<input id="imageAlt" maxlength="180" placeholder="Mô tả ngắn cho ảnh"></label>
+                <div class="language-fields">
+                  <p class="field-group-title">Tiếng Việt</p>
+                  <label>Tiêu đề<input id="imageTitle" maxlength="120"></label>
+                  <label>Caption<textarea id="imageCaption" rows="3" maxlength="500"></textarea></label>
+                  <label>Alt text<input id="imageAlt" maxlength="180" placeholder="Mô tả ngắn cho ảnh"></label>
+                </div>
+                <details class="language-details">
+                  <summary>English</summary>
+                  <div class="language-fields">
+                    <label>Title<input id="imageTitleEn" maxlength="120"></label>
+                    <label>Caption<textarea id="imageCaptionEn" rows="3" maxlength="500"></textarea></label>
+                    <label>Alt text<input id="imageAltEn" maxlength="180"></label>
+                  </div>
+                </details>
+                <details class="language-details">
+                  <summary>日本語</summary>
+                  <div class="language-fields">
+                    <label>タイトル<input id="imageTitleJa" maxlength="120"></label>
+                    <label>キャプション<textarea id="imageCaptionJa" rows="3" maxlength="500"></textarea></label>
+                    <label>Alt text<input id="imageAltJa" maxlength="180"></label>
+                  </div>
+                </details>
                 <label class="check"><input id="publishCheck" type="checkbox" checked> Hiển thị trên album</label>
                 <button id="saveImageBtn" class="btn primary" type="button">Lưu ảnh</button>
                 <button id="cancelEditBtn" class="btn ghost hidden" type="button">Hủy chỉnh sửa</button>
