@@ -536,7 +536,7 @@ textarea { resize: vertical; }
   object-fit:cover;
   object-position:var(--hero-focus-x) var(--hero-focus-y);
   transform:scale(var(--hero-zoom));
-  transform-origin:center;
+  transform-origin:var(--hero-focus-x) var(--hero-focus-y);
   transition:transform .35s ease, object-position .35s ease;
 }
 .hero-copy{
