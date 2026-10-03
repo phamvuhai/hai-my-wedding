@@ -87,7 +87,7 @@ async function loadHomeGallery() {
     const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
     const { data: images, error } = await client
       .from('gallery_images')
-      .select('id,image_path,title,caption,alt_text,width,height,sort_order,created_at')
+      .select('id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,created_at')
       .order('is_cover', { ascending: false })
       .order('sort_order', { ascending: true })
       .order('created_at', { ascending: false })
@@ -103,14 +103,18 @@ async function loadHomeGallery() {
       .replaceAll('"', '&quot;')
       .replaceAll("'", '&#039;');
 
+    const lang = window.WeddingI18n?.language || 'vi';
     root.innerHTML = images.map((img, index) => {
       const url = client.storage.from('wedding-gallery').getPublicUrl(img.image_path).data.publicUrl;
+      const title = lang === 'en' ? (img.title_en || img.title) : lang === 'ja' ? (img.title_ja || img.title) : img.title;
+      const caption = lang === 'en' ? (img.caption_en || img.caption) : lang === 'ja' ? (img.caption_ja || img.caption) : img.caption;
+      const alt = lang === 'en' ? (img.alt_text_en || img.alt_text || title) : lang === 'ja' ? (img.alt_text_ja || img.alt_text || title) : (img.alt_text || title);
       return `
-        <a class="home-photo home-photo-${(index % 6) + 1} reveal visible" href="./album/" aria-label="Mở album ảnh cưới">
-          <img loading="lazy" decoding="async" src="${url}" alt="${esc(img.alt_text || img.title || 'Ảnh cưới Hải và Mỹ')}">
+        <a class="home-photo home-photo-${(index % 6) + 1} reveal visible" href="./album/" aria-label="Hải & Mỹ album">
+          <img loading="lazy" decoding="async" src="${url}" alt="${esc(alt || 'Hải & Mỹ')}">
           <span class="home-photo-copy">
-            <strong>${esc(img.title || '')}</strong>
-            <small>${esc(img.caption || '')}</small>
+            <strong>${esc(title || '')}</strong>
+            <small>${esc(caption || '')}</small>
           </span>
         </a>`;
     }).join('');
@@ -120,3 +124,4 @@ async function loadHomeGallery() {
 }
 
 loadHomeGallery();
+document.addEventListener('wedding:language', loadHomeGallery);
