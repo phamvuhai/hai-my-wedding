@@ -11,27 +11,35 @@
   <header class="album-hero">
     <nav class="album-nav shell">
       <a class="brand" href="../">H & M</a>
-      <a class="back" href="../">← Về thiệp cưới</a>
+      <div class="album-nav-right">
+        <div class="language-switcher" aria-label="Language">
+          <button type="button" data-lang="vi">VI</button>
+          <button type="button" data-lang="en">EN</button>
+          <button type="button" data-lang="ja">日本語</button>
+        </div>
+        <a class="back" href="../" data-i18n="album.back">← Về thiệp cưới</a>
+      </div>
     </nav>
     <div class="album-hero-copy shell">
       <p class="eyebrow">OUR MEMORIES</p>
-      <h1>Album của Hải & Mỹ</h1>
-      <p>Những khoảnh khắc chúng tôi muốn lưu lại cùng nhau.</p>
+      <h1 data-i18n="album.title">Album của Hải & Mỹ</h1>
+      <p data-i18n="album.subtitle">Những khoảnh khắc chúng tôi muốn lưu lại cùng nhau.</p>
     </div>
   </header>
   <main class="shell album-main">
     <div id="albumFilters" class="filters" aria-label="Bộ lọc album"></div>
-    <p id="albumStatus" class="status">Đang tải album...</p>
+    <p id="albumStatus" class="status" data-i18n="album.loading">Đang tải album...</p>
     <section id="gallery" class="masonry" aria-live="polite"></section>
   </main>
   <dialog id="lightbox" class="lightbox">
-    <button id="lightboxClose" class="icon-btn close-btn" aria-label="Đóng">×</button>
-    <button id="lightboxPrev" class="icon-btn nav-btn prev" aria-label="Ảnh trước">‹</button>
+    <button id="lightboxClose" class="icon-btn close-btn" data-i18n-aria="album.close" aria-label="Đóng">×</button>
+    <button id="lightboxPrev" class="icon-btn nav-btn prev" data-i18n-aria="album.prev" aria-label="Ảnh trước">‹</button>
     <figure><img id="lightboxImage" alt="" /><figcaption id="lightboxCaption"></figcaption></figure>
-    <button id="lightboxNext" class="icon-btn nav-btn next" aria-label="Ảnh tiếp theo">›</button>
+    <button id="lightboxNext" class="icon-btn nav-btn next" data-i18n-aria="album.next" aria-label="Ảnh tiếp theo">›</button>
   </dialog>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../config.js"></script>
+  <script src="../i18n.js"></script>
   <script src="./album.js"></script>
 </body>
 </html>
