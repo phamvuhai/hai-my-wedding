@@ -23,6 +23,7 @@
   const heroMobileRatio = document.getElementById('heroMobileRatio');
   const heroZoom = document.getElementById('heroZoom');
   const heroZoomValue = document.getElementById('heroZoomValue');
+  const heroSpacing = document.getElementById('heroSpacing');
   const heroDesktopPreview = document.querySelector('.hero-setting-preview.desktop img');
   const heroMobilePreview = document.querySelector('.hero-setting-preview.mobile img');
 
@@ -110,6 +111,7 @@
     if (!heroCheck) return;
     heroSettings.classList.toggle('hidden', !heroCheck.checked);
     heroZoomValue.value = `${Number(heroZoom.value || 1).toFixed(2)}×`;
+    heroSettings.dataset.spacing = heroSpacing.value || 'normal';
     const desktopBox = heroDesktopPreview?.parentElement;
     const mobileBox = heroMobilePreview?.parentElement;
     if (desktopBox) desktopBox.style.setProperty('--preview-ratio', ratioCss(heroDesktopRatio.value, '16 / 9'));
@@ -201,6 +203,7 @@
   heroDesktopRatio.addEventListener('change', updateHeroSettingsUI);
   heroMobileRatio.addEventListener('change', updateHeroSettingsUI);
   heroZoom.addEventListener('input', updateHeroSettingsUI);
+  heroSpacing.addEventListener('change', updateHeroSettingsUI);
 
   function loadBlob(blob, name='image') {
     return new Promise((ok, no) => {
@@ -317,6 +320,7 @@
     heroDesktopRatio.value = img.hero_desktop_ratio || '16:9';
     heroMobileRatio.value = img.hero_mobile_ratio || '4:5';
     heroZoom.value = Number(img.hero_zoom || 1);
+    heroSpacing.value = img.hero_spacing || 'normal';
     document.getElementById('displaySize').value = img.display_size || 'auto';
     document.getElementById('sortOrder').value = Number(img.sort_order || 0);
     document.getElementById('cancelEditBtn').classList.remove('hidden');
@@ -350,6 +354,7 @@
     heroDesktopRatio.value = '16:9';
     heroMobileRatio.value = '4:5';
     heroZoom.value = '1';
+    heroSpacing.value = 'normal';
     document.getElementById('displaySize').value = 'auto';
     document.getElementById('sortOrder').value = '0';
     document.getElementById('cancelEditBtn').classList.add('hidden');
@@ -388,6 +393,7 @@
     const selectedHeroDesktopRatio = heroDesktopRatio.value;
     const selectedHeroMobileRatio = heroMobileRatio.value;
     const selectedHeroZoom = Number(heroZoom.value || 1);
+    const selectedHeroSpacing = heroSpacing.value || 'normal';
     const displaySize = document.getElementById('displaySize').value;
     const sortOrder = Number(document.getElementById('sortOrder').value || 0);
 
@@ -442,6 +448,7 @@
       hero_desktop_ratio:selectedHeroDesktopRatio,
       hero_mobile_ratio:selectedHeroMobileRatio,
       hero_zoom:selectedHeroZoom,
+      hero_spacing:selectedHeroSpacing,
       display_size:displaySize,
       sort_order:sortOrder,
       updated_at:new Date().toISOString()
