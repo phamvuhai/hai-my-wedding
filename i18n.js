@@ -117,19 +117,23 @@
   const supported = ["vi","en","ja"];
 
   function resolveInitialLanguage() {
-    const pathLang = location.pathname.split("/").filter(Boolean)[0];
+    const parts = location.pathname.split("/").filter(Boolean);
+    const pathLang = parts[0];
     if (supported.includes(pathLang)) return pathLang;
 
     const queryLang = new URLSearchParams(location.search).get("lang");
     if (supported.includes(queryLang)) return queryLang;
 
-    const stored = localStorage.getItem("wedding_language");
-    if (supported.includes(stored)) return stored;
-
-    const browser = String(navigator.language || "").toLowerCase();
-    if (browser.startsWith("ja")) return "ja";
-    if (browser.startsWith("en")) return "en";
+    // Root and non-localized public URLs always default to Vietnamese.
     return "vi";
+  }
+
+  function isAlbumPage() {
+    return location.pathname.split("/").filter(Boolean).includes("album");
+  }
+
+  function routeFor(lang) {
+    return isAlbumPage() ? `/${lang}/album` : `/${lang}`;
   }
 
   let current = resolveInitialLanguage();
@@ -155,6 +159,8 @@
       el.classList.toggle("active", el.dataset.lang === current);
       el.setAttribute("aria-pressed", el.dataset.lang === current ? "true" : "false");
     });
+    root.querySelectorAll("[data-home-link]").forEach(el => el.setAttribute("href", `/${current}`));
+    root.querySelectorAll("[data-album-link]").forEach(el => el.setAttribute("href", `/${current}/album`));
     document.dispatchEvent(new CustomEvent("wedding:language", {detail:{lang:current}}));
   }
 
@@ -162,6 +168,12 @@
     if (!supported.includes(lang)) return;
     current = lang;
     localStorage.setItem("wedding_language", lang);
+
+    const nextPath = routeFor(lang);
+    if (location.pathname !== nextPath) {
+      history.replaceState({}, "", nextPath + location.search + location.hash);
+    }
+
     apply();
     if (document.getElementById("home")) {
       requestAnimationFrame(() => {
