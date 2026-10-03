@@ -30,11 +30,18 @@
     <div id="albumFilters" class="filters" aria-label="Bộ lọc album"></div>
     <p id="albumStatus" class="status" data-i18n="album.loading">Đang tải album...</p>
     <section id="gallery" class="masonry" aria-live="polite"></section>
+    <p class="album-end-mark">H & M · 2026</p>
   </main>
   <dialog id="lightbox" class="lightbox">
     <button id="lightboxClose" class="icon-btn close-btn" data-i18n-aria="album.close" aria-label="Đóng">×</button>
     <button id="lightboxPrev" class="icon-btn nav-btn prev" data-i18n-aria="album.prev" aria-label="Ảnh trước">‹</button>
-    <figure><img id="lightboxImage" alt="" /><figcaption id="lightboxCaption"></figcaption></figure>
+    <figure>
+      <img id="lightboxImage" alt="" />
+      <figcaption>
+        <span id="lightboxCaption"></span>
+        <span id="lightboxCounter" class="lightbox-counter"></span>
+      </figcaption>
+    </figure>
     <button id="lightboxNext" class="icon-btn nav-btn next" data-i18n-aria="album.next" aria-label="Ảnh tiếp theo">›</button>
   </dialog>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
