@@ -310,39 +310,15 @@
       </div>
     </section>
 
-    <section class="section faq-section" id="faq">
-      <div class="container faq-layout">
-        <div class="faq-heading reveal">
-          <p class="eyebrow">YOU MAY BE WONDERING</p>
-          <h2 data-i18n="faq.title">Một vài câu hỏi thường gặp</h2>
-          <p data-i18n="faq.subtitle">Nếu chưa thấy câu trả lời bạn cần, bạn có thể liên hệ trực tiếp với Hải & Mỹ.</p>
+    <section class="forever-transition" id="forever" aria-label="Forever">
+      <div class="forever-sticky">
+        <div class="forever-rail forever-rail-top" aria-hidden="true">AND THEN · AND THEN · AND THEN · AND THEN · AND THEN ·</div>
+        <div class="forever-copy">
+          <span class="forever-small">WE CHOSE</span>
+          <strong>FOREVER</strong>
+          <em>H ♥ M</em>
         </div>
-        <div class="faq-list">
-          <details class="faq-item reveal">
-            <summary><span data-i18n="faq.q1">Tôi nên đến trước bao lâu?</span><i>+</i></summary>
-            <p data-i18n="faq.a1">Bạn nên có mặt trước giờ bắt đầu khoảng 15–20 phút.</p>
-          </details>
-          <details class="faq-item reveal">
-            <summary><span data-i18n="faq.q2">Trang phục như thế nào là phù hợp?</span><i>+</i></summary>
-            <p data-i18n="faq.a2">Gợi ý trang phục lịch sự, trang nhã. Nếu có dress code cụ thể, Hải & Mỹ sẽ cập nhật tại đây.</p>
-          </details>
-          <details class="faq-item reveal">
-            <summary><span data-i18n="faq.q3">Tôi có cần tham dự cả hai ngày không?</span><i>+</i></summary>
-            <p data-i18n="faq.a3">Không. Trong RSVP bạn có thể chọn Nhà gái, Nhà trai hoặc cả hai ngày.</p>
-          </details>
-          <details class="faq-item reveal">
-            <summary><span data-i18n="faq.q4">Tôi có thể thay đổi RSVP không?</span><i>+</i></summary>
-            <p data-i18n="faq.a4">Có. Bạn có thể gửi lại RSVP với thông tin mới hoặc liên hệ trực tiếp với Hải & Mỹ.</p>
-          </details>
-          <details class="faq-item reveal">
-            <summary><span data-i18n="faq.q5">Vì sao một số giờ chưa hiển thị?</span><i>+</i></summary>
-            <p data-i18n="faq.a5">Những mốc giờ chưa được xác nhận sẽ được cập nhật trên website khi có thông tin chính thức.</p>
-          </details>
-          <details class="faq-item reveal">
-            <summary><span data-i18n="faq.q6">Tôi nên kiểm tra đường đi ở đâu?</span><i>+</i></summary>
-            <p data-i18n="faq.a6">Mỗi sự kiện đều có nút mở bản đồ. Bạn nên kiểm tra lộ trình trước khi khởi hành.</p>
-          </details>
-        </div>
+        <div class="forever-rail forever-rail-bottom" aria-hidden="true">LOVE · FAMILY · TOGETHER · FOREVER · LOVE · FAMILY ·</div>
       </div>
     </section>
 
@@ -444,25 +420,17 @@
     </section>
   </main>
 
-  <aside class="music-dock" id="musicDock" aria-label="Wedding music">
-    <button class="music-toggle" id="musicToggle" type="button" aria-expanded="false">
+  <aside class="music-dock music-dock-compact" id="musicDock" aria-label="Wedding music">
+    <button class="music-toggle" id="musicToggle" type="button" aria-pressed="false">
       <span class="music-disc" aria-hidden="true">♪</span>
       <span class="music-copy">
-        <small id="musicLabel">WEDDING SONG</small>
+        <small id="musicLabel">VIETNAMESE WEDDING SONG</small>
         <strong id="musicTitle">Hơn Cả Yêu</strong>
         <em id="musicArtist">Đức Phúc</em>
       </span>
-      <span class="music-chevron" aria-hidden="true">⌃</span>
+      <span class="music-state" id="musicState" aria-hidden="true">▶</span>
     </button>
-    <div class="music-panel" id="musicPanel">
-      <div class="music-video">
-        <iframe id="musicFrame" title="Wedding song" src="about:blank" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
-      </div>
-      <div class="music-panel-foot">
-        <span id="musicHint">Chọn ngôn ngữ hoặc bấm để mở nhạc</span>
-        <a id="musicExternal" href="https://www.youtube.com/watch?v=__kGJZ-kPno" target="_blank" rel="noreferrer">YouTube ↗</a>
-      </div>
-    </div>
+    <iframe id="musicFrame" class="music-frame-hidden" title="Wedding song audio source" src="about:blank" allow="autoplay; encrypted-media" tabindex="-1" aria-hidden="true"></iframe>
   </aside>
 
   <div class="side-note" aria-hidden="true">HẢI & MỸ — DECEMBER 2026</div>
