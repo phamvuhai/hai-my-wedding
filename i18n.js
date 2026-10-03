@@ -3,6 +3,7 @@
     vi: {
       "nav.story":"Câu chuyện","nav.events":"Lịch cưới","nav.rsvp":"Xác nhận",
       "hero.note":"Trân trọng kính mời bạn đến chung vui trong ngày hạnh phúc của chúng tôi.","hero.cta":"Xem lịch cưới",
+      "intro.open":"MỞ THIỆP","intro.invite":"TRÂN TRỌNG KÍNH MỜI","intro.date":"18 · 12 · 2026 — 20 · 12 · 2026",
       "story.title":"Một hành trình, một lời hẹn","story.text":"Có những cuộc gặp gỡ làm thay đổi cả một hành trình. Sau những ngày đồng hành, chúng tôi chọn bước tiếp cùng nhau bằng một lời hứa giản dị: luôn là gia đình của nhau.",
       "countdown.title":"Đếm ngược đến ngày vui","countdown.days":"Ngày","countdown.hours":"Giờ","countdown.minutes":"Phút","countdown.seconds":"Giây",
       "events.title":"Lịch cưới","events.subtitle":"Hai ngày đặc biệt, cùng một niềm vui.",
@@ -39,6 +40,7 @@
     en: {
       "nav.story":"Our Story","nav.events":"Wedding Events","nav.rsvp":"RSVP",
       "hero.note":"We warmly invite you to celebrate this joyful milestone with us.","hero.cta":"View wedding schedule",
+      "intro.open":"OPEN INVITATION","intro.invite":"YOU ARE CORDIALLY INVITED","intro.date":"18 · 12 · 2026 — 20 · 12 · 2026",
       "story.title":"One journey, one promise","story.text":"Some encounters change the course of a lifetime. After walking side by side, we chose to continue this journey together with a simple promise: to always be each other’s family.",
       "countdown.title":"Counting down to our day","countdown.days":"Days","countdown.hours":"Hours","countdown.minutes":"Minutes","countdown.seconds":"Seconds",
       "events.title":"Wedding Events","events.subtitle":"Two special days, one shared joy.",
@@ -75,6 +77,7 @@
     ja: {
       "nav.story":"ふたりのストーリー","nav.events":"結婚式の予定","nav.rsvp":"出欠確認",
       "hero.note":"私たちの大切な日に、ぜひ一緒にお祝いください。","hero.cta":"結婚式の予定を見る",
+      "intro.open":"招待状を開く","intro.invite":"心よりご招待申し上げます","intro.date":"2026 · 12 · 18 — 2026 · 12 · 20",
       "story.title":"ひとつの旅、ひとつの約束","story.text":"人生の道のりを変える出会いがあります。共に歩んできた日々を経て、私たちはこれからも家族として寄り添い続けることを約束し、新しい一歩を踏み出します。",
       "countdown.title":"幸せの日まであと","countdown.days":"日","countdown.hours":"時間","countdown.minutes":"分","countdown.seconds":"秒",
       "events.title":"結婚式の予定","events.subtitle":"特別な2日間、ひとつの喜びを皆さまと。",
@@ -112,8 +115,25 @@
 
   const labels = {vi:"VI",en:"EN",ja:"日本語"};
   const supported = ["vi","en","ja"];
-  const stored = localStorage.getItem("wedding_language");
-  let current = supported.includes(stored) ? stored : "vi";
+
+  function resolveInitialLanguage() {
+    const pathLang = location.pathname.split("/").filter(Boolean)[0];
+    if (supported.includes(pathLang)) return pathLang;
+
+    const queryLang = new URLSearchParams(location.search).get("lang");
+    if (supported.includes(queryLang)) return queryLang;
+
+    const stored = localStorage.getItem("wedding_language");
+    if (supported.includes(stored)) return stored;
+
+    const browser = String(navigator.language || "").toLowerCase();
+    if (browser.startsWith("ja")) return "ja";
+    if (browser.startsWith("en")) return "en";
+    return "vi";
+  }
+
+  let current = resolveInitialLanguage();
+  localStorage.setItem("wedding_language", current);
 
   function t(key) {
     return dictionaries[current]?.[key] ?? dictionaries.vi[key] ?? key;
