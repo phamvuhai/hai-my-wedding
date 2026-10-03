@@ -87,8 +87,9 @@ async function loadHomeGallery() {
     const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
     const { data: images, error } = await client
       .from('gallery_images')
-      .select('id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,created_at')
-      .order('is_cover', { ascending: false })
+      .select('id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,is_hero,show_on_homepage,created_at')
+      .eq('show_on_homepage', true)
+      .order('is_featured', { ascending: false })
       .order('sort_order', { ascending: true })
       .order('created_at', { ascending: false })
       .limit(8);
@@ -109,8 +110,11 @@ async function loadHomeGallery() {
       const title = lang === 'en' ? (img.title_en || img.title) : lang === 'ja' ? (img.title_ja || img.title) : img.title;
       const caption = lang === 'en' ? (img.caption_en || img.caption) : lang === 'ja' ? (img.caption_ja || img.caption) : img.caption;
       const alt = lang === 'en' ? (img.alt_text_en || img.alt_text || title) : lang === 'ja' ? (img.alt_text_ja || img.alt_text || title) : (img.alt_text || title);
+      const size = ['small','tall','wide','large'].includes(img.display_size) ? img.display_size : (
+        img.is_featured ? 'large' : ((img.width || 1) / (img.height || 1) > 1.35 ? 'wide' : ((img.height || 1) / (img.width || 1) > 1.28 ? 'tall' : 'small'))
+      );
       return `
-        <a class="home-photo home-photo-${(index % 6) + 1} reveal visible" href="./album/" aria-label="Hải & Mỹ album">
+        <a class="home-photo size-${size} reveal visible" href="/album" aria-label="Hải & Mỹ album">
           <img loading="lazy" decoding="async" src="${url}" alt="${esc(alt || 'Hải & Mỹ')}">
           <span class="home-photo-copy">
             <strong>${esc(title || '')}</strong>
@@ -125,3 +129,33 @@ async function loadHomeGallery() {
 
 loadHomeGallery();
 document.addEventListener('wedding:language', loadHomeGallery);
+
+
+async function loadHeroPhoto() {
+  const img = document.querySelector('.hero-feature-photo img');
+  if (!img) return;
+  const cfg = window.WEDDING_CONFIG || {};
+  if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.supabase) return;
+  try {
+    const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+    const { data, error } = await client
+      .from('gallery_images')
+      .select('image_path,alt_text,title,alt_text_en,title_en,alt_text_ja,title_ja')
+      .eq('is_hero', true)
+      .eq('is_published', true)
+      .limit(1)
+      .maybeSingle();
+    if (error || !data) return;
+    const lang = window.WeddingI18n?.language || 'vi';
+    const alt = lang === 'en' ? (data.alt_text_en || data.title_en || data.alt_text || data.title) :
+      lang === 'ja' ? (data.alt_text_ja || data.title_ja || data.alt_text || data.title) :
+      (data.alt_text || data.title);
+    img.src = client.storage.from('wedding-gallery').getPublicUrl(data.image_path).data.publicUrl;
+    img.alt = alt || 'Hải & Mỹ';
+  } catch (error) {
+    console.error('Hero photo error:', error);
+  }
+}
+
+loadHeroPhoto();
+document.addEventListener('wedding:language', loadHeroPhoto);
