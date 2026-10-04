@@ -3,6 +3,22 @@
   "trailingSlash": false,
   "rewrites": [
     {
+      "source": "/jp/album",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/jp/album/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/jp",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/jp/",
+      "destination": "/index.html"
+    },
+    {
       "source": "/vi/album",
       "destination": "/index.html"
     },
