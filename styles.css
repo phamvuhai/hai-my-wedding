@@ -3618,3 +3618,243 @@ html[data-motion="minimal"] .motion-marquee .marquee-track{
 }
 
 /* redeploy trigger: V8 production */
+
+
+/* =========================================
+   V8.1 — typography & responsive text safety
+   ========================================= */
+
+/* Flex/grid children are allowed to shrink instead of pushing the viewport wider. */
+.nav-inner,
+.nav-right,
+.hero-content,
+.story-grid,
+.countdown-layout,
+.event-families,
+.family-header,
+.family-events,
+.guide-grid,
+.schedule-days,
+.schedule-day,
+.schedule-item,
+.travel-layout,
+.travel-cards,
+.city-notes,
+.wishes-layout,
+.home-gallery,
+.rsvp-layout,
+.rsvp-form{
+  min-width:0;
+}
+.nav-inner > *,
+.nav-right > *,
+.hero-content > *,
+.story-grid > *,
+.countdown-layout > *,
+.event-families > *,
+.family-header > *,
+.family-events > *,
+.guide-grid > *,
+.schedule-days > *,
+.schedule-day > *,
+.schedule-item > *,
+.travel-layout > *,
+.travel-cards > *,
+.city-notes > *,
+.wishes-layout > *,
+.rsvp-layout > *{
+  min-width:0;
+}
+
+/* Long public-facing copy and addresses must always remain readable. */
+.event-meta,
+.schedule-item p,
+.travel-card p,
+.travel-meta span,
+.city-notes p,
+.guide-card p,
+.story-copy p,
+.wishes-card p,
+.rsvp-copy p,
+.section-heading p,
+.hero-note,
+.footer p{
+  max-width:100%;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  hyphens:auto;
+}
+
+/* Headings scale and wrap cleanly without clipping. */
+.hero-copy h1,
+.story-copy h2,
+.section-heading h2,
+.countdown-heading h2,
+.travel-heading h2,
+.schedule-head h2,
+.wishes-card h2,
+.rsvp-copy h2,
+.event-card h4,
+.guide-card h3,
+.travel-card h3,
+.schedule-item h3{
+  max-width:100%;
+  overflow-wrap:normal;
+  word-break:normal;
+  text-wrap:balance;
+}
+
+/* CTA/map labels can wrap on very narrow screens instead of overflowing. */
+.btn,
+.map-link,
+.intro-open-btn{
+  max-width:100%;
+  white-space:normal;
+  text-align:center;
+  line-height:1.25;
+}
+
+/* Japanese copy uses natural CJK breaking rules. */
+html:lang(ja) .hero-note,
+html:lang(ja) .story-copy,
+html:lang(ja) .section-heading,
+html:lang(ja) .event-card,
+html:lang(ja) .guide-card,
+html:lang(ja) .schedule-section,
+html:lang(ja) .travel-section,
+html:lang(ja) .wishes-section,
+html:lang(ja) .rsvp-section{
+  line-break:strict;
+  word-break:normal;
+  overflow-wrap:anywhere;
+}
+
+/* Marquee content is the one deliberate no-wrap exception. */
+.motion-marquee,
+.motion-marquee *,
+.forever-rail,
+.forever-rail *{
+  overflow-wrap:normal;
+  word-break:normal;
+  hyphens:none;
+}
+
+/* Tablet typography guardrails. */
+@media(max-width:1024px){
+  .hero-copy h1{font-size:clamp(3rem,8vw,6rem)}
+  .section-heading h2,
+  .countdown-heading h2,
+  .travel-heading h2,
+  .schedule-head h2,
+  .wishes-card h2,
+  .rsvp-copy h2{
+    font-size:clamp(2rem,5.2vw,3.8rem);
+  }
+  .event-meta,
+  .schedule-item p,
+  .travel-card p{
+    font-size:clamp(.84rem,1.7vw,.98rem);
+  }
+}
+
+/* Phones: protect every long label/address from clipping or awkward overlap. */
+@media(max-width:680px){
+  .hero-copy{max-width:100%}
+  .hero-copy h1{
+    font-size:clamp(2.75rem,15vw,4.7rem);
+    line-height:.94;
+  }
+  .kinetic-names{
+    max-width:100%;
+    flex-wrap:nowrap;
+  }
+  .hero-note{
+    font-size:clamp(.9rem,3.8vw,1rem);
+    line-height:1.65;
+  }
+
+  .section-heading h2,
+  .countdown-heading h2,
+  .travel-heading h2,
+  .schedule-head h2,
+  .wishes-card h2,
+  .rsvp-copy h2{
+    font-size:clamp(1.9rem,9vw,3rem);
+    line-height:1.02;
+  }
+
+  .family-header{
+    flex-wrap:wrap;
+    align-items:flex-start;
+  }
+  .family-date{
+    flex:0 0 auto;
+    white-space:nowrap;
+  }
+
+  .event-card,
+  .guide-card,
+  .schedule-item,
+  .travel-card,
+  .wishes-card,
+  .rsvp-form{
+    overflow:visible;
+  }
+
+  .event-meta,
+  .schedule-item p,
+  .travel-card p,
+  .travel-meta span,
+  .city-notes p,
+  .guide-card p{
+    font-size:.9rem;
+    line-height:1.58;
+  }
+
+  .schedule-item{
+    grid-template-columns:minmax(74px,26%) minmax(0,1fr);
+    gap:12px;
+  }
+  .schedule-time{
+    min-width:0;
+    overflow-wrap:anywhere;
+  }
+
+  .intro-invite,
+  .intro-date{
+    max-width:100%;
+    overflow-wrap:anywhere;
+  }
+
+  .btn,
+  .map-link,
+  .intro-open-btn{
+    min-height:44px;
+  }
+}
+
+/* Very narrow / short phones get one more typography step-down. */
+@media(max-width:390px){
+  .hero-copy h1{font-size:clamp(2.55rem,14vw,4rem)}
+  .section-heading h2,
+  .countdown-heading h2,
+  .travel-heading h2,
+  .schedule-head h2,
+  .wishes-card h2,
+  .rsvp-copy h2{
+    font-size:clamp(1.72rem,8.5vw,2.5rem);
+  }
+  .event-meta,
+  .schedule-item p,
+  .travel-card p,
+  .guide-card p,
+  .city-notes p{
+    font-size:.86rem;
+  }
+  .schedule-item{
+    grid-template-columns:1fr;
+  }
+  .schedule-time{
+    margin-bottom:2px;
+  }
+}
