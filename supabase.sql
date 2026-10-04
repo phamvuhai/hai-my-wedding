@@ -709,3 +709,12 @@ $$;
 
 revoke all on function public.submit_wedding_rsvp(text,text,text,integer,text,text) from public;
 grant execute on function public.submit_wedding_rsvp(text,text,text,integer,text,text) to anon, authenticated;
+
+
+-- Admin may delete RSVP records. Deleting RSVP does not delete guest_invites.
+grant delete on table public.rsvp to authenticated;
+
+drop policy if exists admin_can_delete_rsvp on public.rsvp;
+create policy admin_can_delete_rsvp on public.rsvp
+for delete to authenticated
+using (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com');
