@@ -16,6 +16,7 @@
     root.dataset.motion = mode;
     body.classList.add('motion-ready');
 
+    initHeroNameFit();
     initEntrance();
     initHeroReplay();
     initTypography();
@@ -48,6 +49,146 @@
     } catch {
       setMode('elegant');
     }
+  }
+
+  function initHeroNameFit() {
+    const block = qs('.hero-couple-names');
+    if (!block || block.dataset.fitInit) return;
+    block.dataset.fitInit = '1';
+
+    const lineTexts = () => qsa('.hero-name-fit-text', block);
+    let lastViewportWidth = Math.round(document.documentElement.clientWidth || innerWidth);
+    let resizeTimer = 0;
+    let fitToken = 0;
+
+    const viewportWidth = () => Math.round(document.documentElement.clientWidth || innerWidth);
+    const viewportHeight = () => Math.round(innerHeight || document.documentElement.clientHeight || 0);
+
+    const baseSizeFor = (width, height) => {
+      const landscapePhone = width <= 950 && height <= 500;
+      if (landscapePhone) return 72;
+      if (width <= 390) return 66;
+      if (width <= 680) return 76;
+      if (width <= 1024) return 106;
+      if (width <= 1399) return 128;
+      return Math.min(158, Math.max(136, width * .082));
+    };
+
+    const safeWidthFor = width => {
+      const height = viewportHeight();
+      const landscapePhone = width <= 950 && height <= 500;
+      let ratio;
+      let cap;
+
+      if (landscapePhone) {
+        ratio = .72;
+        cap = 680;
+      } else if (width <= 680) {
+        ratio = .90;
+        cap = 520;
+      } else if (width <= 1024) {
+        ratio = width > height ? .80 : .86;
+        cap = 820;
+      } else if (width <= 1366) {
+        ratio = .79;
+        cap = 960;
+      } else {
+        ratio = .74;
+        cap = 1100;
+      }
+
+      const parentWidth = block.parentElement?.clientWidth || width;
+      return Math.max(240, Math.min(width * ratio, parentWidth * .96, cap));
+    };
+
+    const fitLine = (textEl, baseSize, safeWidth) => {
+      textEl.style.fontSize = `${baseSize.toFixed(2)}px`;
+      textEl.style.setProperty('--hero-fit-size', `${baseSize.toFixed(2)}px`);
+
+      // UTM Beautiful Caps has long swashes outside the visual body.
+      // Reserve extra breathing room so the decorative strokes never touch the viewport.
+      const usableWidth = safeWidth * .92;
+
+      for (let i = 0; i < 3; i++) {
+        const measured = textEl.getBoundingClientRect().width;
+        if (!measured || measured <= usableWidth) break;
+        const next = Math.max(42, parseFloat(textEl.style.fontSize) * (usableWidth / measured));
+        textEl.style.fontSize = `${next.toFixed(2)}px`;
+        textEl.style.setProperty('--hero-fit-size', `${next.toFixed(2)}px`);
+      }
+
+      textEl.dataset.fitWidth = textEl.getBoundingClientRect().width.toFixed(2);
+    };
+
+    const fit = async () => {
+      const token = ++fitToken;
+      block.classList.remove('hero-fit-ready');
+
+      try {
+        if (document.fonts?.load) {
+          await Promise.race([
+            document.fonts.load('120px "UTM Beautiful Caps"'),
+            new Promise(resolve => setTimeout(resolve, 1500))
+          ]);
+        }
+        if (document.fonts?.ready) {
+          await Promise.race([
+            document.fonts.ready,
+            new Promise(resolve => setTimeout(resolve, 600))
+          ]);
+        }
+      } catch (_) {}
+
+      if (token !== fitToken) return;
+
+      requestAnimationFrame(() => {
+        if (token !== fitToken) return;
+
+        const width = viewportWidth();
+        const height = viewportHeight();
+        const baseSize = baseSizeFor(width, height);
+        const safeWidth = safeWidthFor(width);
+
+        block.style.setProperty('--hero-fit-safe-width', `${safeWidth.toFixed(2)}px`);
+        block.style.setProperty('--hero-fit-base-size', `${baseSize.toFixed(2)}px`);
+
+        lineTexts().forEach(textEl => fitLine(textEl, baseSize, safeWidth));
+
+        block.classList.add('hero-fit-ready');
+        block.dispatchEvent(new CustomEvent('hero:name-fitted', {
+          bubbles:false,
+          detail:{ width, height, safeWidth, baseSize }
+        }));
+      });
+    };
+
+    const scheduleFit = delay => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(fit, delay);
+    };
+
+    fit();
+
+    addEventListener('resize', () => {
+      const nextWidth = viewportWidth();
+
+      // Ignore Safari toolbar height-only changes; refit only when width truly changes.
+      if (Math.abs(nextWidth - lastViewportWidth) < 8) return;
+
+      lastViewportWidth = nextWidth;
+      scheduleFit(180);
+    }, { passive:true });
+
+    addEventListener('orientationchange', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        lastViewportWidth = viewportWidth();
+        fit();
+      }, 280);
+    }, { passive:true });
+
+    addEventListener('load', () => scheduleFit(80), { once:true });
+    addEventListener('pageshow', () => scheduleFit(40), { once:true });
   }
 
   function initEntrance() {
