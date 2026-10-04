@@ -273,22 +273,96 @@
   document.getElementById('rotateLeft').onclick = () => { A.rotation = (A.rotation - 90) % 360; draw(); };
   document.getElementById('rotateRight').onclick = () => { A.rotation = (A.rotation + 90) % 360; draw(); };
 
-  const publicBlob = async () => {
-    const out = renderCanvas(null, 2400);
-    const blob = await new Promise(ok => out.toBlob(ok, 'image/webp', .84));
-    return { blob, width: out.width, height: out.height };
-  };
+  const MB = 1024 * 1024;
+  const PUBLIC_TARGET_BYTES = 5.5 * MB;
+  const PUBLIC_LIMIT_BYTES = 6 * MB;
+  const MASTER_TARGET_BYTES = 19 * MB;
+  const MASTER_LIMIT_BYTES = 20 * MB;
 
-  const masterBlob = () => new Promise(ok => {
+  const formatMb = bytes => (Number(bytes || 0) / MB).toFixed(2);
+
+  const canvasToWebp = (canvas, quality) =>
+    new Promise(ok => canvas.toBlob(ok, 'image/webp', quality));
+
+  function releaseCanvas(canvas) {
+    if (!canvas) return;
+    canvas.width = 1;
+    canvas.height = 1;
+  }
+
+  async function optimizePublicBlob() {
+    const plans = [
+      [2400, .84], [2400, .78], [2400, .72], [2400, .66],
+      [2200, .82], [2200, .76], [2200, .70],
+      [2000, .82], [2000, .76], [2000, .70],
+      [1800, .80], [1800, .74], [1600, .76], [1600, .68]
+    ];
+    let best = null;
+
+    for (const [maxSize, quality] of plans) {
+      const out = renderCanvas(null, maxSize);
+      const width = out.width;
+      const height = out.height;
+      const blob = await canvasToWebp(out, quality);
+      releaseCanvas(out);
+      if (!blob) continue;
+
+      const candidate = { blob, width, height, maxSize, quality };
+      if (!best || blob.size < best.blob.size) best = candidate;
+      if (blob.size <= PUBLIC_TARGET_BYTES) return candidate;
+    }
+
+    if (best && best.blob.size <= PUBLIC_LIMIT_BYTES) return best;
+    throw new Error(
+      `Ảnh public sau khi tối ưu vẫn quá lớn (${formatMb(best?.blob?.size)} MB). Giới hạn upload là 6 MB.`
+    );
+  }
+
+  function renderMasterCanvas(maxSize) {
     const img = A.sourceImage;
-    const max = 3000;
-    const scale = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
-    const c = document.createElement('canvas');
-    c.width = Math.max(1, Math.round(img.naturalWidth * scale));
-    c.height = Math.max(1, Math.round(img.naturalHeight * scale));
-    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-    c.toBlob(ok, 'image/webp', .90);
-  });
+    const scale = Math.min(1, maxSize / Math.max(img.naturalWidth, img.naturalHeight));
+    const out = document.createElement('canvas');
+    out.width = Math.max(1, Math.round(img.naturalWidth * scale));
+    out.height = Math.max(1, Math.round(img.naturalHeight * scale));
+    out.getContext('2d').drawImage(img, 0, 0, out.width, out.height);
+    return out;
+  }
+
+  async function optimizeMasterBlob() {
+    const plans = [
+      [3000, .90], [3000, .84], [3000, .78],
+      [2800, .86], [2800, .80],
+      [2600, .84], [2600, .78],
+      [2400, .82], [2200, .80], [2000, .78]
+    ];
+    let best = null;
+
+    for (const [maxSize, quality] of plans) {
+      const out = renderMasterCanvas(maxSize);
+      const width = out.width;
+      const height = out.height;
+      const blob = await canvasToWebp(out, quality);
+      releaseCanvas(out);
+      if (!blob) continue;
+
+      const candidate = { blob, width, height, maxSize, quality };
+      if (!best || blob.size < best.blob.size) best = candidate;
+      if (blob.size <= MASTER_TARGET_BYTES) return candidate;
+    }
+
+    if (best && best.blob.size <= MASTER_LIMIT_BYTES) return best;
+    throw new Error(
+      `Ảnh master sau khi tối ưu vẫn quá lớn (${formatMb(best?.blob?.size)} MB). Giới hạn upload là 20 MB.`
+    );
+  }
+
+  function friendlyStorageError(error, label, limitMb) {
+    const message = error?.message || 'Upload thất bại.';
+    if (/maximum allowed size|exceeded|too large|payload too large/i.test(message)) {
+      return `${label} vượt giới hạn ${limitMb} MB của Storage. Hệ thống đã thử tự tối ưu nhưng file vẫn quá lớn.`;
+    }
+    return message;
+  }
 
   document.addEventListener('admin:edit', async e => {
     const img = e.detail;
@@ -372,9 +446,19 @@
     const al = A.albums.find(x => x.id === album.value);
     if (!al) return;
 
-    A.setStatus(status, 'Đang tạo ảnh public 2400px và upload...');
-    const rendered = await publicBlob();
-    if (!rendered.blob) return A.setStatus(status, 'Không xử lý được ảnh.', 'error');
+    A.setStatus(status, 'Đang tối ưu ảnh public để phù hợp giới hạn Storage...');
+    let rendered;
+    try {
+      rendered = await optimizePublicBlob();
+    } catch (e) {
+      return A.setStatus(status, e.message || 'Không xử lý được ảnh.', 'error');
+    }
+    if (!rendered?.blob) return A.setStatus(status, 'Không xử lý được ảnh.', 'error');
+
+    A.setStatus(
+      status,
+      `Public: ${formatMb(rendered.blob.size)} MB · ${rendered.width}×${rendered.height} · WebP ${Math.round(rendered.quality * 100)}%. Đang upload...`
+    );
 
     const title = document.getElementById('imageTitle').value.trim();
     const caption = document.getElementById('imageCaption').value.trim();
@@ -398,6 +482,8 @@
     const sortOrder = Number(document.getElementById('sortOrder').value || 0);
 
     let id, originalPath, imagePath;
+    let masterOptimized = null;
+    let createdOriginal = false;
     if (A.editRecord) {
       id = A.editRecord.id;
       originalPath = A.editRecord.original_path;
@@ -406,10 +492,21 @@
       id = crypto.randomUUID();
       originalPath = `${al.slug}/${id}-master.webp`;
       imagePath = `${al.slug}/${id}.webp`;
-      const master = await masterBlob();
-      if (!master) return A.setStatus(status, 'Không tạo được bản master.', 'error');
-      const u = await db.storage.from('wedding-originals').upload(originalPath, master, { contentType:'image/webp' });
-      if (u.error) return A.setStatus(status, u.error.message, 'error');
+      A.setStatus(status, 'Đang tối ưu bản master...');
+      try {
+        masterOptimized = await optimizeMasterBlob();
+      } catch (e) {
+        return A.setStatus(status, e.message || 'Không tạo được bản master.', 'error');
+      }
+      if (!masterOptimized?.blob) return A.setStatus(status, 'Không tạo được bản master.', 'error');
+
+      const u = await db.storage.from('wedding-originals').upload(originalPath, masterOptimized.blob, {
+        contentType:'image/webp'
+      });
+      if (u.error) {
+        return A.setStatus(status, friendlyStorageError(u.error, 'Ảnh master', 20), 'error');
+      }
+      createdOriginal = true;
     }
 
     const p = await db.storage.from('wedding-gallery').upload(imagePath, rendered.blob, {
@@ -417,7 +514,12 @@
       cacheControl:'3600',
       upsert:!!A.editRecord
     });
-    if (p.error) return A.setStatus(status, p.error.message, 'error');
+    if (p.error) {
+      if (createdOriginal) {
+        await db.storage.from('wedding-originals').remove([originalPath]);
+      }
+      return A.setStatus(status, friendlyStorageError(p.error, 'Ảnh public', 6), 'error');
+    }
 
     if (hero) {
       await db.from('gallery_images').update({ is_hero:false }).neq('id', id || '00000000-0000-0000-0000-000000000000');
@@ -459,7 +561,17 @@
       : db.from('gallery_images').insert({ ...payload, id });
 
     const { error } = await op;
-    if (error) return A.setStatus(status, error.message, 'error');
+    if (error) {
+      if (!A.editRecord) {
+        await Promise.all([
+          db.storage.from('wedding-gallery').remove([imagePath]),
+          createdOriginal
+            ? db.storage.from('wedding-originals').remove([originalPath])
+            : Promise.resolve()
+        ]);
+      }
+      return A.setStatus(status, error.message, 'error');
+    }
 
     await A.loadData();
     if (A.fileQueue.length) {
@@ -467,7 +579,12 @@
       await loadNextQueued();
     } else {
       reset();
-      A.setStatus(status, 'Đã lưu ảnh 2400px và focus point thành công.', 'success');
+      const originalInfo = A.sourceBlob ? `Ảnh nguồn ${formatMb(A.sourceBlob.size)} MB · ` : '';
+      const publicInfo = `Public ${formatMb(rendered.blob.size)} MB · ${rendered.width}×${rendered.height} · WebP ${Math.round(rendered.quality * 100)}%`;
+      const masterInfo = masterOptimized
+        ? ` · Master ${formatMb(masterOptimized.blob.size)} MB · ${masterOptimized.width}×${masterOptimized.height} · WebP ${Math.round(masterOptimized.quality * 100)}%`
+        : '';
+      A.setStatus(status, `${originalInfo}${publicInfo}${masterInfo} · Đã lưu thành công.`, 'success');
     }
   };
 })();
