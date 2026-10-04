@@ -102,6 +102,8 @@ function initEventScrollStory() {
 
       item.style.setProperty('--event-focus', focus.toFixed(4));
       item.style.setProperty('--event-passed', passed.toFixed(4));
+      item.style.setProperty('--event-opacity', (.62 + focus * .38).toFixed(3));
+      item.style.setProperty('--event-shift', `${((1 - focus) * 3).toFixed(2)}px`);
       item.classList.toggle('is-past', itemCenter < focusY - 48);
 
       if (distance < nearestDistance) {
