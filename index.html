@@ -481,6 +481,33 @@
     </section>
   </main>
 
+  <section class="album-overlay" id="albumOverlay" aria-hidden="true">
+    <div class="album-overlay-shell">
+      <header class="album-overlay-header">
+        <div>
+          <p class="eyebrow">OUR MEMORIES</p>
+          <h2 data-i18n="album.title">Album của Hải & Mỹ</h2>
+        </div>
+        <button class="overlay-close" id="albumOverlayClose" type="button" aria-label="Close album">×</button>
+      </header>
+      <div class="album-overlay-grid" id="albumOverlayGrid" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <div class="photo-lightbox" id="photoLightbox" aria-hidden="true" role="dialog" aria-modal="true">
+    <button class="photo-lightbox-close" id="photoLightboxClose" type="button" aria-label="Close photo">×</button>
+    <button class="photo-lightbox-nav photo-lightbox-prev" id="photoLightboxPrev" type="button" aria-label="Previous photo">‹</button>
+    <figure class="photo-lightbox-figure">
+      <img id="photoLightboxImage" alt="" />
+      <figcaption>
+        <strong id="photoLightboxTitle"></strong>
+        <span id="photoLightboxCaption"></span>
+        <small id="photoLightboxCounter"></small>
+      </figcaption>
+    </figure>
+    <button class="photo-lightbox-nav photo-lightbox-next" id="photoLightboxNext" type="button" aria-label="Next photo">›</button>
+  </div>
+
   <aside class="music-dock music-dock-compact" id="musicDock" aria-label="Wedding music">
     <button class="music-toggle" id="musicToggle" type="button" aria-pressed="false">
       <span class="music-disc" aria-hidden="true">♪</span>
