@@ -41,11 +41,12 @@
           ? `Cảm ơn ${display} đã ghé xem thiệp cưới của chúng mình ♡`
           : 'Cảm ơn bạn đã ghé xem thiệp cưới của chúng mình ♡',
         welcomeBody: 'Sự hiện diện của bạn sẽ làm ngày vui của Hải & Mỹ thêm trọn vẹn.',
-        privateLinkTitle: 'Link thiệp riêng của bạn',
-        privateLinkText: 'Link này đi kèm tên và phản hồi RSVP của bạn, vì vậy vui lòng không chia sẻ cho người khác. Nếu muốn chia sẻ website cưới, hãy dùng link chung:',
-        rsvpPrivateTitle: 'Bạn có thể cập nhật lại phản hồi',
-        rsvpPrivateText: 'Bạn có thể sửa tên và cập nhật RSVP bất cứ lúc nào bằng chính link thiệp này. Vì đây là link cá nhân, vui lòng không chia sẻ.',
-        publicLinkLabel: 'Link chung của Hải & Mỹ'
+        privateLinkText: 'Link này gắn với tên & RSVP của bạn. Vui lòng không chia sẻ.',
+        rsvpPrivateText: 'Bạn có thể quay lại link thiệp này để cập nhật RSVP bất cứ lúc nào.',
+        sharePublic: 'Chia sẻ link chung',
+        copied: 'Đã sao chép link chung ✓',
+        shareTitle: 'Thiệp cưới Hải & Mỹ',
+        shareText: 'Mời bạn xem website cưới của Hải & Mỹ ♡'
       },
       en: {
         kicker: 'YOU ARE CORDIALLY INVITED',
@@ -57,11 +58,12 @@
           ? `Thank you, ${display}, for opening our wedding invitation ♡`
           : 'Thank you for opening our wedding invitation ♡',
         welcomeBody: "We can't wait to celebrate this special day with you.",
-        privateLinkTitle: 'Your private invitation link',
-        privateLinkText: 'This link is tied to your name and RSVP, so please do not share it with others. To share our wedding website, please use the public link:',
-        rsvpPrivateTitle: 'You can update your RSVP',
-        rsvpPrivateText: 'You can edit your name and update your RSVP anytime using this invitation link. Because it is personal to you, please do not share it.',
-        publicLinkLabel: 'Hai & My public wedding link'
+        privateLinkText: 'This link is tied to your name & RSVP. Please do not share it.',
+        rsvpPrivateText: 'You can return to this invitation link anytime to update your RSVP.',
+        sharePublic: 'Share public link',
+        copied: 'Public link copied ✓',
+        shareTitle: 'Hai & My Wedding',
+        shareText: 'Come see Hai & My’s wedding website ♡'
       },
       ja: {
         kicker: '心よりご招待申し上げます',
@@ -74,11 +76,12 @@
           ? `${display} 様、招待状をご覧いただきありがとうございます ♡`
           : '私たちの結婚式の招待状をご覧いただき、ありがとうございます ♡',
         welcomeBody: '大切な一日を一緒にお祝いできることを楽しみにしています。',
-        privateLinkTitle: 'あなた専用の招待リンク',
-        privateLinkText: 'このリンクにはお名前とRSVP情報が紐づいているため、他の方には共有しないでください。ウェディングサイトを共有する場合は、共通リンクをご利用ください。',
-        rsvpPrivateTitle: 'RSVPはいつでも更新できます',
-        rsvpPrivateText: 'この招待リンクから、お名前やRSVP内容をいつでも変更できます。個人専用リンクのため、他の方への共有はお控えください。',
-        publicLinkLabel: 'Hai & My 共通リンク'
+        privateLinkText: 'このリンクはお名前とRSVPに紐づいています。共有はお控えください。',
+        rsvpPrivateText: 'この招待リンクから、いつでもRSVPを更新できます。',
+        sharePublic: '共通リンクを共有',
+        copied: '共通リンクをコピーしました ✓',
+        shareTitle: 'Hai & My Wedding',
+        shareText: 'Hai & My のウェディングサイトをご覧ください ♡'
       }
     };
     return {...(texts[language] || texts.vi), display};
@@ -123,58 +126,100 @@
     applyInviteEventPriority(invite);
   }
 
-  function renderPrivateNotices(invite) {
-    const c = copyFor(lang(), invite);
-    const publicUrl = location.origin;
+  const PUBLIC_WEDDING_URL = 'https://hai-my-wedding-gamma.vercel.app';
 
+  function showShareToast(message) {
+    let toast = document.getElementById('personalShareToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'personalShareToast';
+      toast.className = 'personal-share-toast';
+      toast.setAttribute('role', 'status');
+      toast.setAttribute('aria-live', 'polite');
+      document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.classList.remove('is-visible');
+    requestAnimationFrame(() => toast.classList.add('is-visible'));
+    clearTimeout(showShareToast.timer);
+    showShareToast.timer = setTimeout(() => toast.classList.remove('is-visible'), 1800);
+  }
+
+  async function sharePublicSite(invite = currentInvite) {
+    const copy = copyFor(lang(), invite);
+    const payload = {
+      title: copy.shareTitle,
+      text: copy.shareText,
+      url: PUBLIC_WEDDING_URL
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(payload);
+        return;
+      } catch (error) {
+        if (error?.name === 'AbortError') return;
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(PUBLIC_WEDDING_URL);
+    } catch {
+      const input = document.createElement('input');
+      input.value = PUBLIC_WEDDING_URL;
+      input.style.position = 'fixed';
+      input.style.opacity = '0';
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      input.remove();
+    }
+    showShareToast(copy.copied);
+  }
+
+  function renderPrivateNotices(invite) {
+    const copy = copyFor(lang(), invite);
     const cover = document.getElementById('personalLinkNotice');
-    const coverTitle = document.getElementById('personalLinkNoticeTitle');
     const coverText = document.getElementById('personalLinkNoticeText');
-    const coverLink = document.getElementById('personalPublicLink');
+    const shareButton = document.getElementById('personalSharePublic');
     const rsvpNotice = document.getElementById('rsvpPersonalNotice');
-    const rsvpTitle = document.getElementById('rsvpPersonalNoticeTitle');
     const rsvpText = document.getElementById('rsvpPersonalNoticeText');
-    const rsvpLink = document.getElementById('rsvpPublicLink');
 
     [cover, rsvpNotice].forEach(el => { if (el) el.hidden = !invite; });
     if (!invite) return;
 
-    if (coverTitle) coverTitle.textContent = c.privateLinkTitle;
-    if (coverText) coverText.textContent = c.privateLinkText;
-    if (rsvpTitle) rsvpTitle.textContent = c.rsvpPrivateTitle;
-    if (rsvpText) rsvpText.textContent = c.rsvpPrivateText;
-
-    [coverLink, rsvpLink].forEach(link => {
-      if (!link) return;
-      link.href = publicUrl;
-      link.textContent = `${c.publicLinkLabel}: ${publicUrl}`;
-    });
+    if (coverText) coverText.textContent = copy.privateLinkText;
+    if (rsvpText) rsvpText.textContent = copy.rsvpPrivateText;
+    if (shareButton) {
+      shareButton.textContent = copy.sharePublic;
+      shareButton.onclick = () => sharePublicSite(invite);
+    }
   }
 
   function applyInviteEventPriority(invite) {
     if (!invite) return;
     const choice = invite.event_choice || 'both';
     const invitedDays = choice === 'both' ? ['bride', 'groom'] : [choice];
-    const activeDay = choice === 'groom' ? 'groom' : 'bride';
     const language = lang() === 'jp' ? 'ja' : lang();
     const badgeLabel = {
       vi: 'Dành cho bạn',
-      en: 'Your invitation',
+      en: 'For you',
       ja: 'ご招待'
     }[language] || 'Dành cho bạn';
 
-    document.querySelectorAll('.event-invite-badge').forEach(badge => {
+    document.querySelectorAll('[data-invite-badge]').forEach(badge => {
       badge.textContent = badgeLabel;
     });
 
-    if (window.WeddingEvents?.setEventDay) {
-      window.WeddingEvents.setEventDay(activeDay, { invitedDays });
+    if (window.WeddingEvents?.highlightInvitedDays) {
+      window.WeddingEvents.highlightInvitedDays(invitedDays);
     } else {
-      const section = document.getElementById('events');
-      if (section) {
-        section.dataset.activeDay = activeDay;
-        section.dataset.invitedDays = invitedDays.join(',');
-      }
+      document.querySelectorAll('[data-event-day]').forEach(panel => {
+        panel.classList.toggle('is-invited', invitedDays.includes(panel.dataset.eventDay));
+      });
+      document.querySelectorAll('[data-invite-badge]').forEach(badge => {
+        badge.hidden = !invitedDays.includes(badge.dataset.inviteBadge);
+      });
     }
   }
 
