@@ -99,6 +99,7 @@
     body.dataset.marqueeInit = '1';
 
     const tracks = () => qsa('.motion-marquee .marquee-track, .forever-rail .marquee-track');
+    let lastViewportWidth = Math.round(document.documentElement.clientWidth || innerWidth);
 
     const build = track => {
       if (!track._marqueeSeedHTML) track._marqueeSeedHTML = track.innerHTML;
@@ -111,8 +112,10 @@
       track.appendChild(group);
 
       let copies = 1;
-      const minWidth = Math.max(innerWidth * 1.25, 720);
-      while (group.scrollWidth < minWidth && copies < 8) {
+      const viewportWidth = Math.round(document.documentElement.clientWidth || innerWidth);
+      const minWidth = Math.max(viewportWidth * 1.45, 760);
+
+      while (group.scrollWidth < minWidth && copies < 10) {
         group.insertAdjacentHTML('beforeend', seed);
         copies++;
       }
@@ -127,9 +130,29 @@
 
     let resizeTimer = 0;
     addEventListener('resize', () => {
+      const nextWidth = Math.round(document.documentElement.clientWidth || innerWidth);
+
+      // iOS Safari changes viewport HEIGHT while its browser chrome collapses during scrolling.
+      // Rebuilding only when WIDTH changes prevents the marquee from restarting mid-swipe.
+      if (Math.abs(nextWidth - lastViewportWidth) < 8) return;
+
+      lastViewportWidth = nextWidth;
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(rebuildAll, 180);
+      resizeTimer = setTimeout(rebuildAll, 220);
     }, {passive:true});
+
+    addEventListener('orientationchange', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        lastViewportWidth = Math.round(document.documentElement.clientWidth || innerWidth);
+        rebuildAll();
+      }, 280);
+    }, {passive:true});
+
+    document.addEventListener('wedding:language', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(rebuildAll, 80);
+    });
   }
 
   function observeRevealElement(el, index=0) {
@@ -216,12 +239,14 @@
         const p = Math.max(0, Math.min(1, scrollY / max));
         root.style.setProperty('--page-progress', p.toFixed(4));
 
-        floating.forEach((el,index) => {
-          const direction = index % 2 ? -1 : 1;
-          const x = direction * (p * 34);
-          const y = (p - .5) * (index % 2 ? 28 : 46);
-          el.style.transform = `translate3d(${x}px,${y}px,0)`;
-        });
+        if (!coarse) {
+          floating.forEach((el,index) => {
+            const direction = index % 2 ? -1 : 1;
+            const x = direction * (p * 34);
+            const y = (p - .5) * (index % 2 ? 28 : 46);
+            el.style.transform = `translate3d(${x}px,${y}px,0)`;
+          });
+        }
 
         if (side) {
           side.style.opacity = String(.22 + Math.min(.28,p*.5));
@@ -262,13 +287,13 @@
     const update = () => {
       cancelAnimationFrame(sectionRaf);
       sectionRaf = requestAnimationFrame(() => {
-        if (guide) {
+        if (guide && !coarse) {
           const p = sectionProgress(guide);
           const shift = (p - .5) * 34;
           guide.style.setProperty('--guide-shift', `${shift.toFixed(2)}px`);
         }
 
-        if (travel) {
+        if (travel && !coarse) {
           const p = sectionProgress(travel);
           const shift = (p - .5) * 38;
           travel.style.setProperty('--travel-shift', `${shift.toFixed(2)}px`);
@@ -282,12 +307,17 @@
         if (forever) {
           const p = sectionProgress(forever);
           forever.style.setProperty('--forever-progress', p.toFixed(3));
-          const horizontal = (p - .5) * 150;
-          if (topRail) topRail.style.transform = `translate3d(${-horizontal}px,0,0)`;
-          if (bottomRail) bottomRail.style.transform = `translate3d(${horizontal}px,0,0)`;
-          if (foreverWord) {
-            const scale = .88 + p * .2;
-            const tracking = Math.max(-.04, .12 - p * .16);
+
+          // The moving text itself lives on the child marquee-track.
+          // Only the outer rail gets a small scroll offset on fine-pointer devices.
+          // Touch devices get zero scroll offset so momentum scrolling cannot fight the CSS marquee.
+          const horizontal = coarse ? 0 : (p - .5) * 64;
+          if (topRail) topRail.style.transform = horizontal ? `translate3d(${-horizontal}px,0,0)` : 'translate3d(0,0,0)';
+          if (bottomRail) bottomRail.style.transform = horizontal ? `translate3d(${horizontal}px,0,0)` : 'translate3d(0,0,0)';
+
+          if (foreverWord && !coarse) {
+            const scale = .90 + p * .16;
+            const tracking = Math.max(-.02, .09 - p * .11);
             foreverWord.style.transform = `scale(${scale.toFixed(3)})`;
             foreverWord.style.letterSpacing = `${tracking.toFixed(3)}em`;
           }
