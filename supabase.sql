@@ -553,3 +553,159 @@ $$;
 
 revoke all on function public.mark_wedding_invite_opened(text) from public;
 grant execute on function public.mark_wedding_invite_opened(text) to anon;
+
+
+-- =========================================================
+-- RSVP source separation + personalized RSVP upsert
+-- =========================================================
+alter table public.rsvp
+  add column if not exists response_source text not null default 'public',
+  add column if not exists updated_at timestamptz not null default now();
+
+update public.rsvp
+set response_source = case when invite_id is not null then 'invite' else 'public' end
+where response_source is distinct from case when invite_id is not null then 'invite' else 'public' end;
+
+alter table public.rsvp
+  drop constraint if exists rsvp_response_source_check;
+
+alter table public.rsvp
+  add constraint rsvp_response_source_check
+  check (response_source in ('invite','public','admin'));
+
+create unique index if not exists rsvp_unique_invite_idx
+  on public.rsvp(invite_id)
+  where invite_id is not null;
+
+drop policy if exists public_can_submit_rsvp on public.rsvp;
+create policy public_can_submit_rsvp on public.rsvp
+for insert to anon, authenticated
+with check (
+  invite_id is null
+  and response_source = 'public'
+  and char_length(trim(guest_name)) between 1 and 120
+  and attendance in ('yes','no','maybe')
+  and guest_count between 0 and 10
+  and (phone is null or char_length(phone) <= 40)
+  and event_choice in ('bride','groom','both')
+  and (message is null or char_length(message) <= 1000)
+);
+
+create or replace function public.get_wedding_rsvp(p_token text)
+returns table (
+  id bigint,
+  guest_name text,
+  phone text,
+  attendance text,
+  guest_count integer,
+  event_choice text,
+  message text,
+  response_source text,
+  created_at timestamptz,
+  updated_at timestamptz
+)
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select r.id, r.guest_name, r.phone, r.attendance, r.guest_count,
+         r.event_choice, r.message, r.response_source, r.created_at, r.updated_at
+  from public.guest_invites gi
+  join public.rsvp r on r.invite_id = gi.id
+  where gi.token::text = p_token
+    and gi.is_active = true
+  limit 1;
+$$;
+
+revoke all on function public.get_wedding_rsvp(text) from public;
+grant execute on function public.get_wedding_rsvp(text) to anon, authenticated;
+
+create or replace function public.submit_wedding_rsvp(
+  p_token text,
+  p_phone text,
+  p_attendance text,
+  p_guest_count integer,
+  p_event_choice text,
+  p_message text
+)
+returns bigint
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_invite public.guest_invites%rowtype;
+  v_event text;
+  v_count integer;
+  v_id bigint;
+begin
+  select * into v_invite
+  from public.guest_invites
+  where token::text = p_token
+    and is_active = true
+  limit 1;
+
+  if v_invite.id is null then
+    raise exception 'Invalid or inactive invitation token';
+  end if;
+
+  if p_attendance not in ('yes','no','maybe') then
+    raise exception 'Invalid attendance';
+  end if;
+
+  if p_message is not null and char_length(p_message) > 1000 then
+    raise exception 'Message is too long';
+  end if;
+
+  if p_phone is not null and char_length(p_phone) > 40 then
+    raise exception 'Phone is too long';
+  end if;
+
+  if v_invite.event_choice <> 'both' then
+    v_event := v_invite.event_choice;
+  elsif p_event_choice in ('bride','groom','both') then
+    v_event := p_event_choice;
+  else
+    v_event := 'both';
+  end if;
+
+  if p_attendance = 'no' then
+    v_count := 0;
+  else
+    v_count := greatest(1, least(coalesce(p_guest_count,1), v_invite.max_guests));
+  end if;
+
+  insert into public.rsvp (
+    guest_name, phone, attendance, guest_count, event_choice,
+    invite_id, event_code, message, response_source, updated_at
+  ) values (
+    v_invite.guest_name,
+    coalesce(nullif(trim(p_phone),''), v_invite.phone),
+    p_attendance,
+    v_count,
+    v_event,
+    v_invite.id,
+    'wedding-2026',
+    nullif(trim(p_message),''),
+    'invite',
+    now()
+  )
+  on conflict (invite_id) where invite_id is not null
+  do update set
+    guest_name = excluded.guest_name,
+    phone = excluded.phone,
+    attendance = excluded.attendance,
+    guest_count = excluded.guest_count,
+    event_choice = excluded.event_choice,
+    message = excluded.message,
+    response_source = 'invite',
+    updated_at = now()
+  returning id into v_id;
+
+  return v_id;
+end;
+$$;
+
+revoke all on function public.submit_wedding_rsvp(text,text,text,integer,text,text) from public;
+grant execute on function public.submit_wedding_rsvp(text,text,text,integer,text,text) to anon, authenticated;
