@@ -1,70 +1,76 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "rewrites": [
-    {
-      "source": "/jp/album",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/jp/album/",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/jp",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/jp/",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/vi/album",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/vi/album/",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/en/album",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/en/album/",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/ja/album",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/ja/album/",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/vi",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/vi/",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/en",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/en/",
-      "destination": "/index.html"
-    },
+  "redirects": [
     {
       "source": "/ja",
-      "destination": "/index.html"
+      "destination": "/jp",
+      "permanent": true
     },
     {
       "source": "/ja/",
-      "destination": "/index.html"
+      "destination": "/jp",
+      "permanent": true
+    },
+    {
+      "source": "/ja/album",
+      "destination": "/jp/album",
+      "permanent": true
+    },
+    {
+      "source": "/ja/album/",
+      "destination": "/jp/album",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/jp/album",
+      "destination": "/index"
+    },
+    {
+      "source": "/jp/album/",
+      "destination": "/index"
+    },
+    {
+      "source": "/jp",
+      "destination": "/index"
+    },
+    {
+      "source": "/jp/",
+      "destination": "/index"
+    },
+    {
+      "source": "/vi/album",
+      "destination": "/index"
+    },
+    {
+      "source": "/vi/album/",
+      "destination": "/index"
+    },
+    {
+      "source": "/en/album",
+      "destination": "/index"
+    },
+    {
+      "source": "/en/album/",
+      "destination": "/index"
+    },
+    {
+      "source": "/vi",
+      "destination": "/index"
+    },
+    {
+      "source": "/vi/",
+      "destination": "/index"
+    },
+    {
+      "source": "/en",
+      "destination": "/index"
+    },
+    {
+      "source": "/en/",
+      "destination": "/index"
     },
     {
       "source": "/album",
