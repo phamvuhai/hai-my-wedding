@@ -11,6 +11,7 @@
   search?.addEventListener('input', render);
   statusFilter?.addEventListener('change', render);
   eventFilter?.addEventListener('change', render);
+  document.getElementById('exportRsvpBtn')?.addEventListener('click', exportCsv);
 
   async function load() {
     const { data, error } = await db.from('rsvp').select('*').order('created_at', { ascending: false });
@@ -21,6 +22,26 @@
     }
     A.rsvps = data || [];
     render();
+  }
+
+  function csvCell(value) {
+    const s = String(value ?? '').replaceAll('"','""');
+    return '"' + s + '"';
+  }
+
+  function exportCsv() {
+    const headers = ['Tên','Điện thoại','Trạng thái','Số người','Sự kiện','Lời nhắn','Ngày'];
+    const rows = (A.rsvps || []).map(r => [
+      r.guest_name, r.phone || '', r.attendance, r.guest_count,
+      r.event_choice, r.message || '', new Date(r.created_at).toLocaleString('vi-VN')
+    ]);
+    const csv = '\uFEFF' + [headers, ...rows].map(row => row.map(csvCell).join(',')).join('\n');
+    const url = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'hai-my-wedding-rsvp.csv';
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   function render() {
