@@ -8276,3 +8276,11 @@ html:lang(en) .wishes-display em{
 html:lang(ja) .footer p{
   line-break:strict;
 }
+
+.intro-guest-name{
+  margin:.35rem 0 .8rem;
+  font:500 clamp(1rem,2.4vw,1.35rem) Georgia,serif;
+  color:var(--ink,#2f2925);
+  letter-spacing:.03em;
+  text-align:center;
+}

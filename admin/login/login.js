@@ -1,7 +1,7 @@
 (() => {
   const cfg = window.WEDDING_CONFIG || {};
   const ADMIN_EMAIL = 'phamvuhai23@gmail.com';
-  const APP_ORIGIN = 'https://hai-my-wedding.vercel.app';
+  const APP_ORIGIN = location.origin;
   const status = document.getElementById('status');
   const resetStatus = document.getElementById('resetStatus');
   const loginForm = document.getElementById('loginForm');
@@ -92,7 +92,10 @@
     });
 
     if (error) {
-      setStatus(status, error.message, 'error');
+      const message = /rate limit/i.test(error.message)
+        ? 'Đã gửi quá nhiều email trong thời gian ngắn. Vui lòng thử lại sau.'
+        : error.message;
+      setStatus(status, message, 'error');
       return;
     }
 

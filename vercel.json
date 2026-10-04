@@ -21,9 +21,38 @@
       "source": "/ja/album/",
       "destination": "/jp/album",
       "permanent": true
+    },
+    {
+      "source": "/ja/invite/:token",
+      "destination": "/jp/invite/:token",
+      "permanent": true
     }
   ],
   "rewrites": [
+    {
+      "source": "/vi/invite/:token",
+      "destination": "/index"
+    },
+    {
+      "source": "/vi/invite/:token/",
+      "destination": "/index"
+    },
+    {
+      "source": "/en/invite/:token",
+      "destination": "/index"
+    },
+    {
+      "source": "/en/invite/:token/",
+      "destination": "/index"
+    },
+    {
+      "source": "/jp/invite/:token",
+      "destination": "/index"
+    },
+    {
+      "source": "/jp/invite/:token/",
+      "destination": "/index"
+    },
     {
       "source": "/jp/album",
       "destination": "/index"

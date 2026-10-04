@@ -15,7 +15,9 @@
         <div class="sidebar-kicker">ADMIN PANEL</div>
         <nav>
           <button class="nav-item active" data-tab="overview">Tổng quan</button>
+          <button class="nav-item" data-tab="content">Nội dung</button>
           <button class="nav-item" data-tab="rsvp">RSVP</button>
+          <button class="nav-item" data-tab="guests">Khách mời</button>
           <button class="nav-item" data-tab="album">Album</button>
         </nav>
         <div class="sidebar-bottom">
@@ -99,11 +101,24 @@
           </div>
         </section>
 
+
+        <section id="contentTab" class="tab-panel hidden">
+          <section class="panel">
+            <div class="panel-head">
+              <div><p class="eyebrow">WEBSITE CONTENT</p><h3>Nội dung đa ngôn ngữ</h3></div>
+              <button id="saveContentBtn" class="btn primary" type="button">Lưu nội dung</button>
+            </div>
+            <p class="muted">Chỉnh trực tiếp các nội dung động của website. Nếu một ô để trống, website sẽ dùng nội dung mặc định trong source.</p>
+            <div id="contentEditor" class="content-editor"></div>
+            <p id="contentStatus" class="status"></p>
+          </section>
+        </section>
+
         <section id="rsvpTab" class="tab-panel hidden">
           <div id="rsvpStats" class="stats"></div>
           <section class="panel">
             <div class="panel-head rsvp-head">
-              <div><p class="eyebrow">GUEST LIST</p><h3>RSVP</h3></div>
+              <div><p class="eyebrow">GUEST LIST</p><h3>RSVP</h3></div><button id="exportRsvpBtn" class="btn ghost" type="button">Export CSV</button>
               <div class="rsvp-filters">
                 <input id="rsvpSearch" type="search" placeholder="Tìm tên / số điện thoại">
                 <select id="rsvpStatusFilter" aria-label="Lọc trạng thái">
@@ -127,6 +142,32 @@
               </table>
             </div>
           </section>
+        </section>
+
+
+        <section id="guestsTab" class="tab-panel hidden">
+          <div id="guestStats" class="stats"></div>
+          <div class="dashboard-grid guest-admin-grid">
+            <section class="panel">
+              <div class="panel-head"><div><p class="eyebrow">PERSONAL INVITATION</p><h3>Tạo khách mời</h3></div></div>
+              <form id="guestForm" class="guest-form">
+                <label>Tên khách<input id="guestName" maxlength="120" required placeholder="Nguyễn Văn A"></label>
+                <label>Số điện thoại<input id="guestPhone" maxlength="40" placeholder="09xx xxx xxx"></label>
+                <label>Sự kiện
+                  <select id="guestEvent"><option value="bride">Nhà gái</option><option value="groom">Nhà trai</option><option value="both" selected>Cả hai</option></select>
+                </label>
+                <label>Số khách tối đa<input id="guestMax" type="number" min="1" max="10" value="1"></label>
+                <label>Ghi chú nội bộ<textarea id="guestNote" rows="3" maxlength="1000"></textarea></label>
+                <button class="btn primary" type="submit">Tạo link thiệp</button>
+                <p id="guestFormStatus" class="status"></p>
+              </form>
+            </section>
+            <section class="panel">
+              <div class="panel-head"><div><p class="eyebrow">INVITE LINKS</p><h3>Danh sách khách</h3></div></div>
+              <input id="guestSearch" type="search" placeholder="Tìm tên / số điện thoại">
+              <div id="guestList" class="guest-list"></div>
+            </section>
+          </div>
         </section>
 
         <section id="albumTab" class="tab-panel hidden">
@@ -305,7 +346,9 @@
   <script src="/admin/state.js"></script>
   <script src="/admin/library.js"></script>
   <script src="/admin/editor.js"></script>
+  <script src="/admin/content.js"></script>
   <script src="/admin/rsvp.js"></script>
+  <script src="/admin/guests.js"></script>
   <script src="/admin/dashboard.js"></script>
   <script src="/admin/auth.js"></script>
 </body>

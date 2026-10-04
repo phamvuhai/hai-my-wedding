@@ -55,8 +55,11 @@ form.addEventListener('submit', async (event) => {
         guest_name: data.name.trim(),
         phone: data.phone?.trim() || null,
         attendance: data.attending,
-        guest_count: data.attending === 'no' ? 0 : data.guest_count,
-        event_choice: data.event_choice || 'both',
+        guest_count: data.attending === 'no'
+          ? 0
+          : Math.min(data.guest_count, Number(form.dataset.maxGuests || data.guest_count || 1)),
+        event_choice: form.dataset.inviteEvent || data.event_choice || 'both',
+        invite_id: form.dataset.inviteId || null,
         event_code: 'wedding-2026',
         message: data.message?.trim() || null
       });
