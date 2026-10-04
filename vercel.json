@@ -4,27 +4,27 @@
   "rewrites": [
     {
       "source": "/vi/album",
-      "destination": "/album/index.html"
+      "destination": "/index.html"
     },
     {
       "source": "/vi/album/",
-      "destination": "/album/index.html"
+      "destination": "/index.html"
     },
     {
       "source": "/en/album",
-      "destination": "/album/index.html"
+      "destination": "/index.html"
     },
     {
       "source": "/en/album/",
-      "destination": "/album/index.html"
+      "destination": "/index.html"
     },
     {
       "source": "/ja/album",
-      "destination": "/album/index.html"
+      "destination": "/index.html"
     },
     {
       "source": "/ja/album/",
-      "destination": "/album/index.html"
+      "destination": "/index.html"
     },
     {
       "source": "/vi",
