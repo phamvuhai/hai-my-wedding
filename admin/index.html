@@ -133,17 +133,61 @@
                   <option value="groom">Nhà trai</option>
                   <option value="both">Cả hai</option>
                 </select>
+                <select id="rsvpSourceFilter" aria-label="Lọc nguồn RSVP">
+                  <option value="all">Tất cả nguồn</option>
+                  <option value="invite">Được mời</option>
+                  <option value="public">Khách tự nhập</option>
+                  <option value="admin">Admin nhập</option>
+                </select>
               </div>
             </div>
             <div class="table-wrap">
               <table>
-                <thead><tr><th>Khách</th><th>Điện thoại</th><th>Tham dự</th><th>Số người</th><th>Sự kiện</th><th>Lời nhắn</th><th>Ngày</th></tr></thead>
+                <thead><tr><th>Khách</th><th>Nguồn</th><th>Điện thoại</th><th>Tham dự</th><th>Số người</th><th>Sự kiện</th><th>Lời nhắn</th><th>Ngày</th><th>Action</th></tr></thead>
                 <tbody id="rsvpBody"></tbody>
               </table>
             </div>
           </section>
         </section>
 
+
+        <div id="rsvpEditModal" class="admin-modal hidden" aria-hidden="true">
+          <div class="admin-modal-backdrop" data-rsvp-close></div>
+          <section class="admin-modal-card" role="dialog" aria-modal="true" aria-labelledby="rsvpEditTitle">
+            <div class="panel-head">
+              <div><p class="eyebrow">EDIT RSVP</p><h3 id="rsvpEditTitle">Chỉnh sửa phản hồi</h3></div>
+              <button class="btn ghost compact" type="button" data-rsvp-close>Đóng</button>
+            </div>
+            <form id="rsvpEditForm" class="guest-form">
+              <input id="rsvpEditId" type="hidden">
+              <label>Tên khách<input id="rsvpEditName" maxlength="120" required></label>
+              <label>Số điện thoại<input id="rsvpEditPhone" maxlength="40"></label>
+              <label>Trạng thái
+                <select id="rsvpEditAttendance">
+                  <option value="yes">Có tham dự</option>
+                  <option value="no">Không tham dự</option>
+                  <option value="maybe">Chưa chắc</option>
+                </select>
+              </label>
+              <label>Số người<input id="rsvpEditCount" type="number" min="0" max="10" value="1"></label>
+              <label>Sự kiện
+                <select id="rsvpEditEvent">
+                  <option value="bride">Nhà gái</option>
+                  <option value="groom">Nhà trai</option>
+                  <option value="both">Cả hai</option>
+                </select>
+              </label>
+              <label>Nguồn<input id="rsvpEditSource" readonly></label>
+              <label>Lời nhắn<textarea id="rsvpEditMessage" rows="4" maxlength="1000"></textarea></label>
+              <p id="rsvpEditMeta" class="muted"></p>
+              <div class="inline-actions">
+                <button class="btn primary" type="submit">Lưu thay đổi</button>
+                <button class="btn ghost" type="button" data-rsvp-close>Hủy</button>
+              </div>
+              <p id="rsvpEditStatus" class="status"></p>
+            </form>
+          </section>
+        </div>
 
         <section id="guestsTab" class="tab-panel hidden">
           <div id="guestStats" class="stats"></div>
