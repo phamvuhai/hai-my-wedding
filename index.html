@@ -187,6 +187,12 @@
           <p data-i18n="events.subtitle">Hai ngày cưới, đầy đủ thời gian, địa điểm và chỉ đường.</p>
         </div>
 
+        <div class="event-scroll-status reveal" id="eventScrollStatus" aria-live="polite">
+          <span class="event-status-dot" aria-hidden="true"></span>
+          <span class="event-status-copy"><small data-i18n="events.status.label">Đang xem</small><strong id="eventScrollStatusText">18.12 · Nhà gái</strong></span>
+          <span class="event-status-progress" aria-hidden="true"><i id="eventScrollProgress"></i></span>
+        </div>
+
         <div class="event-families event-day-panels" data-active-day="bride">
           <section class="event-family bride-side event-day-panel is-active reveal" data-event-day="bride" role="tabpanel">
             <span class="event-bg-date" aria-hidden="true">18</span>
@@ -202,7 +208,7 @@
             </div>
 
             <div class="family-events event-timeline">
-              <article class="event-card event-home">
+              <article class="event-card event-home" data-event-item>
                 <div class="event-topline">
                   <span class="event-index">01</span>
                   <span class="event-type" data-i18n="event.home">TƯ GIA</span>
@@ -217,7 +223,7 @@
 
               <span class="event-timeline-connector" aria-hidden="true">↓</span>
 
-              <article class="event-card event-reception">
+              <article class="event-card event-reception" data-event-item>
                 <div class="event-topline">
                   <span class="event-index">02</span>
                   <span class="event-type" data-i18n="event.reception">TIỆC CƯỚI</span>
@@ -246,7 +252,7 @@
             </div>
 
             <div class="family-events event-timeline">
-              <article class="event-card event-home">
+              <article class="event-card event-home" data-event-item>
                 <div class="event-topline">
                   <span class="event-index">03</span>
                   <span class="event-type" data-i18n="event.home">TƯ GIA</span>
@@ -261,7 +267,7 @@
 
               <span class="event-timeline-connector" aria-hidden="true">↓</span>
 
-              <article class="event-card event-reception">
+              <article class="event-card event-reception" data-event-item>
                 <div class="event-topline">
                   <span class="event-index">04</span>
                   <span class="event-type" data-i18n="event.reception">TIỆC CƯỚI</span>
@@ -351,7 +357,7 @@
             </div>
           </div>
 
-          <label>
+          <label id="rsvpGuestCountField">
             <span data-i18n="rsvp.count">Số người tham dự</span>
             <select name="guest_count">
               <option value="1" data-i18n="rsvp.guest1">1 người</option>
@@ -390,15 +396,16 @@
           <p class="eyebrow">OUR MEMORIES</p>
           <h2 data-i18n="album.title">Album của Hải Phạm & Mỹ Nguyễn</h2>
         </div>
-        <button class="overlay-close" id="albumOverlayClose" type="button" aria-label="Close album">×</button>
+        <button class="overlay-close" id="albumOverlayClose" type="button" data-i18n-aria="album.close" aria-label="Close album">×</button>
       </header>
+      <div class="album-overlay-filters" id="albumOverlayFilters" aria-label="Album filters"></div>
       <div class="album-overlay-grid" id="albumOverlayGrid" aria-live="polite"></div>
     </div>
   </section>
 
   <div class="photo-lightbox" id="photoLightbox" aria-hidden="true" role="dialog" aria-modal="true">
-    <button class="photo-lightbox-close" id="photoLightboxClose" type="button" aria-label="Close photo">×</button>
-    <button class="photo-lightbox-nav photo-lightbox-prev" id="photoLightboxPrev" type="button" aria-label="Previous photo">‹</button>
+    <button class="photo-lightbox-close" id="photoLightboxClose" type="button" data-i18n-aria="album.close" aria-label="Close photo">×</button>
+    <button class="photo-lightbox-nav photo-lightbox-prev" id="photoLightboxPrev" type="button" data-i18n-aria="album.prev" aria-label="Previous photo">‹</button>
     <figure class="photo-lightbox-figure">
       <img id="photoLightboxImage" alt="" />
       <figcaption>
@@ -407,7 +414,7 @@
         <small id="photoLightboxCounter"></small>
       </figcaption>
     </figure>
-    <button class="photo-lightbox-nav photo-lightbox-next" id="photoLightboxNext" type="button" aria-label="Next photo">›</button>
+    <button class="photo-lightbox-nav photo-lightbox-next" id="photoLightboxNext" type="button" data-i18n-aria="album.next" aria-label="Next photo">›</button>
   </div>
 
   <aside class="music-dock music-dock-compact" id="musicDock" aria-label="Wedding music">
