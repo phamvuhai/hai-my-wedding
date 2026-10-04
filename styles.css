@@ -9429,3 +9429,61 @@ body.invitation-opening .side-note{
     display:none!important;
   }
 }
+
+
+/* =========================================
+   V31 — site-wide romantic falling atmosphere
+   ========================================= */
+.hero-fall-layer{
+  position:fixed!important;
+  inset:0!important;
+  width:100vw!important;
+  height:100vh!important;
+  z-index:60!important;
+  overflow:hidden!important;
+  pointer-events:none!important;
+  opacity:.82;
+  visibility:visible;
+  transition:opacity .55s ease,visibility .55s ease;
+  mask-image:none!important;
+  -webkit-mask-image:none!important;
+}
+
+/* Keep the invitation cover visually clean. Start falling only after it opens. */
+body.invitation-locked .hero-fall-layer,
+body.invitation-opening .hero-fall-layer{
+  opacity:0!important;
+  visibility:hidden!important;
+}
+
+.hero-fall-item{
+  position:absolute!important;
+  top:-14vh!important;
+}
+
+/* Keep controls, modals and navigation above the decoration. */
+.nav,
+.music-dock,
+.invite-welcome,
+.album-overlay,
+.photo-lightbox{
+  z-index:1000!important;
+}
+
+/* Dark sections need slightly stronger particles without becoming distracting. */
+.countdown-section ~ .hero-fall-layer,
+.forever-transition ~ .hero-fall-layer{
+  opacity:.82;
+}
+
+@media(max-width:760px){
+  .hero-fall-layer{
+    opacity:.68;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .hero-fall-layer{
+    display:none!important;
+  }
+}
