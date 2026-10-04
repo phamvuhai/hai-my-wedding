@@ -81,11 +81,13 @@
 
   function canonicalizeAfterOpen() {
     if (!isEntryRoute) return;
-    const hash = pendingHash || (validAnchors.has(location.hash) ? location.hash : '');
+    // Opening the invitation always lands on the top of the homepage.
+    // Drop any old section hash so in-app browsers cannot restore into the middle of the page.
+    pendingHash = '';
     history.replaceState(
       history.state || {},
       '',
-      localizedHomePath() + location.search + hash
+      localizedHomePath() + location.search
     );
   }
 
@@ -107,15 +109,19 @@
 
     await waitForLayout();
 
-    if (pendingHash && scrollToHash(pendingHash, 'auto')) {
-      // keep requested section
-    } else {
-      goTop('auto');
-      replayHeroEntrance();
-    }
+    // A real invitation open always starts from the very top of the homepage.
+    // Repeat across frames to defeat scroll restoration in Messenger/Safari in-app browsers.
+    goTop('auto');
+    await twoFrames();
+    goTop('auto');
+    replayHeroEntrance();
 
     intro?.setAttribute('aria-hidden','true');
     dispatchOpened();
+
+    setTimeout(() => {
+      if (invitationOpened) goTop('auto');
+    }, 120);
   }
 
   function openInvitation() {
