@@ -8043,3 +8043,106 @@ html:lang(ja) .wishes-card .btn{
     animation:none!important;
   }
 }
+
+
+/* =========================================
+   V25 — localized Words for Us display
+   ========================================= */
+.wishes-display span,
+.wishes-display em{
+  min-width:0;
+}
+
+/* Vietnamese + English preserve the bold editorial Latin composition. */
+html:lang(vi) .wishes-display,
+html:lang(en) .wishes-display{
+  font-family:Georgia,"Times New Roman",serif!important;
+  line-height:.82!important;
+  letter-spacing:-.055em!important;
+}
+html:lang(vi) .wishes-display span,
+html:lang(en) .wishes-display span{
+  font-style:normal;
+}
+html:lang(vi) .wishes-display em,
+html:lang(en) .wishes-display em{
+  font-style:italic;
+}
+
+/* Japanese uses a native Mincho composition instead of forcing Latin word splitting. */
+html:lang(ja) .wishes-display{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  justify-content:start!important;
+  gap:.18em!important;
+  font-family:"Yu Mincho","Hiragino Mincho ProN","Noto Serif JP",serif!important;
+  font-size:clamp(3.4rem,7vw,6.3rem)!important;
+  font-weight:500!important;
+  line-height:1.08!important;
+  letter-spacing:-.035em!important;
+  writing-mode:horizontal-tb!important;
+  word-break:keep-all!important;
+  line-break:strict!important;
+}
+html:lang(ja) .wishes-display span,
+html:lang(ja) .wishes-display em{
+  display:block!important;
+  width:max-content;
+  max-width:100%;
+  padding-left:0!important;
+  white-space:nowrap!important;
+  font-style:normal!important;
+}
+html:lang(ja) .wishes-display em{
+  color:var(--accent)!important;
+  justify-self:end;
+}
+
+/* Vietnamese phrase is longer than English, so balance it without clipping. */
+html:lang(vi) .wishes-display{
+  font-size:clamp(3.55rem,7vw,6.7rem)!important;
+}
+html:lang(vi) .wishes-display em{
+  padding-left:.08em!important;
+}
+
+@media(max-width:680px){
+  html:lang(vi) .wishes-display,
+  html:lang(en) .wishes-display{
+    grid-template-columns:1fr!important;
+    gap:.03em!important;
+    font-size:clamp(3.2rem,15vw,4.7rem)!important;
+    line-height:.86!important;
+  }
+
+  html:lang(vi) .wishes-display em,
+  html:lang(en) .wishes-display em{
+    padding-left:0!important;
+    justify-self:end;
+  }
+
+  html:lang(ja) .wishes-display{
+    font-size:clamp(2.9rem,12.5vw,4.2rem)!important;
+    line-height:1.12!important;
+    gap:.12em!important;
+  }
+
+  html:lang(ja) .wishes-display span{
+    justify-self:start;
+  }
+
+  html:lang(ja) .wishes-display em{
+    justify-self:end;
+  }
+}
+
+@media(max-width:390px){
+  html:lang(vi) .wishes-display,
+  html:lang(en) .wishes-display{
+    font-size:clamp(2.95rem,14.2vw,4rem)!important;
+  }
+
+  html:lang(ja) .wishes-display{
+    font-size:clamp(2.65rem,11.8vw,3.7rem)!important;
+  }
+}
