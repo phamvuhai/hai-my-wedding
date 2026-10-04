@@ -7837,3 +7837,209 @@ body.invitation-opening .hero{
     animation:none!important;
   }
 }
+
+
+/* =========================================
+   V24 — schedule hierarchy + multilingual wishes typography
+   ========================================= */
+
+/* Schedule day header: one consistent hierarchy for bride and groom. */
+.schedule-day-label{
+  justify-content:flex-start!important;
+  box-sizing:border-box;
+}
+.schedule-day-label strong{
+  display:block;
+  margin:0!important;
+  font-family:Georgia,"Times New Roman",serif!important;
+  font-size:clamp(6.4rem,8vw,8.1rem)!important;
+  font-weight:400!important;
+  line-height:.78!important;
+  letter-spacing:-.065em!important;
+}
+.schedule-day-label span{
+  display:block;
+  margin-top:24px!important;
+  font-size:.78rem!important;
+  font-weight:820!important;
+  line-height:1.2!important;
+  letter-spacing:.16em!important;
+}
+.schedule-day-label small{
+  display:block;
+  margin-top:13px!important;
+  margin-bottom:0!important;
+  font-size:.94rem!important;
+  font-weight:650!important;
+  line-height:1.4!important;
+  letter-spacing:0!important;
+}
+
+/* VI/EN family labels get a readable wedding serif; Japanese gets native Mincho. */
+html:lang(vi) .schedule-day-label small,
+html:lang(en) .schedule-day-label small{
+  font-family:"Lora","Iowan Old Style","Baskerville",Georgia,serif!important;
+}
+html:lang(ja) .schedule-day-label small{
+  font-family:"Yu Mincho","Hiragino Mincho ProN","Noto Serif JP",serif!important;
+  font-size:1rem!important;
+  font-weight:600!important;
+  line-break:strict!important;
+}
+
+/* Desktop: enough space before the vertical divider. */
+@media(min-width:901px){
+  .schedule-day-label{
+    padding:14px 28px 28px 8px!important;
+  }
+}
+
+/* Tablet/mobile: clear family label -> divider breathing room. */
+@media(max-width:900px){
+  .schedule-day-label{
+    padding:8px 8px 30px!important;
+    border-right:0!important;
+    border-bottom:1px solid color-mix(in srgb,var(--day-accent) 16%,transparent)!important;
+  }
+  .schedule-day-label strong{
+    font-size:clamp(5.8rem,14vw,7rem)!important;
+  }
+  .schedule-day-label span{
+    margin-top:20px!important;
+    font-size:.76rem!important;
+  }
+  .schedule-day-label small{
+    margin-top:12px!important;
+    font-size:.96rem!important;
+  }
+}
+@media(max-width:680px){
+  .schedule-day-label{
+    padding:7px 8px 30px!important;
+  }
+  .schedule-day-label strong{
+    font-size:clamp(5.15rem,22vw,6.2rem)!important;
+  }
+  .schedule-day-label span{
+    margin-top:18px!important;
+    font-size:.73rem!important;
+    letter-spacing:.15em!important;
+  }
+  .schedule-day-label small{
+    margin-top:12px!important;
+    font-size:.95rem!important;
+  }
+  html:lang(ja) .schedule-day-label small{
+    font-size:1.02rem!important;
+  }
+}
+@media(max-width:390px){
+  .schedule-day-label{
+    padding-bottom:27px!important;
+  }
+  .schedule-day-label strong{
+    font-size:5rem!important;
+  }
+}
+
+/* Status stays compact while still showing 01/02 and 02/02 clearly. */
+.schedule-status-count{
+  min-width:52px;
+  text-align:center;
+}
+.schedule-status-copy{
+  letter-spacing:.01em;
+}
+
+/* Words for Us: preserve the editorial WORDS / FOR US art, but localize actual copy. */
+.wishes-card{
+  overflow:visible!important;
+}
+.wishes-card .eyebrow{
+  margin-bottom:18px!important;
+}
+html:lang(vi) .wishes-card h2,
+html:lang(en) .wishes-card h2{
+  font-family:"Lora","Iowan Old Style","Baskerville",Georgia,serif!important;
+  font-weight:500!important;
+  letter-spacing:-.035em!important;
+  line-height:1.08!important;
+  word-break:normal!important;
+  overflow-wrap:normal!important;
+  text-wrap:balance;
+}
+html:lang(ja) .wishes-card h2{
+  font-family:"Yu Mincho","Hiragino Mincho ProN","Noto Serif JP",serif!important;
+  font-weight:500!important;
+  letter-spacing:-.025em!important;
+  line-height:1.24!important;
+  line-break:strict!important;
+  word-break:normal!important;
+  overflow-wrap:normal!important;
+}
+html:lang(ja) .wishes-card .eyebrow{
+  font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif!important;
+  font-size:.72rem!important;
+  letter-spacing:.09em!important;
+}
+.wishes-card > p:not(.eyebrow){
+  line-height:1.78!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+}
+html:lang(ja) .wishes-card > p:not(.eyebrow){
+  font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif!important;
+  line-height:1.9!important;
+  letter-spacing:.01em!important;
+  line-break:strict!important;
+}
+.wishes-card .btn{
+  white-space:normal!important;
+  text-align:center!important;
+  line-height:1.35!important;
+}
+html:lang(ja) .wishes-card .btn{
+  font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif!important;
+  letter-spacing:.01em!important;
+}
+
+/* Responsive title sizing: no oversized Japanese wrap on phones. */
+@media(min-width:1025px){
+  .wishes-card h2{
+    font-size:clamp(2.45rem,3.7vw,3.7rem)!important;
+  }
+}
+@media(min-width:681px) and (max-width:1024px){
+  .wishes-card h2{
+    font-size:clamp(2.3rem,5.5vw,3.2rem)!important;
+  }
+}
+@media(max-width:680px){
+  .wishes-card{
+    padding:clamp(24px,6vw,30px)!important;
+  }
+  html:lang(vi) .wishes-card h2{
+    font-size:clamp(2.15rem,9.6vw,2.75rem)!important;
+  }
+  html:lang(en) .wishes-card h2{
+    font-size:clamp(2.05rem,8.8vw,2.6rem)!important;
+  }
+  html:lang(ja) .wishes-card h2{
+    font-size:clamp(2rem,8.5vw,2.5rem)!important;
+    line-height:1.28!important;
+  }
+  .wishes-card > p:not(.eyebrow){
+    font-size:clamp(.96rem,4.2vw,1.08rem)!important;
+  }
+  html:lang(ja) .wishes-card .btn{
+    font-size:.94rem!important;
+    padding-inline:16px!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .schedule-live-status.is-changing .schedule-status-count,
+  .schedule-live-status.is-changing .schedule-status-copy{
+    animation:none!important;
+  }
+}

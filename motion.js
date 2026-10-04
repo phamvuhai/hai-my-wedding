@@ -612,40 +612,32 @@
 
       if (!timeline.dataset.railMeasured) measureDay(day);
 
-      // Keep the active event aligned with the user's actual reading zone.
-      // A higher anchor prevents event 2 from becoming active while event 1 is still the main card on screen.
-      const viewportAnchor = innerHeight * (coarse ? .42 : .46);
-      const dotYs = items.map(item => {
-        const r = item.getBoundingClientRect();
-        return r.top + dotOffset(item);
-      });
+      // Status follows the real event rows instead of the nearest dot.
+      // On mobile, event 2 becomes active as soon as its row enters the lower-middle reading zone,
+      // guaranteeing that 02/02 is visible before the user leaves the day card.
+      const readingLine = innerHeight * (coarse ? .68 : .60);
+      const itemRects = items.map(item => item.getBoundingClientRect());
+      const dotYs = itemRects.map((r,index) => r.top + dotOffset(items[index]));
 
       const firstY = dotYs[0];
       const lastY = dotYs[dotYs.length-1];
       const span = Math.max(1,lastY-firstY);
-      const progress = clamp((viewportAnchor-firstY)/span,0,1);
+      const progress = clamp((readingLine-firstY)/span,0,1);
       timeline.style.setProperty('--schedule-day-progress',progress.toFixed(4));
 
       let activeIndex = 0;
-      let minDistance = Infinity;
-      dotYs.forEach((y,index) => {
-        const d = Math.abs(y-viewportAnchor);
-        if (d < minDistance) {
-          minDistance = d;
-          activeIndex = index;
-        }
+      itemRects.forEach((rect,index) => {
+        if (rect.top <= readingLine) activeIndex = index;
       });
 
-      // Before the day reaches the reading zone, keep the first event selected.
-      // Once the last dot passes the anchor, keep the last event selected.
-      if (viewportAnchor < firstY) activeIndex = 0;
-      if (viewportAnchor > lastY) activeIndex = items.length-1;
+      if (itemRects[0].top > readingLine) activeIndex = 0;
+      if (itemRects[itemRects.length-1].top <= readingLine) activeIndex = items.length-1;
 
       const previousIndex = Number(day.dataset.scheduleActiveIndex ?? -1);
       items.forEach((item,index) => {
         const isCurrent = index===activeIndex;
         item.classList.toggle('is-current',isCurrent);
-        item.classList.toggle('is-passed',index<activeIndex || (isCurrent && dotYs[index] < viewportAnchor-28));
+        item.classList.toggle('is-passed',index<activeIndex || (isCurrent && dotYs[index] < readingLine-28));
         item.classList.toggle('is-upcoming',index>activeIndex);
 
         if (isCurrent && previousIndex !== activeIndex) {
