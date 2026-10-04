@@ -397,8 +397,12 @@ async function loadAlbumImages() {
 
   if (albumResult.error) throw albumResult.error;
   if (imageResult.error) throw imageResult.error;
-  galleryState.albums = albumResult.data || [];
   galleryState.albumImages = (imageResult.data || []).map(img => ({...img, publicUrl: galleryPublicUrl(img)}));
+  const usedAlbumIds = new Set(galleryState.albumImages.map(img => String(img.album_id)));
+  galleryState.albums = (albumResult.data || []).filter(album => usedAlbumIds.has(String(album.id)));
+  if (galleryState.albumFilter !== 'all' && !galleryState.albums.some(a => a.slug === galleryState.albumFilter)) {
+    galleryState.albumFilter = 'all';
+  }
   return galleryState.albumImages;
 }
 
