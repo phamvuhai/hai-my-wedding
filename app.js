@@ -76,15 +76,100 @@ form.addEventListener('submit', async (event) => {
 });
 
 
+const galleryState = {
+  client: null,
+  homeImages: [],
+  albumImages: [],
+  activeImages: [],
+  activeIndex: -1,
+  albumOpen: false,
+  lightboxOpen: false,
+  scrollY: 0
+};
+
+function galleryEsc(value = '') {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+function galleryLocalized(img) {
+  const lang = window.WeddingI18n?.language || 'vi';
+  if (lang === 'en') {
+    return {
+      title: img.title_en || img.title || '',
+      caption: img.caption_en || img.caption || '',
+      alt: img.alt_text_en || img.alt_text || img.title_en || img.title || 'Hải & Mỹ'
+    };
+  }
+  if (lang === 'ja') {
+    return {
+      title: img.title_ja || img.title || '',
+      caption: img.caption_ja || img.caption || '',
+      alt: img.alt_text_ja || img.alt_text || img.title_ja || img.title || 'Hải & Mỹ'
+    };
+  }
+  return {
+    title: img.title || '',
+    caption: img.caption || '',
+    alt: img.alt_text || img.title || 'Hải & Mỹ'
+  };
+}
+
+function galleryClient() {
+  if (galleryState.client) return galleryState.client;
+  const cfg = window.WEDDING_CONFIG || {};
+  if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.supabase) return null;
+  galleryState.client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+  return galleryState.client;
+}
+
+function galleryPublicUrl(img) {
+  if (img.publicUrl) return img.publicUrl;
+  const client = galleryClient();
+  return client ? client.storage.from('wedding-gallery').getPublicUrl(img.image_path).data.publicUrl : '';
+}
+
+function gallerySize(img) {
+  if (['small','tall','wide','large'].includes(img.display_size)) return img.display_size;
+  if (img.is_featured) return 'large';
+  const ratio = (img.width || 1) / (img.height || 1);
+  return ratio > 1.35 ? 'wide' : ratio < .78 ? 'tall' : 'small';
+}
+
+function renderHomeGallery() {
+  const root = document.getElementById('homeGallery');
+  if (!root || !galleryState.homeImages.length) return;
+
+  root.innerHTML = galleryState.homeImages.map((img, index) => {
+    const loc = galleryLocalized(img);
+    const size = gallerySize(img);
+    const url = galleryPublicUrl(img);
+    return `
+      <button type="button"
+        class="home-photo size-${size} ${index === 0 ? 'editorial-featured' : ''} reveal visible"
+        data-photo-id="${galleryEsc(img.id)}"
+        aria-label="${galleryEsc(loc.alt || 'Hải & Mỹ')}">
+        <img loading="lazy" decoding="async" src="${url}" alt="${galleryEsc(loc.alt)}"
+          style="object-position:${Number(img.focus_x ?? 50)}% ${Number(img.focus_y ?? 50)}%">
+        <span class="photo-curtain" aria-hidden="true"></span>
+        <span class="home-photo-copy">
+          <strong>${galleryEsc(loc.title)}</strong>
+          <small>${galleryEsc(loc.caption)}</small>
+        </span>
+      </button>`;
+  }).join('');
+}
+
 async function loadHomeGallery() {
   const root = document.getElementById('homeGallery');
-  if (!root) return;
-
-  const cfg = window.WEDDING_CONFIG || {};
-  if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.supabase) return;
+  const client = galleryClient();
+  if (!root || !client) return;
 
   try {
-    const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
     const { data: images, error } = await client
       .from('gallery_images')
       .select('id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,is_hero,show_on_homepage,focus_x,focus_y,created_at')
@@ -95,42 +180,233 @@ async function loadHomeGallery() {
       .limit(8);
 
     if (error) throw error;
-    if (!images?.length) return;
-
-    const esc = (value = '') => String(value)
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;');
-
-    const lang = window.WeddingI18n?.language || 'vi';
-    root.innerHTML = images.map((img, index) => {
-      const url = client.storage.from('wedding-gallery').getPublicUrl(img.image_path).data.publicUrl;
-      const title = lang === 'en' ? (img.title_en || img.title) : lang === 'ja' ? (img.title_ja || img.title) : img.title;
-      const caption = lang === 'en' ? (img.caption_en || img.caption) : lang === 'ja' ? (img.caption_ja || img.caption) : img.caption;
-      const alt = lang === 'en' ? (img.alt_text_en || img.alt_text || title) : lang === 'ja' ? (img.alt_text_ja || img.alt_text || title) : (img.alt_text || title);
-      const size = ['small','tall','wide','large'].includes(img.display_size) ? img.display_size : (
-        img.is_featured ? 'large' : ((img.width || 1) / (img.height || 1) > 1.35 ? 'wide' : ((img.height || 1) / (img.width || 1) > 1.28 ? 'tall' : 'small'))
-      );
-      return `
-        <a class="home-photo size-${size} ${index === 0 ? 'editorial-featured' : ''} reveal visible" href="/${window.WeddingI18n?.language || 'vi'}/album" aria-label="Hải & Mỹ album">
-          <img loading="lazy" decoding="async" src="${url}" alt="${esc(alt || 'Hải & Mỹ')}" style="object-position:${Number(img.focus_x ?? 50)}% ${Number(img.focus_y ?? 50)}%">
-          <span class="photo-curtain" aria-hidden="true"></span>
-          <span class="home-photo-copy">
-            <strong>${esc(title || '')}</strong>
-            <small>${esc(caption || '')}</small>
-          </span>
-        </a>`;
-    }).join('');
+    galleryState.homeImages = (images || []).map(img => ({...img, publicUrl: galleryPublicUrl(img)}));
+    if (!galleryState.homeImages.length) return;
+    renderHomeGallery();
+    await syncGalleryRoute();
   } catch (error) {
     console.error('Home gallery error:', error);
   }
 }
 
-loadHomeGallery();
-document.addEventListener('wedding:language', loadHomeGallery);
+async function loadAlbumImages() {
+  if (galleryState.albumImages.length) return galleryState.albumImages;
+  const client = galleryClient();
+  if (!client) return [];
 
+  const { data, error } = await client
+    .from('gallery_images')
+    .select('id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,focus_x,focus_y,created_at,is_published')
+    .eq('is_published', true)
+    .order('is_featured', { ascending: false })
+    .order('sort_order', { ascending: true })
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  galleryState.albumImages = (data || []).map(img => ({...img, publicUrl: galleryPublicUrl(img)}));
+  return galleryState.albumImages;
+}
+
+function renderAlbumOverlay() {
+  const grid = document.getElementById('albumOverlayGrid');
+  if (!grid) return;
+  if (!galleryState.albumImages.length) {
+    grid.innerHTML = `<p class="album-overlay-empty">${galleryEsc(tr('album.empty','Album đang được chuẩn bị ♡'))}</p>`;
+    return;
+  }
+
+  grid.innerHTML = galleryState.albumImages.map((img, index) => {
+    const loc = galleryLocalized(img);
+    const size = gallerySize(img);
+    return `
+      <button type="button" class="album-overlay-photo size-${size}" data-album-photo-id="${galleryEsc(img.id)}"
+        aria-label="${galleryEsc(loc.alt)}">
+        <img loading="lazy" decoding="async" src="${galleryPublicUrl(img)}" alt="${galleryEsc(loc.alt)}"
+          style="object-position:${Number(img.focus_x ?? 50)}% ${Number(img.focus_y ?? 50)}%">
+        <span><strong>${galleryEsc(loc.title)}</strong><small>${galleryEsc(loc.caption)}</small></span>
+      </button>`;
+  }).join('');
+}
+
+function localizedPath(album = false) {
+  const lang = window.WeddingI18n?.language || 'vi';
+  return album ? `/${lang}/album` : `/${lang}`;
+}
+
+async function showAlbumOverlay({push = true} = {}) {
+  const overlay = document.getElementById('albumOverlay');
+  if (!overlay) return;
+  try {
+    await loadAlbumImages();
+  } catch (error) {
+    console.error('Album overlay error:', error);
+  }
+
+  renderAlbumOverlay();
+  if (!galleryState.albumOpen) galleryState.scrollY = window.scrollY;
+  galleryState.albumOpen = true;
+  overlay.classList.add('is-open');
+  overlay.setAttribute('aria-hidden','false');
+  document.body.classList.add('gallery-overlay-open');
+
+  if (push) {
+    history.pushState({weddingOverlay:'album'}, '', localizedPath(true));
+  }
+}
+
+function hideAlbumOverlay({restoreScroll = true} = {}) {
+  const overlay = document.getElementById('albumOverlay');
+  if (!overlay || !galleryState.albumOpen) return;
+  galleryState.albumOpen = false;
+  overlay.classList.remove('is-open');
+  overlay.setAttribute('aria-hidden','true');
+  document.body.classList.remove('gallery-overlay-open');
+  if (restoreScroll) requestAnimationFrame(() => window.scrollTo({top:galleryState.scrollY,left:0,behavior:'auto'}));
+}
+
+function renderLightbox() {
+  const img = galleryState.activeImages[galleryState.activeIndex];
+  if (!img) return;
+  const loc = galleryLocalized(img);
+  const image = document.getElementById('photoLightboxImage');
+  const title = document.getElementById('photoLightboxTitle');
+  const caption = document.getElementById('photoLightboxCaption');
+  const counter = document.getElementById('photoLightboxCounter');
+  if (!image) return;
+
+  image.src = galleryPublicUrl(img);
+  image.alt = loc.alt;
+  title.textContent = loc.title;
+  caption.textContent = loc.caption;
+  counter.textContent = `${galleryState.activeIndex + 1} / ${galleryState.activeImages.length}`;
+}
+
+function photoRoute(id) {
+  const base = galleryState.albumOpen ? localizedPath(true) : localizedPath(false);
+  return `${base}?photo=${encodeURIComponent(id)}`;
+}
+
+function showPhotoByIndex(index, images, {push = true} = {}) {
+  const lightbox = document.getElementById('photoLightbox');
+  if (!lightbox || !images?.length) return;
+  galleryState.activeImages = images;
+  galleryState.activeIndex = Math.max(0, Math.min(images.length - 1, index));
+  galleryState.lightboxOpen = true;
+  lightbox.classList.add('is-open');
+  lightbox.setAttribute('aria-hidden','false');
+  document.body.classList.add('photo-lightbox-open');
+  renderLightbox();
+
+  if (push) {
+    const img = galleryState.activeImages[galleryState.activeIndex];
+    history.pushState({weddingOverlay:'photo', photoId:img.id}, '', photoRoute(img.id));
+  }
+}
+
+function hidePhoto() {
+  const lightbox = document.getElementById('photoLightbox');
+  if (!lightbox || !galleryState.lightboxOpen) return;
+  galleryState.lightboxOpen = false;
+  lightbox.classList.remove('is-open');
+  lightbox.setAttribute('aria-hidden','true');
+  document.body.classList.remove('photo-lightbox-open');
+}
+
+function movePhoto(delta) {
+  if (!galleryState.lightboxOpen || !galleryState.activeImages.length) return;
+  galleryState.activeIndex = (galleryState.activeIndex + delta + galleryState.activeImages.length) % galleryState.activeImages.length;
+  renderLightbox();
+  const img = galleryState.activeImages[galleryState.activeIndex];
+  history.replaceState({weddingOverlay:'photo', photoId:img.id}, '', photoRoute(img.id));
+}
+
+async function syncGalleryRoute() {
+  const isAlbumRoute = location.pathname.split('/').filter(Boolean).includes('album');
+  const photoId = new URLSearchParams(location.search).get('photo');
+
+  if (isAlbumRoute && !galleryState.albumOpen) await showAlbumOverlay({push:false});
+  if (!isAlbumRoute && galleryState.albumOpen) hideAlbumOverlay({restoreScroll:true});
+
+  const source = isAlbumRoute ? galleryState.albumImages : galleryState.homeImages;
+  if (photoId && source.length) {
+    const index = source.findIndex(img => String(img.id) === String(photoId));
+    if (index >= 0) showPhotoByIndex(index, source, {push:false});
+  } else {
+    hidePhoto();
+  }
+}
+
+function closePhotoViaHistory() {
+  if (!galleryState.lightboxOpen) return;
+  if (new URLSearchParams(location.search).has('photo')) history.back();
+  else hidePhoto();
+}
+
+function closeAlbumViaHistory() {
+  if (!galleryState.albumOpen) return;
+  if (location.pathname.split('/').filter(Boolean).includes('album')) history.back();
+  else hideAlbumOverlay();
+}
+
+function initGalleryInteractions() {
+  const home = document.getElementById('homeGallery');
+  const albumGrid = document.getElementById('albumOverlayGrid');
+  const albumCta = document.querySelector('[data-album-link]');
+
+  home?.addEventListener('click', event => {
+    const item = event.target.closest('[data-photo-id]');
+    if (!item) return;
+    const index = galleryState.homeImages.findIndex(img => String(img.id) === String(item.dataset.photoId));
+    if (index >= 0) showPhotoByIndex(index, galleryState.homeImages);
+  });
+
+  albumGrid?.addEventListener('click', event => {
+    const item = event.target.closest('[data-album-photo-id]');
+    if (!item) return;
+    const index = galleryState.albumImages.findIndex(img => String(img.id) === String(item.dataset.albumPhotoId));
+    if (index >= 0) showPhotoByIndex(index, galleryState.albumImages);
+  });
+
+  albumCta?.addEventListener('click', event => {
+    event.preventDefault();
+    event.stopPropagation();
+    showAlbumOverlay();
+  });
+
+  document.getElementById('albumOverlayClose')?.addEventListener('click', closeAlbumViaHistory);
+  document.getElementById('photoLightboxClose')?.addEventListener('click', closePhotoViaHistory);
+  document.getElementById('photoLightboxPrev')?.addEventListener('click', () => movePhoto(-1));
+  document.getElementById('photoLightboxNext')?.addEventListener('click', () => movePhoto(1));
+
+  document.addEventListener('keydown', event => {
+    if (!galleryState.lightboxOpen) return;
+    if (event.key === 'Escape') closePhotoViaHistory();
+    if (event.key === 'ArrowLeft') movePhoto(-1);
+    if (event.key === 'ArrowRight') movePhoto(1);
+  });
+
+  let touchX = 0;
+  const lightbox = document.getElementById('photoLightbox');
+  lightbox?.addEventListener('touchstart', event => {
+    touchX = event.changedTouches[0]?.clientX || 0;
+  }, {passive:true});
+  lightbox?.addEventListener('touchend', event => {
+    const endX = event.changedTouches[0]?.clientX || 0;
+    const delta = endX - touchX;
+    if (Math.abs(delta) > 45) movePhoto(delta > 0 ? -1 : 1);
+  }, {passive:true});
+
+  addEventListener('popstate', () => { syncGalleryRoute(); });
+}
+
+initGalleryInteractions();
+loadHomeGallery();
+
+document.addEventListener('wedding:language', () => {
+  renderHomeGallery();
+  if (galleryState.albumOpen) renderAlbumOverlay();
+  if (galleryState.lightboxOpen) renderLightbox();
+});
 
 function heroRatioCss(value, fallback, width, height) {
   if (!value || value === 'auto') {
