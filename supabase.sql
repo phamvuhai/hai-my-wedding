@@ -341,3 +341,110 @@ create policy site_settings_admin_update on public.site_settings
 for update to authenticated
 using (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com')
 with check (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com');
+
+
+-- =========================================================
+-- Wedding CMS + personalized guest invitations
+-- =========================================================
+create table if not exists public.site_content (
+  key text primary key check (key ~ '^[a-z0-9._-]+$'),
+  value_vi text,
+  value_en text,
+  value_ja text,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.site_content enable row level security;
+revoke all on table public.site_content from anon, authenticated;
+grant select on table public.site_content to anon, authenticated;
+grant insert, update, delete on table public.site_content to authenticated;
+
+drop policy if exists site_content_public_read on public.site_content;
+create policy site_content_public_read on public.site_content
+for select to anon, authenticated using (true);
+
+drop policy if exists site_content_admin_insert on public.site_content;
+create policy site_content_admin_insert on public.site_content
+for insert to authenticated
+with check (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com');
+
+drop policy if exists site_content_admin_update on public.site_content;
+create policy site_content_admin_update on public.site_content
+for update to authenticated
+using (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com')
+with check (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com');
+
+drop policy if exists site_content_admin_delete on public.site_content;
+create policy site_content_admin_delete on public.site_content
+for delete to authenticated
+using (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com');
+
+create table if not exists public.guest_invites (
+  id uuid primary key default gen_random_uuid(),
+  token uuid not null unique default gen_random_uuid(),
+  guest_name text not null check (char_length(trim(guest_name)) between 1 and 120),
+  phone text check (phone is null or char_length(phone) <= 40),
+  event_choice text not null default 'both' check (event_choice in ('bride','groom','both')),
+  max_guests integer not null default 1 check (max_guests between 1 and 10),
+  internal_note text check (internal_note is null or char_length(internal_note) <= 1000),
+  is_active boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.guest_invites enable row level security;
+revoke all on table public.guest_invites from anon, authenticated;
+grant select, insert, update, delete on table public.guest_invites to authenticated;
+
+drop policy if exists guest_invites_admin_all on public.guest_invites;
+create policy guest_invites_admin_all on public.guest_invites
+for all to authenticated
+using (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com')
+with check (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com');
+
+alter table public.rsvp
+  add column if not exists invite_id uuid references public.guest_invites(id) on delete set null,
+  add column if not exists internal_note text,
+  add column if not exists contacted_at timestamptz;
+
+grant update on table public.rsvp to authenticated;
+
+drop policy if exists admin_can_update_rsvp on public.rsvp;
+create policy admin_can_update_rsvp on public.rsvp
+for update to authenticated
+using (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com')
+with check (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com');
+
+create or replace function public.get_wedding_invite(p_token text)
+returns table (
+  id uuid,
+  guest_name text,
+  phone text,
+  event_choice text,
+  max_guests integer
+)
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select gi.id, gi.guest_name, gi.phone, gi.event_choice, gi.max_guests
+  from public.guest_invites gi
+  where gi.token::text = p_token
+    and gi.is_active = true
+  limit 1;
+$$;
+
+revoke all on function public.get_wedding_invite(text) from public;
+grant execute on function public.get_wedding_invite(text) to anon;
+
+insert into public.site_content(key,value_vi,value_en,value_ja) values
+('hero.note','Trân trọng kính mời bạn đến chung vui trong ngày hạnh phúc của chúng tôi.','We warmly invite you to celebrate this joyful milestone with us.','私たちの大切な日に、ぜひ一緒にお祝いください。'),
+('story.title','Một hành trình, một lời hẹn','One journey, one promise','ひとつの旅、ひとつの約束'),
+('story.text','Có những cuộc gặp gỡ làm thay đổi cả một hành trình. Sau những ngày đồng hành, chúng tôi chọn bước tiếp cùng nhau bằng một lời hứa giản dị: luôn là gia đình của nhau.','Some encounters change the course of a lifetime. After walking side by side, we chose to continue this journey together with a simple promise: to always be each other’s family.','人生の道のりを変える出会いがあります。共に歩んできた日々を経て、私たちはこれからも家族として寄り添い続けることを約束し、新しい一歩を踏み出します。'),
+('guide.subtitle','Một vài thông tin nhỏ để bạn có thể tận hưởng ngày vui thật thoải mái.','A few details to help you enjoy the celebration comfortably.','当日をゆっくり楽しんでいただくための、ちょっとしたご案内です。'),
+('travel.hcm.text','Nếu lưu trú qua đêm, khu vực Bình Thạnh / Bình Lợi Trung sẽ thuận tiện hơn để đến Gold Palace.','If you stay overnight, Bình Thạnh / Bình Lợi Trung is a convenient area for getting to Gold Palace.','宿泊される場合は、Gold Palaceへ移動しやすいBình Thạnh / Bình Lợi Trung周辺が便利です。'),
+('travel.rg.text','Nếu ở lại Rạch Giá, khu vực trung tâm thành phố sẽ giúp bạn thuận tiện di chuyển giữa tư gia và địa điểm tiệc.','If you stay in Rạch Giá, the city center is convenient for traveling between the family home and the reception venue.','ラックザーに宿泊される場合は、ご自宅と披露宴会場の間を移動しやすい市中心部が便利です。'),
+('rsvp.subtitle','Phản hồi của bạn giúp chúng tôi chuẩn bị chu đáo hơn cho ngày đặc biệt này.','Your response helps us prepare thoughtfully for our special day.','ご出欠をお知らせいただけると、当日の準備に大変助かります。'),
+('footer.thanks','Cảm ơn bạn đã trở thành một phần trong câu chuyện của chúng tôi.','Thank you for being part of our story.','私たちの物語の一部になってくださり、ありがとうございます。')
+on conflict (key) do nothing;
