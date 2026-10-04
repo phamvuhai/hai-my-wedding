@@ -73,3 +73,15 @@ Keep the RPC payload narrow and never expose internal guest-list queries directl
 - Add an explicit admin workflow to link a public RSVP to a guest invite after manual review.
 - Add admin-created RSVP records using `response_source = 'admin'`.
 - Improve audit history if manual RSVP edits need traceability.
+
+
+## 2026-10-04 admin/security + responsive update
+
+- RSVP admin now supports Edit + Delete.
+- Delete requires confirmation and only removes the RSVP row; the linked guest invite remains active.
+- Supabase RLS grants RSVP DELETE only to the configured authenticated admin account.
+- Admin login no longer exposes or calls the first-time account creation flow.
+- Forgot-password / recovery remains available.
+- Login errors use generic wording instead of revealing whether an account exists.
+- Added mobile/layout regression guards for public site, admin tables/modals, and admin login.
+- Added text sizing and overflow protections for narrow mobile webviews and multilingual copy.
