@@ -56,7 +56,8 @@
   }
 
   function inviteUrl(row) {
-    return `${location.origin}/vi/invite/${row.token}`;
+    const code = row.preferred_language === 'ja' ? 'jp' : (row.preferred_language || 'vi');
+    return `${location.origin}/${code}/invite/${row.token}`;
   }
 
   function latestRsvpRows(rows=[]) {
@@ -93,7 +94,7 @@
     return (A.guests || []).filter(g => {
       const latest = rsvpByInvite.get(g.id);
       const status = latest?.attendance || 'pending';
-      const hay = normalize(`${g.guest_name} ${g.phone || ''} ${g.internal_note || ''}`);
+      const hay = normalize(`${g.guest_name} ${g.display_name || ''} ${g.companion_name || ''} ${g.phone || ''} ${g.internal_note || ''}`);
       return (!q || hay.includes(q))
         && (eventFilter === 'all' || g.event_choice === eventFilter)
         && (rsvpFilter === 'all' || status === rsvpFilter)
@@ -124,10 +125,11 @@
           <div class="guest-card-main">
             <label class="guest-select check"><input type="checkbox" class="guest-row-check" value="${g.id}"><span></span></label>
             <div class="guest-card-copy">
-              <strong>${A.esc(g.guest_name)}</strong>
-              <small>${A.esc(g.phone || 'Không có SĐT')} · ${eventLabel(g.event_choice)} · tối đa ${g.max_guests} người · ${source}</small>
+              <strong>${A.esc(g.display_name || g.guest_name)}${g.companion_name ? ' & ' + A.esc(g.companion_name) : ''}</strong>
+              <small>${A.esc(g.guest_name)} · ${A.esc(g.phone || 'Không có SĐT')} · ${eventLabel(g.event_choice)} · tối đa ${g.max_guests} người · ${source}</small>
               <div class="guest-status-line">
                 <span class="status-pill ${status === 'pending' ? 'maybe' : status}">RSVP: ${rsvpLabel(status)}${latest?.attendance === 'yes' ? ' · ' + latest.guest_count + ' người' : ''}</span>
+                <span class="status-pill ${g.opened_at ? 'yes' : 'maybe'}">${g.opened_at ? 'Đã mở · ' + (g.open_count || 1) + ' lần' : 'Chưa mở'}</span>
                 <span class="status-pill ${g.is_active ? 'yes' : 'no'}">${g.is_active ? 'Link active' : 'Link disabled'}</span>
               </div>
             </div>
@@ -188,7 +190,11 @@
     if (action === 'edit') {
       editIdEl.value = row.id;
       document.getElementById('guestName').value = row.guest_name || '';
+      document.getElementById('guestDisplayName').value = row.display_name || '';
+      document.getElementById('guestCompanion').value = row.companion_name || '';
       document.getElementById('guestPhone').value = row.phone || '';
+      document.getElementById('guestSide').value = row.side || 'friend';
+      document.getElementById('guestLanguage').value = row.preferred_language || 'vi';
       document.getElementById('guestEvent').value = row.event_choice || 'both';
       document.getElementById('guestMax').value = row.max_guests || 1;
       document.getElementById('guestNote').value = row.internal_note || '';
@@ -226,6 +232,8 @@
     editIdEl.value='';
     document.getElementById('guestMax').value='1';
     document.getElementById('guestEvent').value='both';
+    document.getElementById('guestSide').value='friend';
+    document.getElementById('guestLanguage').value='vi';
     saveBtn.textContent='Tạo link thiệp';
     cancelEditBtn.classList.add('hidden');
     A.setStatus(formStatus,'');
@@ -236,7 +244,11 @@
     const editId = editIdEl.value;
     const payload = {
       guest_name: document.getElementById('guestName').value.trim(),
+      display_name: document.getElementById('guestDisplayName').value.trim() || null,
+      companion_name: document.getElementById('guestCompanion').value.trim() || null,
       phone: document.getElementById('guestPhone').value.trim() || null,
+      side: document.getElementById('guestSide').value,
+      preferred_language: document.getElementById('guestLanguage').value,
       event_choice: document.getElementById('guestEvent').value,
       max_guests: Number(document.getElementById('guestMax').value || 1),
       internal_note: document.getElementById('guestNote').value.trim() || null,
