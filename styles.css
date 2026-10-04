@@ -6552,3 +6552,86 @@ html[data-motion="wow"] .hero:hover .hero-couple-names .hero-amp{
     transition:none!important;
   }
 }
+
+
+/* =========================================
+   V17 — mobile schedule rail separation + guest-guide polish
+   ========================================= */
+.guide-card [data-i18n="guide.welcome.title"]{
+  text-wrap:balance;
+}
+
+/* Mobile schedule: [time] [rail + dot] [event content]. */
+@media(max-width:680px){
+  .schedule-timeline{
+    --schedule-time-col:72px;
+    --schedule-rail-col:28px;
+    --schedule-rail-center:86px;
+    position:relative;
+  }
+
+  .schedule-item{
+    display:grid!important;
+    grid-template-columns:var(--schedule-time-col) var(--schedule-rail-col) minmax(0,1fr)!important;
+    column-gap:0!important;
+    row-gap:0!important;
+    align-items:start;
+    padding:18px 0!important;
+  }
+
+  .schedule-time{
+    grid-column:1!important;
+    min-width:0!important;
+    padding:4px 10px 0 0!important;
+    margin:0!important;
+    text-align:left;
+    white-space:nowrap;
+    overflow:visible!important;
+    position:relative;
+    z-index:3;
+  }
+
+  .schedule-item > div{
+    grid-column:3!important;
+    min-width:0;
+    padding-left:12px;
+  }
+
+  .schedule-timeline::before,
+  .schedule-timeline::after{
+    left:var(--schedule-rail-center)!important;
+  }
+
+  .schedule-item::before{
+    left:var(--schedule-rail-center)!important;
+    top:28px!important;
+    width:10px!important;
+    height:10px!important;
+    border-width:2px!important;
+    background:var(--day-accent)!important;
+    border-color:rgba(255,253,252,.96)!important;
+    box-shadow:0 0 0 2px color-mix(in srgb,var(--day-accent) 30%,transparent);
+    z-index:5!important;
+  }
+}
+
+@media(max-width:390px){
+  .schedule-timeline{
+    --schedule-time-col:64px;
+    --schedule-rail-col:26px;
+    --schedule-rail-center:77px;
+  }
+
+  .schedule-item{
+    grid-template-columns:var(--schedule-time-col) var(--schedule-rail-col) minmax(0,1fr)!important;
+  }
+
+  .schedule-time{
+    padding-right:8px!important;
+    font-size:.86rem!important;
+  }
+
+  .schedule-item > div{
+    padding-left:8px;
+  }
+}
