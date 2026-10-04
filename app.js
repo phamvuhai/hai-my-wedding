@@ -340,7 +340,7 @@ async function loadHomeGallery() {
       .order('is_featured', { ascending: false })
       .order('sort_order', { ascending: true })
       .order('created_at', { ascending: false })
-      .limit(8);
+      .limit(6);
 
     if (error) throw error;
     galleryState.homeImages = (images || []).map(img => ({...img, publicUrl: galleryPublicUrl(img)}));
