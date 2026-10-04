@@ -6108,3 +6108,174 @@ html[data-motion="wow"] .hero:hover .hero-couple-names .hero-amp{
     transform:none!important;
   }
 }
+
+
+/* =========================================
+   V16.3 — exact UTM Beautiful Caps + protected ampersand spacing
+   Source reference supplied by user:
+   https://fontsfree.net/utm-beautiful-caps-font-download.html
+   ========================================= */
+.hero-couple-names{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:auto auto auto!important;
+  justify-items:center!important;
+  align-items:center!important;
+  row-gap:.055em!important;
+  width:min(100%,1240px)!important;
+  max-width:1240px!important;
+  padding:.22em .46em .30em!important;
+  font-family:"UTM Beautiful Caps","Great Vibes","Snell Roundhand","Apple Chancery",cursive!important;
+  font-size:clamp(6.4rem,8.7vw,10.6rem)!important;
+  font-weight:400!important;
+  font-style:normal!important;
+  line-height:.90!important;
+  letter-spacing:0!important;
+  overflow:visible!important;
+}
+.hero-couple-names .hero-name{
+  position:relative;
+  z-index:1;
+  display:block!important;
+  width:max-content;
+  max-width:100%;
+  padding:.10em .24em .16em!important;
+  margin:0!important;
+  font-family:"UTM Beautiful Caps","Great Vibes","Snell Roundhand","Apple Chancery",cursive!important;
+  font-weight:400!important;
+  font-style:normal!important;
+  line-height:.90!important;
+  letter-spacing:0!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-shadow:0 5px 28px rgba(18,10,8,.25);
+}
+.hero-couple-names .hero-name-left{
+  margin-bottom:.035em!important;
+}
+.hero-couple-names .hero-name-right{
+  margin-top:.035em!important;
+}
+
+/* Ampersand gets its own protected row so long swashes can never sit on top of it. */
+.hero-couple-names .hero-amp{
+  position:relative;
+  z-index:3;
+  display:flex!important;
+  align-items:center;
+  justify-content:center;
+  min-width:1.65em;
+  min-height:1.15em;
+  margin:.10em 0 .12em!important;
+  padding:.10em .42em .16em!important;
+  font-family:"UTM Beautiful Caps","Great Vibes","Snell Roundhand","Apple Chancery",cursive!important;
+  font-size:.36em!important;
+  font-weight:400!important;
+  font-style:normal!important;
+  line-height:1!important;
+  letter-spacing:0!important;
+  color:#E8C5AE!important;
+  overflow:visible!important;
+  text-shadow:0 4px 22px rgba(18,10,8,.18);
+}
+.hero-couple-names .hero-amp::before,
+.hero-couple-names .hero-amp::after{
+  content:"";
+  flex:0 0 clamp(24px,3vw,54px);
+  height:1px;
+  margin:0 .34em;
+  background:linear-gradient(90deg,transparent,rgba(232,197,174,.62),transparent);
+}
+
+/* The actual UTM font has larger swashes than the fallback, so preserve extra air. */
+.hero-copy{
+  overflow:visible!important;
+}
+.hero-couple-names::before{
+  width:min(88vw,940px)!important;
+  height:clamp(230px,25vw,370px)!important;
+}
+.hero-date{
+  margin-top:clamp(22px,2.5vw,34px)!important;
+}
+
+/* Desktop: bold cover typography while preserving the central composition. */
+@media(min-width:1400px){
+  .hero-couple-names{
+    font-size:clamp(8rem,8.4vw,10.9rem)!important;
+    row-gap:.06em!important;
+  }
+  .hero-couple-names .hero-amp{
+    margin:.11em 0 .13em!important;
+    font-size:.35em!important;
+  }
+}
+
+/* Tablet: enough vertical separation to protect the ampersand. */
+@media(min-width:681px) and (max-width:1024px){
+  .hero-couple-names{
+    width:min(100%,900px)!important;
+    padding:.20em .38em .28em!important;
+    font-size:clamp(5.1rem,10.4vw,7.5rem)!important;
+    line-height:.92!important;
+    row-gap:.06em!important;
+  }
+  .hero-couple-names .hero-name{
+    line-height:.92!important;
+    padding-inline:.20em!important;
+  }
+  .hero-couple-names .hero-amp{
+    margin:.12em 0 .14em!important;
+    font-size:.38em!important;
+    min-height:1.2em;
+  }
+}
+
+/* Mobile: smaller swashes, but still keep the ampersand on a completely separate row. */
+@media(max-width:680px){
+  .hero-couple-names{
+    width:100%!important;
+    padding:.18em .24em .28em!important;
+    font-size:clamp(3.9rem,17.2vw,5.5rem)!important;
+    line-height:.94!important;
+    row-gap:.045em!important;
+  }
+  .hero-couple-names .hero-name{
+    max-width:96vw;
+    padding:.10em .13em .15em!important;
+    line-height:.94!important;
+  }
+  .hero-couple-names .hero-amp{
+    min-width:1.55em;
+    min-height:1.18em;
+    margin:.11em 0 .13em!important;
+    padding:.08em .34em .13em!important;
+    font-size:.40em!important;
+  }
+  .hero-couple-names .hero-amp::before,
+  .hero-couple-names .hero-amp::after{
+    flex-basis:24px;
+    margin-inline:.22em;
+  }
+  .hero-couple-names::before{
+    width:99vw!important;
+    height:180px!important;
+  }
+}
+@media(max-width:390px){
+  .hero-couple-names{
+    font-size:clamp(3.55rem,16.4vw,4.75rem)!important;
+  }
+  .hero-couple-names .hero-amp{
+    margin:.10em 0 .12em!important;
+  }
+}
+
+/* Font-load fallback remains stable and readable. */
+@supports (font-family:"UTM Beautiful Caps"){
+  .hero-couple-names,
+  .hero-couple-names .hero-name,
+  .hero-couple-names .hero-amp{
+    font-synthesis:none;
+  }
+}
