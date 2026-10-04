@@ -78,9 +78,9 @@
 
       <p class="personal-invite-private" id="personalInvitePrivate" hidden></p>
       <aside class="personal-link-notice personal-link-notice-cover" id="personalLinkNotice" hidden>
-        <strong id="personalLinkNoticeTitle"></strong>
+        <span class="personal-link-note-icon" aria-hidden="true">🔒</span>
         <p id="personalLinkNoticeText"></p>
-        <a id="personalPublicLink" href="/" target="_blank" rel="noreferrer"></a>
+        <button class="personal-share-btn" id="personalSharePublic" type="button"></button>
       </aside>
       <p class="intro-audio-note" aria-hidden="true">♪</p>
     </div>
@@ -152,11 +152,9 @@
 
   <main>
     <section class="section intro editorial-story chapter-start chapter-story" id="story" data-chapter="story">
-      <span class="floating-word floating-love" aria-hidden="true">TOGETHER</span>
       <div class="container story-grid">
         <div class="story-side reveal">
           <p class="eyebrow">OUR STORY</p>
-          <div class="story-display" aria-hidden="true"><span>OUR</span><span>STORY</span></div>
           <div class="monogram">H<span>♥</span>M</div>
         </div>
         <div class="story-copy reveal">
@@ -166,20 +164,11 @@
       </div>
     </section>
 
-    <div class="love-marquee motion-marquee marquee-reverse" aria-hidden="true">
-      <div class="marquee-track">
-        <span>LOVE</span><i>♥</i><span>TOGETHER</span><i>♥</i><span>FOREVER</span><i>♥</i><span>FAMILY</span><i>♥</i>
-        <span>LOVE</span><i>♥</i><span>TOGETHER</span><i>♥</i><span>FOREVER</span><i>♥</i><span>FAMILY</span><i>♥</i>
-      </div>
-    </div>
-
-    <section class="section countdown-section chapter-start chapter-events" data-chapter="events">
-      <span class="floating-word countdown-word" aria-hidden="true">FOREVER</span>
+    <section class="section countdown-section countdown-compact chapter-start chapter-events" data-chapter="events">
       <div class="container reveal countdown-layout">
         <div class="countdown-heading">
           <p class="eyebrow">COUNTDOWN</p>
-          <h2 data-i18n="countdown.title">Đếm ngược
-đến ngày vui</h2>
+          <h2 data-i18n="countdown.short">Còn đến ngày vui</h2>
         </div>
         <div class="countdown" id="countdown">
           <div><strong id="days">00</strong><span data-i18n="countdown.days">Ngày</span></div>
@@ -195,20 +184,7 @@
         <div class="section-heading reveal">
           <p class="eyebrow">WEDDING EVENTS</p>
           <h2 data-i18n="events.title">Lịch cưới</h2>
-          <p data-i18n="events.subtitle">Chọn ngày để xem thời gian, địa điểm và chỉ đường.</p>
-        </div>
-
-        <div class="event-day-switcher reveal" role="tablist" aria-label="Wedding day">
-          <button class="event-day-tab is-active" type="button" role="tab" aria-selected="true" data-event-tab="bride">
-            <span class="event-tab-date">18.12</span>
-            <span data-i18n="family.bride">Nhà gái</span>
-            <small class="event-invite-badge" hidden></small>
-          </button>
-          <button class="event-day-tab" type="button" role="tab" aria-selected="false" data-event-tab="groom">
-            <span class="event-tab-date">20.12</span>
-            <span data-i18n="family.groom">Nhà trai</span>
-            <small class="event-invite-badge" hidden></small>
-          </button>
+          <p data-i18n="events.subtitle">Hai ngày cưới, đầy đủ thời gian, địa điểm và chỉ đường.</p>
         </div>
 
         <div class="event-families event-day-panels" data-active-day="bride">
@@ -217,7 +193,10 @@
             <div class="family-header">
               <div>
                 <p class="family-kicker">BRIDE'S FAMILY · HO CHI MINH CITY</p>
-                <h3 data-i18n="family.bride">Nhà gái</h3>
+                <div class="family-title-row">
+                  <h3 data-i18n="family.bride">Nhà gái</h3>
+                  <small class="event-invite-badge" data-invite-badge="bride" hidden></small>
+                </div>
               </div>
               <span class="family-date">18.12.2026</span>
             </div>
@@ -258,7 +237,10 @@
             <div class="family-header">
               <div>
                 <p class="family-kicker">GROOM'S FAMILY · RACH GIA</p>
-                <h3 data-i18n="family.groom">Nhà trai</h3>
+                <div class="family-title-row">
+                  <h3 data-i18n="family.groom">Nhà trai</h3>
+                  <small class="event-invite-badge" data-invite-badge="groom" hidden></small>
+                </div>
               </div>
               <span class="family-date">20.12.2026</span>
             </div>
@@ -294,24 +276,7 @@
             </div>
           </section>
         </div>
-      </div>
-    </section>
-
-    <section class="section guest-guide-section chapter-start chapter-guide guide-compact" id="guide" data-chapter="guide">
-      <div class="container">
-        <div class="guide-compact-card reveal">
-          <div>
-            <p class="eyebrow">GOOD TO KNOW</p>
-            <h2 data-i18n="guide.title">Trước khi bạn đến</h2>
-          </div>
-          <div class="guide-compact-copy">
-            <span class="guide-compact-icon" aria-hidden="true">◷</span>
-            <div>
-              <h3 data-i18n="guide.arrival.title">Thời gian đến</h3>
-              <p data-i18n="guide.arrival.text">Bạn nên có mặt trước giờ bắt đầu khoảng 15–20 phút để thuận tiện đón tiếp.</p>
-            </div>
-          </div>
-        </div>
+        <p class="event-arrival-note reveal"><span aria-hidden="true">◷</span> <span data-i18n="guide.arrival.text">Bạn nên có mặt trước giờ bắt đầu khoảng 15–20 phút để thuận tiện đón tiếp.</span></p>
       </div>
     </section>
 
@@ -354,25 +319,6 @@
       </div>
     </section>
 
-    <section class="section wishes-section chapter-start chapter-memories" id="wishes" data-chapter="memories">
-      <div class="container wishes-layout">
-        <div class="wishes-display reveal" aria-hidden="true"><span data-i18n="wishes.display1">LỜI CHÚC</span><em data-i18n="wishes.display2">CHO CHÚNG TÔI</em></div>
-        <div class="wishes-card reveal">
-          <p class="eyebrow" data-i18n="wishes.eyebrow">MỘT LỜI NHẮN NHỎ</p>
-          <h2 data-i18n="wishes.title">Gửi lời chúc đến Hải Phạm & Mỹ Nguyễn</h2>
-          <p data-i18n="wishes.text">Những lời nhắn bạn gửi qua RSVP sẽ được Hải Phạm & Mỹ Nguyễn trân trọng lưu giữ như một phần ký ức đẹp của ngày đặc biệt này.</p>
-          <a class="btn btn-outline" href="#rsvp" data-i18n="wishes.cta">Viết lời chúc trong RSVP →</a>
-        </div>
-      </div>
-    </section>
-
-    <div class="motion-marquee promise-marquee" aria-hidden="true">
-      <div class="marquee-track">
-        <span>OUR STORY</span><i>•</i><span>OUR PEOPLE</span><i>•</i><span>OUR FOREVER</span><i>•</i><span>DECEMBER 2026</span><i>•</i>
-        <span>OUR STORY</span><i>•</i><span>OUR PEOPLE</span><i>•</i><span>OUR FOREVER</span><i>•</i><span>DECEMBER 2026</span><i>•</i>
-      </div>
-    </div>
-
     <section class="section rsvp-section chapter-start chapter-rsvp" id="rsvp" data-chapter="rsvp">
       <div class="container rsvp-wrap">
         <div class="rsvp-copy reveal">
@@ -383,10 +329,9 @@
         </div>
 
         <form class="rsvp-form reveal" id="rsvpForm">
-          <aside class="personal-link-notice rsvp-personal-notice" id="rsvpPersonalNotice" hidden>
-            <strong id="rsvpPersonalNoticeTitle"></strong>
+          <aside class="rsvp-update-note" id="rsvpPersonalNotice" hidden>
+            <span aria-hidden="true">↻</span>
             <p id="rsvpPersonalNoticeText"></p>
-            <a id="rsvpPublicLink" href="/" target="_blank" rel="noreferrer"></a>
           </aside>
           <label>
             <span data-i18n="rsvp.name">Họ và tên</span>
@@ -427,7 +372,7 @@
           </label>
 
           <label>
-            <span data-i18n="rsvp.message">Lời nhắn cho Hải Phạm & Mỹ Nguyễn</span>
+            <span data-i18n="rsvp.message">Gửi một lời chúc ♡</span>
             <textarea name="message" rows="4" placeholder="Gửi một lời chúc đến cô dâu chú rể..."></textarea>
           </label>
 
