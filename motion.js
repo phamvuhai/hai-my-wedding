@@ -612,7 +612,9 @@
 
       if (!timeline.dataset.railMeasured) measureDay(day);
 
-      const viewportAnchor = innerHeight * .52;
+      // Keep the active event aligned with the user's actual reading zone.
+      // A higher anchor prevents event 2 from becoming active while event 1 is still the main card on screen.
+      const viewportAnchor = innerHeight * (coarse ? .42 : .46);
       const dotYs = items.map(item => {
         const r = item.getBoundingClientRect();
         return r.top + dotOffset(item);
@@ -639,10 +641,19 @@
       if (viewportAnchor < firstY) activeIndex = 0;
       if (viewportAnchor > lastY) activeIndex = items.length-1;
 
+      const previousIndex = Number(day.dataset.scheduleActiveIndex ?? -1);
       items.forEach((item,index) => {
-        item.classList.toggle('is-current',index===activeIndex);
-        item.classList.toggle('is-passed',index<activeIndex || (index===activeIndex && dotYs[index] < viewportAnchor-28));
+        const isCurrent = index===activeIndex;
+        item.classList.toggle('is-current',isCurrent);
+        item.classList.toggle('is-passed',index<activeIndex || (isCurrent && dotYs[index] < viewportAnchor-28));
         item.classList.toggle('is-upcoming',index>activeIndex);
+
+        if (isCurrent && previousIndex !== activeIndex) {
+          item.classList.remove('is-current-enter');
+          void item.offsetWidth;
+          item.classList.add('is-current-enter');
+          setTimeout(() => item.classList.remove('is-current-enter'),520);
+        }
       });
 
       setStatus(day,activeIndex);
@@ -790,14 +801,15 @@
         hero.style.setProperty('--scroll-progress', p.toFixed(3));
 
         if (copy) {
-          const amount = mode === 'wow' ? 38 : 20;
-          copy.style.transform = `translate3d(0,${-p * amount}px,0)`;
+          const amount = coarse ? 0 : (mode === 'wow' ? 38 : 20);
+          copy.style.transform = amount ? `translate3d(0,${-p * amount}px,0)` : 'translate3d(0,0,0)';
           copy.style.opacity = String(Math.max(.55, 1 - p * .45));
         }
 
         [fullPhoto,framedPhoto].forEach(photo => {
           if (!photo) return;
-          photo.style.setProperty('--scroll-shift', `${p * (mode === 'wow' ? 30 : 14)}px`);
+          const photoAmount = coarse ? 5 : (mode === 'wow' ? 30 : 14);
+          photo.style.setProperty('--scroll-shift', `${p * photoAmount}px`);
         });
 
         if (curtain) {
