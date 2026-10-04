@@ -5740,3 +5740,231 @@ html[data-motion="wow"] .hero:hover .hero-couple-names .hero-amp{
     font-size:.96rem;
   }
 }
+
+
+/* =========================================
+   V16.1 — premium hero typography + schedule desktop fix
+   ========================================= */
+
+/* Hero: larger, more ceremonial typography on desktop. */
+.hero-couple-names{
+  width:min(100%,1100px)!important;
+  max-width:1100px!important;
+  margin-top:14px!important;
+  font-size:clamp(5.2rem,7.4vw,8.4rem)!important;
+  line-height:.78!important;
+  letter-spacing:-.04em;
+}
+.hero-couple-names .hero-name{
+  line-height:.78!important;
+  font-weight:600;
+}
+.hero-couple-names .hero-amp{
+  margin:.015em 0 -.015em!important;
+  font-family:"Great Vibes","Snell Roundhand","Apple Chancery",cursive!important;
+  font-size:.48em!important;
+  font-weight:400!important;
+  font-style:normal!important;
+  line-height:.82!important;
+  letter-spacing:0!important;
+  color:#E9C6B0!important;
+}
+.hero-couple-names::before{
+  width:min(86vw,860px)!important;
+  height:clamp(180px,20vw,290px)!important;
+  background:
+    radial-gradient(ellipse,rgba(232,201,181,.115),rgba(232,201,181,.045) 44%,transparent 74%)!important;
+}
+.hero-date{
+  margin-top:clamp(28px,3vw,42px)!important;
+  color:rgba(255,249,244,.92);
+  font-size:clamp(1.08rem,1.35vw,1.5rem)!important;
+  font-weight:650;
+  letter-spacing:.18em!important;
+  line-height:1.3;
+}
+.hero-date::before{
+  width:clamp(110px,10vw,154px)!important;
+  margin-bottom:18px!important;
+}
+.hero-note{
+  max-width:760px;
+  margin-top:clamp(26px,2.4vw,34px)!important;
+  font-size:clamp(1.02rem,1.15vw,1.25rem)!important;
+  line-height:1.75;
+}
+.hero-copy .btn{
+  margin-top:clamp(22px,2vw,30px);
+}
+.hero-copy>.eyebrow{
+  margin-bottom:10px;
+  letter-spacing:.24em;
+}
+
+/* Stronger separation from the photo while remaining transparent/editorial. */
+.hero-copy{
+  position:relative;
+  z-index:3;
+  width:min(100%,1120px);
+  margin-inline:auto;
+  padding:clamp(12px,1.5vw,20px) clamp(10px,2vw,24px);
+}
+.hero-copy::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:4% 8% -2%;
+  border-radius:34px;
+  background:linear-gradient(180deg,rgba(40,27,21,.08),rgba(40,27,21,.16));
+  backdrop-filter:blur(1px);
+  -webkit-backdrop-filter:blur(1px);
+  pointer-events:none;
+}
+
+/* Desktop schedule: remove sticky behavior that caused apparent overlap. */
+@media(min-width:901px){
+  .schedule-days{
+    width:min(100%,1240px);
+    margin-inline:auto;
+  }
+  .schedule-day{
+    align-items:stretch!important;
+    overflow:visible!important;
+  }
+  .schedule-day-label{
+    position:static!important;
+    top:auto!important;
+    align-self:stretch!important;
+    z-index:auto!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    border-radius:18px!important;
+  }
+}
+
+/* Make the bride/groom backgrounds visibly distinct while keeping the pastel palette. */
+.schedule-day-bride{
+  border-color:rgba(200,143,139,.30)!important;
+  background:
+    linear-gradient(125deg,rgba(200,143,139,.14) 0%,rgba(200,143,139,.07) 34%,rgba(255,253,250,.92) 68%),
+    #F8ECEB!important;
+}
+.schedule-day-groom{
+  border-color:rgba(143,155,134,.31)!important;
+  background:
+    linear-gradient(125deg,rgba(143,155,134,.15) 0%,rgba(143,155,134,.075) 34%,rgba(255,253,250,.92) 68%),
+    #EEF2EB!important;
+}
+.schedule-day-bride .schedule-day-label{
+  background:rgba(252,242,241,.72)!important;
+}
+.schedule-day-groom .schedule-day-label{
+  background:rgba(239,244,236,.76)!important;
+}
+
+/* Individual schedule rows also receive subtle semantic backgrounds. */
+.schedule-day-bride .schedule-item:first-child{
+  background:rgba(200,143,139,.055);
+}
+.schedule-day-groom .schedule-item:first-child{
+  background:rgba(143,155,134,.065);
+}
+.schedule-day .schedule-item:last-child{
+  background:rgba(201,158,125,.055);
+}
+.schedule-item{
+  padding:20px 14px!important;
+}
+.schedule-item+ .schedule-item{
+  margin-top:4px;
+}
+
+/* Reception keeps champagne; ceremony inherits family accent. */
+.schedule-day .schedule-item:last-child .schedule-time,
+.schedule-day .schedule-item:last-child .schedule-kind{
+  color:#9A7159!important;
+}
+.schedule-day .schedule-item:last-child .schedule-kind{
+  border-color:rgba(201,158,125,.24)!important;
+  background:rgba(201,158,125,.085)!important;
+}
+.schedule-day .schedule-item:last-child::before{
+  border-color:var(--schedule-champagne)!important;
+}
+
+/* Tablet: preserve hierarchy without overwhelming the photo. */
+@media(min-width:681px) and (max-width:1024px){
+  .hero-couple-names{
+    font-size:clamp(4.4rem,8.7vw,6.4rem)!important;
+    line-height:.80!important;
+  }
+  .hero-couple-names::before{
+    width:min(90vw,700px)!important;
+    height:210px!important;
+  }
+  .hero-date{
+    font-size:clamp(1rem,2vw,1.25rem)!important;
+  }
+  .hero-note{
+    font-size:clamp(.98rem,1.8vw,1.12rem)!important;
+  }
+}
+
+/* Mobile remains intentional and readable. */
+@media(max-width:680px){
+  .hero-copy{
+    width:100%;
+    padding-inline:4px;
+  }
+  .hero-copy::before{
+    inset:2% 1% -2%;
+    border-radius:26px;
+    background:linear-gradient(180deg,rgba(40,27,21,.05),rgba(40,27,21,.11));
+  }
+  .hero-couple-names{
+    font-size:clamp(3.25rem,15vw,4.65rem)!important;
+    line-height:.82!important;
+  }
+  .hero-couple-names .hero-name{
+    line-height:.82!important;
+  }
+  .hero-couple-names .hero-amp{
+    font-size:.50em!important;
+  }
+  .hero-date{
+    margin-top:22px!important;
+    font-size:clamp(.78rem,3.7vw,.96rem)!important;
+    letter-spacing:.12em!important;
+  }
+  .hero-note{
+    margin-top:20px!important;
+    font-size:clamp(.9rem,3.8vw,1rem)!important;
+  }
+
+  .schedule-day-bride{
+    background:
+      linear-gradient(150deg,rgba(200,143,139,.14),rgba(255,253,250,.95) 58%),
+      #F8ECEB!important;
+  }
+  .schedule-day-groom{
+    background:
+      linear-gradient(150deg,rgba(143,155,134,.15),rgba(255,253,250,.95) 58%),
+      #EEF2EB!important;
+  }
+}
+
+@media(max-width:390px){
+  .hero-couple-names{
+    font-size:clamp(3rem,14.1vw,4rem)!important;
+  }
+  .hero-date{
+    font-size:.76rem!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .hero-copy::before{
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+}
