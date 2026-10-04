@@ -143,6 +143,7 @@
       const duration = Math.max(12, distance / speed);
 
       track.style.setProperty('--marquee-distance', `${distance.toFixed(3)}px`);
+      track.style.setProperty('--marquee-distance-negative', `-${distance.toFixed(3)}px`);
       track.style.setProperty('--marquee-duration', `${duration.toFixed(3)}s`);
       track.dataset.marqueeDistance = distance.toFixed(3);
       track.dataset.marqueeSpeed = String(speed);
