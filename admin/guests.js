@@ -249,8 +249,8 @@
     if (editId) {
       const {error} = await db.from('guest_invites').update(payload).eq('id',editId);
       if (error) return A.setStatus(formStatus,error.message,'error');
-      A.setStatus(formStatus,'Đã cập nhật. Link thiệp cũ vẫn giữ nguyên.','success');
       resetForm();
+      A.setStatus(formStatus,'Đã cập nhật. Link thiệp cũ vẫn giữ nguyên.','success');
       return load();
     }
 
