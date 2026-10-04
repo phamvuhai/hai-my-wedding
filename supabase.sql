@@ -407,6 +407,8 @@ alter table public.rsvp
   add column if not exists internal_note text,
   add column if not exists contacted_at timestamptz;
 
+create index if not exists rsvp_invite_id_idx on public.rsvp(invite_id);
+
 grant update on table public.rsvp to authenticated;
 
 drop policy if exists admin_can_update_rsvp on public.rsvp;
