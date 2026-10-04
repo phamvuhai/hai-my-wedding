@@ -133,8 +133,18 @@
     return "vi";
   }
 
+  function pathParts() {
+    return location.pathname.split("/").filter(Boolean);
+  }
+
   function isAlbumPage() {
-    return location.pathname.split("/").filter(Boolean).includes("album");
+    return pathParts().includes("album");
+  }
+
+  function inviteTokenFromPath() {
+    const parts = pathParts();
+    const i = parts.indexOf("invite");
+    return i >= 0 && parts[i + 1] ? parts[i + 1] : new URLSearchParams(location.search).get("invite");
   }
 
   function publicCode(lang) {
@@ -143,7 +153,9 @@
 
   function routeFor(lang) {
     const code = publicCode(lang);
-    return isAlbumPage() ? `/${code}/album` : `/${code}`;
+    if (isAlbumPage()) return `/${code}/album`;
+    const token = inviteTokenFromPath();
+    return token ? `/${code}/invite/${encodeURIComponent(token)}` : `/${code}`;
   }
 
   let current = resolveInitialLanguage();
@@ -151,6 +163,25 @@
 
   function t(key) {
     return dictionaries[current]?.[key] ?? dictionaries.vi[key] ?? key;
+  }
+
+  async function loadContentOverrides() {
+    const cfg = window.WEDDING_CONFIG || {};
+    if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.supabase) return;
+    try {
+      const db = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+      const { data, error } = await db.from('site_content').select('key,value_vi,value_en,value_ja');
+      if (error) throw error;
+      (data || []).forEach(row => {
+        if (row.value_vi) dictionaries.vi[row.key] = row.value_vi;
+        if (row.value_en) dictionaries.en[row.key] = row.value_en;
+        if (row.value_ja) dictionaries.ja[row.key] = row.value_ja;
+      });
+      apply();
+      document.dispatchEvent(new Event('wedding:content-loaded'));
+    } catch (error) {
+      console.warn('Content overrides unavailable:', error);
+    }
   }
 
   function apply(root=document) {
@@ -207,6 +238,7 @@
     }
 
     apply();
+    loadContentOverrides();
   }
 
   window.WeddingI18n = {t, apply, setLanguage, publicCode, get language(){return current;}, labels};
