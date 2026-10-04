@@ -623,6 +623,7 @@ grant execute on function public.get_wedding_rsvp(text) to anon, authenticated;
 
 create or replace function public.submit_wedding_rsvp(
   p_token text,
+  p_guest_name text,
   p_phone text,
   p_attendance text,
   p_guest_count integer,
@@ -639,6 +640,7 @@ declare
   v_event text;
   v_count integer;
   v_id bigint;
+  v_guest_name text;
 begin
   select * into v_invite
   from public.guest_invites
@@ -648,6 +650,11 @@ begin
 
   if v_invite.id is null then
     raise exception 'Invalid or inactive invitation token';
+  end if;
+
+  v_guest_name := nullif(trim(p_guest_name), '');
+  if v_guest_name is null or char_length(v_guest_name) > 120 then
+    raise exception 'Invalid guest name';
   end if;
 
   if p_attendance not in ('yes','no','maybe') then
@@ -680,7 +687,7 @@ begin
     guest_name, phone, attendance, guest_count, event_choice,
     invite_id, event_code, message, response_source, updated_at
   ) values (
-    v_invite.guest_name,
+    v_guest_name,
     coalesce(nullif(trim(p_phone),''), v_invite.phone),
     p_attendance,
     v_count,
@@ -707,8 +714,8 @@ begin
 end;
 $$;
 
-revoke all on function public.submit_wedding_rsvp(text,text,text,integer,text,text) from public;
-grant execute on function public.submit_wedding_rsvp(text,text,text,integer,text,text) to anon, authenticated;
+revoke all on function public.submit_wedding_rsvp(text,text,text,text,integer,text,text) from public;
+grant execute on function public.submit_wedding_rsvp(text,text,text,text,integer,text,text) to anon, authenticated;
 
 
 -- Admin may delete RSVP records. Deleting RSVP does not delete guest_invites.
