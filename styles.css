@@ -5709,3 +5709,34 @@ html[data-motion="wow"] .hero:hover .hero-couple-names .hero-amp{
     transform:scaleX(1)!important;
   }
 }
+
+
+/* V15 confirmed-time presentation in Wedding Events */
+.event-date{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  gap:6px 9px;
+}
+.event-date strong{
+  color:var(--accent-dark);
+  font-size:1.02rem;
+  font-weight:800;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:.02em;
+}
+.event-date span{
+  color:inherit;
+}
+.groom-side .event-date strong{
+  color:#66705F;
+}
+@media(max-width:680px){
+  .event-date{
+    gap:4px 7px;
+  }
+  .event-date strong{
+    flex:0 0 auto;
+    font-size:.96rem;
+  }
+}
