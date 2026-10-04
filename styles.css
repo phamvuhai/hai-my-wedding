@@ -9797,3 +9797,69 @@ body.invitation-opening .hero-fall-layer{
     font-size:.62rem!important;
   }
 }
+
+
+/* =========================================
+   V34 — global responsive/font regression guards
+   ========================================= */
+html{
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+body{
+  overflow-x:hidden;
+}
+img,svg,video,canvas{
+  max-width:100%;
+}
+main,section,article,header,footer,nav,
+.hero,.hero-content,.section-inner,.container,
+.rsvp-form,.event-card,.story-card,.guide-card,
+.album-overlay,.photo-lightbox,.invite-welcome{
+  min-width:0;
+}
+input,select,textarea,button{
+  max-width:100%;
+  font-family:inherit;
+}
+h1,h2,h3,h4,p,a,span,strong,small,label{
+  overflow-wrap:break-word;
+}
+[data-lang="ja"] h1,
+[data-lang="ja"] h2,
+[data-lang="ja"] h3,
+[data-lang="ja"] p,
+html[lang="ja"] h1,
+html[lang="ja"] h2,
+html[lang="ja"] h3,
+html[lang="ja"] p{
+  word-break:normal;
+  overflow-wrap:anywhere;
+}
+@media(max-width:760px){
+  .section-inner,
+  .container{
+    width:min(100%,calc(100vw - 28px));
+    margin-inline:auto;
+  }
+  .rsvp-form,
+  .event-card,
+  .story-card,
+  .guide-card{
+    max-width:100%;
+  }
+  .invite-welcome-card{
+    width:min(92vw,430px);
+    max-width:calc(100vw - 24px);
+    box-sizing:border-box;
+  }
+}
+@media(max-width:360px){
+  .intro-language{
+    max-width:46vw;
+  }
+  .intro-language button,
+  .intro-language select{
+    font-size:.72rem;
+  }
+}
