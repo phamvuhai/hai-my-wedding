@@ -189,6 +189,10 @@
 
     addEventListener('load', () => scheduleFit(80), { once:true });
     addEventListener('pageshow', () => scheduleFit(40), { once:true });
+
+    if (document.fonts?.addEventListener) {
+      document.fonts.addEventListener('loadingdone', () => scheduleFit(40));
+    }
   }
 
   function initEntrance() {
