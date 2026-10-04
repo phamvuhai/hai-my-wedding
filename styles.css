@@ -5332,3 +5332,380 @@ body{
     transform:none!important;
   }
 }
+
+
+/* =========================================
+   V15 — Schedule visual focus
+   V16 — Hero couple-name redesign
+   ========================================= */
+:root{
+  --schedule-champagne:#C99E7D;
+  --schedule-bride:#C88F8B;
+  --schedule-groom:#8F9B86;
+}
+
+/* ---------- V16: Couple names become the hero focal point ---------- */
+.hero-couple-names{
+  position:relative;
+  isolation:isolate;
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  justify-items:center;
+  align-items:center!important;
+  width:min(100%,980px)!important;
+  max-width:980px!important;
+  margin:10px auto 0!important;
+  gap:0!important;
+  font-family:"Cormorant Garamond","Iowan Old Style","Baskerville",Georgia,serif!important;
+  font-size:clamp(4rem,7vw,6.8rem)!important;
+  font-weight:600;
+  line-height:.82!important;
+  letter-spacing:-.035em;
+  text-align:center;
+}
+.hero-couple-names::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:50%;
+  top:50%;
+  width:min(84vw,720px);
+  height:clamp(130px,18vw,230px);
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(232,201,181,.10),rgba(232,201,181,.035) 42%,transparent 72%);
+  pointer-events:none;
+}
+.hero-couple-names .hero-name{
+  display:block!important;
+  min-width:0;
+  max-width:100%;
+  color:#FFF9F4;
+  font-family:inherit;
+  font-weight:600;
+  font-style:normal;
+  line-height:.82;
+  white-space:nowrap;
+  text-shadow:0 3px 24px rgba(20,12,9,.18);
+}
+.hero-couple-names .hero-amp{
+  display:block!important;
+  margin:.03em 0 .01em;
+  color:#E8C9B5;
+  font-family:inherit;
+  font-size:.62em;
+  font-weight:500;
+  font-style:italic;
+  line-height:.72;
+  letter-spacing:-.04em;
+  text-shadow:0 4px 24px rgba(232,201,181,.14);
+}
+.hero-date{
+  position:relative;
+  margin-top:clamp(24px,3vw,34px)!important;
+}
+.hero-date::before{
+  content:"";
+  display:block;
+  width:clamp(82px,9vw,118px);
+  height:1px;
+  margin:0 auto 16px;
+  background:linear-gradient(90deg,transparent,#E8C9B5,transparent);
+  opacity:.84;
+}
+
+/* Replace horizontal fly-in with a calmer wedding-editorial entrance. */
+.motion-ready .hero-entered .hero-couple-names .hero-name-left{
+  animation:heroNameRise .92s cubic-bezier(.16,.84,.24,1) .34s both!important;
+}
+.motion-ready .hero-entered .hero-couple-names .hero-amp{
+  animation:heroAmpBloom .82s cubic-bezier(.17,.86,.25,1) .46s both!important;
+}
+.motion-ready .hero-entered .hero-couple-names .hero-name-right{
+  animation:heroNameRise .98s cubic-bezier(.16,.84,.24,1) .56s both!important;
+}
+@keyframes heroNameRise{
+  from{opacity:0;transform:translate3d(0,22px,0);letter-spacing:.015em}
+  to{opacity:1;transform:translate3d(0,0,0);letter-spacing:-.035em}
+}
+@keyframes heroAmpBloom{
+  from{opacity:0;transform:scale(.72) rotate(-8deg)}
+  68%{opacity:1;transform:scale(1.06) rotate(1deg)}
+  to{opacity:1;transform:none}
+}
+html[data-motion="wow"] .hero:hover .hero-couple-names .hero-name,
+html[data-motion="wow"] .hero:hover .hero-couple-names .hero-amp{
+  transform:none!important;
+}
+
+/* Keep the same signature typeface across invitation and footer. */
+.intro-names,
+.footer-names{
+  font-family:"Cormorant Garamond","Iowan Old Style","Baskerville",Georgia,serif;
+  font-weight:600;
+}
+.intro-names span,
+.footer-names span{
+  color:var(--accent);
+  font-style:italic;
+  font-weight:500;
+}
+
+/* ---------- V15: Schedule has clear scan order: date -> time -> event -> place ---------- */
+.schedule-section{
+  --day-accent:var(--schedule-champagne);
+  overflow:clip;
+}
+.schedule-bg-word{
+  right:1.5vw!important;
+  top:20px!important;
+  font-size:clamp(5.4rem,13vw,12rem)!important;
+  color:rgba(79,60,49,.026)!important;
+}
+.schedule-head{
+  position:relative;
+  z-index:3;
+}
+.schedule-head .eyebrow{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  width:max-content;
+  max-width:100%;
+}
+.schedule-head .eyebrow::after{
+  content:"";
+  width:74px;
+  height:1px;
+  background:linear-gradient(90deg,var(--schedule-champagne),transparent);
+  transform:scaleX(0);
+  transform-origin:left;
+  opacity:.9;
+}
+.schedule-head.motion-in .eyebrow::after{
+  animation:scheduleAccentDraw .9s cubic-bezier(.2,.8,.2,1) .22s forwards;
+}
+@keyframes scheduleAccentDraw{to{transform:scaleX(1)}}
+
+.schedule-day{
+  --day-accent:var(--schedule-champagne);
+  position:relative;
+  overflow:visible;
+  transition:border-color .3s ease,box-shadow .3s ease,background .3s ease;
+}
+.schedule-day-bride{
+  --day-accent:var(--schedule-bride);
+  border-color:rgba(200,143,139,.20)!important;
+  background:
+    linear-gradient(115deg,rgba(200,143,139,.050),transparent 42%),
+    #FAF6F2!important;
+}
+.schedule-day-groom{
+  --day-accent:var(--schedule-groom);
+  border-color:rgba(143,155,134,.21)!important;
+  background:
+    linear-gradient(115deg,rgba(143,155,134,.055),transparent 42%),
+    #FAF7F2!important;
+}
+.schedule-day-label{
+  position:relative;
+}
+.schedule-day-label::before{
+  content:"";
+  width:8px;
+  height:8px;
+  margin:0 0 14px 3px;
+  border-radius:50%;
+  background:var(--day-accent);
+  box-shadow:0 0 0 7px color-mix(in srgb,var(--day-accent) 10%,transparent);
+}
+.schedule-day-label strong{
+  color:var(--day-accent)!important;
+  text-shadow:0 8px 30px color-mix(in srgb,var(--day-accent) 8%,transparent);
+}
+.schedule-day-label small{
+  margin-top:8px;
+  color:color-mix(in srgb,var(--day-accent) 68%,#4E413A)!important;
+  font-weight:650;
+}
+
+.schedule-timeline::before{
+  background:color-mix(in srgb,var(--day-accent) 28%,transparent)!important;
+}
+.schedule-timeline::after{
+  background:linear-gradient(to bottom,var(--day-accent),var(--schedule-champagne))!important;
+  box-shadow:0 0 12px color-mix(in srgb,var(--day-accent) 22%,transparent)!important;
+}
+.schedule-item{
+  border-radius:18px;
+  transition:background .3s ease,transform .3s ease;
+}
+.schedule-item::before{
+  border-color:var(--day-accent)!important;
+  background:#FFFDFC!important;
+  box-shadow:0 0 0 0 color-mix(in srgb,var(--day-accent) 12%,transparent);
+}
+.schedule-item.motion-in::before{
+  animation:scheduleDotPulse .54s cubic-bezier(.2,.8,.2,1) .16s both;
+}
+@keyframes scheduleDotPulse{
+  0%{transform:translateX(-50%) scale(.72);box-shadow:0 0 0 0 transparent}
+  62%{transform:translateX(-50%) scale(1.22);box-shadow:0 0 0 7px color-mix(in srgb,var(--day-accent) 12%,transparent)}
+  100%{transform:translateX(-50%) scale(1);box-shadow:0 0 0 3px color-mix(in srgb,var(--day-accent) 7%,transparent)}
+}
+.schedule-time{
+  padding-top:1px!important;
+  color:var(--day-accent)!important;
+  font-size:clamp(.96rem,1.25vw,1.12rem)!important;
+  font-weight:800!important;
+  letter-spacing:.035em!important;
+  font-variant-numeric:tabular-nums;
+}
+.schedule-kind{
+  display:inline-flex;
+  align-items:center;
+  min-height:24px;
+  margin:0 0 9px;
+  padding:4px 8px 3px;
+  border:1px solid color-mix(in srgb,var(--day-accent) 20%,transparent);
+  border-radius:999px;
+  color:color-mix(in srgb,var(--day-accent) 75%,#4D4038);
+  background:color-mix(in srgb,var(--day-accent) 8%,transparent);
+  font-size:.54rem;
+  font-weight:800;
+  letter-spacing:.16em;
+  line-height:1;
+}
+.schedule-item h3{
+  margin-bottom:9px!important;
+  color:#3A2F2A;
+  font-size:clamp(1.48rem,2vw,1.82rem)!important;
+  line-height:1.12;
+}
+.schedule-item p{
+  color:rgba(78,65,58,.70)!important;
+  font-size:clamp(.88rem,1.3vw,.98rem);
+  line-height:1.65!important;
+}
+
+/* Shorter, intentional side rail instead of text that looks accidentally cropped. */
+.side-note{
+  left:14px!important;
+  top:50%;
+  transform:translateY(-50%) rotate(180deg)!important;
+  transform-origin:center!important;
+  writing-mode:vertical-rl;
+  color:rgba(47,42,39,.28)!important;
+  font-size:.54rem!important;
+  letter-spacing:.22em!important;
+  line-height:1;
+}
+
+@media(hover:hover) and (pointer:fine){
+  .schedule-item:hover{
+    background:color-mix(in srgb,var(--day-accent) 5%,transparent);
+  }
+  .schedule-item:hover h3{
+    transform:translateX(3px);
+  }
+  .schedule-item h3{
+    transition:transform .28s ease;
+  }
+  .schedule-item:hover::before{
+    background:var(--day-accent)!important;
+    border-color:var(--day-accent)!important;
+    box-shadow:0 0 0 6px color-mix(in srgb,var(--day-accent) 11%,transparent)!important;
+  }
+}
+
+/* Tablet: keep the names grand without consuming the whole first screen. */
+@media(max-width:1024px){
+  .hero-couple-names{
+    width:min(100%,760px)!important;
+    font-size:clamp(3.65rem,8vw,5.6rem)!important;
+  }
+  .hero-couple-names::before{
+    width:min(88vw,620px);
+    height:180px;
+  }
+  .schedule-bg-word{
+    font-size:clamp(5rem,12vw,9rem)!important;
+  }
+}
+
+/* Phones deliberately keep three lines instead of shrinking the couple names into one line. */
+@media(max-width:680px){
+  .hero-couple-names{
+    width:100%!important;
+    margin-top:8px!important;
+    font-size:clamp(3.15rem,14vw,4.45rem)!important;
+    line-height:.84!important;
+  }
+  .hero-couple-names .hero-name{
+    white-space:nowrap!important;
+    line-height:.84;
+  }
+  .hero-couple-names .hero-amp{
+    margin:.06em 0 .02em;
+    font-size:.58em;
+  }
+  .hero-couple-names::before{
+    width:94vw;
+    height:150px;
+    opacity:.8;
+  }
+  .hero-date{
+    margin-top:22px!important;
+  }
+
+  .schedule-bg-word{
+    top:26px!important;
+    right:-.08em!important;
+    font-size:5rem!important;
+    opacity:.72;
+  }
+  .schedule-head .eyebrow::after{
+    width:42px;
+  }
+  .schedule-day{
+    padding:22px!important;
+  }
+  .schedule-day-label::before{
+    margin-bottom:12px;
+  }
+  .schedule-item{
+    border-radius:14px;
+  }
+  .schedule-kind{
+    margin-bottom:7px;
+  }
+  .schedule-time{
+    font-size:.9rem!important;
+  }
+  .side-note{
+    display:none!important;
+  }
+}
+
+@media(max-width:390px){
+  .hero-couple-names{
+    font-size:clamp(2.9rem,13.3vw,3.75rem)!important;
+  }
+  .hero-couple-names::before{
+    height:132px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .hero-couple-names .hero-name,
+  .hero-couple-names .hero-amp,
+  .schedule-item::before,
+  .schedule-head .eyebrow::after{
+    animation:none!important;
+    opacity:1!important;
+    transform:none!important;
+  }
+  .schedule-head .eyebrow::after{
+    transform:scaleX(1)!important;
+  }
+}
