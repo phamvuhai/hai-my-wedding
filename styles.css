@@ -4675,3 +4675,201 @@ html:lang(ja) .event-card h4{
     transition:none!important;
   }
 }
+
+
+/* =========================================
+   V12 / V12.1 — responsive QA + scroll-proof marquees
+   ========================================= */
+
+/* Stable anchor positioning under the fixed header. */
+#story,#events,#guide,#schedule,#travel,#forever,#wishes,#rsvp,
+.gallery-section{
+  scroll-margin-top:calc(var(--header-h) + 18px);
+}
+
+/* Global content safety: information should wrap, never silently clip the page. */
+.section,
+.section > .container,
+.event-family,
+.event-card,
+.guide-card,
+.schedule-day,
+.schedule-item,
+.travel-card,
+.city-notes,
+.wishes-card,
+.rsvp-form{
+  min-width:0;
+  max-width:100%;
+}
+.event-meta,
+.event-date,
+.schedule-item p,
+.schedule-time,
+.travel-card p,
+.travel-meta,
+.guide-card p,
+.wishes-card p,
+.rsvp-form label,
+.rsvp-form .radio{
+  overflow-wrap:anywhere;
+  word-break:normal;
+}
+
+/* Marquee wrappers never take part in pointer interactions or momentum scroll handling. */
+.motion-marquee,
+.forever-rail{
+  pointer-events:none;
+  touch-action:pan-y;
+  contain:layout paint;
+  isolation:isolate;
+}
+.motion-marquee .marquee-track,
+.forever-rail .marquee-track{
+  animation-play-state:running!important;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  transform-style:preserve-3d;
+  -webkit-transform-style:preserve-3d;
+  will-change:transform;
+  contain:layout style;
+}
+.marquee-group{
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+
+/* Explicit direction map.
+   SAVE / PROMISE / FOREVER-top: right -> left.
+   LOVE / FOREVER-bottom: left -> right. */
+.hero-marquee .marquee-track,
+.promise-marquee .marquee-track,
+.forever-rail-top .marquee-track{
+  animation-name:marqueeSeamlessLeft!important;
+}
+.love-marquee .marquee-track,
+.forever-rail-bottom .marquee-track{
+  animation-name:marqueeSeamlessRight!important;
+}
+
+/* No hover, focus, touch or motion-mode interaction is allowed to pause a marquee. */
+html[data-motion] .motion-marquee .marquee-track,
+html[data-motion] .forever-rail .marquee-track,
+html[data-motion="wow"] .motion-marquee:hover .marquee-track,
+html[data-motion="minimal"] .motion-marquee .marquee-track{
+  animation-play-state:running!important;
+}
+@media(hover:hover){
+  .motion-marquee:hover .marquee-track,
+  .forever-rail:hover .marquee-track{
+    animation-play-state:running!important;
+  }
+}
+
+/* Coarse pointers: keep moving text purely CSS-driven.
+   Scroll-linked rail movement is intentionally disabled for iPhone/iPad smoothness. */
+@media(pointer:coarse){
+  .forever-rail{
+    transform:translate3d(0,0,0)!important;
+  }
+  .motion-marquee,
+  .forever-rail{
+    -webkit-overflow-scrolling:auto;
+  }
+}
+
+/* Tablet landscape QA: avoid clipped cards / oversized typography / music overlap. */
+@media(min-width:901px) and (max-width:1366px) and (orientation:landscape){
+  .events .section-heading,
+  .schedule-head,
+  .travel-layout,
+  .gallery-editorial-head,
+  .rsvp-wrap{
+    min-width:0;
+  }
+  .family-events{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .event-card{
+    min-width:0;
+    overflow:visible;
+  }
+  .event-meta{
+    max-width:100%;
+  }
+  .schedule-day{
+    max-width:100%;
+  }
+}
+
+/* Short landscape tablets need more vertical breathing room than desktop. */
+@media(min-width:901px) and (max-width:1366px) and (max-height:900px){
+  .events{
+    padding-top:82px;
+  }
+  .events .section-heading{
+    margin-bottom:82px;
+  }
+  .events .section-heading h2,
+  html:lang(ja) .events .section-heading h2{
+    font-size:clamp(3rem,4.2vw,4rem);
+  }
+  .event-card{
+    min-height:270px;
+  }
+}
+
+/* Mobile QA: every event/schedule/travel block must expose the full text. */
+@media(max-width:680px){
+  .event-meta,
+  .event-date,
+  .schedule-item p,
+  .travel-card p,
+  .guide-card p{
+    display:block;
+    max-height:none;
+    overflow:visible;
+    -webkit-line-clamp:unset;
+  }
+  .event-actions,
+  .map-link{
+    max-width:100%;
+  }
+  .map-link{
+    white-space:normal;
+  }
+  .schedule-day,
+  .travel-card,
+  .guide-card{
+    overflow:visible;
+  }
+  .forever-copy strong{
+    max-width:96vw;
+    overflow:visible;
+  }
+}
+
+/* Avoid accidental clipping during replay animations. */
+.motion-item,
+.motion-item.motion-in{
+  min-width:0;
+}
+.section-heading,
+.story-copy,
+.event-family,
+.guide-card,
+.schedule-day,
+.travel-card,
+.wishes-card,
+.rsvp-form{
+  overflow-wrap:anywhere;
+}
+
+/* Accessibility remains authoritative. */
+@media(prefers-reduced-motion:reduce){
+  .motion-marquee .marquee-track,
+  .forever-rail .marquee-track{
+    animation:none!important;
+    transform:translate3d(0,0,0)!important;
+  }
+}
