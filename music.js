@@ -1,8 +1,8 @@
 (() => {
   const tracks = {
     vi: { id:'__kGJZ-kPno', title:'Hơn Cả Yêu', artist:'Đức Phúc', label:'VIETNAMESE WEDDING SONG', start:48, end:125 },
-    ja: { id:'ljDRzQz3ULE', title:'115万キロのフィルム', artist:'Official髭男dism', label:'JAPANESE WEDDING SONG', start:55, end:140, alternate:{start:215,end:295} },
-    en: { id:'2Vv-BfVoq4g', title:'Perfect', artist:'Ed Sheeran', label:'ENGLISH WEDDING SONG', start:48, end:125 }
+    ja: { id:'WPl10ZrhCtk', title:'Akuma no Ko', artist:'Ai Higuchi', label:'JAPANESE WEDDING SONG', start:58, end:135 },
+    en: { id:'06-XXOTP3Gc', title:'Beautiful In White', artist:'Shane Filan', label:'ENGLISH WEDDING SONG', start:38, end:115 }
   };
 
   const dock = document.getElementById('musicDock');

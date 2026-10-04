@@ -180,9 +180,17 @@
     current = lang;
     localStorage.setItem("wedding_language", lang);
 
-    const nextPath = routeFor(lang);
-    if (location.pathname !== nextPath) {
-      history.replaceState(history.state || {}, "", nextPath + location.search + location.hash);
+    // "/" is the invitation-entry route. While the cover is visible, changing
+    // language only localizes the cover; the localized URL is chosen on open.
+    const entryCoverActive =
+      location.pathname === "/" &&
+      document.body.classList.contains("invitation-locked");
+
+    if (!entryCoverActive) {
+      const nextPath = routeFor(lang);
+      if (location.pathname !== nextPath) {
+        history.replaceState(history.state || {}, "", nextPath + location.search + location.hash);
+      }
     }
 
     apply();
