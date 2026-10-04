@@ -9204,3 +9204,228 @@ body.invitation-opening .side-note{
     transition:opacity .35s ease!important;
   }
 }
+
+
+/* =========================================
+   V30 — correct envelope reveal + romantic hero fall
+   ========================================= */
+
+/* Keep the cover content stable while opening. */
+.invitation-intro.is-opening .intro-photo-polaroid,
+.invitation-intro.is-opening .intro-names,
+.invitation-intro.is-opening .intro-date,
+.invitation-intro.is-opening .personal-invite-copy,
+.invitation-intro.is-opening .intro-invite{
+  animation:none!important;
+  transform:none!important;
+  filter:none!important;
+  opacity:1!important;
+}
+
+/* The thing that comes out of the envelope is now a real inner invitation card. */
+.intro-inner-letter{
+  position:absolute;
+  z-index:5;
+  left:50%;
+  bottom:14px;
+  width:82%;
+  height:112px;
+  transform:translateX(-50%) translateY(36px) scale(.9);
+  transform-origin:50% 100%;
+  border-radius:16px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:16px 18px;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(255,255,255,.96),rgba(255,250,245,.96) 62%,rgba(247,236,226,.98)),
+    #fffaf5;
+  border:1px solid rgba(121,82,62,.16);
+  box-shadow:0 10px 28px rgba(73,43,35,.16);
+  color:#623f34;
+  opacity:0;
+  overflow:hidden;
+  backface-visibility:hidden;
+}
+.intro-inner-letter::before,
+.intro-inner-letter::after{
+  content:"";
+  position:absolute;
+  width:70px;
+  height:70px;
+  border:1px solid rgba(169,118,95,.14);
+  border-radius:50%;
+}
+.intro-inner-letter::before{left:-34px;top:-34px}
+.intro-inner-letter::after{right:-34px;bottom:-34px}
+.inner-letter-monogram{
+  font:600 .72rem/1 Georgia,serif;
+  letter-spacing:.2em;
+  color:#9b6d55;
+}
+.inner-letter-monogram i{
+  font-style:normal;
+  font-size:.65rem;
+}
+.inner-letter-title{
+  font:600 1.08rem/1.05 "Cormorant Garamond",Georgia,serif;
+  letter-spacing:.12em;
+}
+.inner-letter-date{
+  font-size:.48rem;
+  font-weight:800;
+  letter-spacing:.16em;
+  color:#8d7568;
+  white-space:nowrap;
+}
+
+/* Opening sequence: seal -> flap -> inner card -> cover dissolve. */
+.invitation-intro.is-opening .intro-inner-letter{
+  animation:innerLetterReveal 1.28s cubic-bezier(.16,.84,.24,1) .62s both!important;
+}
+@keyframes innerLetterReveal{
+  0%{
+    opacity:0;
+    transform:translateX(-50%) translateY(38px) scale(.88);
+    box-shadow:0 8px 18px rgba(73,43,35,.12);
+  }
+  24%{opacity:1}
+  72%{
+    opacity:1;
+    transform:translateX(-50%) translateY(-72px) scale(1.02);
+    box-shadow:0 24px 46px rgba(73,43,35,.22);
+  }
+  100%{
+    opacity:1;
+    transform:translateX(-50%) translateY(-88px) scale(1.08);
+    box-shadow:0 30px 58px rgba(73,43,35,.24);
+  }
+}
+
+/* Front envelope lowers a touch, making the emerging card obvious. */
+.invitation-intro.is-opening .intro-envelope-front{
+  animation:envelopeFrontDrop .68s cubic-bezier(.2,.72,.2,1) .46s both!important;
+}
+@keyframes envelopeFrontDrop{
+  0%{transform:translateY(0)}
+  100%{transform:translateY(8px)}
+}
+
+/* The whole cover stays still until the inner card is fully visible. */
+.invitation-intro.is-opening .intro-card{
+  animation:coverDissolve .72s ease 1.86s both!important;
+}
+@keyframes coverDissolve{
+  0%{opacity:1;transform:none;filter:blur(0)}
+  45%{opacity:1;transform:scale(1.015);filter:blur(0)}
+  100%{opacity:0;transform:scale(1.045);filter:blur(6px)}
+}
+.invitation-intro.is-opening .intro-atmosphere{
+  animation:coverAtmosphereFade .72s ease 1.8s both!important;
+}
+@keyframes coverAtmosphereFade{
+  from{opacity:1}
+  to{opacity:0}
+}
+
+/* Do not move the photo or typography during opening on any viewport. */
+@media(max-width:760px){
+  .invitation-intro.is-opening .intro-photo-polaroid,
+  .invitation-intro.is-opening .intro-names,
+  .invitation-intro.is-opening .intro-date,
+  .invitation-intro.is-opening .personal-invite-copy,
+  .invitation-intro.is-opening .intro-invite{
+    animation:none!important;
+    transform:none!important;
+  }
+  .intro-inner-letter{
+    width:80%;
+    height:98px;
+    bottom:10px;
+    padding:13px 14px;
+  }
+  .inner-letter-title{font-size:.96rem}
+  .inner-letter-date{font-size:.44rem}
+  .invitation-intro.is-opening .intro-inner-letter{
+    animation-name:innerLetterRevealMobile!important;
+  }
+  @keyframes innerLetterRevealMobile{
+    0%{opacity:0;transform:translateX(-50%) translateY(32px) scale(.9)}
+    25%{opacity:1}
+    75%{opacity:1;transform:translateX(-50%) translateY(-54px) scale(1)}
+    100%{opacity:1;transform:translateX(-50%) translateY(-64px) scale(1.04)}
+  }
+}
+
+/* Hero romantic falling layer */
+.hero-fall-layer{
+  position:absolute;
+  inset:0;
+  z-index:3;
+  overflow:hidden;
+  pointer-events:none;
+  mask-image:linear-gradient(to bottom,#000 0%,#000 72%,transparent 100%);
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 72%,transparent 100%);
+}
+.hero-fall-item{
+  position:absolute;
+  top:-12vh;
+  left:var(--fall-left);
+  font-size:var(--fall-size);
+  line-height:1;
+  opacity:var(--fall-opacity);
+  filter:drop-shadow(0 3px 7px rgba(71,47,38,.12));
+  animation:heroRomanticFall var(--fall-duration) linear var(--fall-delay) infinite;
+  will-change:transform,opacity;
+  user-select:none;
+}
+.hero-fall-item.petal{filter:drop-shadow(0 4px 8px rgba(141,87,95,.12))}
+.hero-fall-item.heart-red{opacity:calc(var(--fall-opacity) * .78)}
+.hero-fall-item.snow{filter:grayscale(.1) drop-shadow(0 3px 8px rgba(255,255,255,.18))}
+.hero-fall-layer.is-paused .hero-fall-item{
+  animation-play-state:paused;
+}
+@keyframes heroRomanticFall{
+  0%{
+    transform:translate3d(0,-8vh,0) rotate(0deg) scale(.92);
+    opacity:0;
+  }
+  8%{opacity:var(--fall-opacity)}
+  46%{
+    transform:translate3d(calc(var(--fall-drift) * .45),48vh,0) rotate(calc(var(--fall-rotate) * .52)) scale(1);
+  }
+  86%{opacity:var(--fall-opacity)}
+  100%{
+    transform:translate3d(var(--fall-drift),112vh,0) rotate(var(--fall-rotate)) scale(.96);
+    opacity:0;
+  }
+}
+
+/* Hero content must remain above the decorative fall. */
+.hero-content,
+.scroll-curiosity{
+  z-index:5!important;
+}
+.hero-overlay{
+  z-index:2!important;
+}
+
+/* Mobile: fewer items are created in JS, and motion is slightly softer. */
+@media(max-width:760px){
+  .hero-fall-item{
+    filter:none;
+  }
+  .hero-fall-layer{
+    opacity:.78;
+  }
+}
+
+/* Accessibility */
+@media(prefers-reduced-motion:reduce){
+  .intro-inner-letter,
+  .hero-fall-layer{
+    display:none!important;
+  }
+}
