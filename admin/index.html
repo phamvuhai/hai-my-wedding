@@ -189,6 +189,23 @@
           </section>
         </div>
 
+        <div id="rsvpDeleteModal" class="admin-modal hidden" aria-hidden="true">
+          <div class="admin-modal-backdrop" data-rsvp-delete-close></div>
+          <section class="admin-modal-card admin-modal-card-small" role="dialog" aria-modal="true" aria-labelledby="rsvpDeleteTitle">
+            <div class="panel-head">
+              <div><p class="eyebrow">DELETE RSVP</p><h3 id="rsvpDeleteTitle">Xóa phản hồi?</h3></div>
+              <button class="btn ghost compact" type="button" data-rsvp-delete-close>Đóng</button>
+            </div>
+            <p id="rsvpDeleteMessage" class="muted">Hành động này không thể hoàn tác.</p>
+            <input id="rsvpDeleteId" type="hidden">
+            <div class="inline-actions">
+              <button id="rsvpDeleteConfirm" class="btn danger" type="button">Xóa RSVP</button>
+              <button class="btn ghost" type="button" data-rsvp-delete-close>Hủy</button>
+            </div>
+            <p id="rsvpDeleteStatus" class="status"></p>
+          </section>
+        </div>
+
         <section id="guestsTab" class="tab-panel hidden">
           <div id="guestStats" class="stats"></div>
 
