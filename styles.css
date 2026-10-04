@@ -11180,3 +11180,405 @@ body.particles-muted .hero-fall-layer{
     font-size:.6rem;
   }
 }
+
+
+/* V38 — iPhone countdown + premium continuous wedding timeline */
+
+/* Countdown: keep heading readable and remove the oversized empty vertical space. */
+.countdown-compact .countdown{
+  min-height:0!important;
+  height:auto!important;
+}
+.countdown-compact .countdown > div{
+  min-height:86px!important;
+  height:86px!important;
+  display:grid!important;
+  place-items:center!important;
+  align-content:center!important;
+}
+.countdown-compact .countdown-heading .eyebrow{
+  white-space:nowrap!important;
+  overflow-wrap:normal!important;
+  word-break:keep-all!important;
+}
+.countdown-compact .countdown strong{
+  margin:0!important;
+}
+.countdown-compact .countdown span{
+  margin-top:5px!important;
+}
+
+/* Scroll status: compact, soft, and animated instead of snapping. */
+.event-scroll-status{
+  min-height:44px;
+  padding:7px 10px!important;
+}
+#eventScrollStatusText{
+  display:block;
+  transition:opacity .16s ease,transform .16s ease;
+  will-change:opacity,transform;
+}
+#eventScrollStatusText.is-changing{
+  opacity:0;
+  transform:translateY(4px);
+}
+.event-status-progress i{
+  transition:none!important;
+  will-change:transform;
+}
+
+/* Timeline: move it inward and make the progress follow scroll continuously. */
+.events-unified .event-timeline{
+  padding-left:42px!important;
+}
+.events-unified .event-timeline::before,
+.events-unified .event-timeline::after{
+  left:14px!important;
+  top:18px!important;
+  bottom:18px!important;
+}
+.events-unified .event-timeline::after{
+  transform:scaleY(var(--day-progress,0))!important;
+  transition:none!important;
+  will-change:transform;
+}
+.events-unified .event-day-panel.is-current-day .event-timeline{
+  --timeline-fill:unset!important;
+}
+.events-unified .event-card{
+  opacity:var(--event-opacity,.72)!important;
+  transform:translateY(var(--event-shift,3px))!important;
+  transition:background .2s ease!important;
+  will-change:opacity,transform;
+}
+.events-unified .event-card.is-current,
+.events-unified .event-card.is-past{
+  opacity:var(--event-opacity,.92)!important;
+  transform:translateY(var(--event-shift,0px))!important;
+}
+.events-unified .event-card::before{
+  left:-33px!important;
+  top:23px!important;
+  width:10px!important;
+  height:10px!important;
+  background:#fffaf6!important;
+  border:2px solid rgba(151,96,75,.38)!important;
+}
+.events-unified .event-card.is-past::before{
+  background:#b7846f!important;
+  border-color:#b7846f!important;
+}
+.events-unified .event-card.is-current::before{
+  transform:scale(1.16)!important;
+  background:#9a6a57!important;
+  border-color:#9a6a57!important;
+  box-shadow:0 0 0 6px rgba(154,106,87,.10)!important;
+}
+
+/* Cleaner event rows: the timeline gives order, so numbers and large pills are unnecessary. */
+.events-unified .event-index{
+  display:none!important;
+}
+.events-unified .event-topline{
+  justify-content:flex-start!important;
+  margin-bottom:5px!important;
+}
+.events-unified .event-type{
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:rgba(120,75,58,.72)!important;
+  font-size:.58rem!important;
+  font-weight:800!important;
+  letter-spacing:.13em!important;
+}
+.events-unified .event-card h4{
+  margin-bottom:5px!important;
+}
+.events-unified .event-date{
+  align-items:flex-start!important;
+}
+.events-unified .event-dayline{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  min-width:0;
+  color:rgba(74,54,46,.64);
+  font-size:.68rem;
+  font-style:normal;
+}
+.events-unified .event-dayline i{
+  font-style:normal;
+  opacity:.45;
+}
+.events-unified .map-link{
+  display:inline-flex!important;
+  align-items:center;
+  gap:5px;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:#6d4b3e!important;
+  text-decoration:underline!important;
+  text-decoration-color:rgba(109,75,62,.26)!important;
+  text-decoration-thickness:1px!important;
+  text-underline-offset:4px!important;
+}
+.events-unified .map-link:hover{
+  text-decoration-color:currentColor!important;
+  transform:none!important;
+}
+
+/* Day header: date first on mobile, then family + invitation badge. */
+.family-header{
+  overflow:hidden;
+}
+.family-title-row{
+  min-width:0;
+}
+.family-title-row h3{
+  min-width:0;
+}
+.family-date{
+  white-space:nowrap;
+}
+
+/* Particles should be almost invisible while reading time-sensitive information. */
+body.particles-muted .hero-fall-layer{
+  opacity:.13!important;
+}
+
+/* iPhone/mobile layout */
+@media(max-width:760px){
+  .countdown-compact{
+    padding:22px 0 24px!important;
+  }
+  .countdown-compact .countdown-layout{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:13px!important;
+  }
+  .countdown-compact .countdown-heading{
+    display:block!important;
+    text-align:left!important;
+  }
+  .countdown-compact .countdown-heading .eyebrow{
+    display:block!important;
+    width:auto!important;
+    max-width:none!important;
+    margin:0 0 5px!important;
+    font-size:.62rem!important;
+    line-height:1!important;
+    letter-spacing:.22em!important;
+  }
+  .countdown-compact .countdown-heading h2{
+    display:block!important;
+    margin:0!important;
+    font-size:clamp(1.65rem,7vw,2.2rem)!important;
+    line-height:1.02!important;
+  }
+  .countdown-compact .countdown{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    min-height:0!important;
+    height:auto!important;
+    border-radius:14px!important;
+  }
+  .countdown-compact .countdown > div{
+    min-height:88px!important;
+    height:88px!important;
+    padding:9px 3px!important;
+    align-content:center!important;
+  }
+  .countdown-compact .countdown strong{
+    font-size:clamp(1.9rem,9vw,2.45rem)!important;
+    line-height:.95!important;
+  }
+  .countdown-compact .countdown span{
+    margin-top:6px!important;
+    font-size:.52rem!important;
+    line-height:1!important;
+    letter-spacing:.06em!important;
+  }
+
+  .events-unified .section-heading{
+    margin-bottom:14px!important;
+  }
+  .event-scroll-status{
+    min-height:43px;
+    padding:7px 9px!important;
+    box-shadow:0 8px 22px rgba(70,44,34,.045)!important;
+  }
+  .event-status-copy{
+    gap:6px!important;
+  }
+  .event-status-copy small{
+    font-size:.49rem!important;
+    letter-spacing:.09em!important;
+  }
+  .event-status-copy strong{
+    font-size:.62rem!important;
+  }
+
+  .event-day-panel{
+    box-shadow:0 8px 24px rgba(70,44,34,.04)!important;
+    border-color:rgba(104,70,57,.10)!important;
+  }
+  .family-header{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    gap:4px!important;
+    padding:14px 15px 11px!important;
+  }
+  .family-header > div{
+    width:100%;
+    min-width:0;
+  }
+  .family-date{
+    order:-1;
+    padding:0!important;
+    margin:0 0 2px!important;
+    font-size:.66rem!important;
+    font-weight:800!important;
+    letter-spacing:.13em!important;
+    color:rgba(77,55,47,.65)!important;
+  }
+  .family-kicker{
+    margin:0 0 4px!important;
+    font-size:.5rem!important;
+    line-height:1.25!important;
+    letter-spacing:.11em!important;
+  }
+  .family-title-row{
+    display:flex!important;
+    align-items:center!important;
+    gap:6px!important;
+    width:100%;
+  }
+  .family-title-row h3{
+    font-size:1.48rem!important;
+    line-height:.98!important;
+  }
+  .event-invite-badge{
+    padding:4px 7px!important;
+    font-size:.57rem!important;
+  }
+
+  .events-unified .event-timeline{
+    padding-left:40px!important;
+    padding-right:14px!important;
+  }
+  .events-unified .event-timeline::before,
+  .events-unified .event-timeline::after{
+    left:13px!important;
+  }
+  .events-unified .event-card{
+    padding:12px 0 13px!important;
+  }
+  .events-unified .event-card::before{
+    left:-32px!important;
+    top:20px!important;
+  }
+  .events-unified .event-card h4{
+    margin:0 0 5px!important;
+    font-size:1.18rem!important;
+    line-height:1.08!important;
+  }
+  .events-unified .event-topline{
+    margin-bottom:4px!important;
+  }
+  .events-unified .event-type{
+    font-size:.52rem!important;
+    letter-spacing:.11em!important;
+  }
+  .events-unified .event-date{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    gap:3px!important;
+    margin:0 0 6px!important;
+  }
+  .events-unified .event-date strong{
+    font-size:1.28rem!important;
+    line-height:1!important;
+    letter-spacing:.01em!important;
+  }
+  .events-unified .event-dayline{
+    display:flex!important;
+    gap:5px!important;
+    font-size:.61rem!important;
+    line-height:1.2!important;
+    letter-spacing:.025em;
+  }
+  .events-unified .event-meta{
+    max-width:100%!important;
+    margin:0!important;
+    font-size:.69rem!important;
+    line-height:1.42!important;
+  }
+  .events-unified .event-actions{
+    margin-top:7px!important;
+  }
+  .events-unified .map-link{
+    font-size:.64rem!important;
+    font-weight:700!important;
+  }
+  .event-arrival-note{
+    margin-top:11px!important;
+  }
+}
+
+@media(max-width:390px){
+  .countdown-compact .countdown > div{
+    min-height:82px!important;
+    height:82px!important;
+  }
+  .countdown-compact .countdown strong{
+    font-size:clamp(1.65rem,8.7vw,2.15rem)!important;
+  }
+  .countdown-compact .countdown-heading h2{
+    font-size:1.8rem!important;
+  }
+
+  .event-scroll-status{
+    grid-template-columns:auto minmax(0,1fr)!important;
+  }
+  .event-status-copy small{
+    display:none!important;
+  }
+  .event-status-copy strong{
+    font-size:.6rem!important;
+  }
+  .family-kicker{
+    font-size:.47rem!important;
+  }
+  .family-title-row h3{
+    font-size:1.4rem!important;
+  }
+  .events-unified .event-timeline{
+    padding-left:38px!important;
+  }
+  .events-unified .event-timeline::before,
+  .events-unified .event-timeline::after{
+    left:12px!important;
+  }
+  .events-unified .event-card::before{
+    left:-31px!important;
+  }
+  .events-unified .event-dayline{
+    flex-wrap:wrap;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  #eventScrollStatusText,
+  .events-unified .event-card,
+  .events-unified .event-card::before{
+    transition:none!important;
+  }
+}
