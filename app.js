@@ -47,45 +47,82 @@ function tr(key, fallback = '') {
 function initEventScrollStory() {
   const section = document.getElementById('events');
   const items = [...document.querySelectorAll('[data-event-item]')];
+  const days = [...document.querySelectorAll('[data-event-day]')];
   const status = document.getElementById('eventScrollStatus');
   const statusText = document.getElementById('eventScrollStatusText');
   const progress = document.getElementById('eventScrollProgress');
-  if (!section || !items.length || !status || !statusText || !progress) return;
+  if (!section || !items.length || !days.length || !status || !statusText || !progress) return;
 
   let frame = 0;
+  let activeIndex = -1;
+  let statusSwapTimer = 0;
+
+  const clamp = value => Math.max(0, Math.min(1, value));
+
+  function swapStatus(text) {
+    if (!text || statusText.textContent === text) return;
+    clearTimeout(statusSwapTimer);
+    statusText.classList.add('is-changing');
+    statusSwapTimer = setTimeout(() => {
+      statusText.textContent = text;
+      statusText.classList.remove('is-changing');
+    }, 90);
+  }
+
   const update = () => {
     frame = 0;
-    const center = innerHeight * .48;
-    const sectionRect = section.getBoundingClientRect();
-    const rawProgress = (center - sectionRect.top) / Math.max(1, sectionRect.height);
-    const sectionProgress = Math.max(0, Math.min(1, rawProgress));
-    progress.style.transform = `scaleX(${sectionProgress})`;
-    section.style.setProperty('--event-scroll-progress', sectionProgress.toFixed(3));
+    const viewportH = Math.max(1, innerHeight);
+    const focusY = viewportH * .48;
 
-    let active = items[0];
-    let best = Infinity;
-    items.forEach((item) => {
+    const firstRect = items[0].getBoundingClientRect();
+    const lastRect = items[items.length - 1].getBoundingClientRect();
+    const firstCenter = firstRect.top + firstRect.height / 2;
+    const lastCenter = lastRect.top + lastRect.height / 2;
+    const overallProgress = clamp((focusY - firstCenter) / Math.max(1, lastCenter - firstCenter));
+    progress.style.transform = `scaleX(${overallProgress.toFixed(4)})`;
+    section.style.setProperty('--event-scroll-progress', overallProgress.toFixed(4));
+
+    days.forEach(day => {
+      const timeline = day.querySelector('.event-timeline');
+      if (!timeline) return;
+      const rect = timeline.getBoundingClientRect();
+      const localProgress = clamp((focusY - rect.top) / Math.max(1, rect.height));
+      timeline.style.setProperty('--day-progress', localProgress.toFixed(4));
+    });
+
+    let nearestIndex = 0;
+    let nearestDistance = Infinity;
+
+    items.forEach((item, index) => {
       const rect = item.getBoundingClientRect();
       const itemCenter = rect.top + rect.height / 2;
-      const distance = Math.abs(itemCenter - center);
-      if (distance < best) {
-        best = distance;
-        active = item;
+      const distance = Math.abs(itemCenter - focusY);
+      const focus = clamp(1 - distance / (viewportH * .48));
+      const passed = clamp((focusY - rect.top) / Math.max(1, rect.height));
+
+      item.style.setProperty('--event-focus', focus.toFixed(4));
+      item.style.setProperty('--event-passed', passed.toFixed(4));
+      item.classList.toggle('is-past', itemCenter < focusY - 48);
+
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestIndex = index;
       }
-      item.classList.toggle('is-past', itemCenter < center - 44);
     });
 
-    items.forEach(item => item.classList.toggle('is-current', item === active));
-    document.querySelectorAll('[data-event-day]').forEach(day => {
-      day.classList.toggle('is-current-day', day.contains(active));
-    });
+    items.forEach((item, index) => item.classList.toggle('is-current', index === nearestIndex));
+    days.forEach(day => day.classList.toggle('is-current-day', day.contains(items[nearestIndex])));
 
-    const day = active.closest('[data-event-day]');
-    const date = day?.querySelector('.family-date')?.textContent?.trim() || '';
-    const family = day?.querySelector('.family-title-row h3')?.textContent?.trim() || '';
-    const time = active.querySelector('.event-date strong')?.textContent?.trim() || '';
-    const title = active.querySelector('h4')?.textContent?.trim() || '';
-    statusText.textContent = [date.replace('.2026',''), family, time, title].filter(Boolean).join(' · ');
+    if (nearestIndex !== activeIndex) {
+      activeIndex = nearestIndex;
+      const active = items[activeIndex];
+      const day = active.closest('[data-event-day]');
+      const date = day?.querySelector('.family-date')?.textContent?.trim() || '';
+      const family = day?.querySelector('.family-title-row h3')?.textContent?.trim() || '';
+      const time = active.querySelector('.event-date strong')?.textContent?.trim() || '';
+      const title = active.querySelector('h4')?.textContent?.trim() || '';
+      swapStatus([date.replace('.2026',''), family, time, title].filter(Boolean).join(' · '));
+    }
   };
 
   const requestUpdate = () => {
@@ -95,12 +132,15 @@ function initEventScrollStory() {
 
   addEventListener('scroll', requestUpdate, {passive:true});
   addEventListener('resize', requestUpdate, {passive:true});
-  document.addEventListener('wedding:language', requestUpdate);
+  document.addEventListener('wedding:language', () => {
+    activeIndex = -1;
+    requestUpdate();
+  });
   requestUpdate();
 }
 
 function initParticleQuietZones() {
-  const zones = [...document.querySelectorAll('#events, #rsvp')];
+  const zones = [...document.querySelectorAll('.countdown-section, #events, #rsvp')];
   if (!zones.length || !('IntersectionObserver' in window)) return;
   const active = new Set();
   const sync = () => document.body.classList.toggle('particles-muted', active.size > 0);
