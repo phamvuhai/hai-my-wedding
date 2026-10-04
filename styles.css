@@ -4873,3 +4873,112 @@ html[data-motion="minimal"] .motion-marquee .marquee-track{
     transform:translate3d(0,0,0)!important;
   }
 }
+
+
+/* =========================================
+   V12.2 — true seamless pixel-measured marquees
+   ========================================= */
+
+/* Only the outer viewport clips the moving band. Do not use paint containment here:
+   serif/italic glyph overhangs can otherwise be cropped at compositor boundaries. */
+.motion-marquee,
+.forever-rail{
+  overflow:hidden;
+  contain:layout style;
+}
+.motion-marquee .marquee-track,
+.forever-rail .marquee-track{
+  overflow:visible;
+  contain:layout style;
+  gap:0;
+  margin:0;
+  padding:0;
+  width:max-content;
+  min-width:0;
+}
+
+/* Keep the band hidden for the tiny measurement window so fallback-font geometry
+   can never flash or start an incorrect loop. */
+.motion-marquee .marquee-track:not(.marquee-ready),
+.forever-rail .marquee-track:not(.marquee-ready){
+  visibility:hidden;
+  animation-name:none!important;
+}
+.motion-marquee .marquee-track.marquee-ready,
+.forever-rail .marquee-track.marquee-ready{
+  visibility:visible;
+  animation-duration:var(--marquee-duration,30s)!important;
+  animation-timing-function:linear!important;
+  animation-iteration-count:infinite!important;
+  animation-play-state:running!important;
+}
+
+/* A segment owns ALL spacing, including the end gap. Its measured pixel width is
+   therefore exactly the distance travelled before the identical clone replaces it. */
+.marquee-group.marquee-segment{
+  display:flex;
+  flex:0 0 auto;
+  align-items:center;
+  overflow:visible;
+  gap:var(--marquee-gap,24px);
+  margin:0;
+  padding-top:.12em;
+  padding-bottom:.12em;
+  padding-left:4px;
+  padding-right:calc(var(--marquee-gap,24px) + 4px);
+  white-space:nowrap;
+  box-sizing:border-box;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+
+/* Exact measured-distance loop. No percentage math and no dependency on clone width. */
+@keyframes marqueePixelLeft{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(calc(-1 * var(--marquee-distance)),0,0)}
+}
+@keyframes marqueePixelRight{
+  from{transform:translate3d(calc(-1 * var(--marquee-distance)),0,0)}
+  to{transform:translate3d(0,0,0)}
+}
+
+/* Direction map stays intentionally alternating. */
+.hero-marquee .marquee-track.marquee-ready,
+.promise-marquee .marquee-track.marquee-ready,
+.forever-rail-top .marquee-track.marquee-ready{
+  animation-name:marqueePixelLeft!important;
+}
+.love-marquee .marquee-track.marquee-ready,
+.forever-rail-bottom .marquee-track.marquee-ready{
+  animation-name:marqueePixelRight!important;
+}
+
+/* No interaction is allowed to pause or restart the continuous bands. */
+.motion-marquee .marquee-track.marquee-ready,
+.forever-rail .marquee-track.marquee-ready,
+html[data-motion] .motion-marquee .marquee-track.marquee-ready,
+html[data-motion] .forever-rail .marquee-track.marquee-ready,
+html[data-motion="wow"] .motion-marquee:hover .marquee-track.marquee-ready,
+html[data-motion="minimal"] .motion-marquee .marquee-track.marquee-ready{
+  animation-play-state:running!important;
+}
+
+/* Touch devices keep only the CSS compositor animation; scroll never writes
+   to the child track transform. */
+@media(pointer:coarse){
+  .motion-marquee .marquee-track.marquee-ready,
+  .forever-rail .marquee-track.marquee-ready{
+    transform-style:flat;
+    -webkit-transform-style:flat;
+  }
+}
+
+/* Reduced motion remains authoritative. */
+@media(prefers-reduced-motion:reduce){
+  .motion-marquee .marquee-track,
+  .forever-rail .marquee-track{
+    visibility:visible!important;
+    animation:none!important;
+    transform:translate3d(0,0,0)!important;
+  }
+}
