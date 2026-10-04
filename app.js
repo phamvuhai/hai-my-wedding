@@ -25,6 +25,40 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.12 });
 document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 
+const eventSection = document.getElementById('events');
+const eventPanels = [...document.querySelectorAll('[data-event-day]')];
+const eventTabs = [...document.querySelectorAll('[data-event-tab]')];
+
+function setEventDay(day, { invitedDays = [] } = {}) {
+  if (!['bride','groom'].includes(day)) day = 'bride';
+  if (eventSection) eventSection.dataset.activeDay = day;
+
+  eventTabs.forEach((tab) => {
+    const selected = tab.dataset.eventTab === day;
+    tab.classList.toggle('is-active', selected);
+    tab.setAttribute('aria-selected', selected ? 'true' : 'false');
+    const invited = invitedDays.includes(tab.dataset.eventTab);
+    tab.classList.toggle('is-invited', invited);
+    const badge = tab.querySelector('.event-invite-badge');
+    if (badge) badge.hidden = !invited;
+  });
+
+  eventPanels.forEach((panel) => {
+    panel.classList.toggle('is-active', panel.dataset.eventDay === day);
+    panel.classList.toggle('is-invited', invitedDays.includes(panel.dataset.eventDay));
+  });
+}
+
+eventTabs.forEach((tab) => {
+  tab.addEventListener('click', () => {
+    const invitedDays = eventTabs.filter(t => t.classList.contains('is-invited')).map(t => t.dataset.eventTab);
+    setEventDay(tab.dataset.eventTab, { invitedDays });
+  });
+});
+
+setEventDay('bride');
+window.WeddingEvents = { setEventDay };
+
 const form = document.getElementById('rsvpForm');
 const statusEl = document.getElementById('formStatus');
 
@@ -57,6 +91,7 @@ form.addEventListener('submit', async (event) => {
       if (inviteToken && inviteId) {
         const { error } = await client.rpc('submit_wedding_rsvp', {
           p_token: inviteToken,
+          p_guest_name: data.name?.trim() || '',
           p_phone: data.phone?.trim() || null,
           p_attendance: data.attending,
           p_guest_count: data.guest_count,
