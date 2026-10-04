@@ -4982,3 +4982,353 @@ html[data-motion="minimal"] .motion-marquee .marquee-track.marquee-ready{
     transform:translate3d(0,0,0)!important;
   }
 }
+
+
+/* =========================================
+   V14 — full UI/UX hardening + countdown transition fix
+   ========================================= */
+
+/* One horizontal viewport only. overflow:clip avoids creating a scroll container,
+   which is important for sticky content on Safari. */
+html,
+body{
+  max-width:100%;
+  overflow-x:clip;
+}
+
+/* Decorative sections may crop artwork, but must not become scroll containers. */
+.editorial-story,
+.countdown-section,
+.events,
+.gallery-section,
+.rsvp-section{
+  overflow:clip;
+}
+
+/* Story -> marquee -> countdown must remain three independent blocks in normal flow. */
+.love-marquee{
+  position:relative;
+  z-index:20;
+  margin:0!important;
+  isolation:isolate;
+}
+.countdown-section{
+  position:relative;
+  z-index:1;
+  isolation:isolate;
+  margin-top:0!important;
+  padding-top:clamp(112px,9vw,148px)!important;
+  padding-bottom:clamp(112px,9vw,148px);
+  border-radius:0!important;
+}
+.countdown-section::before{
+  content:"";
+  position:absolute;
+  z-index:-2;
+  inset:0;
+  pointer-events:none;
+}
+.countdown-layout{
+  position:relative;
+  z-index:3!important;
+  min-width:0;
+  overflow:visible;
+}
+.countdown-heading{
+  position:relative;
+  z-index:4;
+  min-width:0;
+  overflow:visible;
+}
+.countdown-heading .eyebrow,
+.countdown-heading h2{
+  position:relative;
+  z-index:4;
+  overflow:visible;
+}
+.countdown-heading h2{
+  margin-top:14px;
+  line-height:1.04;
+  text-wrap:balance;
+}
+.countdown{
+  position:relative;
+  z-index:3;
+  min-width:0;
+  overflow:visible;
+}
+.countdown > div{
+  min-width:0;
+  overflow:visible;
+}
+
+/* FOREVER is decoration only and can never cover real countdown content. */
+.countdown-word{
+  z-index:0!important;
+  top:clamp(42px,5vw,74px)!important;
+  right:-.06em;
+  max-width:none;
+  color:rgba(255,255,255,.022)!important;
+  pointer-events:none;
+  user-select:none;
+}
+
+/* Keep reveal clipping from shaving Vietnamese accents. */
+.motion-line{
+  padding-top:.14em;
+  padding-bottom:.12em;
+  margin-top:-.14em;
+  margin-bottom:-.12em;
+}
+
+/* Content layers: decorative text stays behind, readable content stays above. */
+.editorial-story .floating-word,
+.schedule-bg-word,
+.event-bg-date{
+  z-index:0;
+  pointer-events:none;
+}
+.story-grid,
+.schedule-section > .container,
+.events > .container,
+.gallery-section > .container,
+.wishes-section > .container,
+.rsvp-section > .container{
+  position:relative;
+  z-index:2;
+}
+
+/* Long content must always remain readable and must never force horizontal scrolling. */
+.story-copy,
+.story-copy > *,
+.countdown-heading,
+.countdown-heading > *,
+.event-card,
+.event-card > *,
+.guide-card,
+.guide-card > *,
+.schedule-item,
+.schedule-item > *,
+.travel-card,
+.travel-card > *,
+.wishes-card,
+.wishes-card > *,
+.rsvp-form,
+.rsvp-form > *{
+  min-width:0;
+  max-width:100%;
+}
+.event-meta,
+.schedule-item p,
+.travel-card p,
+.guide-card p,
+.wishes-card p,
+.rsvp-copy p,
+.form-status{
+  overflow-wrap:anywhere;
+  word-break:normal;
+}
+
+/* Fixed UI respects physical display edges. */
+.nav{
+  padding-left:env(safe-area-inset-left);
+  padding-right:env(safe-area-inset-right);
+}
+.music-dock{
+  right:max(12px,env(safe-area-inset-right))!important;
+  bottom:calc(12px + env(safe-area-inset-bottom))!important;
+}
+
+/* Keep lower-page actions clear of the compact music control. */
+.rsvp-section{
+  padding-bottom:max(124px,calc(92px + env(safe-area-inset-bottom)))!important;
+}
+.footer{
+  padding-bottom:max(92px,calc(76px + env(safe-area-inset-bottom)));
+}
+
+/* Tablet portrait / landscape: never let decorative layers crowd primary copy. */
+@media(min-width:681px) and (max-width:1024px){
+  .countdown-section{
+    padding-top:clamp(100px,12vw,126px)!important;
+    padding-bottom:118px;
+  }
+  .countdown-word{
+    top:48px!important;
+    font-size:clamp(8rem,20vw,12rem)!important;
+  }
+  .countdown-layout{
+    gap:42px;
+  }
+  .countdown-heading h2{
+    max-width:560px;
+    font-size:clamp(2.8rem,6vw,4rem);
+  }
+}
+
+/* Mobile: clean 2x2 countdown with intentional breathing room after the marquee. */
+@media(max-width:680px){
+  .editorial-story{
+    overflow:clip;
+  }
+
+  .love-marquee{
+    margin:0!important;
+  }
+
+  .countdown-section{
+    margin-top:0!important;
+    padding-top:clamp(78px,19vw,96px)!important;
+    padding-bottom:calc(104px + env(safe-area-inset-bottom))!important;
+  }
+  .countdown-word{
+    top:30px!important;
+    right:-.12em!important;
+    font-size:clamp(5.2rem,25vw,7rem)!important;
+    line-height:.9;
+    color:rgba(255,255,255,.018)!important;
+  }
+  .countdown-layout{
+    grid-template-columns:1fr!important;
+    gap:clamp(42px,12vw,58px)!important;
+    align-items:start;
+  }
+  .countdown-heading{
+    text-align:center;
+    padding-inline:8px;
+  }
+  .countdown-heading .eyebrow{
+    margin-bottom:16px;
+  }
+  .countdown-heading h2{
+    width:min(100%,360px);
+    max-width:360px;
+    margin:0 auto;
+    font-size:clamp(2.35rem,10vw,3.2rem)!important;
+    line-height:1.03;
+  }
+  .countdown{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    width:100%;
+    max-width:100%;
+    margin:0;
+  }
+  .countdown > div{
+    min-height:164px;
+    padding:24px 18px 20px!important;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    border:1px solid rgba(255,255,255,.15)!important;
+  }
+  .countdown > div:nth-child(3),
+  .countdown > div:nth-child(4){
+    border-top:0!important;
+  }
+  .countdown > div:nth-child(even){
+    border-left:0!important;
+  }
+  .countdown strong{
+    font-size:clamp(4rem,20vw,5.7rem)!important;
+    line-height:.82;
+  }
+  .countdown span{
+    margin-top:18px;
+  }
+
+  /* Story copy should breathe before the transition band. */
+  .editorial-story{
+    padding-bottom:clamp(88px,22vw,116px)!important;
+  }
+  .story-copy > p{
+    line-height:1.82;
+  }
+  .floating-love{
+    bottom:.02em;
+    opacity:.72;
+  }
+
+  /* Full-text safety in sections frequently affected by long VI/EN/JP strings. */
+  .event-card,
+  .guide-card,
+  .schedule-day,
+  .schedule-item,
+  .travel-card,
+  .wishes-card,
+  .rsvp-form{
+    overflow:visible;
+  }
+  .schedule-item{
+    grid-template-columns:minmax(58px,66px) minmax(0,1fr);
+    gap:16px;
+  }
+  .schedule-timeline::before{
+    left:62px;
+  }
+  .schedule-item::before{
+    left:58px;
+  }
+
+  /* Fixed music button remains reachable without covering final actions. */
+  .rsvp-form{
+    padding-bottom:78px;
+  }
+  .footer-names{
+    max-width:calc(100vw - 32px);
+    margin-inline:auto;
+  }
+}
+
+/* Very narrow phones: preserve information before decoration. */
+@media(max-width:390px){
+  .countdown-section{
+    padding-top:76px!important;
+  }
+  .countdown-heading h2{
+    max-width:330px;
+    font-size:clamp(2.15rem,10vw,2.75rem)!important;
+  }
+  .countdown > div{
+    min-height:148px;
+    padding:20px 14px 18px!important;
+  }
+  .countdown strong{
+    font-size:clamp(3.55rem,19vw,5rem)!important;
+  }
+  .schedule-item{
+    grid-template-columns:56px minmax(0,1fr);
+    gap:14px;
+  }
+  .schedule-timeline::before{left:52px}
+  .schedule-item::before{left:48px}
+}
+
+/* Short landscape phones: prioritize readable content over large decoration. */
+@media(max-height:500px) and (orientation:landscape){
+  .countdown-section{
+    padding-top:64px!important;
+    padding-bottom:78px!important;
+  }
+  .countdown-word{
+    display:none;
+  }
+  .countdown-layout{
+    gap:28px!important;
+  }
+  .countdown-heading h2{
+    font-size:clamp(2rem,6vw,2.8rem)!important;
+  }
+  .forever-transition{
+    min-height:560px;
+  }
+}
+
+/* Reduced motion must never leave readable content clipped or transparent. */
+@media(prefers-reduced-motion:reduce){
+  .countdown-layout,
+  .countdown-heading,
+  .countdown{
+    opacity:1!important;
+    transform:none!important;
+  }
+}
