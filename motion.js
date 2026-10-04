@@ -100,59 +100,108 @@
 
     const tracks = () => qsa('.motion-marquee .marquee-track, .forever-rail .marquee-track');
     let lastViewportWidth = Math.round(document.documentElement.clientWidth || innerWidth);
+    let rebuildTimer = 0;
+    let buildToken = 0;
+
+    const viewportWidth = () => Math.round(document.documentElement.clientWidth || innerWidth);
+
+    const speedForViewport = width => {
+      if (width <= 680) return 60;
+      if (width <= 1024) return 68;
+      return 76;
+    };
 
     const build = track => {
       if (!track._marqueeSeedHTML) track._marqueeSeedHTML = track.innerHTML;
+
       const seed = track._marqueeSeedHTML;
+      track.classList.remove('marquee-ready');
       track.innerHTML = '';
 
-      const group = document.createElement('div');
-      group.className = 'marquee-group';
-      group.innerHTML = seed;
-      track.appendChild(group);
+      const segment = document.createElement('div');
+      segment.className = 'marquee-group marquee-segment';
+      segment.innerHTML = seed;
+      track.appendChild(segment);
 
+      const width = viewportWidth();
+      const minSegmentWidth = Math.max(width * 1.5, 820);
       let copies = 1;
-      const viewportWidth = Math.round(document.documentElement.clientWidth || innerWidth);
-      const minWidth = Math.max(viewportWidth * 1.45, 760);
 
-      while (group.scrollWidth < minWidth && copies < 10) {
-        group.insertAdjacentHTML('beforeend', seed);
+      // The final inter-segment breathing room lives INSIDE the segment itself,
+      // so its measured width is exactly the animation distance.
+      while (segment.getBoundingClientRect().width < minSegmentWidth && copies < 12) {
+        segment.insertAdjacentHTML('beforeend', seed);
         copies++;
       }
 
-      const clone = group.cloneNode(true);
+      const clone = segment.cloneNode(true);
       clone.setAttribute('aria-hidden','true');
       track.appendChild(clone);
+
+      const distance = segment.getBoundingClientRect().width;
+      const speed = speedForViewport(width);
+      const duration = Math.max(12, distance / speed);
+
+      track.style.setProperty('--marquee-distance', `${distance.toFixed(3)}px`);
+      track.style.setProperty('--marquee-duration', `${duration.toFixed(3)}s`);
+      track.dataset.marqueeDistance = distance.toFixed(3);
+      track.dataset.marqueeSpeed = String(speed);
+
+      // Force one style/layout boundary so the animation always starts from a fully
+      // measured state instead of inheriting a half-rendered fallback-font frame.
+      void track.offsetWidth;
+      track.classList.add('marquee-ready');
     };
 
-    const rebuildAll = () => tracks().forEach(build);
+    const rebuildAll = async () => {
+      const token = ++buildToken;
+      try {
+        if (document.fonts?.ready) await document.fonts.ready;
+      } catch (_) {}
+
+      if (token !== buildToken) return;
+
+      requestAnimationFrame(() => {
+        if (token !== buildToken) return;
+        tracks().forEach(build);
+      });
+    };
+
+    const scheduleRebuild = delay => {
+      clearTimeout(rebuildTimer);
+      rebuildTimer = setTimeout(rebuildAll, delay);
+    };
+
     rebuildAll();
 
-    let resizeTimer = 0;
     addEventListener('resize', () => {
-      const nextWidth = Math.round(document.documentElement.clientWidth || innerWidth);
+      const nextWidth = viewportWidth();
 
-      // iOS Safari changes viewport HEIGHT while its browser chrome collapses during scrolling.
-      // Rebuilding only when WIDTH changes prevents the marquee from restarting mid-swipe.
+      // iOS Safari changes viewport HEIGHT while browser chrome collapses during scroll.
+      // Ignore those events; rebuild only when the usable WIDTH genuinely changes.
       if (Math.abs(nextWidth - lastViewportWidth) < 8) return;
 
       lastViewportWidth = nextWidth;
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(rebuildAll, 220);
+      scheduleRebuild(220);
     }, {passive:true});
 
     addEventListener('orientationchange', () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        lastViewportWidth = Math.round(document.documentElement.clientWidth || innerWidth);
+      clearTimeout(rebuildTimer);
+      rebuildTimer = setTimeout(() => {
+        lastViewportWidth = viewportWidth();
         rebuildAll();
-      }, 280);
+      }, 300);
     }, {passive:true});
 
     document.addEventListener('wedding:language', () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(rebuildAll, 80);
+      scheduleRebuild(100);
     });
+
+    // Late-loaded webfonts can change glyph metrics after initial paint on Safari.
+    // Re-measure once the full page load has settled, without tying this to scrolling.
+    addEventListener('load', () => {
+      scheduleRebuild(80);
+    }, {once:true});
   }
 
   function observeRevealElement(el, index=0) {
