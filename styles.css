@@ -8444,3 +8444,338 @@ html[lang="vi"] .gallery-editorial-head .section-heading > p:last-child{
   .personal-invite-lead { font-size: .9rem; }
   .personal-invite-note { font-size: .82rem; }
 }
+
+
+/* =========================================
+   V27 — invitation cover layout + welcome toast + side-note contrast
+   ========================================= */
+.invitation-intro{
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+}
+.intro-scene{
+  min-height:100svh!important;
+  height:auto!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:clamp(88px,8vh,120px) 20px clamp(48px,7vh,84px)!important;
+}
+.intro-save{
+  margin:0 0 18px!important;
+}
+.intro-card-stage{
+  width:min(620px,calc(100vw - 40px))!important;
+  height:auto!important;
+  min-height:0!important;
+  aspect-ratio:auto!important;
+  margin:0 auto!important;
+}
+.intro-card,
+.intro-paper{
+  height:auto!important;
+  min-height:0!important;
+}
+.intro-card{
+  width:100%!important;
+}
+.intro-paper{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  padding:clamp(34px,5vw,54px) clamp(24px,5vw,48px) clamp(28px,4vw,42px)!important;
+  border-radius:28px!important;
+}
+.intro-invite{
+  margin:0 0 10px!important;
+}
+.personal-invite-copy{
+  width:min(520px,100%)!important;
+  margin:0 auto 24px!important;
+}
+.personal-invite-name{
+  margin:2px 0 10px!important;
+  font-size:clamp(2.35rem,6vw,4.1rem)!important;
+  line-height:.96!important;
+  text-wrap:balance;
+}
+.personal-invite-lead{
+  max-width:480px!important;
+  font-size:clamp(.96rem,1.7vw,1.08rem)!important;
+}
+.personal-invite-note{
+  max-width:500px!important;
+  font-size:clamp(.88rem,1.5vw,1rem)!important;
+}
+.intro-photo-wrap{
+  position:relative!important;
+  width:min(420px,86%)!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:10px auto 20px!important;
+  padding:0!important;
+}
+.intro-photo-polaroid{
+  position:relative!important;
+  inset:auto!important;
+  width:100%!important;
+  height:auto!important;
+  aspect-ratio:4/3!important;
+  margin:0 auto!important;
+  transform:none!important;
+  overflow:hidden!important;
+  border-radius:18px!important;
+  box-shadow:0 18px 44px rgba(82,58,47,.16)!important;
+}
+.intro-photo-polaroid img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center 42%!important;
+}
+.intro-botanical,
+.intro-envelope{
+  display:none!important;
+}
+.intro-photo-wrap::after{
+  content:"H♥M";
+  position:absolute;
+  left:50%;
+  bottom:-16px;
+  transform:translateX(-50%);
+  width:58px;
+  height:58px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  border:1px solid rgba(126,86,61,.28);
+  background:linear-gradient(145deg,#efd69e,#cfae69);
+  color:#6d4a35;
+  font:700 .78rem/1 Georgia,serif;
+  letter-spacing:.08em;
+  box-shadow:0 8px 18px rgba(96,67,48,.18);
+}
+.intro-names{
+  position:static!important;
+  transform:none!important;
+  width:100%!important;
+  max-width:520px!important;
+  margin:30px auto 8px!important;
+  font-size:clamp(2.1rem,5vw,3.45rem)!important;
+  line-height:.96!important;
+  text-align:center!important;
+}
+.intro-date{
+  position:static!important;
+  transform:none!important;
+  margin:0!important;
+  text-align:center!important;
+}
+.intro-open-btn{
+  margin-top:20px!important;
+  min-width:min(330px,calc(100vw - 64px))!important;
+}
+.personal-invite-private{
+  margin:14px auto 0!important;
+  max-width:620px!important;
+  color:#6f5a4d!important;
+  opacity:1!important;
+  font-weight:600!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.75)!important;
+}
+.intro-audio-note{
+  margin-top:10px!important;
+}
+
+/* Hide decorative side note while cover is active; make it readable after opening. */
+body.invitation-locked .side-note,
+body.invitation-opening .side-note{
+  opacity:0!important;
+  visibility:hidden!important;
+}
+.side-note{
+  color:#4f3b31!important;
+  background:rgba(255,253,249,.86)!important;
+  border:1px solid rgba(92,68,54,.14)!important;
+  box-shadow:0 8px 22px rgba(55,42,34,.08)!important;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  padding:14px 7px!important;
+  border-radius:999px!important;
+  opacity:.92!important;
+}
+
+/* Post-open thank-you card */
+.invite-welcome{
+  position:fixed;
+  inset:0;
+  z-index:2200;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  pointer-events:none;
+  opacity:0;
+  visibility:hidden;
+  background:rgba(36,29,25,.16);
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
+  transition:opacity .42s ease,visibility .42s ease;
+}
+.invite-welcome.is-visible{
+  opacity:1;
+  visibility:visible;
+}
+.invite-welcome.is-leaving{
+  opacity:0;
+}
+.invite-welcome-card{
+  width:min(520px,calc(100vw - 40px));
+  padding:34px 30px 30px;
+  border-radius:28px;
+  text-align:center;
+  background:rgba(255,252,248,.96);
+  border:1px solid rgba(122,91,70,.16);
+  box-shadow:0 28px 80px rgba(42,31,25,.22);
+  transform:translateY(16px) scale(.98);
+  opacity:0;
+  transition:transform .48s cubic-bezier(.2,.8,.2,1),opacity .36s ease;
+}
+.invite-welcome.is-visible .invite-welcome-card{
+  transform:translateY(0) scale(1);
+  opacity:1;
+}
+.invite-welcome.is-leaving .invite-welcome-card{
+  transform:translateY(-10px) scale(.99);
+  opacity:0;
+}
+.invite-welcome-heart{
+  display:block;
+  margin-bottom:10px;
+  color:#9b6d55;
+  font:500 2rem/1 Georgia,serif;
+}
+.invite-welcome-card strong{
+  display:block;
+  color:#4e392f;
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-size:clamp(1.8rem,4vw,2.65rem);
+  line-height:1.05;
+  font-weight:600;
+  text-wrap:balance;
+}
+.invite-welcome-card p{
+  margin:14px auto 0;
+  max-width:420px;
+  color:#766257;
+  font-size:1rem;
+  line-height:1.65;
+}
+.invite-welcome-card small{
+  display:block;
+  margin-top:18px;
+  color:#9b6d55;
+  font-weight:800;
+  letter-spacing:.22em;
+}
+
+/* Mobile invitation cover */
+@media(max-width:760px){
+  .side-note{display:none!important;}
+  .intro-scene{
+    justify-content:flex-start!important;
+    padding:76px 14px 38px!important;
+  }
+  .intro-save{
+    margin-bottom:14px!important;
+    font-size:.76rem!important;
+  }
+  .intro-card-stage{
+    width:min(100%,520px)!important;
+  }
+  .intro-paper{
+    padding:30px 20px 28px!important;
+    border-radius:24px!important;
+  }
+  .personal-invite-copy{
+    margin-bottom:18px!important;
+  }
+  .personal-invite-name{
+    font-size:clamp(2.15rem,10.8vw,3.25rem)!important;
+    line-height:.98!important;
+  }
+  .personal-invite-lead{
+    font-size:.92rem!important;
+    line-height:1.5!important;
+  }
+  .personal-invite-note{
+    font-size:.84rem!important;
+    line-height:1.5!important;
+  }
+  .intro-photo-wrap{
+    width:min(92%,360px)!important;
+    margin:8px auto 18px!important;
+  }
+  .intro-photo-polaroid{
+    aspect-ratio:3/2!important;
+    border-radius:16px!important;
+  }
+  .intro-photo-wrap::after{
+    width:50px;
+    height:50px;
+    bottom:-14px;
+    font-size:.68rem;
+  }
+  .intro-names{
+    margin-top:28px!important;
+    font-size:clamp(1.9rem,9.2vw,2.8rem)!important;
+  }
+  .intro-date{
+    font-size:.72rem!important;
+    letter-spacing:.14em!important;
+  }
+  .intro-open-btn{
+    margin-top:16px!important;
+    min-width:min(300px,calc(100vw - 52px))!important;
+  }
+  .personal-invite-private{
+    max-width:340px!important;
+    padding:0 12px!important;
+    font-size:.73rem!important;
+    line-height:1.45!important;
+  }
+  .invite-welcome{
+    padding:18px;
+  }
+  .invite-welcome-card{
+    padding:28px 22px 24px;
+    border-radius:24px;
+  }
+  .invite-welcome-card strong{
+    font-size:clamp(1.65rem,8.4vw,2.25rem);
+  }
+  .invite-welcome-card p{
+    font-size:.94rem;
+  }
+}
+@media(max-width:390px){
+  .intro-scene{
+    padding-inline:10px!important;
+  }
+  .intro-paper{
+    padding-inline:16px!important;
+  }
+  .personal-invite-name{
+    font-size:clamp(2rem,10.4vw,2.75rem)!important;
+  }
+  .intro-names{
+    font-size:clamp(1.75rem,8.7vw,2.45rem)!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .invite-welcome,
+  .invite-welcome-card{
+    transition:none!important;
+  }
+}
