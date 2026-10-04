@@ -84,6 +84,8 @@ const galleryState = {
   activeIndex: -1,
   albumOpen: false,
   lightboxOpen: false,
+  albumPushed: false,
+  photoPushed: false,
   scrollY: 0
 };
 
@@ -181,8 +183,7 @@ async function loadHomeGallery() {
 
     if (error) throw error;
     galleryState.homeImages = (images || []).map(img => ({...img, publicUrl: galleryPublicUrl(img)}));
-    if (!galleryState.homeImages.length) return;
-    renderHomeGallery();
+    if (galleryState.homeImages.length) renderHomeGallery();
     await syncGalleryRoute();
   } catch (error) {
     console.error('Home gallery error:', error);
@@ -250,7 +251,10 @@ async function showAlbumOverlay({push = true} = {}) {
   document.body.classList.add('gallery-overlay-open');
 
   if (push) {
+    galleryState.albumPushed = true;
     history.pushState({weddingOverlay:'album'}, '', localizedPath(true));
+  } else if (!history.state?.weddingOverlay) {
+    galleryState.albumPushed = false;
   }
 }
 
@@ -258,6 +262,7 @@ function hideAlbumOverlay({restoreScroll = true} = {}) {
   const overlay = document.getElementById('albumOverlay');
   if (!overlay || !galleryState.albumOpen) return;
   galleryState.albumOpen = false;
+  galleryState.albumPushed = false;
   overlay.classList.remove('is-open');
   overlay.setAttribute('aria-hidden','true');
   document.body.classList.remove('gallery-overlay-open');
@@ -299,7 +304,10 @@ function showPhotoByIndex(index, images, {push = true} = {}) {
 
   if (push) {
     const img = galleryState.activeImages[galleryState.activeIndex];
+    galleryState.photoPushed = true;
     history.pushState({weddingOverlay:'photo', photoId:img.id}, '', photoRoute(img.id));
+  } else if (!history.state?.photoId) {
+    galleryState.photoPushed = false;
   }
 }
 
@@ -307,6 +315,7 @@ function hidePhoto() {
   const lightbox = document.getElementById('photoLightbox');
   if (!lightbox || !galleryState.lightboxOpen) return;
   galleryState.lightboxOpen = false;
+  galleryState.photoPushed = false;
   lightbox.classList.remove('is-open');
   lightbox.setAttribute('aria-hidden','true');
   document.body.classList.remove('photo-lightbox-open');
@@ -338,14 +347,23 @@ async function syncGalleryRoute() {
 
 function closePhotoViaHistory() {
   if (!galleryState.lightboxOpen) return;
-  if (new URLSearchParams(location.search).has('photo')) history.back();
-  else hidePhoto();
+  if (galleryState.photoPushed) {
+    history.back();
+    return;
+  }
+  const base = galleryState.albumOpen ? localizedPath(true) : localizedPath(false);
+  history.replaceState({}, '', base);
+  hidePhoto();
 }
 
 function closeAlbumViaHistory() {
   if (!galleryState.albumOpen) return;
-  if (location.pathname.split('/').filter(Boolean).includes('album')) history.back();
-  else hideAlbumOverlay();
+  if (galleryState.albumPushed) {
+    history.back();
+    return;
+  }
+  history.replaceState({}, '', localizedPath(false));
+  hideAlbumOverlay();
 }
 
 function initGalleryInteractions() {
