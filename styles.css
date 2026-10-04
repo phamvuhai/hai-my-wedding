@@ -4273,3 +4273,62 @@ body.photo-lightbox-open{
     -webkit-box-orient:vertical;
   }
 }
+
+
+/* =========================================
+   V10 — full couple names + localized-route safety
+   ========================================= */
+.hero-copy .kinetic-names{
+  width:100%;
+  max-width:100%;
+  font-size:clamp(3rem,6.2vw,6.8rem);
+  line-height:.88;
+  gap:.12em;
+}
+.kinetic-names .hero-name{
+  min-width:0;
+  white-space:nowrap;
+}
+.intro-names{
+  max-width:100%;
+  font-size:clamp(1.55rem,5vw,2.8rem);
+  line-height:1;
+  text-wrap:balance;
+}
+.footer-names{
+  max-width:100%;
+  font-size:clamp(2rem,4.6vw,3.2rem);
+  line-height:1.05;
+  text-wrap:balance;
+}
+@media(max-width:1024px){
+  .hero-copy .kinetic-names{
+    font-size:clamp(2.35rem,6.4vw,4.8rem);
+  }
+}
+@media(max-width:680px){
+  .hero-copy .kinetic-names{
+    font-size:clamp(1.68rem,7vw,2.7rem)!important;
+    gap:.1em;
+    flex-wrap:nowrap;
+  }
+  .kinetic-names .hero-amp{
+    flex:0 0 auto;
+  }
+  .intro-names{
+    font-size:clamp(1.42rem,5.5vw,2.05rem);
+    letter-spacing:-.045em;
+  }
+  .footer-names{
+    font-size:clamp(1.75rem,8vw,2.6rem);
+  }
+}
+@media(max-width:390px){
+  .hero-copy .kinetic-names{
+    font-size:clamp(1.5rem,6.6vw,2.35rem)!important;
+    gap:.08em;
+  }
+  .intro-names{
+    font-size:clamp(1.32rem,5.2vw,1.85rem);
+  }
+}
