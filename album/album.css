@@ -72,3 +72,76 @@ html,body{max-width:100%;overflow-x:hidden}
   .photo-card{max-width:100%}
   .lightbox figure{max-width:100vw}
 }
+
+
+/* V8.1 typography safety for Album */
+.album-nav,
+.album-nav-right,
+.album-hero-copy,
+.album-main,
+.masonry,
+.photo-card,
+.photo-overlay,
+.lightbox figure,
+.lightbox figcaption{
+  min-width:0;
+}
+.album-hero h1,
+.album-hero-copy>p:last-child,
+.photo-overlay strong,
+.photo-overlay span,
+.lightbox figcaption,
+.status,
+.empty{
+  max-width:100%;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  hyphens:auto;
+}
+.album-hero h1{
+  text-wrap:balance;
+  line-height:.96;
+}
+html:lang(ja) .album-hero-copy,
+html:lang(ja) .photo-overlay,
+html:lang(ja) .lightbox figcaption,
+html:lang(ja) .status,
+html:lang(ja) .empty{
+  line-break:strict;
+  word-break:normal;
+  overflow-wrap:anywhere;
+}
+.filter-btn{
+  max-width:100%;
+}
+@media(max-width:900px){
+  .album-hero h1{font-size:clamp(2.7rem,9vw,5.5rem)}
+  .album-hero-copy>p:last-child{
+    max-width:70ch;
+    line-height:1.6;
+  }
+}
+@media(max-width:650px){
+  .album-nav{min-width:0}
+  .album-nav-right{min-width:0}
+  .album-hero h1{
+    font-size:clamp(2.45rem,13vw,4.5rem);
+    line-height:.94;
+  }
+  .album-hero-copy>p:last-child{
+    font-size:.9rem;
+    line-height:1.55;
+  }
+  .lightbox figcaption{
+    width:min(92vw,720px);
+    padding:0 12px calc(8px + env(safe-area-inset-bottom));
+    line-height:1.45;
+  }
+}
+@media(max-width:390px){
+  .album-hero h1{font-size:clamp(2.2rem,12vw,3.7rem)}
+  .language-switcher button{
+    min-width:28px;
+    padding:0 5px;
+  }
+}
