@@ -1,6 +1,8 @@
 (() => {
   const cfg = window.WEDDING_CONFIG || {};
   let client = null;
+  let currentInvite = null;
+  let welcomeTimer = null;
 
   function tokenFromUrl() {
     const parts = location.pathname.split('/').filter(Boolean);
@@ -19,33 +21,51 @@
     return window.WeddingI18n?.language || 'vi';
   }
 
-  function copyFor(language, invite) {
+  function displayName(invite) {
+    if (!invite) return '';
     const display = invite.display_name || invite.guest_name || '';
-    const companion = invite.companion_name ? `${display} & ${invite.companion_name}` : display;
+    return invite.companion_name ? `${display} & ${invite.companion_name}` : display;
+  }
+
+  function copyFor(language, invite) {
+    const display = displayName(invite);
     const texts = {
       vi: {
         kicker: 'TRÂN TRỌNG KÍNH MỜI',
         lead: 'đến chung vui cùng chúng mình trong ngày trọng đại.',
         note: 'Sự hiện diện của bạn sẽ là niềm vui và vinh hạnh của Hải & Mỹ.',
         private: 'Thiệp mời này được dành riêng cho',
-        open: 'MỞ THIỆP CƯỚI'
+        open: 'MỞ THIỆP CƯỚI',
+        welcomeTitle: display
+          ? `Cảm ơn ${display} đã ghé xem thiệp cưới của chúng mình ♡`
+          : 'Cảm ơn bạn đã ghé xem thiệp cưới của chúng mình ♡',
+        welcomeBody: 'Sự hiện diện của bạn sẽ làm ngày vui của Hải & Mỹ thêm trọn vẹn.'
       },
       en: {
         kicker: 'YOU ARE CORDIALLY INVITED',
         lead: 'to celebrate this special day with us.',
         note: 'Your presence would mean so much to Hai & My.',
-        private: 'This invitation is especially for',
-        open: 'OPEN INVITATION'
+        private: 'This invitation is specially prepared for',
+        open: 'OPEN INVITATION',
+        welcomeTitle: display
+          ? `Thank you, ${display}, for opening our wedding invitation ♡`
+          : 'Thank you for opening our wedding invitation ♡',
+        welcomeBody: "We can't wait to celebrate this special day with you."
       },
       ja: {
         kicker: '心よりご招待申し上げます',
         lead: '私たちの大切な日を一緒にお祝いください。',
         note: 'ご出席いただけることを、Hai & My 心より楽しみにしております。',
-        private: 'こちらの招待状は',
-        open: '招待状を見る'
+        private: 'この招待状は',
+        privateSuffix: 'のためにご用意しました',
+        open: '招待状を見る',
+        welcomeTitle: display
+          ? `${display} 様、招待状をご覧いただきありがとうございます ♡`
+          : '私たちの結婚式の招待状をご覧いただき、ありがとうございます ♡',
+        welcomeBody: '大切な一日を一緒にお祝いできることを楽しみにしています。'
       }
     };
-    return {...(texts[language] || texts.vi), display: companion};
+    return {...(texts[language] || texts.vi), display};
   }
 
   function renderInvite(invite) {
@@ -71,10 +91,48 @@
       noteEl.hidden = !c.display;
     }
     if (privateEl) {
-      privateEl.textContent = c.display ? `${c.private} ${c.display}` : '';
-      privateEl.hidden = !c.display;
+      if (!c.display) {
+        privateEl.textContent = '';
+        privateEl.hidden = true;
+      } else if (lang() === 'ja') {
+        privateEl.textContent = `${c.private} ${c.display} 様 ${c.privateSuffix}`;
+        privateEl.hidden = false;
+      } else {
+        privateEl.textContent = `${c.private} ${c.display}`;
+        privateEl.hidden = false;
+      }
     }
     if (openLabel) openLabel.textContent = c.open;
+  }
+
+  function renderWelcome(invite = currentInvite) {
+    const overlay = document.getElementById('inviteWelcome');
+    const title = document.getElementById('inviteWelcomeTitle');
+    const body = document.getElementById('inviteWelcomeBody');
+    if (!overlay || !title || !body) return;
+
+    const c = copyFor(lang(), invite);
+    title.textContent = c.welcomeTitle;
+    body.textContent = c.welcomeBody;
+  }
+
+  function showWelcome() {
+    const overlay = document.getElementById('inviteWelcome');
+    if (!overlay) return;
+
+    renderWelcome(currentInvite);
+    clearTimeout(welcomeTimer);
+    overlay.classList.remove('is-leaving');
+    overlay.classList.add('is-visible');
+    overlay.setAttribute('aria-hidden', 'false');
+
+    welcomeTimer = setTimeout(() => {
+      overlay.classList.add('is-leaving');
+      setTimeout(() => {
+        overlay.classList.remove('is-visible', 'is-leaving');
+        overlay.setAttribute('aria-hidden', 'true');
+      }, 520);
+    }, 3000);
   }
 
   function prefill(invite) {
@@ -115,13 +173,13 @@
 
   async function markOpened() {
     const token = tokenFromUrl();
-    if (!token || !window.WeddingGuest?.invite) return;
+    if (!token || !currentInvite) return;
     const database = db();
     if (!database) return;
     try {
       await database.rpc('mark_wedding_invite_opened', {p_token: token});
       document.dispatchEvent(new CustomEvent('wedding:invite-opened', {
-        detail: {inviteId: window.WeddingGuest.invite.id}
+        detail: {inviteId: currentInvite.id}
       }));
     } catch (error) {
       console.warn('Unable to mark invitation opened:', error);
@@ -131,24 +189,38 @@
   async function load() {
     const token = tokenFromUrl();
     const database = db();
-    if (!token || !database) return;
+
+    if (!token || !database) {
+      renderWelcome(null);
+      return;
+    }
 
     const { data, error } = await database.rpc('get_wedding_invite', { p_token: token });
     const invite = Array.isArray(data) ? data[0] : data;
     if (error || !invite) {
       document.body.classList.add('invite-invalid');
+      renderWelcome(null);
       return;
     }
 
+    currentInvite = invite;
     window.WeddingGuest = { token, invite };
     renderInvite(invite);
+    renderWelcome(invite);
     prefill(invite);
 
-    document.addEventListener('wedding:language', () => renderInvite(invite));
-    document.addEventListener('wedding:invitation-opened', markOpened, {once:true});
+    document.addEventListener('wedding:language', () => {
+      renderInvite(invite);
+      renderWelcome(invite);
+    });
   }
 
-  window.WeddingPersonalized = { markOpened };
+  document.addEventListener('wedding:invitation-opened', () => {
+    showWelcome();
+    markOpened();
+  });
+
+  window.WeddingPersonalized = { markOpened, showWelcome };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load);
   else load();
