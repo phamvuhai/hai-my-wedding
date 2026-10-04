@@ -491,20 +491,49 @@
 
   function initEventTimeline() {
     const events = qs('.events');
-    if (!events || events.dataset.timelineInit) return;
+    const families = qs('.event-families', events);
+    if (!events || !families || events.dataset.timelineInit) return;
     events.dataset.timelineInit = '1';
 
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
     const update = () => {
-      const r = events.getBoundingClientRect();
+      const eventRect = events.getBoundingClientRect();
+      const familyRect = families.getBoundingClientRect();
       const vh = innerHeight || 1;
-      const start = vh * .78;
-      const end = -r.height * .25;
-      const progress = Math.max(0, Math.min(1, (start - r.top) / (start - end)));
+
+      // Start the line in the clear space immediately above the first family card.
+      // This is measured from the rendered layout, so longer JP/EN headings never get crossed.
+      const lineTop = Math.max(260, familyRect.top - eventRect.top - 34);
+      const lineHeight = Math.max(0, familyRect.height + 64);
+      events.style.setProperty('--event-line-top', `${lineTop.toFixed(1)}px`);
+      events.style.setProperty('--event-line-height', `${lineHeight.toFixed(1)}px`);
+
+      // Draw the line as the cards enter the viewport, and naturally replay when scrolling back.
+      const startY = vh * .80;
+      const travel = Math.max(vh * .52, familyRect.height + vh * .22);
+      const progress = clamp((startY - familyRect.top) / travel, 0, 1);
       events.style.setProperty('--event-progress', progress.toFixed(3));
+
+      // Subtle watermark parallax only; coarse pointers get a smaller travel range.
+      const range = coarse ? 8 : 18;
+      const dateShift = (progress - .5) * range;
+      qsa('.event-bg-date', events).forEach(date => {
+        date.style.setProperty('--event-date-shift', `${dateShift.toFixed(1)}px`);
+      });
     };
 
-    addEventListener('scroll',update,{passive:true});
-    addEventListener('resize',update,{passive:true});
+    let raf = 0;
+    const requestUpdate = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        update();
+      });
+    };
+
+    addEventListener('scroll',requestUpdate,{passive:true});
+    addEventListener('resize',requestUpdate,{passive:true});
     update();
   }
 
