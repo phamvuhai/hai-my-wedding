@@ -106,12 +106,16 @@
     const guests = A.guests || [];
     const rows = filteredGuests();
     const active = guests.filter(g => g.is_active).length;
+    const sent = guests.filter(g => g.sent_at).length;
+    const opened = guests.filter(g => g.opened_at).length;
     const responded = guests.filter(g => rsvpByInvite.has(g.id)).length;
     const attending = guests.filter(g => rsvpByInvite.get(g.id)?.attendance === 'yes')
       .reduce((sum,g) => sum + Number(rsvpByInvite.get(g.id)?.guest_count || 0), 0);
 
     statsEl.innerHTML =
       '<div class="stat"><span>Tổng khách mời</span><strong>' + guests.length + '</strong></div>' +
+      '<div class="stat"><span>Đã gửi</span><strong>' + sent + '</strong></div>' +
+      '<div class="stat"><span>Đã mở</span><strong>' + opened + '</strong></div>' +
       '<div class="stat"><span>Đã phản hồi</span><strong>' + responded + '</strong></div>' +
       '<div class="stat"><span>Dự kiến tham dự</span><strong>' + attending + '</strong></div>' +
       '<div class="stat"><span>Link hoạt động</span><strong>' + active + '</strong></div>';
@@ -129,6 +133,7 @@
               <small>${A.esc(g.guest_name)} · ${A.esc(g.phone || 'Không có SĐT')} · ${eventLabel(g.event_choice)} · tối đa ${g.max_guests} người · ${source}</small>
               <div class="guest-status-line">
                 <span class="status-pill ${status === 'pending' ? 'maybe' : status}">RSVP: ${rsvpLabel(status)}${latest?.attendance === 'yes' ? ' · ' + latest.guest_count + ' người' : ''}</span>
+                <span class="status-pill ${g.sent_at ? 'yes' : 'maybe'}">${g.sent_at ? 'Đã gửi' : 'Chưa đánh dấu gửi'}</span>
                 <span class="status-pill ${g.opened_at ? 'yes' : 'maybe'}">${g.opened_at ? 'Đã mở · ' + (g.open_count || 1) + ' lần' : 'Chưa mở'}</span>
                 <span class="status-pill ${g.is_active ? 'yes' : 'no'}">${g.is_active ? 'Link active' : 'Link disabled'}</span>
               </div>
@@ -139,6 +144,7 @@
             <input readonly value="${A.esc(inviteUrl(g))}">
             <button class="btn ghost compact" data-action="edit" data-id="${g.id}">Edit</button>
             <button class="btn ghost compact" data-action="copy" data-id="${g.id}">Copy</button>
+            <button class="btn ghost compact" data-action="sent" data-id="${g.id}">${g.sent_at ? 'Đã gửi ✓' : 'Đánh dấu đã gửi'}</button>
             <button class="btn ghost compact" data-action="toggle" data-id="${g.id}">${g.is_active ? 'Tắt' : 'Bật'}</button>
             <button class="btn ghost compact danger-text" data-action="delete" data-id="${g.id}">Xóa</button>
           </div>
@@ -210,6 +216,12 @@
       const btn = listEl.querySelector(`button[data-id="${id}"][data-action="copy"]`);
       if (btn) { btn.textContent='Đã copy'; setTimeout(() => btn.textContent='Copy',1200); }
       return;
+    }
+
+    if (action === 'sent') {
+      const {error} = await db.from('guest_invites').update({sent_at:row.sent_at ? null : new Date().toISOString(),updated_at:new Date().toISOString()}).eq('id',id);
+      if (error) return alert(error.message);
+      return load();
     }
 
     if (action === 'toggle') {
