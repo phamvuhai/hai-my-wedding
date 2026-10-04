@@ -7016,3 +7016,390 @@ body.invitation-opening .hero{
     transition:none!important;
   }
 }
+
+
+/* =========================================
+   V21 — luxury wedding micro-interactions
+   Hover / focus / tap polish without layout shift
+   ========================================= */
+:root{
+  --ui-ease:cubic-bezier(.16,.84,.24,1);
+  --ui-fast:220ms;
+  --ui-medium:320ms;
+}
+
+/* Navigation: animated underline + language pill feedback. */
+.nav-links a:hover,
+.nav-links a:focus-visible{
+  opacity:1;
+}
+.nav-links a:hover::after,
+.nav-links a:focus-visible::after{
+  transform:scaleX(1);
+}
+.language-switcher button{
+  transition:
+    transform var(--ui-fast) var(--ui-ease),
+    background-color var(--ui-fast) ease,
+    color var(--ui-fast) ease,
+    box-shadow var(--ui-fast) ease;
+}
+@media(hover:hover) and (pointer:fine){
+  .language-switcher button:hover{
+    transform:scale(1.045);
+    box-shadow:0 5px 16px rgba(60,43,35,.08);
+  }
+}
+
+/* Hero CTA: a stronger but still restrained response.
+   Existing magnetic motion remains authoritative in WOW mode. */
+.hero .btn,
+.gallery-cta .btn,
+.wishes-card .btn,
+.rsvp-form .btn{
+  transition:
+    transform var(--ui-fast) var(--ui-ease),
+    box-shadow var(--ui-medium) ease,
+    background-color var(--ui-fast) ease,
+    border-color var(--ui-fast) ease,
+    filter var(--ui-fast) ease;
+}
+@media(hover:hover) and (pointer:fine){
+  .hero .btn:hover,
+  .gallery-cta .btn:hover,
+  .wishes-card .btn:hover,
+  .rsvp-form .btn:hover{
+    scale:1.03;
+    box-shadow:0 15px 34px rgba(58,41,32,.14);
+  }
+}
+.hero .btn:active,
+.gallery-cta .btn:active,
+.wishes-card .btn:active,
+.rsvp-form .btn:active{
+  scale:.975;
+}
+
+/* Wedding event cards: lift, soften, and reveal hierarchy. */
+.event-card{
+  transform-origin:center center;
+  transition:
+    transform var(--ui-medium) var(--ui-ease),
+    box-shadow var(--ui-medium) ease,
+    background-color var(--ui-medium) ease,
+    border-color var(--ui-medium) ease,
+    filter var(--ui-medium) ease!important;
+}
+.event-card h4,
+.event-card .event-date strong,
+.event-card .event-index{
+  transition:
+    transform var(--ui-medium) var(--ui-ease),
+    color var(--ui-fast) ease,
+    opacity var(--ui-fast) ease;
+}
+@media(hover:hover) and (pointer:fine){
+  .event-card:hover{
+    transform:translateY(-6px) scale(1.012)!important;
+    box-shadow:0 24px 52px rgba(67,46,36,.12), inset 0 0 0 1px rgba(208,170,142,.16)!important;
+  }
+  .event-card:hover h4{
+    transform:translateX(3px);
+  }
+  .event-card:hover .event-index{
+    transform:translateY(-3px);
+    opacity:.72;
+  }
+  .event-card:hover .event-date strong{
+    transform:translateY(-1px);
+  }
+}
+
+/* Map actions: arrow movement is already animated in WOW mode; make all modes responsive. */
+.map-link{
+  transition:
+    transform var(--ui-fast) var(--ui-ease),
+    background-color var(--ui-fast) ease,
+    border-color var(--ui-fast) ease,
+    box-shadow var(--ui-fast) ease;
+}
+.map-link span:last-child{
+  display:inline-block;
+  transition:transform var(--ui-fast) var(--ui-ease);
+}
+@media(hover:hover) and (pointer:fine){
+  .map-link:hover{
+    box-shadow:0 8px 20px rgba(70,48,37,.08);
+  }
+  html:not([data-motion="wow"]) .map-link:hover span:last-child{
+    transform:translate(3px,-3px);
+  }
+}
+.map-link:active{
+  scale:.97;
+}
+
+/* Schedule: focus the hovered row and its timeline dot. */
+.schedule-item{
+  transition:
+    opacity var(--ui-medium) ease,
+    background-color var(--ui-medium) ease,
+    transform var(--ui-medium) var(--ui-ease),
+    box-shadow var(--ui-medium) ease!important;
+}
+.schedule-item h3,
+.schedule-time,
+.schedule-kind{
+  transition:
+    transform var(--ui-medium) var(--ui-ease),
+    color var(--ui-fast) ease,
+    background-color var(--ui-fast) ease,
+    border-color var(--ui-fast) ease!important;
+}
+@media(hover:hover) and (pointer:fine){
+  .schedule-timeline:hover .schedule-item:not(:hover){
+    opacity:.88;
+  }
+  .schedule-item:hover{
+    transform:translateX(3px);
+    box-shadow:0 12px 28px color-mix(in srgb,var(--day-accent) 9%,transparent);
+  }
+  .schedule-item:hover h3{
+    transform:translateX(3px);
+  }
+  .schedule-item:hover .schedule-time{
+    transform:translateX(-2px) scale(1.035);
+  }
+  .schedule-item:hover .schedule-kind{
+    transform:translateY(-1px);
+  }
+  .schedule-item:hover::before{
+    transform:translateX(-50%) scale(1.18)!important;
+    box-shadow:0 0 0 7px color-mix(in srgb,var(--day-accent) 12%,transparent)!important;
+  }
+}
+
+/* Guest Guide: editorial depth without moving document flow. */
+.guide-card{
+  transform-origin:center center;
+}
+.guide-card::after,
+.guide-index,
+.guide-card h3{
+  transition:
+    transform var(--ui-medium) var(--ui-ease),
+    opacity var(--ui-medium) ease,
+    color var(--ui-fast) ease;
+}
+@media(hover:hover) and (pointer:fine){
+  .guide-card:hover{
+    border-color:rgba(201,157,149,.40)!important;
+    box-shadow:0 25px 55px rgba(56,42,33,.10)!important;
+  }
+  .guide-card:hover .guide-index{
+    transform:translateY(-4px) scale(1.045);
+    opacity:.78;
+  }
+  .guide-card:hover h3{
+    transform:translateX(3px);
+  }
+  .guide-card:hover::after{
+    transform:translate(-5px,-4px) scale(1.035);
+  }
+}
+
+/* Gallery: zoom only the media, never the grid box. */
+.home-photo,
+.album-overlay-photo{
+  overflow:hidden;
+  transform-origin:center center;
+}
+.home-photo img,
+.album-overlay-photo img{
+  transition:
+    transform 520ms var(--ui-ease),
+    filter var(--ui-medium) ease;
+  transform-origin:center center;
+}
+.home-photo-copy,
+.album-overlay-photo span{
+  transition:
+    transform var(--ui-medium) var(--ui-ease),
+    opacity var(--ui-medium) ease;
+}
+@media(hover:hover) and (pointer:fine){
+  .home-photo:hover img,
+  .album-overlay-photo:hover img{
+    transform:scale(1.055);
+    filter:saturate(1.035) contrast(1.015);
+  }
+  .home-photo:hover .home-photo-copy{
+    transform:translateY(0)!important;
+  }
+  .album-overlay-photo:hover span{
+    transform:translateY(-2px);
+  }
+  .home-photo{
+    cursor:zoom-in;
+  }
+}
+.home-photo:active,
+.album-overlay-photo:active{
+  scale:.987;
+}
+
+/* RSVP: clearer focus and tactile options. */
+.rsvp-form input,
+.rsvp-form select,
+.rsvp-form textarea{
+  transition:
+    transform var(--ui-fast) var(--ui-ease),
+    border-color var(--ui-fast) ease,
+    box-shadow var(--ui-fast) ease,
+    background-color var(--ui-fast) ease!important;
+}
+.rsvp-form input:focus,
+.rsvp-form select:focus,
+.rsvp-form textarea:focus{
+  transform:translateY(-2px)!important;
+  border-color:rgba(155,109,85,.46)!important;
+  box-shadow:0 9px 24px rgba(84,59,46,.075)!important;
+}
+.rsvp-form .radio{
+  transition:
+    transform var(--ui-fast) var(--ui-ease),
+    background-color var(--ui-fast) ease,
+    border-color var(--ui-fast) ease,
+    box-shadow var(--ui-fast) ease;
+}
+@media(hover:hover) and (pointer:fine){
+  .rsvp-form .radio:hover{
+    transform:translateY(-2px) scale(1.008);
+    box-shadow:0 8px 20px rgba(70,50,40,.055);
+  }
+}
+.rsvp-form .radio:active{
+  scale:.985;
+}
+
+/* Submit shimmer only on true hover devices. */
+.rsvp-form .btn[type="submit"]{
+  position:relative;
+  overflow:hidden;
+}
+.rsvp-form .btn[type="submit"]::after{
+  content:"";
+  position:absolute;
+  top:-120%;
+  left:-38%;
+  width:24%;
+  height:340%;
+  transform:rotate(24deg) translateX(-220%);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);
+  pointer-events:none;
+}
+@media(hover:hover) and (pointer:fine){
+  .rsvp-form .btn[type="submit"]:hover::after{
+    animation:rsvpSubmitShimmer .82s ease-out both;
+  }
+}
+@keyframes rsvpSubmitShimmer{
+  to{transform:rotate(24deg) translateX(720%)}
+}
+
+/* Music dock: slightly opens and breathes under the pointer on desktop. */
+.music-dock,
+.music-toggle,
+.music-disc,
+.music-state{
+  transition:
+    transform var(--ui-medium) var(--ui-ease),
+    box-shadow var(--ui-medium) ease,
+    border-color var(--ui-fast) ease,
+    background-color var(--ui-fast) ease!important;
+}
+@media(hover:hover) and (pointer:fine){
+  .music-dock:hover{
+    transform:translateY(-3px) scale(1.018);
+    box-shadow:0 18px 42px rgba(34,24,20,.18);
+  }
+  .music-dock:hover .music-disc{
+    transform:scale(1.075);
+  }
+  .music-dock:hover .music-state{
+    transform:scale(1.055);
+  }
+}
+.music-toggle:active{
+  scale:.97;
+}
+
+/* Invitation: reinforce that the entire card is interactive. */
+@media(hover:hover) and (pointer:fine){
+  .invitation-intro.is-ready:not(.is-opening) .intro-click-target:hover{
+    scale:1.008;
+  }
+  .invitation-intro.is-ready:not(.is-opening) .intro-click-target:hover .intro-envelope{
+    filter:drop-shadow(0 20px 27px rgba(69,35,33,.22));
+  }
+}
+.intro-click-target:active{
+  scale:.992;
+}
+
+/* Generic touch feedback for actual controls only. */
+@media(pointer:coarse){
+  .btn:active,
+  .map-link:active,
+  .home-photo:active,
+  .album-overlay-photo:active,
+  .music-toggle:active,
+  .language-switcher button:active{
+    transform:scale(.975)!important;
+  }
+}
+
+/* Focus-visible should feel as intentional as hover. */
+.btn:focus-visible,
+.map-link:focus-visible,
+.home-photo:focus-visible,
+.album-overlay-photo:focus-visible,
+.music-toggle:focus-visible,
+.language-switcher button:focus-visible,
+.nav-links a:focus-visible{
+  outline:2px solid color-mix(in srgb,var(--accent) 62%,#fff);
+  outline-offset:4px;
+}
+
+/* Accessibility: all decorative movement collapses gracefully. */
+@media(prefers-reduced-motion:reduce){
+  .event-card,
+  .event-card h4,
+  .event-card .event-index,
+  .schedule-item,
+  .schedule-item h3,
+  .schedule-time,
+  .schedule-kind,
+  .guide-card,
+  .guide-card::after,
+  .guide-index,
+  .home-photo img,
+  .album-overlay-photo img,
+  .home-photo-copy,
+  .rsvp-form input,
+  .rsvp-form select,
+  .rsvp-form textarea,
+  .rsvp-form .radio,
+  .music-dock,
+  .music-disc,
+  .music-state,
+  .language-switcher button{
+    transition:none!important;
+    animation:none!important;
+    transform:none!important;
+    scale:1!important;
+  }
+  .schedule-timeline:hover .schedule-item:not(:hover){
+    opacity:1!important;
+  }
+}
