@@ -26,6 +26,16 @@
       "source": "/ja/invite/:token",
       "destination": "/jp/invite/:token",
       "permanent": true
+    },
+    {
+      "source": "/album",
+      "destination": "/vi/album",
+      "permanent": true
+    },
+    {
+      "source": "/album/",
+      "destination": "/vi/album",
+      "permanent": true
     }
   ],
   "rewrites": [
@@ -100,14 +110,6 @@
     {
       "source": "/en/",
       "destination": "/index"
-    },
-    {
-      "source": "/album",
-      "destination": "/album/index.html"
-    },
-    {
-      "source": "/album/",
-      "destination": "/album/index.html"
     },
     {
       "source": "/admin",
