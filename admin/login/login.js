@@ -11,7 +11,6 @@
   const params = new URLSearchParams(location.search);
 
   let authFlowActive =
-    params.get('setup') === '1' ||
     params.has('code') ||
     location.hash.includes('type=recovery') ||
     location.hash.includes('access_token=');
@@ -68,8 +67,8 @@
 
     if (error) {
       const message = /invalid login credentials/i.test(error.message)
-        ? 'Email hoặc mật khẩu chưa đúng. Nếu đây là lần đầu sử dụng Admin, chọn “Thiết lập tài khoản lần đầu”.'
-        : error.message;
+        ? 'Email hoặc mật khẩu không đúng.'
+        : 'Không thể đăng nhập. Vui lòng thử lại.';
       setStatus(status, message, 'error');
       return;
     }
@@ -102,44 +101,12 @@
     setStatus(status, 'Đã gửi email đặt lại mật khẩu. Hãy mở liên kết trong email.', 'success');
   });
 
-  document.getElementById('setupBtn').addEventListener('click', async () => {
-    const email = emailEl.value.trim() || ADMIN_EMAIL;
-
-    if (!isAdmin(email)) {
-      setStatus(status, 'Nhập đúng email quản trị trước.', 'error');
-      return;
-    }
-
-    setStatus(status, 'Đang gửi liên kết thiết lập tài khoản...');
-    const { error } = await db.auth.signInWithOtp({
-      email,
-      options: {
-        shouldCreateUser: true,
-        emailRedirectTo: APP_ORIGIN + '/admin/login/?setup=1'
-      }
-    });
-
-    if (error) {
-      setStatus(status, error.message, 'error');
-      return;
-    }
-
-    setStatus(status, 'Đã gửi email thiết lập. Mở liên kết trong email, sau đó đặt mật khẩu mới.', 'success');
-  });
-
   db.auth.onAuthStateChange(async (event, session) => {
     if (event === 'PASSWORD_RECOVERY') {
       showResetMode();
       return;
     }
 
-    if (event === 'SIGNED_IN' && params.get('setup') === '1') {
-      if (isAdmin(session?.user?.email || '')) {
-        showResetMode();
-      } else if (session) {
-        await db.auth.signOut();
-      }
-    }
   });
 
   resetForm.addEventListener('submit', async (event) => {
