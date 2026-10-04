@@ -6635,3 +6635,133 @@ html[data-motion="wow"] .hero:hover .hero-couple-names .hero-amp{
     padding-left:8px;
   }
 }
+
+
+/* =========================================
+   V18 — readable multilingual countdown typography
+   ========================================= */
+.countdown-heading{
+  width:min(100%,620px)!important;
+  max-width:620px!important;
+  min-width:0!important;
+  overflow:visible!important;
+}
+
+.countdown-heading h2{
+  width:min(100%,620px)!important;
+  max-width:620px!important;
+  margin:14px 0 0!important;
+  padding:.08em 0 .12em!important;
+  overflow:visible!important;
+
+  /* Never split Vietnamese/English words in the middle. */
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+  line-break:auto!important;
+  hyphens:none!important;
+  -webkit-hyphens:none!important;
+  white-space:pre-line!important;
+  text-wrap:balance;
+
+  font-family:"Lora","Iowan Old Style","Baskerville",Georgia,serif!important;
+  font-size:clamp(4rem,4.8vw,5.125rem)!important;
+  font-weight:500!important;
+  line-height:1.02!important;
+  letter-spacing:-.035em!important;
+}
+
+/* Give the title enough real estate on desktop instead of forcing it into
+   the narrow legacy .62fr column. */
+@media(min-width:1025px){
+  .countdown-layout{
+    grid-template-columns:minmax(420px,.80fr) minmax(0,1.20fr)!important;
+    gap:clamp(52px,6vw,86px)!important;
+    align-items:center!important;
+  }
+  .countdown-heading{
+    text-align:left!important;
+    justify-self:start;
+  }
+}
+
+/* Tablet uses the same deliberate two-line composition, centered. */
+@media(min-width:681px) and (max-width:1024px){
+  .countdown-layout{
+    grid-template-columns:1fr!important;
+    gap:clamp(44px,7vw,62px)!important;
+  }
+  .countdown-heading{
+    width:min(100%,540px)!important;
+    max-width:540px!important;
+    margin-inline:auto;
+    text-align:center!important;
+  }
+  .countdown-heading h2{
+    width:min(100%,540px)!important;
+    max-width:540px!important;
+    margin:12px auto 0!important;
+    font-size:clamp(3.3rem,7vw,4.25rem)!important;
+    line-height:1.03!important;
+    letter-spacing:-.03em!important;
+  }
+}
+
+/* Mobile: one intentional break, never a broken word. */
+@media(max-width:680px){
+  .countdown-heading{
+    width:min(92vw,420px)!important;
+    max-width:420px!important;
+    margin-inline:auto!important;
+    padding-inline:0!important;
+    text-align:center!important;
+  }
+  .countdown-heading h2{
+    width:min(92vw,420px)!important;
+    max-width:420px!important;
+    margin:10px auto 0!important;
+    padding:.08em .04em .12em!important;
+    font-size:clamp(2.6rem,12vw,3.375rem)!important;
+    line-height:1.04!important;
+    letter-spacing:-.025em!important;
+  }
+  .countdown-heading .eyebrow{
+    margin-bottom:12px!important;
+  }
+  .countdown-word{
+    color:rgba(255,255,255,.013)!important;
+  }
+}
+
+@media(max-width:390px){
+  .countdown-heading{
+    width:min(94vw,360px)!important;
+  }
+  .countdown-heading h2{
+    width:min(94vw,360px)!important;
+    max-width:360px!important;
+    font-size:clamp(2.45rem,11.5vw,3rem)!important;
+    line-height:1.045!important;
+  }
+}
+
+/* Landscape phones stay compact but still respect whole words. */
+@media(max-height:500px) and (orientation:landscape){
+  .countdown-heading{
+    width:min(54vw,480px)!important;
+    max-width:480px!important;
+  }
+  .countdown-heading h2{
+    width:100%!important;
+    max-width:480px!important;
+    font-size:clamp(2.25rem,5.4vw,3rem)!important;
+    line-height:1!important;
+  }
+}
+
+/* Lora has no Japanese glyphs; use native Mincho serif instead. */
+html[lang="ja"] .countdown-heading h2{
+  font-family:"Yu Mincho","Hiragino Mincho ProN","Hiragino Mincho Pro","Noto Serif JP",serif!important;
+  letter-spacing:-.02em!important;
+  word-break:keep-all!important;
+  overflow-wrap:normal!important;
+}
