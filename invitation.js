@@ -9,7 +9,7 @@
     '#travel','#forever','#wishes','#rsvp'
   ]);
 
-  const isEntryRoute = location.pathname === '/';
+  const isEntryRoute = location.pathname === '/' || location.pathname.split('/').filter(Boolean).includes('invite');
   let pendingHash = validAnchors.has(location.hash) ? location.hash : '';
   let invitationOpened = !isEntryRoute;
   let opening = false;
@@ -73,11 +73,14 @@
   function localizedHomePath() {
     const lang = window.WeddingI18n?.language || 'vi';
     const code = window.WeddingI18n?.publicCode?.(lang) || (lang === 'ja' ? 'jp' : lang);
-    return `/${code}`;
+    const parts = location.pathname.split('/').filter(Boolean);
+    const inviteIndex = parts.indexOf('invite');
+    const token = inviteIndex >= 0 ? parts[inviteIndex + 1] : new URLSearchParams(location.search).get('invite');
+    return token ? `/${code}/invite/${encodeURIComponent(token)}` : `/${code}`;
   }
 
   function canonicalizeAfterOpen() {
-    if (location.pathname !== '/') return;
+    if (!isEntryRoute) return;
     const hash = pendingHash || (validAnchors.has(location.hash) ? location.hash : '');
     history.replaceState(
       history.state || {},
@@ -196,7 +199,8 @@
     return;
   }
 
-  // Localized URLs are already "inside" the invitation. Never show the cover on refresh.
+  // Standard localized URLs are already "inside" the invitation. Personalized invite URLs
+  // intentionally keep the cover so each guest receives the full invitation experience.
   if (!isEntryRoute) {
     intro.classList.add('is-bypassed','is-opened');
     intro.setAttribute('aria-hidden','true');
