@@ -8779,3 +8779,116 @@ body.invitation-opening .side-note{
     transition:none!important;
   }
 }
+
+
+/* =========================================
+   V28 — restore invitation envelope without hiding content
+   ========================================= */
+.intro-photo-wrap{
+  overflow:visible!important;
+  padding-bottom:54px!important;
+}
+.intro-photo-wrap::after{
+  content:none!important;
+  display:none!important;
+}
+
+/* Keep the decorative envelope, but size and position it below the couple photo. */
+.intro-envelope{
+  display:block!important;
+  position:absolute!important;
+  z-index:6!important;
+  left:50%!important;
+  top:auto!important;
+  bottom:6px!important;
+  width:min(76%,310px)!important;
+  height:82px!important;
+  transform:translateX(-50%)!important;
+  filter:drop-shadow(0 12px 18px rgba(69,35,33,.18))!important;
+  pointer-events:none!important;
+}
+.intro-envelope-back,
+.intro-envelope-front,
+.intro-envelope-left,
+.intro-envelope-right{
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  border-radius:8px 8px 15px 15px!important;
+}
+.intro-envelope-back{
+  background:linear-gradient(180deg,#833b40,#692b31)!important;
+}
+.intro-envelope-front{
+  clip-path:polygon(0 34%,50% 70%,100% 34%,100% 100%,0 100%)!important;
+  background:linear-gradient(160deg,#7d343a,#5f252c)!important;
+}
+.intro-envelope-left{
+  clip-path:polygon(0 0,53% 55%,0 100%)!important;
+  background:#6b2930!important;
+}
+.intro-envelope-right{
+  clip-path:polygon(100% 0,47% 55%,100% 100%)!important;
+  background:#843a3e!important;
+}
+.intro-seal{
+  display:flex!important;
+  z-index:9!important;
+  left:50%!important;
+  top:48%!important;
+  width:50px!important;
+  height:50px!important;
+  transform:translate(-50%,-50%)!important;
+}
+
+/* Couple name stays completely outside the envelope/photo layers. */
+.intro-names{
+  z-index:10!important;
+  margin-top:14px!important;
+}
+.intro-date{
+  z-index:10!important;
+}
+
+/* Opening keeps the original envelope choreography but prevents content clipping. */
+.invitation-intro.is-opening .intro-envelope{
+  transform:translateX(-50%) translateY(6px) scale(.98)!important;
+}
+.invitation-intro.is-opening .intro-seal{
+  transform:translate(-50%,-50%) rotate(-12deg) scale(0)!important;
+  opacity:0!important;
+}
+
+/* Mobile: preserve all layers and keep the envelope clear of the photo and names. */
+@media(max-width:760px){
+  .intro-photo-wrap{
+    padding-bottom:46px!important;
+    margin-bottom:12px!important;
+  }
+  .intro-envelope{
+    width:min(78%,270px)!important;
+    height:70px!important;
+    bottom:4px!important;
+  }
+  .intro-seal{
+    width:44px!important;
+    height:44px!important;
+    font-size:.56rem!important;
+  }
+  .intro-names{
+    margin-top:10px!important;
+  }
+}
+@media(max-width:390px){
+  .intro-photo-wrap{
+    padding-bottom:42px!important;
+  }
+  .intro-envelope{
+    width:min(80%,235px)!important;
+    height:64px!important;
+  }
+  .intro-seal{
+    width:40px!important;
+    height:40px!important;
+  }
+}
