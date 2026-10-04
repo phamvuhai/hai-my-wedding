@@ -159,3 +159,43 @@
 .danger-text{color:var(--danger)!important}
 @media(max-width:1050px){.content-language-grid{grid-template-columns:1fr}.guest-admin-grid{grid-template-columns:1fr}}
 @media(max-width:720px){.invite-link-row{grid-template-columns:1fr 1fr}.invite-link-row input{grid-column:1/-1}}
+
+
+/* Guest management v2 */
+.guest-toolbar-head{align-items:flex-end}
+.guest-toolbar-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.file-btn{position:relative;display:inline-flex;align-items:center;justify-content:center}
+.file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.guest-filters{display:grid;grid-template-columns:minmax(220px,1.3fr) repeat(3,minmax(140px,.7fr));gap:10px}
+.guest-bulk-bar{display:grid;grid-template-columns:auto minmax(150px,.65fr) auto auto auto;gap:8px;align-items:center;margin-bottom:12px;padding:10px;border:1px solid var(--line);border-radius:12px;background:#faf8f6}
+.guest-bulk-bar .check{white-space:nowrap}
+.guest-select{align-self:flex-start;margin-top:2px}
+.guest-select input{width:auto}
+.guest-card-main{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start}
+.guest-card-copy{min-width:0}
+.guest-status-line{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.guest-csv-preview-wrap{margin-top:14px}
+.guest-csv-preview{min-width:1250px}
+.guest-csv-preview th:nth-child(2){min-width:190px}
+.guest-csv-preview th:nth-child(3){min-width:150px}
+.guest-csv-preview th:nth-child(4){min-width:130px}
+.guest-csv-preview th:nth-child(6){min-width:210px}
+.guest-csv-preview td{padding:8px}
+.guest-csv-preview input,.guest-csv-preview select{min-width:0;padding:8px 9px;border-radius:8px;font-size:.78rem}
+.csv-row-error{background:#fff8f7}
+.csv-row-error td:first-child{box-shadow:inset 3px 0 0 var(--danger)}
+@media(max-width:1150px){
+  .guest-filters{grid-template-columns:1fr 1fr}
+  .guest-bulk-bar{grid-template-columns:1fr 1fr 1fr}
+  .guest-bulk-bar .check{grid-column:1/-1}
+}
+@media(max-width:720px){
+  .guest-toolbar-head{align-items:flex-start}
+  .guest-toolbar-actions{width:100%;justify-content:flex-start}
+  .guest-toolbar-actions .btn{flex:1 1 auto}
+  .guest-filters{grid-template-columns:1fr}
+  .guest-bulk-bar{grid-template-columns:1fr 1fr}
+  .guest-bulk-bar .check,.guest-bulk-bar select{grid-column:1/-1}
+  .guest-card-main{grid-template-columns:auto 1fr}
+  .guest-card-main>.status-pill{grid-column:2}
+}
