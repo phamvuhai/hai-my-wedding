@@ -189,7 +189,22 @@
               <form id="guestForm" class="guest-form">
                 <input id="guestEditId" type="hidden">
                 <label>Tên khách<input id="guestName" maxlength="120" required placeholder="Nguyễn Văn A"></label>
+                <label>Tên hiển thị trên thiệp<input id="guestDisplayName" maxlength="160" placeholder="Anh A / Gia đình Anh A"></label>
+                <label>Người đi cùng<input id="guestCompanion" maxlength="160" placeholder="Chị Trần Thị B"></label>
                 <label>Số điện thoại<input id="guestPhone" maxlength="40" placeholder="09xx xxx xxx"></label>
+                <label>Nhóm khách
+                  <select id="guestSide">
+                    <option value="friend" selected>Bạn bè</option>
+                    <option value="colleague">Đồng nghiệp</option>
+                    <option value="family">Gia đình</option>
+                    <option value="groom">Nhà trai</option>
+                    <option value="bride">Nhà gái</option>
+                    <option value="other">Khác</option>
+                  </select>
+                </label>
+                <label>Ngôn ngữ thiệp
+                  <select id="guestLanguage"><option value="vi" selected>Tiếng Việt</option><option value="en">English</option><option value="ja">日本語</option></select>
+                </label>
                 <label>Sự kiện
                   <select id="guestEvent"><option value="bride">Nhà gái</option><option value="groom">Nhà trai</option><option value="both" selected>Cả hai</option></select>
                 </label>
