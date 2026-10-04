@@ -99,6 +99,12 @@
 
   openButton.addEventListener('click', openInvitation);
 
+  // Some browsers apply the native fragment scroll late, after scripts have already run.
+  // Keep the covered page at the top until the invitation has actually opened.
+  addEventListener('load', () => {
+    if (!invitationOpened && pendingHash) goTop('auto');
+  }, { once: true });
+
   // Browser Back/Forward and in-page anchor navigation keep working after the intro.
   // Before opening, remember the requested section but keep the covered page at the top.
   addEventListener('hashchange', () => {
