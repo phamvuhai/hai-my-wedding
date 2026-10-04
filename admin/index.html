@@ -147,10 +147,47 @@
 
         <section id="guestsTab" class="tab-panel hidden">
           <div id="guestStats" class="stats"></div>
+
+          <section class="panel guest-toolbar-panel">
+            <div class="panel-head guest-toolbar-head">
+              <div>
+                <p class="eyebrow">GUEST MANAGEMENT</p>
+                <h3>Khách mời</h3>
+              </div>
+              <div class="guest-toolbar-actions">
+                <button id="downloadGuestTemplateBtn" class="btn ghost" type="button">CSV template</button>
+                <label class="btn ghost file-btn">Import CSV<input id="guestCsvInput" type="file" accept=".csv,text/csv"></label>
+                <button id="exportGuestsBtn" class="btn ghost" type="button">Export CSV</button>
+              </div>
+            </div>
+            <div class="guest-filters">
+              <input id="guestSearch" type="search" placeholder="Tìm tên / số điện thoại">
+              <select id="guestEventFilter">
+                <option value="all">Tất cả sự kiện</option>
+                <option value="bride">Nhà gái</option>
+                <option value="groom">Nhà trai</option>
+                <option value="both">Cả hai</option>
+              </select>
+              <select id="guestRsvpFilter">
+                <option value="all">Tất cả RSVP</option>
+                <option value="pending">Chưa phản hồi</option>
+                <option value="yes">Có tham dự</option>
+                <option value="no">Không tham dự</option>
+                <option value="maybe">Chưa chắc</option>
+              </select>
+              <select id="guestActiveFilter">
+                <option value="all">Tất cả link</option>
+                <option value="active">Đang hoạt động</option>
+                <option value="disabled">Đã tắt</option>
+              </select>
+            </div>
+          </section>
+
           <div class="dashboard-grid guest-admin-grid">
             <section class="panel">
               <div class="panel-head"><div><p class="eyebrow">PERSONAL INVITATION</p><h3>Tạo khách mời</h3></div></div>
               <form id="guestForm" class="guest-form">
+                <input id="guestEditId" type="hidden">
                 <label>Tên khách<input id="guestName" maxlength="120" required placeholder="Nguyễn Văn A"></label>
                 <label>Số điện thoại<input id="guestPhone" maxlength="40" placeholder="09xx xxx xxx"></label>
                 <label>Sự kiện
@@ -158,16 +195,49 @@
                 </label>
                 <label>Số khách tối đa<input id="guestMax" type="number" min="1" max="10" value="1"></label>
                 <label>Ghi chú nội bộ<textarea id="guestNote" rows="3" maxlength="1000"></textarea></label>
-                <button class="btn primary" type="submit">Tạo link thiệp</button>
+                <div class="inline-actions">
+                  <button id="guestSaveBtn" class="btn primary" type="submit">Tạo link thiệp</button>
+                  <button id="guestCancelEditBtn" class="btn ghost hidden" type="button">Hủy chỉnh sửa</button>
+                </div>
                 <p id="guestFormStatus" class="status"></p>
               </form>
             </section>
+
             <section class="panel">
               <div class="panel-head"><div><p class="eyebrow">INVITE LINKS</p><h3>Danh sách khách</h3></div></div>
-              <input id="guestSearch" type="search" placeholder="Tìm tên / số điện thoại">
+              <div class="guest-bulk-bar">
+                <label class="check"><input id="guestSelectAll" type="checkbox"> Chọn tất cả</label>
+                <select id="guestBulkEvent">
+                  <option value="">Đổi sự kiện...</option>
+                  <option value="bride">Nhà gái</option>
+                  <option value="groom">Nhà trai</option>
+                  <option value="both">Cả hai</option>
+                </select>
+                <button id="guestBulkEnable" class="btn ghost compact" type="button">Bật link</button>
+                <button id="guestBulkDisable" class="btn ghost compact" type="button">Tắt link</button>
+                <button id="guestBulkDelete" class="btn ghost compact danger-text" type="button">Xóa</button>
+              </div>
               <div id="guestList" class="guest-list"></div>
             </section>
           </div>
+
+          <section id="csvPreviewPanel" class="panel hidden">
+            <div class="panel-head">
+              <div><p class="eyebrow">CSV IMPORT PREVIEW</p><h3>Kiểm tra trước khi nhập</h3></div>
+              <div class="guest-toolbar-actions">
+                <button id="cancelCsvImportBtn" class="btn ghost" type="button">Hủy</button>
+                <button id="confirmCsvImportBtn" class="btn primary" type="button">Import dữ liệu hợp lệ</button>
+              </div>
+            </div>
+            <p class="muted">Bạn có thể sửa trực tiếp dữ liệu trước khi import. Với khách trùng, chọn Skip / Update / New.</p>
+            <div class="table-wrap guest-csv-preview-wrap">
+              <table class="guest-csv-preview">
+                <thead><tr><th>#</th><th>Tên</th><th>Điện thoại</th><th>Sự kiện</th><th>Max</th><th>Ghi chú</th><th>Trùng</th><th>Action</th><th>Trạng thái</th></tr></thead>
+                <tbody id="guestCsvPreviewBody"></tbody>
+              </table>
+            </div>
+            <p id="guestCsvStatus" class="status"></p>
+          </section>
         </section>
 
         <section id="albumTab" class="tab-panel hidden">
