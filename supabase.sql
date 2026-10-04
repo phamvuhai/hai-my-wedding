@@ -468,3 +468,88 @@ insert into public.site_content(key,value_vi,value_en,value_ja) values
 ('rsvp.subtitle','Phản hồi của bạn giúp chúng tôi chuẩn bị chu đáo hơn cho ngày đặc biệt này.','Your response helps us prepare thoughtfully for our special day.','ご出欠をお知らせいただけると、当日の準備に大変助かります。'),
 ('footer.thanks','Cảm ơn bạn đã trở thành một phần trong câu chuyện của chúng tôi.','Thank you for being part of our story.','私たちの物語の一部になってくださり、ありがとうございます。')
 on conflict (key) do nothing;
+
+
+-- =========================================================
+-- Personalized invitation access tracking
+-- =========================================================
+alter table public.guest_invites
+  add column if not exists display_name text,
+  add column if not exists companion_name text,
+  add column if not exists side text not null default 'friend',
+  add column if not exists preferred_language text not null default 'vi',
+  add column if not exists sent_at timestamptz,
+  add column if not exists opened_at timestamptz,
+  add column if not exists last_opened_at timestamptz,
+  add column if not exists open_count integer not null default 0;
+
+alter table public.guest_invites
+  drop constraint if exists guest_invites_side_check,
+  drop constraint if exists guest_invites_preferred_language_check,
+  drop constraint if exists guest_invites_display_name_check,
+  drop constraint if exists guest_invites_companion_name_check,
+  drop constraint if exists guest_invites_open_count_check;
+
+alter table public.guest_invites
+  add constraint guest_invites_side_check check (side in ('groom','bride','friend','colleague','family','other')),
+  add constraint guest_invites_preferred_language_check check (preferred_language in ('vi','en','ja')),
+  add constraint guest_invites_display_name_check check (display_name is null or char_length(display_name) <= 160),
+  add constraint guest_invites_companion_name_check check (companion_name is null or char_length(companion_name) <= 160),
+  add constraint guest_invites_open_count_check check (open_count >= 0);
+
+drop function if exists public.get_wedding_invite(text);
+create function public.get_wedding_invite(p_token text)
+returns table (
+  id uuid,
+  guest_name text,
+  display_name text,
+  companion_name text,
+  phone text,
+  event_choice text,
+  max_guests integer,
+  side text,
+  preferred_language text,
+  sent_at timestamptz,
+  opened_at timestamptz,
+  open_count integer
+)
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select gi.id, gi.guest_name, gi.display_name, gi.companion_name, gi.phone,
+         gi.event_choice, gi.max_guests, gi.side, gi.preferred_language,
+         gi.sent_at, gi.opened_at, gi.open_count
+  from public.guest_invites gi
+  where gi.token::text = p_token
+    and gi.is_active = true
+  limit 1;
+$$;
+
+revoke all on function public.get_wedding_invite(text) from public;
+grant execute on function public.get_wedding_invite(text) to anon;
+
+create or replace function public.mark_wedding_invite_opened(p_token text)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_updated integer;
+begin
+  update public.guest_invites
+     set opened_at = coalesce(opened_at, now()),
+         last_opened_at = now(),
+         open_count = open_count + 1,
+         updated_at = now()
+   where token::text = p_token
+     and is_active = true;
+  get diagnostics v_updated = row_count;
+  return v_updated = 1;
+end;
+$$;
+
+revoke all on function public.mark_wedding_invite_opened(text) from public;
+grant execute on function public.mark_wedding_invite_opened(text) to anon;
