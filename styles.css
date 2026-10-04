@@ -8146,3 +8146,133 @@ html:lang(vi) .wishes-display em{
     font-size:clamp(2.65rem,11.8vw,3.7rem)!important;
   }
 }
+
+
+/* =========================================
+   V26 — multilingual QA + mobile overflow guards
+   ========================================= */
+
+/* Japanese body copy gets stable native metrics; editorial headings stay Mincho. */
+html:lang(ja) body{
+  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP",system-ui,sans-serif;
+}
+html:lang(ja) .section-heading h2,
+html:lang(ja) .schedule-head h2,
+html:lang(ja) .travel-heading h2,
+html:lang(ja) .rsvp-copy h2,
+html:lang(ja) .event-family h3,
+html:lang(ja) .event-card h4{
+  font-family:"Yu Mincho","Hiragino Mincho ProN","Noto Serif JP",serif!important;
+  line-break:strict!important;
+  word-break:normal!important;
+  overflow-wrap:normal!important;
+}
+html:lang(ja) p,
+html:lang(ja) .btn,
+html:lang(ja) .map-link,
+html:lang(ja) .schedule-kind,
+html:lang(ja) .schedule-status-copy{
+  line-break:strict;
+}
+
+/* Functional schedule badges follow the selected language and never collide with text. */
+.schedule-kind{
+  display:inline-flex!important;
+  align-items:center;
+  max-width:100%;
+  min-height:29px;
+  white-space:nowrap!important;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+html:lang(ja) .schedule-kind{
+  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP",sans-serif!important;
+  letter-spacing:.08em!important;
+}
+
+/* Latin headings must wrap at words, never inside a Vietnamese/English word. */
+html:lang(vi) h1,
+html:lang(vi) h2,
+html:lang(vi) h3,
+html:lang(en) h1,
+html:lang(en) h2,
+html:lang(en) h3{
+  overflow-wrap:normal;
+  word-break:normal;
+  hyphens:none;
+}
+
+/* CTA / labels stay inside rounded cards on narrow phones. */
+.btn,
+.map-link{
+  max-width:100%;
+  box-sizing:border-box;
+}
+.wishes-card .btn,
+.gallery-cta .btn{
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+}
+
+/* The localized display is decorative, but each intended line stays intact. */
+.wishes-display{
+  max-width:100%;
+  overflow:visible;
+}
+html:lang(vi) .wishes-display span,
+html:lang(vi) .wishes-display em,
+html:lang(en) .wishes-display span,
+html:lang(en) .wishes-display em{
+  white-space:nowrap;
+}
+@media(max-width:680px){
+  html:lang(vi) .wishes-display{
+    font-size:clamp(2.35rem,10.7vw,3.45rem)!important;
+    line-height:.92!important;
+    letter-spacing:-.045em!important;
+  }
+  html:lang(en) .wishes-display{
+    font-size:clamp(3rem,14vw,4.35rem)!important;
+  }
+
+  .wishes-card,
+  .guide-card,
+  .event-card,
+  .travel-card,
+  .rsvp-form{
+    min-width:0;
+  }
+
+  .schedule-status-copy{
+    min-width:0;
+    max-width:min(48vw,190px)!important;
+  }
+
+  html:lang(ja) .section-heading h2,
+  html:lang(ja) .schedule-head h2,
+  html:lang(ja) .travel-heading h2,
+  html:lang(ja) .rsvp-copy h2{
+    line-height:1.18!important;
+    letter-spacing:-.02em!important;
+  }
+}
+
+@media(max-width:390px){
+  html:lang(vi) .wishes-display{
+    font-size:clamp(2.15rem,10vw,3rem)!important;
+  }
+  .schedule-kind{
+    font-size:.58rem!important;
+    padding-inline:10px!important;
+  }
+}
+
+/* Footer copy is localized, so give JP/VI room without forcing a single line. */
+.footer p,
+.footer-small{
+  overflow-wrap:normal;
+  word-break:normal;
+}
+html:lang(ja) .footer p{
+  line-break:strict;
+}
