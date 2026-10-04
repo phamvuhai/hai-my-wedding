@@ -51,27 +51,47 @@ form.addEventListener('submit', async (event) => {
 
     if (hasSupabase) {
       const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
-      const { error } = await client.from('rsvp').insert({
-        guest_name: data.name.trim(),
-        phone: data.phone?.trim() || null,
-        attendance: data.attending,
-        guest_count: data.attending === 'no'
-          ? 0
-          : Math.min(data.guest_count, Number(form.dataset.maxGuests || data.guest_count || 1)),
-        event_choice: form.dataset.inviteEvent || data.event_choice || 'both',
-        invite_id: form.dataset.inviteId || null,
-        event_code: 'wedding-2026',
-        message: data.message?.trim() || null
-      });
-      if (error) throw error;
+      const inviteToken = window.WeddingGuest?.token || '';
+      const inviteId = form.dataset.inviteId || '';
+
+      if (inviteToken && inviteId) {
+        const { error } = await client.rpc('submit_wedding_rsvp', {
+          p_token: inviteToken,
+          p_phone: data.phone?.trim() || null,
+          p_attendance: data.attending,
+          p_guest_count: data.guest_count,
+          p_event_choice: form.dataset.inviteEvent || data.event_choice || 'both',
+          p_message: data.message?.trim() || null
+        });
+        if (error) throw error;
+        form.dataset.responseSource = 'invite';
+      } else {
+        const { error } = await client.from('rsvp').insert({
+          guest_name: data.name.trim(),
+          phone: data.phone?.trim() || null,
+          attendance: data.attending,
+          guest_count: data.attending === 'no' ? 0 : Math.min(data.guest_count, 10),
+          event_choice: data.event_choice || 'both',
+          invite_id: null,
+          response_source: 'public',
+          event_code: 'wedding-2026',
+          message: data.message?.trim() || null
+        });
+        if (error) throw error;
+      }
     } else {
       const current = JSON.parse(localStorage.getItem('wedding_rsvps') || '[]');
       current.push(data);
       localStorage.setItem('wedding_rsvps', JSON.stringify(current));
     }
 
-    form.reset();
-    setStatus(tr('rsvp.success', 'Cảm ơn bạn! Hải Phạm và Mỹ Nguyễn đã nhận được xác nhận ❤️'), 'success');
+    if (!form.dataset.inviteId) form.reset();
+    setStatus(
+      form.dataset.inviteId
+        ? tr('rsvp.updated', 'Đã cập nhật phản hồi của bạn ❤️')
+        : tr('rsvp.success', 'Cảm ơn bạn! Hải Phạm và Mỹ Nguyễn đã nhận được xác nhận ❤️'),
+      'success'
+    );
   } catch (err) {
     console.error(err);
     setStatus(tr('rsvp.error', 'Chưa gửi được xác nhận. Vui lòng thử lại hoặc liên hệ trực tiếp với cô dâu/chú rể.'), 'error');
