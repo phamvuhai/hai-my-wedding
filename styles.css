@@ -8892,3 +8892,315 @@ body.invitation-opening .side-note{
     height:40px!important;
   }
 }
+
+
+/* =========================================
+   V29 — cinematic invitation opening
+   ========================================= */
+.intro-card-stage{
+  perspective:1200px!important;
+  transform-style:preserve-3d!important;
+}
+.intro-card{
+  transform-style:preserve-3d!important;
+  will-change:transform,opacity,filter;
+}
+.intro-paper{
+  overflow:visible!important;
+}
+.intro-paper::after{
+  content:"";
+  position:absolute;
+  inset:12% 8% auto;
+  height:58%;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,236,202,.42) 0%,rgba(255,244,229,.18) 40%,transparent 72%);
+  opacity:0;
+  filter:blur(10px);
+  pointer-events:none;
+  z-index:0;
+}
+.intro-photo-polaroid,
+.intro-names,
+.intro-date,
+.personal-invite-copy,
+.intro-invite{
+  will-change:transform,opacity,filter;
+}
+
+/* Envelope top flap */
+.intro-envelope{
+  transform-style:preserve-3d!important;
+  perspective:800px!important;
+  transition:filter .35s ease,transform .45s ease!important;
+}
+.intro-envelope-flap{
+  display:block!important;
+  position:absolute!important;
+  z-index:7!important;
+  left:0!important;
+  right:0!important;
+  top:0!important;
+  height:58%!important;
+  clip-path:polygon(0 0,100% 0,50% 100%)!important;
+  background:linear-gradient(180deg,#8e4549,#713035)!important;
+  transform-origin:50% 0%!important;
+  transform:rotateX(0deg)!important;
+  backface-visibility:hidden!important;
+  box-shadow:0 3px 8px rgba(58,28,27,.12);
+}
+.intro-envelope::before{
+  content:"";
+  position:absolute;
+  z-index:4;
+  inset:-12px -14px;
+  border-radius:24px;
+  border:1px solid rgba(224,181,116,.0);
+  box-shadow:0 0 0 rgba(226,181,116,0);
+  opacity:0;
+  pointer-events:none;
+}
+
+/* Sparkles around the wax seal */
+.intro-spark{
+  position:absolute;
+  z-index:10;
+  left:50%;
+  top:48%;
+  width:7px;
+  height:7px;
+  margin:-3px 0 0 -3px;
+  border-radius:50%;
+  background:#f7dca2;
+  box-shadow:0 0 12px rgba(247,220,162,.9);
+  opacity:0;
+  transform:translate(0,0) scale(.2);
+  pointer-events:none;
+}
+.intro-spark::after{
+  content:"";
+  position:absolute;
+  inset:-4px;
+  border-radius:50%;
+  border:1px solid rgba(247,220,162,.45);
+}
+.intro-spark-a{--sx:-44px;--sy:-36px}
+.intro-spark-b{--sx:48px;--sy:-24px}
+.intro-spark-c{--sx:10px;--sy:50px}
+
+/* Pre-click affordance */
+.invitation-intro.is-ready:not(.is-opening) .intro-envelope{
+  animation:envelopeBreathe 3.2s ease-in-out 1.2s infinite;
+}
+.invitation-intro.is-ready:not(.is-opening) .intro-seal{
+  animation:sealPulse 2.6s ease-in-out 1.25s infinite;
+}
+.invitation-intro.is-ready:not(.is-opening) .intro-open-btn::before{
+  content:"";
+  position:absolute;
+  inset:1px;
+  border-radius:inherit;
+  background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.38) 46%,transparent 70%);
+  transform:translateX(-140%);
+  animation:buttonShimmer 3.4s ease-in-out 1.7s infinite;
+  pointer-events:none;
+}
+@keyframes envelopeBreathe{
+  0%,100%{filter:drop-shadow(0 12px 18px rgba(69,35,33,.18));}
+  50%{filter:drop-shadow(0 17px 24px rgba(101,54,42,.24));}
+}
+@keyframes sealPulse{
+  0%,100%{transform:translate(-50%,-50%) scale(1)}
+  50%{transform:translate(-50%,-50%) scale(1.06)}
+}
+@keyframes buttonShimmer{
+  0%,62%{transform:translateX(-140%);opacity:0}
+  72%{opacity:1}
+  88%,100%{transform:translateX(140%);opacity:0}
+}
+
+/* Click choreography: seal -> flap -> inner card -> portal transition */
+.invitation-intro.is-opening{
+  background:radial-gradient(circle at 50% 46%,rgba(120,74,58,.12),rgba(255,251,247,.96) 42%,rgba(248,241,238,1) 76%)!important;
+}
+.invitation-intro.is-opening .intro-open-btn{
+  animation:none!important;
+  opacity:0!important;
+  transform:translateY(10px) scale(.92)!important;
+  transition:opacity .22s ease,transform .28s ease!important;
+}
+.invitation-intro.is-opening .personal-invite-private,
+.invitation-intro.is-opening .intro-audio-note,
+.invitation-intro.is-opening .intro-save,
+.invitation-intro.is-opening .intro-language{
+  opacity:0!important;
+  transition:opacity .26s ease!important;
+}
+
+/* 0.0-0.45: seal breaks + golden ring */
+.invitation-intro.is-opening .intro-envelope::before{
+  animation:sealRing .48s ease-out .08s both;
+}
+.invitation-intro.is-opening .intro-seal{
+  animation:sealBreak .48s cubic-bezier(.2,.8,.2,1) .08s both!important;
+}
+.invitation-intro.is-opening .intro-spark-a{
+  animation:sparkBurst .62s ease-out .14s both;
+}
+.invitation-intro.is-opening .intro-spark-b{
+  animation:sparkBurst .62s ease-out .19s both;
+}
+.invitation-intro.is-opening .intro-spark-c{
+  animation:sparkBurst .62s ease-out .24s both;
+}
+@keyframes sealRing{
+  0%{opacity:0;border-color:rgba(224,181,116,0);box-shadow:0 0 0 rgba(226,181,116,0);transform:scale(.84)}
+  45%{opacity:1;border-color:rgba(224,181,116,.62);box-shadow:0 0 28px rgba(226,181,116,.28)}
+  100%{opacity:0;border-color:rgba(224,181,116,0);box-shadow:0 0 46px rgba(226,181,116,0);transform:scale(1.12)}
+}
+@keyframes sealBreak{
+  0%{transform:translate(-50%,-50%) scale(1) rotate(0);opacity:1}
+  45%{transform:translate(-50%,-50%) scale(1.12) rotate(-6deg);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(0) rotate(-18deg);opacity:0}
+}
+@keyframes sparkBurst{
+  0%{opacity:0;transform:translate(0,0) scale(.2)}
+  20%{opacity:1}
+  100%{opacity:0;transform:translate(var(--sx),var(--sy)) scale(1)}
+}
+
+/* 0.35-1.05: flap opens */
+.invitation-intro.is-opening .intro-envelope-flap{
+  animation:flapOpen .72s cubic-bezier(.18,.76,.18,1) .34s both!important;
+}
+.invitation-intro.is-opening .intro-envelope-left{
+  animation:envelopeLeftOpen .65s cubic-bezier(.2,.72,.2,1) .42s both!important;
+}
+.invitation-intro.is-opening .intro-envelope-right{
+  animation:envelopeRightOpen .65s cubic-bezier(.2,.72,.2,1) .42s both!important;
+}
+@keyframes flapOpen{
+  0%{transform:rotateX(0deg)}
+  100%{transform:rotateX(-155deg) translateY(-2px);filter:brightness(1.08)}
+}
+@keyframes envelopeLeftOpen{
+  0%{transform:rotateY(0deg)}
+  100%{transform:rotateY(-9deg) translateX(-4px)}
+}
+@keyframes envelopeRightOpen{
+  0%{transform:rotateY(0deg)}
+  100%{transform:rotateY(9deg) translateX(4px)}
+}
+
+/* 0.8-1.7: inner invitation lifts out */
+.invitation-intro.is-opening .intro-photo-polaroid{
+  animation:photoLift 1.05s cubic-bezier(.16,.84,.24,1) .72s both!important;
+}
+.invitation-intro.is-opening .intro-names{
+  animation:copyLift .9s cubic-bezier(.16,.84,.24,1) .86s both!important;
+}
+.invitation-intro.is-opening .intro-date{
+  animation:copyLift .9s cubic-bezier(.16,.84,.24,1) .94s both!important;
+}
+.invitation-intro.is-opening .personal-invite-copy{
+  animation:upperCopyLift .88s cubic-bezier(.16,.84,.24,1) .72s both!important;
+}
+.invitation-intro.is-opening .intro-invite{
+  animation:upperCopyLift .88s cubic-bezier(.16,.84,.24,1) .66s both!important;
+}
+.invitation-intro.is-opening .intro-paper::after{
+  animation:paperGlow 1.45s ease .7s both!important;
+}
+@keyframes photoLift{
+  0%{transform:translateY(0) scale(1);filter:blur(0);box-shadow:0 18px 44px rgba(82,58,47,.16)}
+  55%{transform:translateY(-48px) scale(1.035);box-shadow:0 28px 60px rgba(82,58,47,.24)}
+  100%{transform:translateY(-70px) scale(1.06);filter:blur(0);box-shadow:0 34px 76px rgba(82,58,47,.26)}
+}
+@keyframes copyLift{
+  0%{transform:translateY(0);opacity:1}
+  100%{transform:translateY(-30px);opacity:1}
+}
+@keyframes upperCopyLift{
+  0%{transform:translateY(0);opacity:1}
+  100%{transform:translateY(-18px);opacity:1}
+}
+@keyframes paperGlow{
+  0%{opacity:0;transform:scale(.9)}
+  55%{opacity:1;transform:scale(1.06)}
+  100%{opacity:.65;transform:scale(1.14)}
+}
+
+/* 1.55-2.58: card becomes a portal and dissolves into the site */
+.invitation-intro.is-opening .intro-card{
+  animation:cardPortal 1.02s cubic-bezier(.2,.78,.2,1) 1.54s both!important;
+}
+.invitation-intro.is-opening .intro-atmosphere{
+  animation:atmosphereBloom 1s ease 1.45s both!important;
+}
+@keyframes cardPortal{
+  0%{transform:translateY(0) rotateX(0) scale(1);opacity:1;filter:blur(0)}
+  55%{transform:translateY(-12px) rotateX(0) scale(1.06);opacity:1;filter:blur(0)}
+  100%{transform:translateY(-24px) rotateX(0) scale(1.18);opacity:0;filter:blur(10px)}
+}
+@keyframes atmosphereBloom{
+  0%{opacity:1;transform:scale(1)}
+  100%{opacity:0;transform:scale(1.08)}
+}
+
+/* Desktop adds a touch more depth. */
+@media(min-width:900px) and (pointer:fine){
+  .invitation-intro.is-opening .intro-card-stage{
+    animation:stageDepth 1.35s cubic-bezier(.18,.8,.2,1) .75s both;
+  }
+  @keyframes stageDepth{
+    0%{transform:rotateX(0deg) translateZ(0)}
+    50%{transform:rotateX(2.2deg) translateZ(24px)}
+    100%{transform:rotateX(0deg) translateZ(42px)}
+  }
+}
+
+/* Mobile keeps the wow without heavy 3D. */
+@media(max-width:760px){
+  .invitation-intro.is-opening .intro-photo-polaroid{
+    animation-name:photoLiftMobile!important;
+  }
+  @keyframes photoLiftMobile{
+    0%{transform:translateY(0) scale(1);box-shadow:0 18px 44px rgba(82,58,47,.16)}
+    60%{transform:translateY(-28px) scale(1.025);box-shadow:0 24px 52px rgba(82,58,47,.22)}
+    100%{transform:translateY(-42px) scale(1.045);box-shadow:0 28px 60px rgba(82,58,47,.24)}
+  }
+  .invitation-intro.is-opening .intro-card{
+    animation-name:cardPortalMobile!important;
+  }
+  @keyframes cardPortalMobile{
+    0%{transform:translateY(0) scale(1);opacity:1;filter:blur(0)}
+    58%{transform:translateY(-8px) scale(1.035);opacity:1;filter:blur(0)}
+    100%{transform:translateY(-14px) scale(1.09);opacity:0;filter:blur(7px)}
+  }
+}
+
+/* Respect reduced motion. */
+@media(prefers-reduced-motion:reduce){
+  .invitation-intro.is-ready:not(.is-opening) .intro-envelope,
+  .invitation-intro.is-ready:not(.is-opening) .intro-seal,
+  .invitation-intro.is-ready:not(.is-opening) .intro-open-btn::before{
+    animation:none!important;
+  }
+  .invitation-intro.is-opening .intro-seal,
+  .invitation-intro.is-opening .intro-envelope-flap,
+  .invitation-intro.is-opening .intro-envelope-left,
+  .invitation-intro.is-opening .intro-envelope-right,
+  .invitation-intro.is-opening .intro-photo-polaroid,
+  .invitation-intro.is-opening .intro-names,
+  .invitation-intro.is-opening .intro-date,
+  .invitation-intro.is-opening .personal-invite-copy,
+  .invitation-intro.is-opening .intro-invite,
+  .invitation-intro.is-opening .intro-card,
+  .invitation-intro.is-opening .intro-atmosphere,
+  .invitation-intro.is-opening .intro-card-stage,
+  .invitation-intro.is-opening .intro-paper::after,
+  .invitation-intro.is-opening .intro-spark{
+    animation:none!important;
+    transition:opacity .35s ease!important;
+  }
+}
