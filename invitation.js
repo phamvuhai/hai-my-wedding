@@ -132,7 +132,7 @@
     const lang = window.WeddingI18n?.language || 'vi';
     window.WeddingMusic?.start?.(lang);
 
-    setTimeout(finishOpening, 1680);
+    setTimeout(finishOpening, 2580);
   }
 
   function bindEntryInteractions() {
