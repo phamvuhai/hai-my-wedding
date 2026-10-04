@@ -4935,10 +4935,10 @@ html[data-motion="minimal"] .motion-marquee .marquee-track{
 /* Exact measured-distance loop. No percentage math and no dependency on clone width. */
 @keyframes marqueePixelLeft{
   from{transform:translate3d(0,0,0)}
-  to{transform:translate3d(calc(-1 * var(--marquee-distance)),0,0)}
+  to{transform:translate3d(var(--marquee-distance-negative),0,0)}
 }
 @keyframes marqueePixelRight{
-  from{transform:translate3d(calc(-1 * var(--marquee-distance)),0,0)}
+  from{transform:translate3d(var(--marquee-distance-negative),0,0)}
   to{transform:translate3d(0,0,0)}
 }
 
