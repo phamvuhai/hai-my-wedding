@@ -4332,3 +4332,346 @@ body.photo-lightbox-open{
     font-size:clamp(1.32rem,5.2vw,1.85rem);
   }
 }
+
+
+/* =========================================
+   V11 — Wedding Events responsive polish
+   ========================================= */
+.events{
+  --event-line-top:360px;
+  --event-line-height:720px;
+  position:relative;
+  overflow:hidden;
+  padding-top:116px;
+  padding-bottom:132px;
+}
+.events .section-heading{
+  position:relative;
+  z-index:4;
+  max-width:min(780px,90vw);
+  margin-bottom:clamp(88px,8vw,122px);
+}
+.events .section-heading h2{
+  max-width:100%;
+  font-size:clamp(3.2rem,5.2vw,5.35rem);
+  line-height:.98;
+  text-wrap:balance;
+}
+.events .section-heading > p:last-child{
+  position:relative;
+  z-index:2;
+  max-width:620px;
+  margin:24px auto 0;
+  line-height:1.72;
+  text-wrap:balance;
+}
+
+/* Timeline is measured by JS from the actual rendered card position. */
+.events::before{
+  content:"";
+  position:absolute;
+  z-index:1;
+  left:50%;
+  top:var(--event-line-top);
+  bottom:auto;
+  width:1px;
+  height:var(--event-line-height);
+  background:linear-gradient(to bottom,rgba(208,170,142,.34),rgba(155,109,85,.10));
+  transform:translateX(-50%);
+}
+.events::after{
+  content:"";
+  position:absolute;
+  z-index:1;
+  left:50%;
+  top:var(--event-line-top);
+  width:2px;
+  height:calc(var(--event-line-height) * var(--event-progress,0));
+  background:linear-gradient(to bottom,var(--accent),rgba(155,109,85,.26));
+  transform:translateX(-50%);
+  transform-origin:top;
+  transition:height .14s linear;
+}
+.event-families{
+  position:relative;
+  z-index:2;
+}
+.event-families::before{
+  content:"";
+  position:absolute;
+  z-index:4;
+  left:50%;
+  top:-39px;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  border:2px solid rgba(208,170,142,.52);
+  background:#F7EFE9;
+  box-shadow:0 0 0 8px rgba(208,170,142,.08);
+  transform:translateX(-50%);
+}
+
+/* Balanced cards and more editorial whitespace. */
+.event-family{
+  width:min(86%,930px);
+  overflow:visible;
+}
+.family-header{
+  align-items:flex-end;
+}
+.family-date{
+  align-self:flex-end;
+  margin-bottom:2px;
+  white-space:nowrap;
+}
+.event-bg-date{
+  opacity:.72;
+  transform:translate3d(0,var(--event-date-shift,0px),0);
+  transition:transform .18s linear;
+}
+html[data-motion="wow"] .event-bg-date{
+  animation:none;
+  transform:translate3d(0,var(--event-date-shift,0px),0);
+}
+
+/* Replayable staggered reveal inside each family block. */
+.motion-ready .event-family .family-header,
+.motion-ready .event-family .event-card{
+  opacity:0;
+  transition:
+    opacity .72s cubic-bezier(.18,.8,.2,1),
+    translate .88s cubic-bezier(.18,.8,.2,1);
+}
+.motion-ready .event-family.bride-side .family-header,
+.motion-ready .event-family.bride-side .event-card{
+  translate:-26px 0;
+}
+.motion-ready .event-family.groom-side .family-header,
+.motion-ready .event-family.groom-side .event-card{
+  translate:26px 0;
+}
+.motion-ready .event-family.motion-in .family-header,
+.motion-ready .event-family.motion-in .event-card{
+  opacity:1;
+  translate:0 0;
+}
+.motion-ready .event-family.motion-in .family-header{transition-delay:.06s}
+.motion-ready .event-family.motion-in .event-card:nth-child(1){transition-delay:.17s}
+.motion-ready .event-family.motion-in .event-card:nth-child(2){transition-delay:.29s}
+
+/* A clearer map action without adding visual noise. */
+.events .map-link{
+  min-height:40px;
+  padding:9px 13px;
+  border:1px solid rgba(139,102,84,.22);
+  border-radius:999px;
+  background:rgba(255,253,252,.64);
+  box-shadow:0 5px 18px rgba(70,49,39,.04);
+  line-height:1;
+  text-decoration:none;
+}
+.events .map-link:hover{
+  border-color:rgba(139,102,84,.46);
+  background:#FFFDFC;
+  box-shadow:0 10px 24px rgba(70,49,39,.08);
+}
+
+/* Japanese typography gets a little more breathing room. */
+html:lang(ja) .events .section-heading h2{
+  font-size:clamp(3rem,4.9vw,5rem);
+  letter-spacing:.01em;
+}
+html:lang(ja) .events .section-heading > p:last-child{
+  max-width:660px;
+  line-height:1.9;
+}
+html:lang(ja) .event-card h4{
+  line-height:1.18;
+}
+
+/* Tablet / small-laptop landscape: dedicated layout instead of half-desktop rules. */
+@media(min-width:901px) and (max-width:1366px){
+  .events{
+    padding-top:96px;
+    padding-bottom:142px;
+  }
+  .events .section-heading{
+    max-width:min(720px,82vw);
+    margin-bottom:96px;
+  }
+  .events .section-heading h2{
+    font-size:clamp(3.25rem,4.7vw,4.55rem);
+  }
+  html:lang(ja) .events .section-heading h2{
+    font-size:clamp(3.1rem,4.5vw,4.35rem);
+  }
+  .events .section-heading > p:last-child{
+    max-width:590px;
+    margin-top:22px;
+  }
+
+  .event-families{gap:48px}
+  .event-family{width:min(90%,920px)}
+  .family-header{
+    padding:26px 26px 20px;
+    gap:16px;
+  }
+  .family-header h3{
+    font-size:clamp(2rem,3.1vw,2.35rem);
+  }
+  .family-date{
+    font-size:.72rem;
+    letter-spacing:.12em;
+  }
+  .event-card{
+    min-height:300px;
+    padding:24px 24px 25px;
+  }
+  .event-topline{margin-bottom:22px}
+  .event-card h4{
+    font-size:clamp(1.5rem,2.25vw,1.95rem);
+  }
+  .event-date{font-size:.82rem}
+  .event-meta{
+    font-size:.87rem;
+    line-height:1.62;
+  }
+  .event-actions{padding-top:22px}
+  .event-bg-date{
+    top:-52px;
+    font-size:clamp(9rem,15vw,12.2rem);
+    opacity:.58;
+  }
+  .bride-side .event-bg-date{right:20px}
+  .groom-side .event-bg-date{left:20px}
+
+  /* One-line tablet music controller; no large metadata block over the card. */
+  .music-dock{
+    right:14px;
+    bottom:calc(14px + env(safe-area-inset-bottom));
+    width:min(270px,calc(100vw - 28px));
+    border-radius:16px;
+  }
+  .music-toggle{
+    min-height:50px;
+    grid-template-columns:34px minmax(0,1fr) 26px;
+    gap:9px;
+    padding:7px 10px;
+  }
+  .music-disc{
+    width:32px;
+    height:32px;
+  }
+  .music-copy{
+    display:block;
+    min-width:0;
+  }
+  .music-copy small,
+  .music-copy em{
+    display:none;
+  }
+  .music-copy strong{
+    display:block;
+    margin:0;
+    font-size:.78rem;
+    line-height:1.2;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .music-state{
+    width:25px;
+    height:25px;
+  }
+}
+
+/* Portrait tablet/mobile: no center timeline; cards own the rhythm. */
+@media(max-width:900px){
+  .events{
+    padding-top:82px;
+    padding-bottom:104px;
+  }
+  .events::before,
+  .events::after,
+  .event-families::before{
+    display:none;
+  }
+  .events .section-heading{
+    margin-bottom:54px;
+  }
+  .events .section-heading h2,
+  html:lang(ja) .events .section-heading h2{
+    font-size:clamp(2.7rem,8vw,4rem);
+  }
+  .events .section-heading > p:last-child{
+    max-width:560px;
+    margin-top:18px;
+  }
+  .event-family{width:100%}
+  .event-bg-date{
+    top:-28px;
+    font-size:clamp(6.4rem,20vw,9rem);
+  }
+}
+@media(max-width:600px){
+  .events{
+    padding-top:72px;
+    padding-bottom:94px;
+  }
+  .events .section-heading{
+    margin-bottom:42px;
+  }
+  .events .section-heading h2,
+  html:lang(ja) .events .section-heading h2{
+    font-size:clamp(2.25rem,11vw,3.25rem);
+  }
+  .family-header{
+    flex-wrap:wrap;
+    align-items:flex-start;
+  }
+  .family-date{
+    width:100%;
+    margin-top:8px;
+    align-self:auto;
+  }
+  .event-bg-date{
+    right:8px!important;
+    left:auto!important;
+    top:-16px;
+    font-size:6.2rem;
+    opacity:.42;
+  }
+  .motion-ready .event-family.bride-side .family-header,
+  .motion-ready .event-family.bride-side .event-card,
+  .motion-ready .event-family.groom-side .family-header,
+  .motion-ready .event-family.groom-side .event-card{
+    translate:0 18px;
+  }
+}
+
+/* Hover polish is only for devices that truly support hover. */
+@media(hover:hover) and (pointer:fine){
+  .events .event-card{
+    transition:
+      transform .3s ease,
+      background .3s ease,
+      box-shadow .3s ease;
+  }
+  .events .event-card:hover{
+    transform:translateY(-4px);
+    box-shadow:inset 0 0 0 1px rgba(208,170,142,.18);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .motion-ready .event-family .family-header,
+  .motion-ready .event-family .event-card{
+    opacity:1!important;
+    translate:0 0!important;
+    transition:none!important;
+  }
+  .event-bg-date{
+    transform:none!important;
+    transition:none!important;
+  }
+}
