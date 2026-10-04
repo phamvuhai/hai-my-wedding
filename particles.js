@@ -6,10 +6,10 @@
   const mobile = matchMedia('(max-width: 760px)').matches;
 
   const symbols = [
-    {char:'🌸', cls:'petal', weight:5},
-    {char:'🤍', cls:'heart-white', weight:3},
-    {char:'❤️', cls:'heart-red', weight:1},
-    {char:'❄️', cls:'snow', weight:1}
+    {char:'🌸', cls:'petal', weight:11},
+    {char:'✨', cls:'sparkle', weight:5},
+    {char:'❤️', cls:'heart-red', weight:2},
+    {char:'❄️', cls:'snow', weight:2}
   ];
 
   function pickSymbol() {
