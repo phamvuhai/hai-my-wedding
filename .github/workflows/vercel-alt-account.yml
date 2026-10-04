@@ -1,0 +1,55 @@
+name: Deploy to alternate Vercel account
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: vercel-alt-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN_ALT }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID_ALT }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_ALT }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check alternate Vercel credentials
+        id: credentials
+        shell: bash
+        run: |
+          if [ -z "$VERCEL_TOKEN" ] || [ -z "$VERCEL_ORG_ID" ] || [ -z "$VERCEL_PROJECT_ID" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "Alternate Vercel account is not configured yet. Add VERCEL_TOKEN_ALT, VERCEL_ORG_ID_ALT and VERCEL_PROJECT_ID_ALT as repository secrets."
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install Vercel CLI
+        if: steps.credentials.outputs.ready == 'true'
+        run: npm install --global vercel
+
+      - name: Link alternate Vercel project
+        if: steps.credentials.outputs.ready == 'true'
+        shell: bash
+        run: |
+          mkdir -p .vercel
+          printf '{"orgId":"%s","projectId":"%s"}\n' "$VERCEL_ORG_ID" "$VERCEL_PROJECT_ID" > .vercel/project.json
+
+      - name: Pull production configuration
+        if: steps.credentials.outputs.ready == 'true'
+        run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+
+      - name: Build
+        if: steps.credentials.outputs.ready == 'true'
+        run: vercel build --prod --token="$VERCEL_TOKEN"
+
+      - name: Deploy production
+        if: steps.credentials.outputs.ready == 'true'
+        run: vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
