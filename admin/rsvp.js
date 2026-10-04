@@ -20,6 +20,11 @@
   const editMessage = document.getElementById('rsvpEditMessage');
   const editMeta = document.getElementById('rsvpEditMeta');
   const editStatus = document.getElementById('rsvpEditStatus');
+  const deleteModal = document.getElementById('rsvpDeleteModal');
+  const deleteId = document.getElementById('rsvpDeleteId');
+  const deleteMessage = document.getElementById('rsvpDeleteMessage');
+  const deleteStatus = document.getElementById('rsvpDeleteStatus');
+  const deleteConfirm = document.getElementById('rsvpDeleteConfirm');
 
   document.addEventListener('admin:rsvp', load);
   search?.addEventListener('input', render);
@@ -30,6 +35,8 @@
   body?.addEventListener('click', onTableClick);
   editForm?.addEventListener('submit', saveEdit);
   document.querySelectorAll('[data-rsvp-close]').forEach(el => el.addEventListener('click', closeEdit));
+  document.querySelectorAll('[data-rsvp-delete-close]').forEach(el => el.addEventListener('click', closeDelete));
+  deleteConfirm?.addEventListener('click', confirmDelete);
 
   function sourceLabel(source) {
     if (source === 'invite') return 'Được mời';
@@ -126,16 +133,27 @@
         '<td>' + eventLabel + '</td>' +
         '<td>' + A.esc(r.message || '—') + '</td>' +
         '<td>' + new Date(r.created_at).toLocaleString('vi-VN') + '</td>' +
-        '<td><button class="btn ghost compact" type="button" data-rsvp-edit="' + A.esc(r.id) + '">Edit</button></td>' +
+        '<td><div class="rsvp-row-actions">' +
+          '<button class="btn ghost compact" type="button" data-rsvp-edit="' + A.esc(r.id) + '">Edit</button>' +
+          '<button class="btn ghost compact danger-text" type="button" data-rsvp-delete="' + A.esc(r.id) + '">Xóa</button>' +
+        '</div></td>' +
         '</tr>';
     }).join('') : '<tr><td colspan="9" class="empty-cell">Không có RSVP phù hợp bộ lọc.</td></tr>';
   }
 
   function onTableClick(event) {
-    const button = event.target.closest('[data-rsvp-edit]');
-    if (!button) return;
-    const row = (A.rsvps || []).find(r => String(r.id) === String(button.dataset.rsvpEdit));
-    if (row) openEdit(row);
+    const editButton = event.target.closest('[data-rsvp-edit]');
+    if (editButton) {
+      const row = (A.rsvps || []).find(r => String(r.id) === String(editButton.dataset.rsvpEdit));
+      if (row) openEdit(row);
+      return;
+    }
+
+    const deleteButton = event.target.closest('[data-rsvp-delete]');
+    if (deleteButton) {
+      const row = (A.rsvps || []).find(r => String(r.id) === String(deleteButton.dataset.rsvpDelete));
+      if (row) openDelete(row);
+    }
   }
 
   function openEdit(row) {
@@ -161,6 +179,48 @@
     modal?.classList.add('hidden');
     modal?.setAttribute('aria-hidden','true');
     document.body.classList.remove('admin-modal-open');
+  }
+
+  function openDelete(row) {
+    if (!deleteModal) return;
+    deleteId.value = row.id;
+    deleteMessage.textContent = `Bạn có chắc muốn xóa RSVP của “${row.guest_name || 'khách này'}” không? Hành động này không thể hoàn tác.`;
+    deleteStatus.textContent = '';
+    deleteModal.classList.remove('hidden');
+    deleteModal.setAttribute('aria-hidden','false');
+    document.body.classList.add('admin-modal-open');
+  }
+
+  function closeDelete() {
+    deleteModal?.classList.add('hidden');
+    deleteModal?.setAttribute('aria-hidden','true');
+    document.body.classList.remove('admin-modal-open');
+  }
+
+  async function confirmDelete() {
+    const id = deleteId?.value;
+    if (!id) return;
+
+    deleteStatus.textContent = 'Đang xóa...';
+    if (deleteConfirm) deleteConfirm.disabled = true;
+
+    const { error } = await db
+      .from('rsvp')
+      .delete()
+      .eq('id', id);
+
+    if (deleteConfirm) deleteConfirm.disabled = false;
+
+    if (error) {
+      console.error(error);
+      deleteStatus.textContent = 'Không thể xóa RSVP.';
+      return;
+    }
+
+    A.rsvps = (A.rsvps || []).filter(r => String(r.id) !== String(id));
+    deleteStatus.textContent = 'Đã xóa RSVP.';
+    render();
+    setTimeout(closeDelete, 420);
   }
 
   async function saveEdit(event) {
