@@ -179,7 +179,7 @@
 
     const nextPath = routeFor(lang);
     if (location.pathname !== nextPath) {
-      history.replaceState({}, "", nextPath + location.search + location.hash);
+      history.replaceState(history.state || {}, "", nextPath + location.search + location.hash);
     }
 
     apply();
