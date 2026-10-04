@@ -9487,3 +9487,16 @@ body.invitation-opening .hero-fall-layer{
     display:none!important;
   }
 }
+
+
+/* V32 — refine selected wedding particles */
+.hero-fall-item.sparkle{
+  filter:drop-shadow(0 0 8px rgba(255,226,155,.35));
+  opacity:calc(var(--fall-opacity) * .92);
+}
+.hero-fall-item.heart-red{
+  opacity:calc(var(--fall-opacity) * .72);
+}
+.hero-fall-item.snow{
+  opacity:calc(var(--fall-opacity) * .78);
+}
