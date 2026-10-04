@@ -44,14 +44,126 @@ function tr(key, fallback = '') {
   return window.WeddingI18n?.t(key) || fallback || key;
 }
 
+function initEventScrollStory() {
+  const section = document.getElementById('events');
+  const items = [...document.querySelectorAll('[data-event-item]')];
+  const status = document.getElementById('eventScrollStatus');
+  const statusText = document.getElementById('eventScrollStatusText');
+  const progress = document.getElementById('eventScrollProgress');
+  if (!section || !items.length || !status || !statusText || !progress) return;
+
+  let frame = 0;
+  const update = () => {
+    frame = 0;
+    const center = innerHeight * .48;
+    const sectionRect = section.getBoundingClientRect();
+    const rawProgress = (center - sectionRect.top) / Math.max(1, sectionRect.height);
+    const sectionProgress = Math.max(0, Math.min(1, rawProgress));
+    progress.style.transform = `scaleX(${sectionProgress})`;
+    section.style.setProperty('--event-scroll-progress', sectionProgress.toFixed(3));
+
+    let active = items[0];
+    let best = Infinity;
+    items.forEach((item) => {
+      const rect = item.getBoundingClientRect();
+      const itemCenter = rect.top + rect.height / 2;
+      const distance = Math.abs(itemCenter - center);
+      if (distance < best) {
+        best = distance;
+        active = item;
+      }
+      item.classList.toggle('is-past', itemCenter < center - 44);
+    });
+
+    items.forEach(item => item.classList.toggle('is-current', item === active));
+    document.querySelectorAll('[data-event-day]').forEach(day => {
+      day.classList.toggle('is-current-day', day.contains(active));
+    });
+
+    const day = active.closest('[data-event-day]');
+    const date = day?.querySelector('.family-date')?.textContent?.trim() || '';
+    const family = day?.querySelector('.family-title-row h3')?.textContent?.trim() || '';
+    const time = active.querySelector('.event-date strong')?.textContent?.trim() || '';
+    const title = active.querySelector('h4')?.textContent?.trim() || '';
+    statusText.textContent = [date.replace('.2026',''), family, time, title].filter(Boolean).join(' · ');
+  };
+
+  const requestUpdate = () => {
+    if (frame) return;
+    frame = requestAnimationFrame(update);
+  };
+
+  addEventListener('scroll', requestUpdate, {passive:true});
+  addEventListener('resize', requestUpdate, {passive:true});
+  document.addEventListener('wedding:language', requestUpdate);
+  requestUpdate();
+}
+
+function initParticleQuietZones() {
+  const zones = [...document.querySelectorAll('#events, #rsvp')];
+  if (!zones.length || !('IntersectionObserver' in window)) return;
+  const active = new Set();
+  const sync = () => document.body.classList.toggle('particles-muted', active.size > 0);
+  const quietObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) active.add(entry.target);
+      else active.delete(entry.target);
+    });
+    sync();
+  }, { threshold:.18 });
+  zones.forEach(zone => quietObserver.observe(zone));
+}
+
+initEventScrollStory();
+initParticleQuietZones();
+
 function setStatus(message, type = '') {
   statusEl.textContent = message;
   statusEl.className = `form-status ${type}`;
 }
 
+const rsvpGuestCountField = document.getElementById('rsvpGuestCountField');
+const rsvpGuestCount = form?.querySelector('[name="guest_count"]');
+const rsvpSubmitButton = form?.querySelector('button[type="submit"]');
+let rsvpSubmitRestoreTimer = 0;
+
+function updateAttendanceUI() {
+  if (!form || !rsvpGuestCount) return;
+  const selected = form.querySelector('[name="attending"]:checked')?.value;
+  const notAttending = selected === 'no';
+  rsvpGuestCount.disabled = notAttending;
+  rsvpGuestCountField?.classList.toggle('is-disabled', notAttending);
+  if (notAttending) rsvpGuestCount.value = '1';
+}
+
+function restoreRsvpButton() {
+  if (!rsvpSubmitButton) return;
+  clearTimeout(rsvpSubmitRestoreTimer);
+  rsvpSubmitButton.disabled = false;
+  rsvpSubmitButton.classList.remove('is-sending','is-success');
+  rsvpSubmitButton.textContent = tr('rsvp.submit', 'Gửi xác nhận');
+}
+
+form?.querySelectorAll('[name="attending"]').forEach(radio => {
+  radio.addEventListener('change', updateAttendanceUI);
+});
+document.addEventListener('wedding:language', () => {
+  if (!rsvpSubmitButton?.classList.contains('is-sending') && !rsvpSubmitButton?.classList.contains('is-success')) {
+    rsvpSubmitButton.textContent = tr('rsvp.submit', 'Gửi xác nhận');
+  }
+});
+updateAttendanceUI();
+
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
   setStatus(tr('rsvp.sending', 'Đang gửi xác nhận...'));
+  if (rsvpSubmitButton) {
+    clearTimeout(rsvpSubmitRestoreTimer);
+    rsvpSubmitButton.disabled = true;
+    rsvpSubmitButton.classList.remove('is-success');
+    rsvpSubmitButton.classList.add('is-sending');
+    rsvpSubmitButton.textContent = tr('rsvp.sending', 'Đang gửi xác nhận...');
+  }
 
   const data = Object.fromEntries(new FormData(form).entries());
   data.guest_count = Number(data.guest_count || 1);
@@ -99,15 +211,26 @@ form.addEventListener('submit', async (event) => {
     }
 
     if (!form.dataset.inviteId) form.reset();
+    updateAttendanceUI();
     setStatus(
       form.dataset.inviteId
         ? tr('rsvp.updated', 'Đã cập nhật phản hồi của bạn ❤️')
         : tr('rsvp.success', 'Cảm ơn bạn! Hải Phạm và Mỹ Nguyễn đã nhận được xác nhận ❤️'),
       'success'
     );
+    if (rsvpSubmitButton) {
+      rsvpSubmitButton.disabled = true;
+      rsvpSubmitButton.classList.remove('is-sending');
+      rsvpSubmitButton.classList.add('is-success');
+      rsvpSubmitButton.textContent = form.dataset.inviteId
+        ? tr('rsvp.updatedButton', '✓ Đã cập nhật RSVP')
+        : tr('rsvp.sentButton', '✓ Đã gửi RSVP');
+      rsvpSubmitRestoreTimer = setTimeout(restoreRsvpButton, 2400);
+    }
   } catch (err) {
     console.error(err);
     setStatus(tr('rsvp.error', 'Chưa gửi được xác nhận. Vui lòng thử lại hoặc liên hệ trực tiếp với cô dâu/chú rể.'), 'error');
+    restoreRsvpButton();
   }
 });
 
@@ -116,6 +239,8 @@ const galleryState = {
   client: null,
   homeImages: [],
   albumImages: [],
+  albums: [],
+  albumFilter: 'all',
   activeImages: [],
   activeIndex: -1,
   albumOpen: false,
@@ -226,33 +351,68 @@ async function loadHomeGallery() {
   }
 }
 
+function galleryAlbumLabel(album) {
+  if (!album) return '';
+  const slug = album.slug || '';
+  if (slug === 'pre-wedding') return tr('album.prewedding', album.title || 'Pre-Wedding');
+  if (slug === 'nha-gai') return tr('album.bride', album.title || 'Nhà gái');
+  if (slug === 'nha-trai') return tr('album.groom', album.title || 'Nhà trai');
+  return album.title || slug;
+}
+
+function filteredAlbumImages() {
+  if (galleryState.albumFilter === 'all') return galleryState.albumImages;
+  const selected = galleryState.albums.find(a => a.slug === galleryState.albumFilter);
+  if (!selected) return galleryState.albumImages;
+  return galleryState.albumImages.filter(img => String(img.album_id) === String(selected.id));
+}
+
+function renderAlbumFilters() {
+  const root = document.getElementById('albumOverlayFilters');
+  if (!root) return;
+  const buttons = [
+    {slug:'all', label:tr('album.all','Tất cả')},
+    ...galleryState.albums.map(album => ({slug:album.slug,label:galleryAlbumLabel(album)}))
+  ];
+  root.innerHTML = buttons.map(item =>
+    `<button type="button" class="album-filter-btn ${galleryState.albumFilter===item.slug?'is-active':''}" data-album-filter="${galleryEsc(item.slug)}">${galleryEsc(item.label)}</button>`
+  ).join('');
+  root.hidden = buttons.length <= 1;
+}
+
 async function loadAlbumImages() {
   if (galleryState.albumImages.length) return galleryState.albumImages;
   const client = galleryClient();
   if (!client) return [];
 
-  const { data, error } = await client
-    .from('gallery_images')
-    .select('id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,focus_x,focus_y,created_at,is_published')
-    .eq('is_published', true)
-    .order('is_featured', { ascending: false })
-    .order('sort_order', { ascending: true })
-    .order('created_at', { ascending: false });
+  const [albumResult, imageResult] = await Promise.all([
+    client.from('gallery_albums').select('id,title,slug,sort_order').order('sort_order', {ascending:true}),
+    client.from('gallery_images')
+      .select('id,album_id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,focus_x,focus_y,created_at,is_published')
+      .eq('is_published', true)
+      .order('is_featured', { ascending: false })
+      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: false })
+  ]);
 
-  if (error) throw error;
-  galleryState.albumImages = (data || []).map(img => ({...img, publicUrl: galleryPublicUrl(img)}));
+  if (albumResult.error) throw albumResult.error;
+  if (imageResult.error) throw imageResult.error;
+  galleryState.albums = albumResult.data || [];
+  galleryState.albumImages = (imageResult.data || []).map(img => ({...img, publicUrl: galleryPublicUrl(img)}));
   return galleryState.albumImages;
 }
 
 function renderAlbumOverlay() {
   const grid = document.getElementById('albumOverlayGrid');
   if (!grid) return;
-  if (!galleryState.albumImages.length) {
+  renderAlbumFilters();
+  const visibleAlbumImages = filteredAlbumImages();
+  if (!visibleAlbumImages.length) {
     grid.innerHTML = `<p class="album-overlay-empty">${galleryEsc(tr('album.empty','Album đang được chuẩn bị ♡'))}</p>`;
     return;
   }
 
-  grid.innerHTML = galleryState.albumImages.map((img, index) => {
+  grid.innerHTML = visibleAlbumImages.map((img, index) => {
     const loc = galleryLocalized(img);
     const size = gallerySize(img);
     return `
@@ -406,6 +566,7 @@ function closeAlbumViaHistory() {
 function initGalleryInteractions() {
   const home = document.getElementById('homeGallery');
   const albumGrid = document.getElementById('albumOverlayGrid');
+  const albumFilters = document.getElementById('albumOverlayFilters');
   const albumCta = document.querySelector('[data-album-link]');
 
   home?.addEventListener('click', event => {
@@ -415,11 +576,19 @@ function initGalleryInteractions() {
     if (index >= 0) showPhotoByIndex(index, galleryState.homeImages);
   });
 
+  albumFilters?.addEventListener('click', event => {
+    const button = event.target.closest('[data-album-filter]');
+    if (!button) return;
+    galleryState.albumFilter = button.dataset.albumFilter || 'all';
+    renderAlbumOverlay();
+  });
+
   albumGrid?.addEventListener('click', event => {
     const item = event.target.closest('[data-album-photo-id]');
     if (!item) return;
-    const index = galleryState.albumImages.findIndex(img => String(img.id) === String(item.dataset.albumPhotoId));
-    if (index >= 0) showPhotoByIndex(index, galleryState.albumImages);
+    const visibleAlbumImages = filteredAlbumImages();
+    const index = visibleAlbumImages.findIndex(img => String(img.id) === String(item.dataset.albumPhotoId));
+    if (index >= 0) showPhotoByIndex(index, visibleAlbumImages);
   });
 
   albumCta?.addEventListener('click', event => {
