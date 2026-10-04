@@ -116,6 +116,17 @@
     body.textContent = c.welcomeBody;
   }
 
+  function dismissWelcome() {
+    const overlay = document.getElementById('inviteWelcome');
+    if (!overlay || !overlay.classList.contains('is-visible')) return;
+    clearTimeout(welcomeTimer);
+    overlay.classList.add('is-leaving');
+    welcomeTimer = setTimeout(() => {
+      overlay.classList.remove('is-visible', 'is-leaving');
+      overlay.setAttribute('aria-hidden', 'true');
+    }, 420);
+  }
+
   function showWelcome() {
     const overlay = document.getElementById('inviteWelcome');
     if (!overlay) return;
@@ -126,13 +137,18 @@
     overlay.classList.add('is-visible');
     overlay.setAttribute('aria-hidden', 'false');
 
-    welcomeTimer = setTimeout(() => {
-      overlay.classList.add('is-leaving');
-      setTimeout(() => {
-        overlay.classList.remove('is-visible', 'is-leaving');
-        overlay.setAttribute('aria-hidden', 'true');
-      }, 520);
-    }, 3000);
+    welcomeTimer = setTimeout(dismissWelcome, 3000);
+  }
+
+  function bindWelcomeDismiss() {
+    const dismiss = () => dismissWelcome();
+    window.addEventListener('scroll', dismiss, {passive:true});
+    window.addEventListener('wheel', dismiss, {passive:true});
+    window.addEventListener('touchmove', dismiss, {passive:true});
+    document.addEventListener('pointerdown', dismiss, {passive:true});
+    document.addEventListener('keydown', event => {
+      if (['ArrowDown','ArrowUp','PageDown','PageUp',' ','Enter','Escape'].includes(event.key)) dismissWelcome();
+    });
   }
 
   function prefill(invite) {
@@ -169,6 +185,36 @@
     form.dataset.inviteId = invite.id;
     form.dataset.inviteEvent = invite.event_choice || 'both';
     form.dataset.maxGuests = String(invite.max_guests || 1);
+  }
+
+  async function loadExistingRsvp(token) {
+    const database = db();
+    const form = document.getElementById('rsvpForm');
+    if (!database || !form || !token) return;
+
+    try {
+      const { data, error } = await database.rpc('get_wedding_rsvp', {p_token: token});
+      if (error) throw error;
+      const rsvp = Array.isArray(data) ? data[0] : data;
+      if (!rsvp) return;
+
+      const phoneInput = form.querySelector('[name="phone"]');
+      const guestSelect = form.querySelector('[name="guest_count"]');
+      const eventSelect = form.querySelector('[name="event_choice"]');
+      const messageInput = form.querySelector('[name="message"]');
+      const attendance = form.querySelector(`[name="attending"][value="${rsvp.attendance}"]`);
+
+      if (phoneInput) phoneInput.value = rsvp.phone || '';
+      if (attendance) attendance.checked = true;
+      if (guestSelect) guestSelect.value = String(rsvp.guest_count ?? 1);
+      if (eventSelect && !eventSelect.disabled) eventSelect.value = rsvp.event_choice || 'both';
+      if (messageInput) messageInput.value = rsvp.message || '';
+
+      form.dataset.existingRsvpId = String(rsvp.id);
+      form.dataset.responseSource = rsvp.response_source || 'invite';
+    } catch (error) {
+      console.warn('Unable to load existing RSVP:', error);
+    }
   }
 
   async function markOpened() {
@@ -208,6 +254,7 @@
     renderInvite(invite);
     renderWelcome(invite);
     prefill(invite);
+    await loadExistingRsvp(token);
 
     document.addEventListener('wedding:language', () => {
       renderInvite(invite);
@@ -220,8 +267,9 @@
     markOpened();
   });
 
-  window.WeddingPersonalized = { markOpened, showWelcome };
+  window.WeddingPersonalized = { markOpened, showWelcome, dismissWelcome };
 
+  bindWelcomeDismiss();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load);
   else load();
 })();
