@@ -41,13 +41,17 @@
       item.classList.toggle('active', item.dataset.tab === tab);
     });
     document.getElementById('overviewTab').classList.toggle('hidden', tab !== 'overview');
+    document.getElementById('contentTab').classList.toggle('hidden', tab !== 'content');
     document.getElementById('rsvpTab').classList.toggle('hidden', tab !== 'rsvp');
+    document.getElementById('guestsTab').classList.toggle('hidden', tab !== 'guests');
     document.getElementById('albumTab').classList.toggle('hidden', tab !== 'album');
-    document.getElementById('pageTitle').textContent =
-      tab === 'overview' ? 'Tổng quan' : tab === 'rsvp' ? 'RSVP' : 'Album';
+    const titles = {overview:'Tổng quan',content:'Nội dung website',rsvp:'RSVP',guests:'Khách mời',album:'Album'};
+    document.getElementById('pageTitle').textContent = titles[tab] || 'Admin';
 
     if (tab === 'overview') document.dispatchEvent(new Event('admin:overview'));
+    if (tab === 'content') document.dispatchEvent(new Event('admin:content'));
     if (tab === 'rsvp') document.dispatchEvent(new Event('admin:rsvp'));
+    if (tab === 'guests') document.dispatchEvent(new Event('admin:guests'));
   }
 
   document.querySelectorAll('.nav-item').forEach((btn) => {
