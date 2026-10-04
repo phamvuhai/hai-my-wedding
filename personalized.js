@@ -325,8 +325,11 @@
 
       if (nameInput) nameInput.value = rsvp.guest_name || nameInput.value;
       if (phoneInput) phoneInput.value = rsvp.phone || '';
-      if (attendance) attendance.checked = true;
-      if (guestSelect) guestSelect.value = String(rsvp.guest_count ?? 1);
+      if (attendance) {
+        attendance.checked = true;
+        attendance.dispatchEvent(new Event('change', {bubbles:true}));
+      }
+      if (guestSelect && rsvp.attendance !== 'no') guestSelect.value = String(rsvp.guest_count ?? 1);
       if (eventSelect && !eventSelect.disabled) eventSelect.value = rsvp.event_choice || 'both';
       if (messageInput) messageInput.value = rsvp.message || '';
 
