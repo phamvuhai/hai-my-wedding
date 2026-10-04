@@ -7403,3 +7403,283 @@ body.invitation-opening .hero{
     opacity:1!important;
   }
 }
+
+
+/* =========================================
+   V22 — measured schedule rail + scroll status
+   ========================================= */
+
+/* One geometry model across languages:
+   [ time ] [ rail ] [ content ] */
+.schedule-timeline{
+  --schedule-time-col:88px;
+  --schedule-rail-col:34px;
+  --schedule-rail-center:calc(var(--schedule-time-col) + (var(--schedule-rail-col) / 2));
+  --schedule-dot-y:28px;
+  --schedule-day-progress:0;
+  position:relative!important;
+  align-content:start!important;
+}
+
+.schedule-item{
+  --schedule-dot-y:28px;
+  display:grid!important;
+  grid-template-columns:var(--schedule-time-col) var(--schedule-rail-col) minmax(0,1fr)!important;
+  column-gap:0!important;
+  row-gap:0!important;
+  align-items:start!important;
+  min-width:0!important;
+  padding:20px 0!important;
+}
+
+.schedule-time{
+  grid-column:1!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:4px 12px 0 2px!important;
+  text-align:left!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  position:relative;
+  z-index:4;
+  font-variant-numeric:tabular-nums;
+}
+
+.schedule-item > div{
+  grid-column:3!important;
+  min-width:0!important;
+  padding-left:14px!important;
+  padding-right:4px!important;
+}
+
+.schedule-item::before{
+  left:var(--schedule-rail-center)!important;
+  top:var(--schedule-dot-y)!important;
+  transform:translateX(-50%) scale(1)!important;
+  z-index:4!important;
+}
+
+/* Rail is measured from first real dot to last real dot.
+   This works even when EN/VI/JP produce different card heights. */
+.schedule-timeline::before,
+.schedule-timeline::after{
+  left:var(--schedule-rail-center)!important;
+  top:var(--schedule-rail-top,28px)!important;
+  bottom:auto!important;
+  width:2px!important;
+  height:var(--schedule-rail-height,0px)!important;
+  transform:translateX(-50%)!important;
+  border-radius:999px;
+  pointer-events:none;
+}
+
+.schedule-timeline::before{
+  background:color-mix(in srgb,var(--day-accent) 22%,rgba(94,73,62,.12))!important;
+}
+
+.schedule-timeline::after{
+  background:linear-gradient(to bottom,var(--day-accent),var(--schedule-champagne))!important;
+  transform:translateX(-50%) scaleY(var(--schedule-day-progress,0))!important;
+  transform-origin:top center!important;
+  transition:none!important;
+  box-shadow:0 0 12px color-mix(in srgb,var(--day-accent) 20%,transparent)!important;
+}
+
+/* Sticky, compact status that changes as the reading anchor reaches an event. */
+.schedule-live-status{
+  position:sticky;
+  top:calc(var(--header-h) + 10px);
+  z-index:7;
+  justify-self:end;
+  width:max-content;
+  max-width:min(100%,360px);
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin:0 0 10px auto;
+  padding:7px 10px;
+  border:1px solid color-mix(in srgb,var(--day-accent) 20%,transparent);
+  border-radius:999px;
+  color:color-mix(in srgb,var(--day-accent) 74%,#493D37);
+  background:color-mix(in srgb,#FFFDFC 90%,var(--day-accent) 10%);
+  box-shadow:0 8px 22px rgba(61,44,36,.07);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  pointer-events:none;
+}
+
+.schedule-status-count{
+  flex:0 0 auto;
+  font-size:.57rem;
+  font-weight:850;
+  letter-spacing:.13em;
+  font-variant-numeric:tabular-nums;
+}
+
+.schedule-status-copy{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:.68rem;
+  font-weight:700;
+}
+
+.schedule-live-status.is-changing .schedule-status-count,
+.schedule-live-status.is-changing .schedule-status-copy{
+  animation:scheduleStatusSwap .28s var(--ui-ease,cubic-bezier(.16,.84,.24,1)) both;
+}
+@keyframes scheduleStatusSwap{
+  0%{opacity:.25;transform:translateY(6px)}
+  100%{opacity:1;transform:translateY(0)}
+}
+
+/* Scroll states: upcoming is calm, current is clear, passed stays complete. */
+.schedule-item{
+  opacity:.9;
+}
+.schedule-item.is-current{
+  opacity:1!important;
+  background:color-mix(in srgb,var(--day-accent) 7%,rgba(255,253,250,.90))!important;
+  box-shadow:0 12px 28px color-mix(in srgb,var(--day-accent) 9%,transparent);
+}
+.schedule-item.is-current::before{
+  background:var(--day-accent)!important;
+  border-color:#FFFDFC!important;
+  transform:translateX(-50%) scale(1.18)!important;
+  box-shadow:0 0 0 7px color-mix(in srgb,var(--day-accent) 13%,transparent)!important;
+}
+.schedule-item.is-current .schedule-time{
+  color:color-mix(in srgb,var(--day-accent) 82%,#59483E)!important;
+  transform:scale(1.035);
+  transform-origin:left center;
+}
+.schedule-item.is-passed::before{
+  background:var(--day-accent)!important;
+  border-color:var(--day-accent)!important;
+}
+.schedule-item.is-upcoming{
+  opacity:.82;
+}
+
+/* Desktop keeps generous content width. */
+@media(min-width:901px){
+  .schedule-timeline{
+    --schedule-time-col:92px;
+    --schedule-rail-col:36px;
+  }
+  .schedule-item > div{
+    padding-left:16px!important;
+  }
+}
+
+/* Tablet/mobile day card becomes a clean vertical stack,
+   then each event keeps the three-column time/rail/content layout. */
+@media(max-width:900px){
+  .schedule-day{
+    grid-template-columns:1fr!important;
+    gap:22px!important;
+    padding:28px!important;
+    overflow:visible!important;
+  }
+  .schedule-day-label{
+    padding:4px 0 22px!important;
+    border-right:0!important;
+    border-bottom:1px solid color-mix(in srgb,var(--day-accent) 18%,transparent)!important;
+  }
+  .schedule-live-status{
+    top:calc(var(--header-h) + 8px);
+  }
+}
+
+/* Mobile: move the time column away from the outer decorative edge. */
+@media(max-width:680px){
+  .schedule-day{
+    padding:26px!important;
+    padding-bottom:32px!important;
+  }
+
+  .schedule-timeline{
+    --schedule-time-col:76px;
+    --schedule-rail-col:32px;
+  }
+
+  .schedule-item{
+    padding:19px 0!important;
+  }
+
+  .schedule-time{
+    padding:4px 10px 0 4px!important;
+    font-size:.9rem!important;
+  }
+
+  .schedule-item > div{
+    padding-left:12px!important;
+    padding-right:0!important;
+  }
+
+  .schedule-live-status{
+    max-width:100%;
+    margin-bottom:8px;
+    padding:6px 9px;
+  }
+
+  .schedule-status-copy{
+    max-width:210px;
+    font-size:.64rem;
+  }
+
+  html:lang(en) .schedule-item h3{
+    font-size:clamp(1.55rem,7vw,2rem)!important;
+    line-height:1.08!important;
+  }
+
+  .schedule-item p{
+    overflow-wrap:normal!important;
+    word-break:normal!important;
+    line-height:1.5!important;
+  }
+
+  /* Give the final event breathing room above the floating music control. */
+  .schedule-item:last-of-type{
+    padding-bottom:34px!important;
+  }
+}
+
+@media(max-width:390px){
+  .schedule-day{
+    padding:22px!important;
+  }
+
+  .schedule-timeline{
+    --schedule-time-col:70px;
+    --schedule-rail-col:30px;
+  }
+
+  .schedule-time{
+    padding-right:8px!important;
+    font-size:.85rem!important;
+  }
+
+  .schedule-item > div{
+    padding-left:9px!important;
+  }
+
+  .schedule-status-copy{
+    max-width:175px;
+  }
+}
+
+/* Status and rail should still be readable without motion. */
+@media(prefers-reduced-motion:reduce){
+  .schedule-live-status.is-changing .schedule-status-count,
+  .schedule-live-status.is-changing .schedule-status-copy{
+    animation:none!important;
+  }
+  .schedule-timeline::after{
+    transition:none!important;
+  }
+  .schedule-item{
+    transition:none!important;
+  }
+}

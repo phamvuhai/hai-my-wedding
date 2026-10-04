@@ -2,7 +2,7 @@
   const tracks = {
     vi: { id:'__kGJZ-kPno', title:'Hơn Cả Yêu', artist:'Đức Phúc', label:'VIETNAMESE WEDDING SONG', start:48, end:125 },
     ja: { id:'WPl10ZrhCtk', title:'Akuma no Ko', artist:'Ai Higuchi', label:'JAPANESE WEDDING SONG', start:58, end:135 },
-    en: { id:'06-XXOTP3Gc', title:'Beautiful In White', artist:'Shane Filan', label:'ENGLISH WEDDING SONG', start:38, end:115 }
+    en: { id:'06-XXOTP3Gc', title:'Beautiful In White', artist:'Shane Filan', label:'ENGLISH WEDDING SONG', start:89, end:166 }
   };
 
   const dock = document.getElementById('musicDock');
