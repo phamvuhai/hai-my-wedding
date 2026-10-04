@@ -5968,3 +5968,143 @@ html[data-motion="wow"] .hero:hover .hero-couple-names .hero-amp{
     -webkit-backdrop-filter:none!important;
   }
 }
+
+
+/* =========================================
+   V16.2 — calligraphy cover names inspired by UTM Beautiful Caps
+   ========================================= */
+.hero-copy,
+.hero-couple-names,
+.hero-couple-names .hero-name,
+.hero-couple-names .hero-amp{
+  overflow:visible!important;
+}
+.hero-couple-names{
+  width:min(100%,1180px)!important;
+  max-width:1180px!important;
+  margin:6px auto 0!important;
+  padding:.16em .34em .22em!important;
+  gap:0!important;
+  font-family:"Great Vibes","Snell Roundhand","Apple Chancery","Brush Script MT",cursive!important;
+  font-size:clamp(6.8rem,8.8vw,10.8rem)!important;
+  font-weight:400!important;
+  font-style:normal!important;
+  line-height:.70!important;
+  letter-spacing:0!important;
+  text-rendering:geometricPrecision;
+  -webkit-font-smoothing:antialiased;
+}
+.hero-couple-names .hero-name{
+  width:max-content;
+  max-width:100%;
+  padding:.10em .18em .14em;
+  font-family:inherit!important;
+  font-weight:400!important;
+  font-style:normal!important;
+  line-height:.70!important;
+  letter-spacing:0!important;
+  white-space:nowrap!important;
+  text-shadow:0 5px 28px rgba(18,10,8,.24);
+}
+.hero-couple-names .hero-amp{
+  margin:-.04em 0 -.02em!important;
+  padding:.02em .2em .06em;
+  font-family:inherit!important;
+  font-size:.38em!important;
+  font-weight:400!important;
+  font-style:normal!important;
+  line-height:.72!important;
+  letter-spacing:0!important;
+  color:#E8C5AE!important;
+  text-shadow:0 4px 22px rgba(18,10,8,.18);
+}
+.hero-couple-names::before{
+  width:min(84vw,900px)!important;
+  height:clamp(170px,19vw,280px)!important;
+  background:radial-gradient(ellipse,rgba(33,20,16,.12),rgba(33,20,16,.035) 46%,transparent 76%)!important;
+}
+.hero-copy::before{
+  inset:7% 11% 0!important;
+  border-radius:32px!important;
+  background:linear-gradient(180deg,rgba(35,22,18,.045),rgba(35,22,18,.105))!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+.motion-ready .hero-entered .hero-couple-names .hero-name-left{
+  animation:heroCalligraphyRise .95s cubic-bezier(.16,.84,.24,1) .34s both!important;
+}
+.motion-ready .hero-entered .hero-couple-names .hero-amp{
+  animation:heroCalligraphyAmp .82s cubic-bezier(.17,.86,.25,1) .47s both!important;
+}
+.motion-ready .hero-entered .hero-couple-names .hero-name-right{
+  animation:heroCalligraphyRise 1s cubic-bezier(.16,.84,.24,1) .58s both!important;
+}
+@keyframes heroCalligraphyRise{
+  from{opacity:0;transform:translate3d(0,20px,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
+}
+@keyframes heroCalligraphyAmp{
+  from{opacity:0;transform:translate3d(0,8px,0) scale(.88)}
+  to{opacity:1;transform:translate3d(0,0,0) scale(1)}
+}
+.hero-date{
+  margin-top:clamp(30px,3.2vw,44px)!important;
+}
+@media(min-width:1400px){
+  .hero-couple-names{
+    font-size:clamp(8.4rem,8.6vw,11rem)!important;
+  }
+  .hero-date{
+    font-size:clamp(1.2rem,1.3vw,1.55rem)!important;
+  }
+}
+@media(min-width:681px) and (max-width:1024px){
+  .hero-couple-names{
+    width:min(100%,860px)!important;
+    padding-inline:.28em!important;
+    font-size:clamp(5.2rem,10vw,7.4rem)!important;
+    line-height:.72!important;
+  }
+  .hero-couple-names .hero-name{
+    line-height:.72!important;
+  }
+  .hero-couple-names .hero-amp{
+    font-size:.40em!important;
+  }
+}
+@media(max-width:680px){
+  .hero-couple-names{
+    width:100%!important;
+    padding:.14em .20em .20em!important;
+    font-size:clamp(4.15rem,18vw,5.8rem)!important;
+    line-height:.73!important;
+  }
+  .hero-couple-names .hero-name{
+    padding:.10em .11em .13em!important;
+    line-height:.73!important;
+  }
+  .hero-couple-names .hero-amp{
+    margin:-.02em 0 0!important;
+    font-size:.42em!important;
+  }
+  .hero-couple-names::before{
+    width:98vw!important;
+    height:145px!important;
+  }
+  .hero-copy::before{
+    inset:5% 1% -1%!important;
+  }
+}
+@media(max-width:390px){
+  .hero-couple-names{
+    font-size:clamp(3.75rem,17vw,4.9rem)!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-couple-names .hero-name,
+  .hero-couple-names .hero-amp{
+    animation:none!important;
+    opacity:1!important;
+    transform:none!important;
+  }
+}
