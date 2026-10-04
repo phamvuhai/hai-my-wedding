@@ -68,7 +68,7 @@ form.addEventListener('submit', async (event) => {
     }
 
     form.reset();
-    setStatus(tr('rsvp.success', 'Cảm ơn bạn! Hải & Mỹ đã nhận được xác nhận ❤️'), 'success');
+    setStatus(tr('rsvp.success', 'Cảm ơn bạn! Hải Phạm và Mỹ Nguyễn đã nhận được xác nhận ❤️'), 'success');
   } catch (err) {
     console.error(err);
     setStatus(tr('rsvp.error', 'Chưa gửi được xác nhận. Vui lòng thử lại hoặc liên hệ trực tiếp với cô dâu/chú rể.'), 'error');
@@ -104,20 +104,20 @@ function galleryLocalized(img) {
     return {
       title: img.title_en || img.title || '',
       caption: img.caption_en || img.caption || '',
-      alt: img.alt_text_en || img.alt_text || img.title_en || img.title || 'Hải & Mỹ'
+      alt: img.alt_text_en || img.alt_text || img.title_en || img.title || 'Hải Phạm & Mỹ Nguyễn'
     };
   }
   if (lang === 'ja') {
     return {
       title: img.title_ja || img.title || '',
       caption: img.caption_ja || img.caption || '',
-      alt: img.alt_text_ja || img.alt_text || img.title_ja || img.title || 'Hải & Mỹ'
+      alt: img.alt_text_ja || img.alt_text || img.title_ja || img.title || 'Hải Phạm & Mỹ Nguyễn'
     };
   }
   return {
     title: img.title || '',
     caption: img.caption || '',
-    alt: img.alt_text || img.title || 'Hải & Mỹ'
+    alt: img.alt_text || img.title || 'Hải Phạm & Mỹ Nguyễn'
   };
 }
 
@@ -154,7 +154,7 @@ function renderHomeGallery() {
       <button type="button"
         class="home-photo size-${size} ${index === 0 ? 'editorial-featured' : ''} reveal visible"
         data-photo-id="${galleryEsc(img.id)}"
-        aria-label="${galleryEsc(loc.alt || 'Hải & Mỹ')}">
+        aria-label="${galleryEsc(loc.alt || 'Hải Phạm & Mỹ Nguyễn')}">
         <img loading="lazy" decoding="async" src="${url}" alt="${galleryEsc(loc.alt)}"
           style="object-position:${Number(img.focus_x ?? 50)}% ${Number(img.focus_y ?? 50)}%">
         <span class="photo-curtain" aria-hidden="true"></span>
@@ -231,7 +231,8 @@ function renderAlbumOverlay() {
 
 function localizedPath(album = false) {
   const lang = window.WeddingI18n?.language || 'vi';
-  return album ? `/${lang}/album` : `/${lang}`;
+  const code = window.WeddingI18n?.publicCode ? window.WeddingI18n.publicCode(lang) : (lang === 'ja' ? 'jp' : lang);
+  return album ? `/${code}/album` : `/${code}`;
 }
 
 async function showAlbumOverlay({push = true} = {}) {
@@ -492,12 +493,12 @@ async function loadHeroPhoto() {
     hero.style.setProperty('--hero-frame-max', ratioWidths[data.hero_desktop_ratio] || '680px');
 
     framedImg.src = url;
-    framedImg.alt = alt || 'Hải & Mỹ';
+    framedImg.alt = alt || 'Hải Phạm & Mỹ Nguyễn';
     fullImg.src = url;
     fullImg.alt = '';
     if (introImg) {
       introImg.src = url;
-      introImg.alt = alt || 'Hải & Mỹ';
+      introImg.alt = alt || 'Hải Phạm & Mỹ Nguyễn';
       introImg.style.objectPosition = `${fx}% ${fy}%`;
     }
   } catch (error) {
