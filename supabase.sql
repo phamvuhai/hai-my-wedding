@@ -388,9 +388,27 @@ create table if not exists public.guest_invites (
   max_guests integer not null default 1 check (max_guests between 1 and 10),
   internal_note text check (internal_note is null or char_length(internal_note) <= 1000),
   is_active boolean not null default true,
+  import_source text not null default 'manual' check (import_source in ('manual','csv')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.guest_invites
+  add column if not exists import_source text not null default 'manual';
+
+alter table public.guest_invites
+  drop constraint if exists guest_invites_import_source_check;
+
+alter table public.guest_invites
+  add constraint guest_invites_import_source_check
+  check (import_source in ('manual','csv'));
+
+create index if not exists guest_invites_event_active_idx
+  on public.guest_invites(event_choice, is_active);
+
+create index if not exists guest_invites_phone_idx
+  on public.guest_invites(phone)
+  where phone is not null;
 
 alter table public.guest_invites enable row level security;
 revoke all on table public.guest_invites from anon, authenticated;
