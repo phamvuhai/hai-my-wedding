@@ -8394,3 +8394,53 @@ html[lang="vi"] .gallery-editorial-head .section-heading > p:last-child{
     font-size:clamp(2.65rem,13.5vw,3.65rem);
   }
 }
+
+
+/* Personalized invitation */
+.personal-invite-copy {
+  width: min(520px, 92%);
+  margin: 10px auto 18px;
+  text-align: center;
+}
+.personal-invite-name {
+  margin: 4px 0 8px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(2rem, 7vw, 3.8rem);
+  line-height: 1;
+  font-weight: 600;
+  color: #5b4034;
+}
+.personal-invite-lead {
+  margin: 0 auto 8px;
+  max-width: 440px;
+  color: #6e5b50;
+  font-size: .98rem;
+  line-height: 1.55;
+}
+.personal-invite-note {
+  margin: 0 auto;
+  max-width: 460px;
+  color: #8a6d5d;
+  font-size: .88rem;
+  line-height: 1.55;
+  font-style: italic;
+}
+.personal-invite-private {
+  margin: 12px auto 0;
+  max-width: 560px;
+  padding: 0 20px;
+  text-align: center;
+  color: rgba(255,255,255,.72);
+  font-size: .76rem;
+  letter-spacing: .04em;
+}
+.invite-invalid .personal-invite-copy,
+.invite-invalid .personal-invite-private {
+  display: none !important;
+}
+@media (max-width: 640px) {
+  .personal-invite-copy { margin-top: 8px; margin-bottom: 14px; }
+  .personal-invite-name { font-size: clamp(1.8rem, 10vw, 2.8rem); }
+  .personal-invite-lead { font-size: .9rem; }
+  .personal-invite-note { font-size: .82rem; }
+}
