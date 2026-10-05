@@ -173,13 +173,28 @@ const rsvpGuestCount = form?.querySelector('[name="guest_count"]');
 const rsvpSubmitButton = form?.querySelector('button[type="submit"]');
 let rsvpSubmitRestoreTimer = 0;
 
+rsvpGuestCount?.addEventListener('change', () => {
+  if (!rsvpGuestCount.disabled) rsvpGuestCount.dataset.lastValue = rsvpGuestCount.value;
+});
+
 function updateAttendanceUI() {
   if (!form || !rsvpGuestCount) return;
   const selected = form.querySelector('[name="attending"]:checked')?.value;
   const notAttending = selected === 'no';
+
+  if (notAttending && !rsvpGuestCount.disabled) {
+    rsvpGuestCount.dataset.lastValue = rsvpGuestCount.value || '1';
+    rsvpGuestCount.value = '1';
+  }
+
   rsvpGuestCount.disabled = notAttending;
   rsvpGuestCountField?.classList.toggle('is-disabled', notAttending);
-  if (notAttending) rsvpGuestCount.value = '1';
+
+  if (!notAttending && rsvpGuestCount.dataset.lastValue) {
+    const max = Number(form.dataset.maxGuests || rsvpGuestCount.dataset.maxGuests || 10);
+    const restored = Math.min(Math.max(Number(rsvpGuestCount.dataset.lastValue || 1),1),max);
+    rsvpGuestCount.value = String(restored);
+  }
 }
 
 function restoreRsvpButton() {
@@ -215,6 +230,22 @@ form.addEventListener('submit', async (event) => {
   data.guest_count = Number(data.guest_count || 1);
   data.created_at = new Date().toISOString();
 
+  const inviteScope = form.dataset.inviteEvent || '';
+  const maxGuests = Number(form.dataset.maxGuests || 10);
+  if (form.dataset.inviteId && data.attending !== 'no' && (data.guest_count < 1 || data.guest_count > maxGuests)) {
+    setStatus(
+      tr('rsvp.maxGuestsError', 'Số người tham dự vượt quá giới hạn của thiệp mời.'),
+      'error'
+    );
+    restoreRsvpButton();
+    return;
+  }
+  if (form.dataset.inviteId && inviteScope === 'both' && !['bride','groom','both'].includes(data.event_choice)) {
+    setStatus(tr('rsvp.eventError', 'Vui lòng chọn sự kiện bạn sẽ tham dự.'), 'error');
+    restoreRsvpButton();
+    return;
+  }
+
   try {
     const cfg = window.WEDDING_CONFIG || {};
     const hasSupabase = cfg.supabaseUrl && cfg.supabaseAnonKey && window.supabase;
@@ -231,7 +262,9 @@ form.addEventListener('submit', async (event) => {
           p_phone: data.phone?.trim() || null,
           p_attendance: data.attending,
           p_guest_count: data.guest_count,
-          p_event_choice: form.dataset.inviteEvent || data.event_choice || 'both',
+          p_event_choice: inviteScope === 'both'
+            ? (data.event_choice || 'both')
+            : (inviteScope || data.event_choice || 'both'),
           p_message: data.message?.trim() || null
         });
         if (error) throw error;
