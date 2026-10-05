@@ -10550,3 +10550,75 @@ body.particles-muted .hero-fall-layer{
     transition:opacity .28s ease!important;
   }
 }
+
+
+/* V40 — personalized RSVP scope and guest-limit clarity */
+.rsvp-field-help{
+  display:block;
+  margin-top:7px;
+  color:rgba(75,55,47,.58);
+  font-size:.68rem;
+  line-height:1.45;
+}
+.rsvp-field-help[hidden]{
+  display:none!important;
+}
+.rsvp-event-field{
+  min-width:0;
+}
+.rsvp-field-label{
+  display:block;
+  margin-bottom:8px;
+}
+.rsvp-event-fixed{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  width:100%;
+  min-height:46px;
+  padding:11px 13px;
+  border:1px solid rgba(104,73,60,.12);
+  border-radius:12px;
+  background:rgba(111,82,68,.045);
+  color:#493730;
+  box-sizing:border-box;
+}
+.rsvp-event-fixed[hidden]{
+  display:none!important;
+}
+.rsvp-event-fixed > span{
+  flex:0 0 auto;
+  width:22px;
+  height:22px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:rgba(97,117,91,.12);
+  color:#556b58;
+  font-size:.72rem;
+  font-weight:800;
+}
+.rsvp-event-fixed strong{
+  min-width:0;
+  font-size:.84rem;
+  line-height:1.35;
+  overflow-wrap:anywhere;
+}
+#rsvpEventSelect[hidden]{
+  display:none!important;
+}
+#rsvpGuestCountField.is-disabled .rsvp-field-help{
+  opacity:.72;
+}
+@media(max-width:480px){
+  .rsvp-field-help{
+    font-size:.64rem;
+  }
+  .rsvp-event-fixed{
+    min-height:44px;
+    padding:10px 11px;
+  }
+  .rsvp-event-fixed strong{
+    font-size:.8rem;
+  }
+}
