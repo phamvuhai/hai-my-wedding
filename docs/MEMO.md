@@ -1,6 +1,6 @@
 # Technical Memo
 
-Last major update: 2026-10-04
+Last major update: 2026-10-05
 
 ## Production
 
@@ -85,3 +85,56 @@ Keep the RPC payload narrow and never expose internal guest-list queries directl
 - Login errors use generic wording instead of revealing whether an account exists.
 - Added mobile/layout regression guards for public site, admin tables/modals, and admin login.
 - Added text sizing and overflow protections for narrow mobile webviews and multilingual copy.
+
+
+## 2026-10-05 homepage, cache and cleanup update
+
+### Current public flow
+
+The customer-facing homepage is intentionally limited to:
+- invitation cover
+- Hero
+- Story
+- compact Countdown
+- unified Wedding Events timeline
+- FOREVER transition
+- Album
+- RSVP
+- Footer
+
+The old standalone Guide, Detailed Schedule, Travel, FAQ and Wishes sections are no longer part of the page.
+
+### Wedding Events
+
+- Bride and groom schedules are both visible.
+- Personalized invitations highlight the invited day without hiding the other day.
+- Timeline progress is continuous and follows real scroll position.
+- Event emphasis and status text are controlled by `app.js`.
+- Do not restore the removed `.schedule-day/.schedule-item` experience from old versions.
+
+### Album
+
+- Standalone `album/index.html`, `album/album.css` and `album/album.js` were removed.
+- Localized album routes reuse the full-screen overlay from the main public app.
+- Empty album filters are hidden.
+- Homepage shows a focused preview instead of the full gallery.
+
+### Cache rules
+
+- Mutable public/admin HTML, CSS and JS are served with `no-store`.
+- Safari/in-app-browser BFCache restores reload the page.
+- Gallery/Hero URLs include `updated_at` as a version token.
+- Editing an image rotates the public Supabase Storage path and removes the old public object only after the database update succeeds.
+- Album data cached in memory is invalidated after the page has been in the background for more than one minute.
+
+### Cleanup completed
+
+Removed:
+- legacy standalone album files
+- obsolete `.vercel-redeploy`
+- old detailed-schedule motion code
+- Guide/Travel/Wishes/FAQ motion selectors
+- unused translations for removed homepage sections
+- several large legacy CSS blocks for old Guide/Schedule/Travel/Wishes layouts
+
+Keep cleanup conservative when a CSS rule mixes active and legacy selectors; preserve active selectors first, then remove dead names in a separate verified change.
