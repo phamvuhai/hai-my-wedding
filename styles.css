@@ -13486,21 +13486,22 @@ img,video,svg{height:auto}
 }
 
 
-/* V59 — Final reveal composition: invitation above, envelope lowered */
+/* V59 — Slow physical final reveal: card readable, envelope eases downward */
 .invitation-intro.invite-v2.is-letter-out .invite-v2-card{
-  z-index:40!important;
-  opacity:1!important;
-  filter:none!important;
+  z-index:40!important;opacity:1!important;filter:none!important;
 }
 .invitation-intro.invite-v2.is-letter-out .invite-v2-envelope{
   z-index:12!important;
-  animation:openingEnvelopeFinalDesktop .95s cubic-bezier(.2,.72,.16,1) 0s both!important;
+  animation:openingEnvelopeFinal 2.05s cubic-bezier(.22,.61,.22,1) both!important;
 }
-@keyframes openingEnvelopeFinalDesktop{
-  from{transform:translate3d(0,34px,0) scale(.96)}
-  to{transform:translate3d(0,170px,0) scale(.93)}
+@keyframes openingEnvelopeFinal{
+  0%{transform:translate3d(0,34px,0) scale(.96)}
+  18%{transform:translate3d(0,52px,0) scale(.957)}
+  42%{transform:translate3d(0,83px,0) scale(.95)}
+  68%{transform:translate3d(0,116px,0) scale(.942)}
+  86%{transform:translate3d(0,143px,0) scale(.935)}
+  100%{transform:translate3d(0,160px,0) scale(.93)}
 }
-/* Removed accessories stay with the lowered envelope, below the readable card. */
 .invitation-intro.invite-v2.is-letter-out .invite-real-cord,
 .invitation-intro.invite-v2.is-letter-out .invite-v2-seal{z-index:14!important}
 .invitation-intro.invite-v2.is-letter-out .invite-v2-envelope-front,
@@ -13510,38 +13511,39 @@ img,video,svg{height:auto}
 .invitation-intro.invite-v2.is-letter-out .invite-v2-envelope-flap{z-index:11!important}
 
 @media(max-width:760px){
-  /* Keep the card readable and slightly lower; move the envelope instead. */
   .invitation-intro.invite-v2.is-letter-out .invite-v2-card{
-    top:52%!important;
-    transform:translate3d(-50%,-69%,0) scale(.97)!important;
+    top:52%!important;transform:translate3d(-50%,-69%,0) scale(.97)!important;
   }
-  .invitation-intro.invite-v2.is-letter-out .invite-v2-envelope{
-    animation:openingEnvelopeFinalMobile .9s cubic-bezier(.2,.72,.16,1) 0s both!important;
-  }
-  @keyframes openingEnvelopeFinalMobile{
-    from{transform:translate3d(0,28px,0) scale(.965)}
-    to{transform:translate3d(0,132px,0) scale(.93)}
+  @keyframes openingEnvelopeFinal{
+    0%{transform:translate3d(0,28px,0) scale(.965)}
+    18%{transform:translate3d(0,42px,0) scale(.96)}
+    42%{transform:translate3d(0,65px,0) scale(.952)}
+    68%{transform:translate3d(0,91px,0) scale(.944)}
+    86%{transform:translate3d(0,113px,0) scale(.936)}
+    100%{transform:translate3d(0,128px,0) scale(.93)}
   }
 }
 @media(max-width:430px) and (max-height:760px){
   .invitation-intro.invite-v2.is-letter-out .invite-v2-card{
-    top:54%!important;
-    transform:translate3d(-50%,-64%,0) scale(.92)!important;
+    top:54%!important;transform:translate3d(-50%,-64%,0) scale(.92)!important;
   }
-  @keyframes openingEnvelopeFinalMobile{
-    from{transform:translate3d(0,24px,0) scale(.96)}
-    to{transform:translate3d(0,112px,0) scale(.9)}
+  @keyframes openingEnvelopeFinal{
+    0%{transform:translate3d(0,24px,0) scale(.96)}
+    22%{transform:translate3d(0,39px,0) scale(.95)}
+    50%{transform:translate3d(0,68px,0) scale(.93)}
+    78%{transform:translate3d(0,94px,0) scale(.91)}
+    100%{transform:translate3d(0,108px,0) scale(.9)}
   }
 }
 @media(min-width:761px) and (max-width:1100px){
   .invitation-intro.invite-v2.is-letter-out .invite-v2-card{
     transform:translate3d(-50%,-76%,0) scale(.97)!important;
   }
-  .invitation-intro.invite-v2.is-letter-out .invite-v2-envelope{
-    animation:openingEnvelopeFinalTablet .95s cubic-bezier(.2,.72,.16,1) both!important;
-  }
-  @keyframes openingEnvelopeFinalTablet{
-    from{transform:translate3d(0,34px,0) scale(.96)}
-    to{transform:translate3d(0,145px,0) scale(.93)}
+  @keyframes openingEnvelopeFinal{
+    0%{transform:translate3d(0,34px,0) scale(.96)}
+    20%{transform:translate3d(0,53px,0) scale(.956)}
+    45%{transform:translate3d(0,84px,0) scale(.948)}
+    72%{transform:translate3d(0,117px,0) scale(.94)}
+    100%{transform:translate3d(0,142px,0) scale(.93)}
   }
 }
