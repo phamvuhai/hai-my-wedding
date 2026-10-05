@@ -12647,3 +12647,141 @@ img,video,svg{height:auto}
   .invite-v2-seal{width:58px!important;height:55px!important}
   .invite-v2-envelope-foil{bottom:7%!important}
 }
+
+
+/* =========================================
+   V49 — Rebuilt physical stationery cover
+   This intentionally overrides legacy envelope decoration.
+   ========================================= */
+.invitation-intro.invite-v2{
+  background:
+    radial-gradient(circle at 84% 9%,rgba(190,151,112,.15),transparent 22%),
+    radial-gradient(circle at 9% 78%,rgba(120,46,51,.055),transparent 27%),
+    repeating-linear-gradient(91deg,rgba(91,63,48,.014) 0 1px,transparent 1px 4px),
+    linear-gradient(135deg,#f8f2ea,#f2e8dc)!important;
+}
+.invite-v2-scene{max-width:760px!important}
+.invite-v2-heading{margin-bottom:clamp(22px,4vh,42px)!important}
+.invite-v2-heading::before{
+  content:"❧";display:block;margin:0 auto 7px;color:#b68d55;font-size:1.05rem;line-height:1;
+}
+.invite-v2-heading::after{
+  content:"";display:block;width:86px;height:1px;margin:10px auto 0;
+  background:linear-gradient(90deg,transparent,#c3a16d,transparent);
+}
+.invite-v2-title{font-size:clamp(2.15rem,6vw,4rem)!important;line-height:.94!important;color:#711d29!important}
+.invite-v2-tap{margin-top:12px!important;letter-spacing:.27em!important;color:#8c5a58!important}
+
+.invite-v2-stage{width:min(88vw,660px)!important;aspect-ratio:1.62!important;min-height:0!important}
+.invite-v2-envelope{inset:0!important;width:100%!important;height:100%!important;border-radius:8px!important;overflow:visible!important}
+.invite-v2-envelope-back{
+  inset:0!important;border-radius:8px!important;
+  background:
+    repeating-linear-gradient(96deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px),
+    linear-gradient(145deg,#7d2732,#641923)!important;
+  box-shadow:0 28px 34px rgba(61,31,28,.2),0 6px 10px rgba(61,31,28,.11),inset 0 1px rgba(255,230,214,.09)!important;
+}
+.invite-v2-envelope-front{
+  inset:0!important;border-radius:8px!important;clip-path:none!important;
+  background:
+    linear-gradient(31deg,transparent 49.7%,rgba(255,221,204,.08) 49.9%,rgba(54,6,14,.17) 50.15%,transparent 50.45%) left bottom/50% 100% no-repeat,
+    linear-gradient(-31deg,transparent 49.7%,rgba(255,221,204,.08) 49.9%,rgba(54,6,14,.17) 50.15%,transparent 50.45%) right bottom/50% 100% no-repeat,
+    repeating-linear-gradient(96deg,rgba(255,255,255,.018) 0 1px,transparent 1px 3px),
+    linear-gradient(160deg,#7b2531,#641923)!important;
+  box-shadow:inset 0 -2px 4px rgba(43,5,12,.16)!important;
+}
+.invite-v2-envelope-left,.invite-v2-envelope-right{display:none!important}
+.invite-v2-envelope-flap{
+  z-index:5!important;left:0!important;right:0!important;top:0!important;width:100%!important;height:57%!important;
+  transform-origin:50% 0!important;clip-path:polygon(0 0,100% 0,50% 100%)!important;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.04),transparent 22%),
+    repeating-linear-gradient(96deg,rgba(255,255,255,.021) 0 1px,transparent 1px 3px),
+    linear-gradient(155deg,#862b38,#6b1d29)!important;
+  filter:drop-shadow(0 4px 3px rgba(40,4,11,.24))!important;
+}
+.invite-real-fold{position:absolute;z-index:7;bottom:0;width:51%;height:54%;pointer-events:none}
+.invite-real-fold-l{left:0;clip-path:polygon(0 0,100% 100%,0 100%);background:linear-gradient(145deg,rgba(138,43,55,.72),rgba(102,25,36,.42))}
+.invite-real-fold-r{right:0;clip-path:polygon(100% 0,0 100%,100% 100%);background:linear-gradient(215deg,rgba(139,45,57,.67),rgba(96,22,33,.42))}
+.invite-real-botanical{
+  position:absolute;z-index:9;width:19%;height:42%;fill:none;stroke:#d3ad6d;stroke-width:1.45;stroke-linecap:round;stroke-linejoin:round;opacity:.7;pointer-events:none;
+  filter:drop-shadow(0 1px rgba(75,40,12,.22));
+}
+.invite-real-botanical-l{left:3%;bottom:3%;transform:rotate(-7deg)}
+.invite-real-botanical-r{right:3%;top:2%;transform:scale(-1,-1) rotate(-5deg)}
+.invite-real-cord{
+  position:absolute;z-index:10;left:-1%;right:-1%;top:53%;height:2px;
+  background:linear-gradient(90deg,#9a713f,#e1c487 24%,#ad824b 52%,#e1c487 78%,#95703f);
+  box-shadow:0 1px 1px rgba(52,20,8,.25),0 -1px rgba(255,239,200,.22);pointer-events:none;
+}
+.invite-real-cord-b{top:55%;height:1px;opacity:.85;transform:rotate(.4deg)}
+.invite-v2-seal{
+  z-index:13!important;left:50%!important;top:54%!important;width:74px!important;height:70px!important;
+  border-radius:48% 52% 46% 54%/52% 46% 54% 48%!important;
+  background:
+    radial-gradient(circle at 31% 23%,rgba(255,246,210,.55),transparent 13%),
+    radial-gradient(circle at 45% 42%,#d6b171 0,#bd9255 55%,#8e6536 100%)!important;
+  color:#fff0c8!important;
+  box-shadow:0 10px 13px rgba(45,14,8,.34),0 2px 2px rgba(45,14,8,.26),inset 2px 3px 4px rgba(255,244,207,.42),inset -4px -5px 7px rgba(81,49,19,.27)!important;
+}
+.invite-v2-seal::before{inset:6px!important;border:1px solid rgba(255,240,197,.66)!important}
+.invite-v2-seal::after{inset:10px!important;border:1px solid rgba(112,72,31,.34)!important}
+.invite-v2-seal>b{font:500 .8rem/1 "Cormorant Garamond",Georgia,serif!important;gap:4px!important;letter-spacing:.08em!important}
+.invite-v2-seal>b i{font-style:normal}
+.invite-v2-seal .seal-sprig{font-size:.8rem!important;color:#fff0c8!important;transform:rotate(-20deg)}
+.invite-real-caption{
+  position:absolute;z-index:12;left:50%;bottom:8%;transform:translateX(-50%);
+  display:grid;justify-items:center;gap:7px;color:#d6b375;text-align:center;white-space:nowrap;pointer-events:none;
+  text-shadow:0 1px rgba(255,238,198,.12),0 -1px rgba(69,34,11,.28);
+}
+.invite-real-caption strong{font:500 clamp(1.1rem,3vw,1.65rem)/1 "Cormorant Garamond",Georgia,serif;letter-spacing:.16em}
+.invite-real-caption em{font:500 clamp(.62rem,1.5vw,.78rem)/1 "Lora",serif;font-style:normal;letter-spacing:.22em}
+.invite-v2-envelope-foil,.invite-v2-envelope-ornament{display:none!important}
+.invite-v2-open-btn{
+  margin-top:clamp(28px,4vh,42px)!important;min-height:58px!important;
+  border:1px solid rgba(209,172,108,.7)!important;border-radius:999px!important;
+  background:linear-gradient(145deg,#7c202d,#651923)!important;
+  color:#fff8ec!important;box-shadow:0 14px 28px rgba(80,31,29,.17),inset 0 1px rgba(255,234,210,.08)!important;
+}
+.invite-v2-open-btn span{font-family:"Cormorant Garamond",Georgia,serif!important;font-size:1.1rem!important;letter-spacing:.22em!important}
+.invite-v2-personal-meta{margin-top:14px!important}
+.invite-v2-private{color:#654a43!important}
+.invite-v2-link-notice{
+  background:rgba(255,251,246,.88)!important;border:1px solid rgba(126,88,72,.16)!important;
+  box-shadow:0 10px 28px rgba(77,47,36,.07)!important;backdrop-filter:blur(12px);
+}
+.personal-link-note-icon{filter:sepia(.45) saturate(.7)}
+.personal-share-btn{border-color:rgba(111,53,50,.28)!important;background:rgba(255,252,248,.74)!important;color:#6b3c38!important}
+
+/* Physical opening: cord releases before the flap and card. */
+.invitation-intro.invite-v2.is-opening .invite-real-cord-a{animation:realCordLeft .52s ease .16s both}
+.invitation-intro.invite-v2.is-opening .invite-real-cord-b{animation:realCordRight .55s ease .16s both}
+@keyframes realCordLeft{to{transform:translateX(-54%) rotate(-2deg);opacity:0}}
+@keyframes realCordRight{to{transform:translateX(54%) rotate(2deg);opacity:0}}
+.invitation-intro.invite-v2.is-opening .invite-real-caption,
+.invitation-intro.invite-v2.is-opening .invite-real-botanical{animation:realDetailFade .4s ease .38s both}
+@keyframes realDetailFade{to{opacity:0}}
+.invitation-intro.invite-v2.is-opening .invite-real-fold{animation:realFoldFade .7s ease .8s both}
+@keyframes realFoldFade{to{opacity:.18}}
+
+@media(max-width:760px){
+  .invite-v2-scene{width:100%!important;padding-inline:22px!important}
+  .invite-v2-heading{margin-bottom:26px!important}
+  .invite-v2-heading::before{font-size:.9rem}
+  .invite-v2-title{font-size:clamp(2.25rem,11vw,3.3rem)!important}
+  .invite-v2-tap{font-size:.68rem!important;margin-top:10px!important}
+  .invite-v2-stage{width:min(100%,610px)!important;aspect-ratio:1.58!important}
+  .invite-v2-seal{width:62px!important;height:59px!important}
+  .invite-real-caption{bottom:7%;gap:5px}
+  .invite-real-caption strong{font-size:clamp(.95rem,4.8vw,1.25rem)}
+  .invite-real-caption em{font-size:.57rem}
+  .invite-real-botanical{width:21%;height:43%;stroke-width:1.25}
+  .invite-v2-open-btn{width:100%!important;margin-top:30px!important}
+}
+@media(max-width:380px){
+  .invite-v2-scene{padding-inline:16px!important}
+  .invite-v2-heading{margin-bottom:20px!important}
+  .invite-v2-stage{aspect-ratio:1.55!important}
+  .invite-v2-seal{width:56px!important;height:53px!important}
+  .invite-real-caption{bottom:5.5%}
+}
