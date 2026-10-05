@@ -5,8 +5,7 @@
   const hero = document.getElementById('home');
 
   const validAnchors = new Set([
-    '#home','#story','#events','#guide','#schedule',
-    '#travel','#forever','#wishes','#rsvp'
+    '#home','#story','#events','#forever','#rsvp'
   ]);
 
   const isEntryRoute = location.pathname === '/' || location.pathname.split('/').filter(Boolean).includes('invite');
@@ -138,7 +137,7 @@
     const lang = window.WeddingI18n?.language || 'vi';
     window.WeddingMusic?.start?.(lang);
 
-    setTimeout(finishOpening, 2580);
+    setTimeout(finishOpening, 2920);
   }
 
   function bindEntryInteractions() {
