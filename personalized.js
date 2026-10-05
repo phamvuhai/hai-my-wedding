@@ -33,8 +33,8 @@
     const texts = {
       vi: {
         kicker: 'TRÂN TRỌNG KÍNH MỜI',
-        lead: 'đến chung vui cùng chúng mình trong ngày trọng đại.',
-        note: 'Sự hiện diện của bạn sẽ là niềm vui và vinh hạnh của Hải & Mỹ.',
+        lead: 'Đến chung vui cùng chúng tôi trong ngày hạnh phúc',
+        note: 'Sự hiện diện của bạn là niềm vui của chúng tôi.',
         private: 'Thiệp mời này được dành riêng cho',
         open: 'MỞ THIỆP CƯỚI',
         welcomeTitle: display
@@ -50,8 +50,8 @@
       },
       en: {
         kicker: 'YOU ARE CORDIALLY INVITED',
-        lead: 'to celebrate this special day with us.',
-        note: 'Your presence would mean so much to Hai & My.',
+        lead: 'Join us in celebrating our special day',
+        note: 'Your presence would mean so much to us.',
         private: 'This invitation is specially prepared for',
         open: 'OPEN INVITATION',
         welcomeTitle: display
@@ -67,8 +67,8 @@
       },
       ja: {
         kicker: '心よりご招待申し上げます',
-        lead: '私たちの大切な日を一緒にお祝いください。',
-        note: 'ご出席いただけることを、Hai & My 心より楽しみにしております。',
+        lead: '私たちの大切な日に、ぜひご一緒にお祝いください',
+        note: 'お越しいただけることを、心より楽しみにしております。',
         private: 'この招待状は',
         privateSuffix: 'のためにご用意しました',
         open: '招待状を見る',
@@ -87,12 +87,38 @@
     return {...(texts[language] || texts.vi), display};
   }
 
+  function eventCopyFor(language, choice = 'both') {
+    if (language === 'jp') language = 'ja';
+    const map = {
+      vi: {
+        bride: {date:'THỨ SÁU · 18.12.2026', place:'NHÀ GÁI · TP. HỒ CHÍ MINH'},
+        groom: {date:'CHỦ NHẬT · 20.12.2026', place:'NHÀ TRAI · RẠCH GIÁ, AN GIANG'},
+        both: {date:'18 — 20 · 12 · 2026', place:'TP. HỒ CHÍ MINH · RẠCH GIÁ'}
+      },
+      en: {
+        bride: {date:'FRIDAY · 18.12.2026', place:"BRIDE'S FAMILY · HO CHI MINH CITY"},
+        groom: {date:'SUNDAY · 20.12.2026', place:"GROOM'S FAMILY · RACH GIA, AN GIANG"},
+        both: {date:'18 — 20 · 12 · 2026', place:'HO CHI MINH CITY · RACH GIA'}
+      },
+      ja: {
+        bride: {date:'金曜日 · 18.12.2026', place:'新婦側 · ホーチミン市'},
+        groom: {date:'日曜日 · 20.12.2026', place:'新郎側 · ラックザー、アンザン'},
+        both: {date:'2026 · 12 · 18 — 2026 · 12 · 20', place:'ホーチミン市 · ラックザー'}
+      }
+    };
+    const set = map[language] || map.vi;
+    return set[choice] || set.both;
+  }
+
   function renderInvite(invite) {
     const c = copyFor(lang(), invite);
     const nameEl = document.getElementById('personalInviteName');
     const leadEl = document.getElementById('personalInviteLead');
     const noteEl = document.getElementById('personalInviteNote');
     const privateEl = document.getElementById('personalInvitePrivate');
+    const eventDateEl = document.getElementById('introEventDate');
+    const eventPlaceEl = document.getElementById('introEventPlace');
+    const innerDateEl = document.querySelector('.inner-letter-date');
     const kickerEl = document.querySelector('.intro-invite');
     const openLabel = document.querySelector('#openInvitation [data-i18n="intro.open"]');
 
@@ -103,12 +129,17 @@
     }
     if (leadEl) {
       leadEl.textContent = c.lead;
-      leadEl.hidden = !c.display;
+      leadEl.hidden = false;
     }
     if (noteEl) {
       noteEl.textContent = c.note;
-      noteEl.hidden = !c.display;
+      noteEl.hidden = false;
     }
+
+    const eventCopy = eventCopyFor(lang(), invite?.event_choice || 'both');
+    if (eventDateEl) eventDateEl.textContent = eventCopy.date;
+    if (eventPlaceEl) eventPlaceEl.textContent = eventCopy.place;
+    if (innerDateEl) innerDateEl.textContent = eventCopy.date;
     if (privateEl) {
       if (!c.display) {
         privateEl.textContent = '';
