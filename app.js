@@ -747,10 +747,22 @@ async function loadHeroPhoto() {
   const framedImg = document.getElementById('heroImage');
   const fullImg = document.getElementById('heroFullImage');
   const introImg = document.getElementById('introImage');
+  const envelopeImg = document.getElementById('introEnvelopeImage');
   if (!hero || !framedImg || !fullImg) return;
 
+  const markReady = (mode = 'image') => {
+    document.body.classList.remove('hero-image-loading');
+    document.body.classList.toggle('hero-image-fallback', mode !== 'image');
+    document.body.classList.toggle('hero-image-ready', mode === 'image');
+    window.WeddingHeroReady = true;
+    document.dispatchEvent(new CustomEvent('wedding:hero-ready', {detail:{mode}}));
+  };
+
   const cfg = window.WEDDING_CONFIG || {};
-  if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.supabase) return;
+  if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.supabase) {
+    markReady('fallback');
+    return;
+  }
 
   try {
     const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
@@ -762,7 +774,10 @@ async function loadHeroPhoto() {
       .limit(1)
       .maybeSingle();
 
-    if (error || !data) return;
+    if (error || !data?.image_path) {
+      markReady('fallback');
+      return;
+    }
 
     const lang = window.WeddingI18n?.language || 'vi';
     const alt = lang === 'en' ? (data.alt_text_en || data.title_en || data.alt_text || data.title) :
@@ -799,17 +814,41 @@ async function loadHeroPhoto() {
     };
     hero.style.setProperty('--hero-frame-max', ratioWidths[data.hero_desktop_ratio] || '680px');
 
+    // Preload + decode the actual Admin-selected Hero before revealing any photo.
+    const preload = new Image();
+    preload.src = url;
+    try {
+      await preload.decode();
+    } catch {
+      await new Promise((resolve, reject) => {
+        preload.onload = resolve;
+        preload.onerror = reject;
+      });
+    }
+
     framedImg.src = url;
     framedImg.alt = alt || 'Hải Phạm & Mỹ Nguyễn';
+    framedImg.style.objectPosition = `${fx}% ${fy}%`;
+
     fullImg.src = url;
     fullImg.alt = '';
+    fullImg.style.objectPosition = `${fx}% ${fy}%`;
+
     if (introImg) {
       introImg.src = url;
       introImg.alt = alt || 'Hải Phạm & Mỹ Nguyễn';
       introImg.style.objectPosition = `${fx}% ${fy}%`;
     }
+    if (envelopeImg) {
+      envelopeImg.src = url;
+      envelopeImg.alt = '';
+      envelopeImg.style.objectPosition = `${fx}% ${fy}%`;
+    }
+
+    markReady('image');
   } catch (error) {
     console.error('Hero photo error:', error);
+    markReady('fallback');
   }
 }
 
