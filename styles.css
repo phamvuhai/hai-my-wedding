@@ -10622,3 +10622,570 @@ body.particles-muted .hero-fall-layer{
     font-size:.8rem;
   }
 }
+
+
+/* =========================================
+   V41 — Final Design Direction
+   Luxury Stationery Wedding Experience
+   ========================================= */
+
+/* ---------- Opening: signature stationery title ---------- */
+.intro-script-title{
+  margin:0 0 2px!important;
+  color:#4e3930;
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-size:clamp(2rem,4.2vw,3.5rem);
+  font-style:italic;
+  font-weight:500;
+  line-height:.95;
+  letter-spacing:-.035em;
+  text-align:center;
+}
+.intro-save{
+  margin:0 0 12px!important;
+  color:rgba(78,57,48,.55)!important;
+  font-size:.58rem!important;
+  font-weight:700!important;
+  letter-spacing:.16em!important;
+}
+.invitation-intro.is-opening .intro-script-title{
+  opacity:0!important;
+  transform:translateY(-6px)!important;
+  transition:opacity .22s ease,transform .28s ease!important;
+}
+
+/* Keep the opening luxurious rather than busy. */
+.intro-spark{
+  width:5px!important;
+  height:5px!important;
+  box-shadow:0 0 10px rgba(247,220,162,.74)!important;
+}
+.intro-paper{
+  box-shadow:
+    0 30px 80px rgba(72,46,36,.12),
+    0 2px 8px rgba(72,46,36,.06),
+    inset 0 0 0 1px rgba(255,255,255,.6)!important;
+}
+
+/* ---------- Story: editorial stacked paper ---------- */
+.editorial-story{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 14% 8%,rgba(177,123,101,.08),transparent 28%),
+    linear-gradient(180deg,#fbf7f3 0%,#f7f0ea 100%)!important;
+}
+.editorial-story::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  opacity:.18;
+  pointer-events:none;
+  background-image:
+    linear-gradient(rgba(94,67,54,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(94,67,54,.025) 1px,transparent 1px);
+  background-size:24px 24px;
+  mask-image:linear-gradient(to bottom,transparent,#000 16%,#000 84%,transparent);
+}
+.story-grid{
+  align-items:center!important;
+  gap:clamp(34px,6vw,90px)!important;
+}
+.story-side{
+  position:relative;
+  z-index:3;
+}
+.story-side .eyebrow{
+  letter-spacing:.22em!important;
+}
+.story-side .monogram{
+  opacity:.62;
+}
+.story-paper-stack{
+  position:relative;
+  z-index:2;
+  width:min(700px,100%);
+  min-width:0;
+  margin:22px auto;
+  padding:18px 18px 22px;
+  transform:translateY(18px);
+  opacity:0;
+  transition:opacity .75s ease,transform .9s cubic-bezier(.2,.75,.2,1);
+}
+.story-paper-stack.motion-in,
+.story-paper-stack.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+.story-paper-layer{
+  position:absolute;
+  inset:18px 18px 22px;
+  display:block;
+  border:1px solid rgba(105,73,61,.13);
+  background:#f7f1eb;
+  box-shadow:0 16px 40px rgba(77,52,43,.08);
+  pointer-events:none;
+  transform-origin:50% 55%;
+  transition:transform 1.05s cubic-bezier(.2,.75,.2,1);
+}
+.story-paper-back{
+  transform:translate(5px,10px) rotate(4deg);
+}
+.story-paper-mid{
+  transform:translate(-6px,4px) rotate(-2.4deg);
+  background:#fbf7f2;
+}
+.story-paper-stack.motion-in .story-paper-back,
+.story-paper-stack.visible .story-paper-back{
+  transform:translate(12px,18px) rotate(5.2deg);
+}
+.story-paper-stack.motion-in .story-paper-mid,
+.story-paper-stack.visible .story-paper-mid{
+  transform:translate(-12px,8px) rotate(-3.2deg);
+}
+.story-paper-stack .story-copy{
+  position:relative;
+  z-index:3;
+  min-width:0;
+  padding:clamp(34px,5vw,62px) clamp(28px,5vw,58px) clamp(30px,4vw,50px)!important;
+  border:1px solid rgba(97,66,54,.16);
+  background:
+    linear-gradient(105deg,rgba(255,255,255,.75),transparent 42%),
+    radial-gradient(circle at 80% 14%,rgba(182,129,105,.08),transparent 26%),
+    #fffdf9;
+  box-shadow:0 24px 58px rgba(80,54,44,.12);
+  transform:rotate(.65deg);
+}
+.story-paper-stack .story-copy::before{
+  content:"";
+  position:absolute;
+  inset:12px;
+  border:1px solid rgba(125,84,66,.08);
+  pointer-events:none;
+}
+.story-paper-kicker{
+  margin:0 0 20px;
+  color:#4d352d;
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-size:clamp(1.25rem,2.5vw,1.9rem);
+  font-style:italic;
+  font-weight:600;
+  letter-spacing:.02em;
+}
+.story-paper-stack .story-copy h2{
+  max-width:11ch;
+  margin-bottom:18px!important;
+  font-size:clamp(2.1rem,5vw,4.1rem)!important;
+  line-height:.92!important;
+  text-wrap:balance;
+}
+.story-paper-stack .story-copy>p:not(.story-paper-kicker){
+  max-width:43ch;
+  margin:0!important;
+  font-size:clamp(.98rem,1.55vw,1.12rem)!important;
+  line-height:1.85!important;
+  color:rgba(68,49,41,.78)!important;
+}
+.story-paper-stitch{
+  position:absolute;
+  left:15px;
+  top:30px;
+  bottom:30px;
+  width:8px;
+  opacity:.5;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(119,82,66,.42) 0 6px,
+    transparent 6px 16px
+  );
+}
+.story-paper-signature{
+  display:block;
+  margin-top:26px;
+  color:rgba(130,86,68,.72);
+  font:600 .72rem/1 Georgia,serif;
+  letter-spacing:.18em;
+}
+
+/* ---------- Countdown: compact date stamp ---------- */
+.countdown-compact .countdown-layout{
+  grid-template-columns:minmax(180px,.74fr) minmax(420px,1.7fr) minmax(120px,.52fr)!important;
+  align-items:center!important;
+  gap:clamp(18px,3vw,42px)!important;
+}
+.countdown-date-stamp{
+  position:relative;
+  display:grid;
+  grid-template-columns:repeat(3,auto);
+  grid-template-rows:auto auto auto;
+  align-items:center;
+  justify-content:center;
+  column-gap:7px;
+  width:min(150px,100%);
+  aspect-ratio:1/1.02;
+  margin-left:auto;
+  padding:15px 12px;
+  border:1px solid rgba(111,75,61,.13);
+  border-radius:50%;
+  background:rgba(255,253,250,.72);
+  box-shadow:
+    0 14px 34px rgba(83,56,45,.07),
+    inset 0 0 0 5px rgba(177,124,101,.035);
+  color:#593e34;
+  transform:rotate(2deg);
+}
+.countdown-date-stamp::before{
+  content:"";
+  position:absolute;
+  inset:8px;
+  border:1px dashed rgba(137,91,72,.16);
+  border-radius:50%;
+}
+.countdown-stamp-month{
+  grid-column:1/-1;
+  position:relative;
+  z-index:1;
+  font-size:.55rem;
+  font-weight:800;
+  letter-spacing:.16em;
+}
+.countdown-stamp-day{
+  position:relative;
+  z-index:1;
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-size:2.1rem;
+  line-height:1;
+  font-weight:600;
+}
+.countdown-date-stamp>i{
+  position:relative;
+  z-index:1;
+  color:#a05f58;
+  font-style:normal;
+  font-size:.62rem;
+}
+.countdown-date-stamp>small{
+  grid-column:1/-1;
+  position:relative;
+  z-index:1;
+  margin-top:2px;
+  font-size:.52rem;
+  letter-spacing:.18em;
+  font-weight:800;
+  opacity:.58;
+}
+
+/* ---------- Events: elegant journey bridge ---------- */
+.event-day-panels{
+  position:relative!important;
+}
+.event-day-panel{
+  position:relative;
+  z-index:2;
+}
+.event-journey-bridge{
+  position:absolute;
+  z-index:1;
+  left:50%;
+  top:15%;
+  bottom:15%;
+  width:clamp(70px,9vw,112px);
+  transform:translateX(-50%);
+  pointer-events:none;
+  opacity:.58;
+}
+.journey-route{
+  position:absolute;
+  inset:34px 0;
+  display:block;
+}
+.journey-route::before,
+.journey-route::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  width:50%;
+  height:48%;
+  border:1.5px solid rgba(160,108,83,.34);
+}
+.journey-route::before{
+  top:0;
+  border-left:0;
+  border-bottom:0;
+  border-radius:0 100% 0 0;
+  transform:translateX(-100%);
+}
+.journey-route::after{
+  bottom:0;
+  border-right:0;
+  border-top:0;
+  border-radius:0 0 0 100%;
+}
+.journey-route>i{
+  position:absolute;
+  left:50%;
+  top:8%;
+  bottom:8%;
+  width:1px;
+  transform:translateX(-50%);
+  background:linear-gradient(180deg,transparent,rgba(159,105,82,.28) 18%,rgba(159,105,82,.28) 82%,transparent);
+}
+.journey-route>b{
+  position:absolute;
+  left:50%;
+  top:50%;
+  display:grid;
+  place-items:center;
+  width:31px;
+  height:31px;
+  transform:translate(-50%,-50%);
+  border:1px solid rgba(151,99,78,.22);
+  border-radius:50%;
+  background:#fbf6f1;
+  color:#a1655e;
+  font-size:.86rem;
+  font-weight:500;
+  box-shadow:0 8px 20px rgba(77,51,41,.09);
+}
+.journey-home{
+  position:absolute;
+  left:50%;
+  display:grid;
+  place-items:center;
+  width:34px;
+  height:34px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  border:1px solid rgba(151,99,78,.18);
+  background:#fffaf6;
+  color:rgba(122,80,63,.62);
+  font-size:1rem;
+  box-shadow:0 7px 18px rgba(77,51,41,.07);
+}
+.journey-home-bride{top:0}
+.journey-home-groom{bottom:0}
+
+/* Preserve the existing continuous per-family progress, but make it feel like a drawn route. */
+.events-unified .event-timeline::before{
+  background:linear-gradient(180deg,rgba(166,112,89,.08),rgba(166,112,89,.16),rgba(166,112,89,.08))!important;
+}
+.events-unified .event-timeline::after{
+  background:linear-gradient(180deg,#9c6654,#c99a82,#9c6654)!important;
+}
+.events-unified .event-card.is-current{
+  background:linear-gradient(90deg,rgba(171,116,94,.055),transparent 75%)!important;
+}
+
+/* ---------- RSVP: paper form instead of generic web form ---------- */
+.rsvp-section{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 84% 18%,rgba(169,112,89,.08),transparent 25%),
+    linear-gradient(180deg,#f8f1eb,#fbf7f3)!important;
+}
+.rsvp-wrap{
+  align-items:start!important;
+}
+.rsvp-form{
+  position:relative;
+  overflow:visible!important;
+  border:1px solid rgba(104,72,59,.13)!important;
+  border-radius:3px!important;
+  background:#fffdf9!important;
+  box-shadow:0 26px 64px rgba(76,51,41,.10)!important;
+}
+.rsvp-form::before,
+.rsvp-form::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:8px;
+  border:1px solid rgba(110,76,62,.10);
+  background:#f9f2ec;
+  box-shadow:0 18px 40px rgba(74,49,40,.06);
+}
+.rsvp-form::before{
+  transform:translate(9px,9px) rotate(1.2deg);
+}
+.rsvp-form::after{
+  transform:translate(-7px,13px) rotate(-.8deg);
+}
+.rsvp-form input,
+.rsvp-form select,
+.rsvp-form textarea{
+  border-radius:2px!important;
+  border-color:rgba(95,65,53,.17)!important;
+  background:rgba(255,253,250,.84)!important;
+}
+.rsvp-form input:focus,
+.rsvp-form select:focus,
+.rsvp-form textarea:focus{
+  border-color:rgba(148,93,73,.42)!important;
+  box-shadow:0 0 0 3px rgba(153,100,79,.07)!important;
+}
+.rsvp-form .btn-primary{
+  border-radius:2px!important;
+  letter-spacing:.12em!important;
+}
+
+/* ---------- Responsive safety ---------- */
+@media(max-width:900px){
+  .countdown-compact .countdown-layout{
+    grid-template-columns:1fr!important;
+    gap:14px!important;
+  }
+  .countdown-date-stamp{
+    width:118px;
+    margin:2px auto 0;
+    aspect-ratio:1/1;
+  }
+  .event-journey-bridge{
+    display:none!important;
+  }
+}
+
+@media(max-width:760px){
+  .intro-script-title{
+    margin-top:4px!important;
+    font-size:clamp(1.75rem,8vw,2.4rem);
+  }
+  .intro-save{
+    margin-bottom:7px!important;
+    font-size:.52rem!important;
+  }
+
+  .editorial-story{
+    padding-top:70px!important;
+    padding-bottom:78px!important;
+  }
+  .story-grid{
+    gap:18px!important;
+  }
+  .story-side{
+    text-align:center;
+  }
+  .story-side .monogram{
+    margin-inline:auto;
+  }
+  .story-paper-stack{
+    width:calc(100% - 8px);
+    margin:12px auto;
+    padding:12px 10px 17px;
+  }
+  .story-paper-layer{
+    inset:12px 10px 17px;
+  }
+  .story-paper-back{
+    transform:translate(3px,8px) rotate(2.3deg);
+  }
+  .story-paper-mid{
+    transform:translate(-3px,3px) rotate(-1.4deg);
+  }
+  .story-paper-stack.motion-in .story-paper-back,
+  .story-paper-stack.visible .story-paper-back{
+    transform:translate(6px,12px) rotate(2.8deg);
+  }
+  .story-paper-stack.motion-in .story-paper-mid,
+  .story-paper-stack.visible .story-paper-mid{
+    transform:translate(-6px,5px) rotate(-1.8deg);
+  }
+  .story-paper-stack .story-copy{
+    padding:30px 24px 28px!important;
+    transform:rotate(.25deg);
+  }
+  .story-paper-kicker{
+    margin-bottom:15px;
+    font-size:1.22rem;
+  }
+  .story-paper-stack .story-copy h2{
+    max-width:100%;
+    font-size:clamp(2rem,10vw,3rem)!important;
+  }
+  .story-paper-stack .story-copy>p:not(.story-paper-kicker){
+    font-size:.9rem!important;
+    line-height:1.7!important;
+  }
+  .story-paper-stitch{
+    left:11px;
+    width:5px;
+  }
+
+  .countdown-date-stamp{
+    width:105px;
+    padding:10px;
+  }
+  .countdown-stamp-day{
+    font-size:1.72rem;
+  }
+
+  .rsvp-form{
+    border-radius:2px!important;
+    box-shadow:0 18px 42px rgba(76,51,41,.09)!important;
+  }
+  .rsvp-form::before{
+    transform:translate(5px,7px) rotate(.8deg);
+  }
+  .rsvp-form::after{
+    transform:translate(-4px,9px) rotate(-.55deg);
+  }
+}
+
+@media(max-width:480px){
+  .intro-script-title{
+    font-size:1.82rem;
+  }
+
+  .story-paper-stack{
+    width:100%;
+    padding-inline:5px;
+  }
+  .story-paper-layer{
+    inset-inline:6px;
+  }
+  .story-paper-stack .story-copy{
+    padding:26px 20px 24px!important;
+  }
+  .story-paper-stack .story-copy::before{
+    inset:8px;
+  }
+  .story-paper-stack .story-copy h2{
+    font-size:clamp(1.85rem,9.6vw,2.6rem)!important;
+  }
+  .story-paper-stack .story-copy>p:not(.story-paper-kicker){
+    overflow-wrap:anywhere;
+  }
+
+  .countdown-date-stamp{
+    width:96px;
+  }
+  .countdown-stamp-month{
+    font-size:.47rem;
+  }
+  .countdown-stamp-day{
+    font-size:1.55rem;
+  }
+}
+
+/* Very short in-app browser viewports: title is decorative, core invite stays visible. */
+@media(max-width:480px) and (max-height:700px){
+  .intro-script-title{
+    display:none!important;
+  }
+}
+
+/* Reduced-motion keeps the same visual hierarchy with no surprise movement. */
+@media(prefers-reduced-motion:reduce){
+  .story-paper-stack,
+  .story-paper-layer{
+    transition:none!important;
+    transform:none!important;
+    opacity:1!important;
+  }
+  .story-paper-stack .story-copy{
+    transform:none!important;
+  }
+  .countdown-date-stamp{
+    transform:none!important;
+  }
+}
