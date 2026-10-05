@@ -148,8 +148,8 @@
     // then cross-fade quickly into the already-preloaded Admin Hero.
     setTimeout(() => {
       if (opening) intro.classList.add('is-exiting');
-    }, 3260);
-    setTimeout(finishOpening, 3620);
+    }, 4720);
+    setTimeout(finishOpening, 5100);
   }
 
   function bindEntryInteractions() {
