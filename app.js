@@ -340,7 +340,10 @@ function galleryClient() {
 function galleryPublicUrl(img) {
   if (img.publicUrl) return img.publicUrl;
   const client = galleryClient();
-  return client ? client.storage.from('wedding-gallery').getPublicUrl(img.image_path).data.publicUrl : '';
+  if (!client) return '';
+  const base = client.storage.from('wedding-gallery').getPublicUrl(img.image_path).data.publicUrl;
+  const version = img.updated_at || img.created_at || '';
+  return version ? `${base}?v=${encodeURIComponent(version)}` : base;
 }
 
 function gallerySize(img) {
@@ -382,7 +385,7 @@ async function loadHomeGallery() {
   try {
     const { data: images, error } = await client
       .from('gallery_images')
-      .select('id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,is_hero,show_on_homepage,focus_x,focus_y,created_at')
+      .select('id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,is_hero,show_on_homepage,focus_x,focus_y,created_at,updated_at')
       .eq('show_on_homepage', true)
       .order('is_featured', { ascending: false })
       .order('sort_order', { ascending: true })
@@ -435,7 +438,7 @@ async function loadAlbumImages({force=false} = {}) {
   const [albumResult, imageResult] = await Promise.all([
     client.from('gallery_albums').select('id,title,slug,sort_order').order('sort_order', {ascending:true}),
     client.from('gallery_images')
-      .select('id,album_id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,focus_x,focus_y,created_at,is_published')
+      .select('id,album_id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,focus_x,focus_y,created_at,updated_at,is_published')
       .eq('is_published', true)
       .order('is_featured', { ascending: false })
       .order('sort_order', { ascending: true })
@@ -720,7 +723,7 @@ async function loadHeroPhoto() {
     const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
     const { data, error } = await client
       .from('gallery_images')
-      .select('image_path,alt_text,title,alt_text_en,title_en,alt_text_ja,title_ja,focus_x,focus_y,width,height,hero_layout,hero_desktop_ratio,hero_mobile_ratio,hero_zoom,hero_spacing')
+      .select('image_path,alt_text,title,alt_text_en,title_en,alt_text_ja,title_ja,focus_x,focus_y,width,height,hero_layout,hero_desktop_ratio,hero_mobile_ratio,hero_zoom,hero_spacing,updated_at')
       .eq('is_hero', true)
       .eq('is_published', true)
       .limit(1)
@@ -733,7 +736,8 @@ async function loadHeroPhoto() {
       lang === 'ja' ? (data.alt_text_ja || data.title_ja || data.alt_text || data.title) :
       (data.alt_text || data.title);
 
-    const url = client.storage.from('wedding-gallery').getPublicUrl(data.image_path).data.publicUrl;
+    const heroBaseUrl = client.storage.from('wedding-gallery').getPublicUrl(data.image_path).data.publicUrl;
+    const url = data.updated_at ? `${heroBaseUrl}?v=${encodeURIComponent(data.updated_at)}` : heroBaseUrl;
     const layout = ['full','framed','split','minimal'].includes(data.hero_layout) ? data.hero_layout : 'full';
 
     hero.classList.remove(
