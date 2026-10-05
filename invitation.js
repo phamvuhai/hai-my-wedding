@@ -146,10 +146,16 @@
 
     // Let the invitation finish opening, hold long enough to read it,
     // then cross-fade quickly into the already-preloaded Admin Hero.
+    // Promote the letter only after it has cleared the front pocket.
+    setTimeout(() => {
+      if (opening) intro.classList.add('is-letter-out');
+    }, 2920);
+
+    // Hold the fully extracted invitation before entering the site.
     setTimeout(() => {
       if (opening) intro.classList.add('is-exiting');
-    }, 4720);
-    setTimeout(finishOpening, 5100);
+    }, 5100);
+    setTimeout(finishOpening, 5480);
   }
 
   function bindEntryInteractions() {
