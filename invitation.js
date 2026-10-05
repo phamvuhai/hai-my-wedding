@@ -137,7 +137,8 @@
     const lang = window.WeddingI18n?.language || 'vi';
     window.WeddingMusic?.start?.(lang);
 
-    setTimeout(finishOpening, 2920);
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setTimeout(finishOpening, reduceMotion ? 520 : 2920);
   }
 
   function bindEntryInteractions() {
