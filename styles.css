@@ -12013,3 +12013,196 @@ img,video,svg{
     opacity:0!important;
   }
 }
+
+
+/* =========================================
+   V44 — Cross-device UI QA + premium invitation
+   PC / tablet / phone: protect copy before decoration.
+   ========================================= */
+html{overflow-x:hidden;overflow-x:clip}
+body{min-width:0}
+main,.section,.container,.hero,.hero-content,.story-grid,.countdown-layout,
+.event-families,.event-family,.family-header,.gallery-editorial-head,.rsvp-wrap,
+.footer-inner{min-width:0}
+h1,h2,h3,h4,p,a,button,span,strong,small,label{
+  overflow-wrap:break-word;
+}
+[data-i18n],.hero-note,.event-meta,.section-heading p,.rsvp-copy p,.footer-inner p{
+  max-width:100%;
+}
+.hero-couple-names,.forever-copy strong,.gallery-display,.rsvp-display{
+  max-width:100%;
+}
+.hero-name-fit-text,.forever-copy strong{
+  font-size:min(1em,18vw);
+}
+.section{
+  padding-block:clamp(58px,8vw,96px);
+}
+.container{
+  width:min(1120px,calc(100% - clamp(28px,5vw,64px)));
+}
+.nav-inner,.nav-right,.nav-links{min-width:0}
+img,video,svg{height:auto}
+
+/* Invitation should read like a physical keepsake rather than a UI card. */
+.invite-v2-envelope{
+  border-radius:18px;
+  filter:drop-shadow(0 28px 40px rgba(76,48,39,.19));
+}
+.invite-v2-envelope-back{
+  background:
+    repeating-linear-gradient(112deg,rgba(255,255,255,.06) 0 1px,transparent 1px 4px),
+    linear-gradient(145deg,#eadfd9,#d5c6bf);
+}
+.invite-v2-envelope-front{
+  background:
+    repeating-linear-gradient(112deg,rgba(255,255,255,.07) 0 1px,transparent 1px 4px),
+    linear-gradient(180deg,#f0e8e3,#ddd0ca);
+}
+.invite-v2-seal{
+  box-shadow:0 8px 20px rgba(70,43,34,.24),inset 0 0 0 4px rgba(255,236,196,.18);
+}
+.invite-v2-paper{
+  overflow-y:auto;
+  overflow-x:hidden;
+  background:
+    repeating-linear-gradient(104deg,rgba(119,76,59,.012) 0 1px,transparent 1px 5px),
+    radial-gradient(circle at 50% 0%,#fff 0%,#fffaf6 58%,#f6ebe3 100%);
+  box-shadow:0 38px 100px rgba(72,46,36,.22),inset 0 0 0 1px rgba(255,255,255,.8);
+}
+.invite-v2-paper::after{
+  content:"";
+  position:absolute;
+  inset:15px;
+  z-index:-1;
+  border:1px solid rgba(176,125,104,.08);
+  border-radius:13px;
+  pointer-events:none;
+}
+.invite-v2-guest-name,.invite-v2-names{
+  word-break:normal;
+  overflow-wrap:anywhere;
+  hyphens:auto;
+}
+.invite-v2-photo-frame{
+  background:linear-gradient(145deg,#fff,#f7eee8);
+  box-shadow:0 16px 38px rgba(76,51,41,.14),0 0 0 1px rgba(123,80,61,.05);
+}
+.invite-v2-open-btn{
+  transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;
+}
+@media(hover:hover){
+  .invite-v2-open-btn:hover{transform:translateY(-2px);box-shadow:0 20px 40px rgba(101,47,57,.23)}
+}
+
+/* Tablet: collapse layouts before text is squeezed. */
+@media(min-width:761px) and (max-width:1024px){
+  :root{--header-h:72px}
+  .container{width:min(100% - 48px,920px)}
+  .hero-content{gap:clamp(22px,4vw,44px)}
+  .story-grid,.rsvp-wrap{column-gap:clamp(24px,4vw,48px)}
+  .event-families{gap:22px}
+  .gallery-display{font-size:clamp(4rem,11vw,7rem)}
+  .forever-copy strong{font-size:clamp(4.5rem,14vw,8rem)!important}
+  .invite-v2-card{width:min(590px,calc(100vw - 64px))}
+  .invite-v2-paper{padding:24px 30px 22px}
+  .invite-v2-guest-name{font-size:clamp(2rem,5.4vw,3rem)}
+}
+
+/* Phones: content owns the height; decoration never clips copy. */
+@media(max-width:760px){
+  :root{--header-h:58px}
+  .container{width:calc(100% - 28px)}
+  .section{padding-block:clamp(46px,13vw,70px)}
+  h2{font-size:clamp(2rem,10vw,3rem);line-height:1.02}
+  h3{font-size:clamp(1.55rem,7.5vw,2rem)}
+  .nav-inner{width:calc(100% - 24px)}
+  .brand{font-size:1.12rem;white-space:nowrap}
+  .nav-right{gap:8px}
+  .nav-links{display:none}
+  .nav-language{max-width:58vw}
+  .nav-language button{padding-inline:7px}
+
+  .hero{min-height:100svh}
+  .hero-content{width:calc(100% - 28px)!important}
+  .hero-copy{min-width:0;max-width:100%}
+  .hero-couple-names{width:100%;min-width:0}
+  .hero-note{font-size:clamp(.88rem,3.8vw,1rem);line-height:1.55}
+  .hero-date{letter-spacing:.08em;overflow-wrap:anywhere}
+
+  .editorial-story .story-grid{width:calc(100% - 28px)}
+  .story-paper-stack{width:100%!important;min-width:0}
+  .story-copy{height:auto!important;min-height:0!important}
+  .story-copy h2,.story-copy p{max-width:100%;overflow-wrap:break-word!important}
+
+  .countdown-layout{width:calc(100% - 28px)}
+  .countdown{width:100%;max-width:100%;grid-template-columns:repeat(4,minmax(0,1fr))}
+  .countdown>div{min-width:0}
+  .countdown strong{font-size:clamp(1.55rem,8vw,2.4rem)}
+  .countdown span{font-size:clamp(.52rem,2.6vw,.7rem)}
+
+  .event-family,.event-card{width:100%;max-width:100%}
+  .family-header{gap:10px;align-items:flex-start}
+  .family-header>div{min-width:0}
+  .family-date{flex:0 0 auto;font-size:.68rem}
+  .event-date,.event-dayline{flex-wrap:wrap}
+  .event-actions{flex-wrap:wrap}
+  .map-link{max-width:100%;white-space:normal}
+
+  .forever-transition,.forever-sticky{height:52svh!important;min-height:360px}
+  .forever-copy{padding-inline:14px}
+  .forever-copy strong{font-size:clamp(3.3rem,19vw,6rem)!important;line-height:.85}
+  .gallery-display{font-size:clamp(3rem,17vw,5.6rem);line-height:.82}
+  .gallery-editorial-head{min-width:0}
+  .gallery-editorial-head .section-heading{min-width:0}
+  .rsvp-wrap{width:calc(100% - 28px)}
+  .rsvp-display{font-size:clamp(3rem,18vw,5.4rem)}
+  .rsvp-form label,.rsvp-form input,.rsvp-form select,.rsvp-form textarea{min-width:0;width:100%}
+  .footer-inner{width:calc(100% - 28px)}
+
+  .invite-v2-card{
+    width:min(94vw,500px);
+    max-height:calc(100dvh - max(18px,env(safe-area-inset-top)) - max(18px,env(safe-area-inset-bottom)));
+  }
+  .invite-v2-paper{
+    max-height:inherit;
+    padding:clamp(15px,3.2vh,22px) 14px clamp(13px,2.8vh,20px);
+  }
+  .invite-v2-photo-wrap{width:min(72%,270px)}
+  .invite-v2-guest-name{line-height:1.01}
+  .invite-v2-names{display:flex;justify-content:center;align-items:baseline;flex-wrap:wrap;column-gap:.16em;row-gap:0}
+  .invite-v2-names span{margin-inline:.08em}
+}
+
+/* Very narrow phones: preserve every word, simplify ornamentation. */
+@media(max-width:360px){
+  .container,.hero-content,.editorial-story .story-grid,.countdown-layout,.rsvp-wrap,.footer-inner{
+    width:calc(100% - 20px)!important;
+  }
+  .eyebrow{letter-spacing:.16em}
+  .invite-v2-paper::after{display:none}
+  .invite-v2-photo-wrap{width:min(70%,230px)}
+  .invite-v2-names{font-size:1.12rem}
+  .invite-v2-event strong{letter-spacing:.05em}
+  .invite-v2-event span{letter-spacing:.035em}
+}
+
+/* Short screens: card scrolls instead of clipping text. */
+@media(max-height:620px){
+  .invite-v2-card{top:50%;max-height:calc(100dvh - 8px)}
+  .invite-v2-paper{max-height:calc(100dvh - 8px);overflow-y:auto}
+}
+
+/* Landscape phones/tablets: no lost invitation copy. */
+@media(orientation:landscape) and (max-height:560px){
+  .invite-v2-card{width:min(620px,70vw)}
+  .invite-v2-paper{overflow-y:auto}
+  .invite-v2-photo-wrap{width:min(190px,35%)}
+}
+
+/* Motion must never be required for readability. */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important}
+  .reveal,.motion-in,[data-motion-lines]{transition:none!important}
+}
