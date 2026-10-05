@@ -384,7 +384,7 @@
   }, { threshold:.14, rootMargin:'-3% 0px -7% 0px' });
 
   function initReveal() {
-    qsa('.section-heading, .story-side, .story-copy, .gallery-display, .countdown-heading, .event-family, .countdown > div, .home-photo, .rsvp-copy, .rsvp-display, .rsvp-form')
+    qsa('.section-heading, .story-side, .story-paper-stack, .gallery-display, .countdown-heading, .countdown-date-stamp, .event-family, .countdown > div, .home-photo, .rsvp-copy, .rsvp-display, .rsvp-form')
       .forEach((el,i) => observeRevealElement(el,i));
     initGalleryCuriosity();
   }
