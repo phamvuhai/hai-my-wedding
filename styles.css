@@ -12552,3 +12552,98 @@ img,video,svg{height:auto}
 @media(prefers-reduced-motion:reduce){
   .invite-v2-envelope::after{animation:none!important}
 }
+
+
+/* =========================================
+   V48 — Real-stationery Burgundy Cover
+   Softer wine red, visible folds, dimensional seal, restrained foil.
+   ========================================= */
+.invitation-intro.invite-v2{
+  background:
+    radial-gradient(ellipse at 72% 8%,rgba(186,142,105,.12),transparent 28%),
+    radial-gradient(ellipse at 16% 76%,rgba(121,39,47,.055),transparent 32%),
+    repeating-linear-gradient(97deg,rgba(102,72,55,.012) 0 1px,transparent 1px 5px),
+    #f5eee6!important;
+}
+.invite-v2-envelope{
+  border-radius:10px!important;
+  filter:drop-shadow(0 22px 25px rgba(58,31,28,.19)) drop-shadow(0 5px 7px rgba(58,31,28,.1))!important;
+}
+.invite-v2-envelope-back{
+  border-radius:10px!important;
+  background:
+    repeating-linear-gradient(96deg,rgba(255,255,255,.024) 0 1px,transparent 1px 3px),
+    linear-gradient(148deg,#7f2631,#681c27)!important;
+}
+.invite-v2-envelope-front{
+  border-radius:0 0 10px 10px!important;
+  background:
+    linear-gradient(28deg,transparent 49.65%,rgba(245,193,174,.08) 49.9%,rgba(69,10,20,.18) 50.15%,transparent 50.55%),
+    linear-gradient(-28deg,transparent 49.65%,rgba(245,193,174,.07) 49.9%,rgba(69,10,20,.17) 50.15%,transparent 50.55%),
+    repeating-linear-gradient(96deg,rgba(255,255,255,.018) 0 1px,transparent 1px 3px),
+    linear-gradient(160deg,#842936,#6d202b 55%,#611923)!important;
+  box-shadow:inset 0 1px rgba(255,222,211,.09),inset 0 -2px 4px rgba(48,7,14,.13)!important;
+}
+.invite-v2-envelope-left{
+  background:linear-gradient(142deg,#79232e 0 49.4%,#6a1d28 50.2% 100%)!important;
+  filter:drop-shadow(2px 0 1px rgba(45,5,12,.12));
+}
+.invite-v2-envelope-right{
+  background:linear-gradient(218deg,#822936 0 49.4%,#6c1e29 50.2% 100%)!important;
+  filter:drop-shadow(-2px 0 1px rgba(45,5,12,.12));
+}
+.invite-v2-envelope-flap{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.035),transparent 26%),
+    repeating-linear-gradient(96deg,rgba(255,255,255,.02) 0 1px,transparent 1px 3px),
+    linear-gradient(155deg,#8a2b38,#701e2a)!important;
+  filter:drop-shadow(0 3px 3px rgba(43,7,13,.22))!important;
+}
+.invite-v2-envelope-foil{
+  bottom:8%!important;
+  gap:5px!important;
+  color:#d7b57b!important;
+  opacity:.82;
+  text-shadow:0 1px rgba(255,240,206,.16),0 -1px rgba(72,38,15,.28)!important;
+}
+.invite-v2-envelope-foil b{font-size:clamp(.8rem,2vw,1.05rem)!important;letter-spacing:.26em!important}
+.invite-v2-envelope-foil small{font-size:clamp(.45rem,1vw,.55rem)!important;letter-spacing:.25em!important}
+.invite-v2-envelope-foil em{font-size:clamp(.4rem,.9vw,.5rem)!important;opacity:.72!important}
+.invite-v2-envelope-ornament{
+  color:rgba(214,179,118,.24)!important;
+  font-size:clamp(1rem,3vw,1.55rem)!important;
+}
+.invite-v2-seal{
+  width:70px!important;height:66px!important;
+  background:
+    radial-gradient(circle at 32% 23%,rgba(255,183,155,.19),transparent 17%),
+    radial-gradient(ellipse at 52% 55%,#8c2635 0%,#721a28 60%,#57131e 100%)!important;
+  color:#d9b777!important;
+  border-radius:48% 52% 46% 54%/52% 46% 54% 48%!important;
+  box-shadow:
+    0 11px 12px rgba(41,8,12,.31),
+    0 2px 2px rgba(41,8,12,.28),
+    inset 2px 3px 3px rgba(255,195,173,.13),
+    inset -4px -5px 7px rgba(42,4,11,.29)!important;
+}
+.invite-v2-seal::before{inset:5px!important;border:1px solid rgba(222,187,119,.48)!important}
+.invite-v2-seal::after{inset:9px!important;border:1px solid rgba(222,187,119,.25)!important}
+.invite-v2-seal>b{font-size:.62rem!important;letter-spacing:.09em!important}
+.invite-v2-envelope::before{
+  content:"";position:absolute;z-index:9;left:5%;right:5%;bottom:-9px;height:15px;border-radius:50%;
+  background:rgba(45,19,17,.13);filter:blur(8px);pointer-events:none;
+}
+.invite-v2-open-btn{
+  border:1px solid rgba(213,177,111,.55)!important;
+  background:linear-gradient(145deg,#7d2330,#641923)!important;
+  color:#fff8ee!important;
+  box-shadow:0 13px 26px rgba(77,28,29,.18),inset 0 1px rgba(255,232,208,.08)!important;
+}
+.invite-v2-title{color:#6d202b!important}
+.invite-v2-tap{color:#8b5a58!important}
+@media(max-width:760px){
+  .invite-v2-envelope{border-radius:8px!important}
+  .invite-v2-envelope-front{border-radius:0 0 8px 8px!important}
+  .invite-v2-seal{width:58px!important;height:55px!important}
+  .invite-v2-envelope-foil{bottom:7%!important}
+}
