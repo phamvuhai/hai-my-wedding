@@ -367,16 +367,22 @@
               <option value="4" data-i18n="rsvp.guest4">4 người</option>
               <option value="5" data-i18n="rsvp.guest5">5 người</option>
             </select>
+            <small class="rsvp-field-help" id="rsvpGuestLimitHelp" hidden></small>
           </label>
 
-          <label>
-            <span data-i18n="rsvp.event">Tham dự sự kiện</span>
-            <select name="event_choice">
+          <div class="rsvp-event-field" id="rsvpEventField">
+            <span class="rsvp-field-label" data-i18n="rsvp.event">Tham dự sự kiện</span>
+            <select name="event_choice" id="rsvpEventSelect">
               <option value="bride" data-i18n="rsvp.bride">Nhà gái — 18/12/2026</option>
               <option value="groom" data-i18n="rsvp.groom">Nhà trai — 20/12/2026</option>
               <option value="both" data-i18n="rsvp.both">Cả hai ngày</option>
             </select>
-          </label>
+            <div class="rsvp-event-fixed" id="rsvpEventFixed" hidden>
+              <span aria-hidden="true">✓</span>
+              <strong id="rsvpEventFixedText"></strong>
+            </div>
+            <small class="rsvp-field-help" id="rsvpEventHelp" hidden></small>
+          </div>
 
           <label>
             <span data-i18n="rsvp.message">Gửi một lời chúc ♡</span>
