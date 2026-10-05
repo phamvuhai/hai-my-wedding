@@ -13621,3 +13621,53 @@ img,video,svg{height:auto}
     100%{transform:translateY(34px) scale(.96);filter:blur(.35px)}
   }
 }
+
+
+/* V57 — deterministic letter reveal (no animated z-index) */
+.invite-v2-card{
+  display:block!important;
+  visibility:visible!important;
+  z-index:4!important;
+  opacity:.015!important;
+  top:51%!important;
+  transform:translate(-50%,-24%) scale(.92)!important;
+  will-change:transform,opacity!important;
+}
+.invitation-intro.invite-v2.is-opening .invite-v2-card{
+  z-index:4!important;
+  animation:v57LetterExtract 2.18s cubic-bezier(.16,.72,.12,1) 1.58s both!important;
+}
+@keyframes v57LetterExtract{
+  0%{opacity:.02;transform:translate(-50%,-24%) scale(.92);filter:none}
+  8%{opacity:1;transform:translate(-50%,-30%) scale(.93);filter:none}
+  32%{opacity:1;transform:translate(-50%,-43%) scale(.95);filter:none}
+  58%{opacity:1;transform:translate(-50%,-58%) scale(.98);filter:none}
+  78%{opacity:1;transform:translate(-50%,-69%) scale(.995);filter:none}
+  100%{opacity:1;transform:translate(-50%,-78%) scale(1);filter:none}
+}
+/* JS adds this only once the physical letter has cleared the pocket. */
+.invitation-intro.invite-v2.is-letter-out .invite-v2-card{
+  z-index:20!important;
+  opacity:1!important;
+}
+/* Flap must finish behind the extracted card. */
+.invitation-intro.invite-v2.is-opening .invite-v2-envelope-flap{z-index:7!important}
+.invitation-intro.invite-v2.is-letter-out .invite-v2-envelope-flap{z-index:2!important}
+.invitation-intro.invite-v2.is-letter-out .invite-v2-envelope-front,
+.invitation-intro.invite-v2.is-letter-out .invite-real-fold{z-index:5!important}
+/* Final hold: do not let legacy rules hide the letter before scene exit. */
+.invitation-intro.invite-v2.is-letter-out:not(.is-exiting) .invite-v2-card{
+  visibility:visible!important;
+  pointer-events:none!important;
+}
+@media(max-width:760px){
+  .invite-v2-card{top:52%!important}
+  @keyframes v57LetterExtract{
+    0%{opacity:.02;transform:translate(-50%,-23%) scale(.92)}
+    9%{opacity:1;transform:translate(-50%,-29%) scale(.93)}
+    34%{opacity:1;transform:translate(-50%,-41%) scale(.95)}
+    60%{opacity:1;transform:translate(-50%,-54%) scale(.98)}
+    80%{opacity:1;transform:translate(-50%,-63%) scale(.995)}
+    100%{opacity:1;transform:translate(-50%,-71%) scale(1)}
+  }
+}
