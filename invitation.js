@@ -1,7 +1,7 @@
 (() => {
   const intro = document.getElementById('invitationIntro');
   const openButton = document.getElementById('openInvitation');
-  const stage = intro?.querySelector('.intro-card-stage');
+  const stage = intro?.querySelector('.invite-v2-stage');
   const hero = document.getElementById('home');
 
   const validAnchors = new Set([
@@ -138,7 +138,18 @@
     window.WeddingMusic?.start?.(lang);
 
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    setTimeout(finishOpening, reduceMotion ? 560 : 3400);
+    if (reduceMotion) {
+      setTimeout(() => intro.classList.add('is-exiting'), 260);
+      setTimeout(finishOpening, 560);
+      return;
+    }
+
+    // Let the invitation finish opening, hold long enough to read it,
+    // then cross-fade quickly into the already-preloaded Admin Hero.
+    setTimeout(() => {
+      if (opening) intro.classList.add('is-exiting');
+    }, 3260);
+    setTimeout(finishOpening, 3620);
   }
 
   function bindEntryInteractions() {
