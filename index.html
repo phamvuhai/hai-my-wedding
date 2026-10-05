@@ -13,80 +13,81 @@
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body class="invitation-locked hero-image-loading">
-  <section class="invitation-intro" id="invitationIntro" aria-label="Wedding invitation">
-    <div class="intro-language language-switcher" aria-label="Language">
+  <section class="invitation-intro invite-v2" id="invitationIntro" aria-label="Wedding invitation">
+    <div class="intro-language language-switcher invite-v2-language" aria-label="Language">
       <button type="button" data-lang="vi">VI</button>
       <button type="button" data-lang="en">EN</button>
       <button type="button" data-lang="ja">日本語</button>
     </div>
-    <div class="intro-atmosphere" aria-hidden="true">
-      <span class="intro-letter intro-letter-h">H</span>
-      <span class="intro-letter intro-letter-amp">&</span>
-      <span class="intro-letter intro-letter-m">M</span>
-      <i class="intro-glow intro-glow-one"></i>
-      <i class="intro-glow intro-glow-two"></i>
+
+    <div class="invite-v2-atmosphere" aria-hidden="true">
+      <span class="invite-v2-letter invite-v2-letter-h">H</span>
+      <span class="invite-v2-letter invite-v2-letter-m">M</span>
+      <i class="invite-v2-glow invite-v2-glow-one"></i>
+      <i class="invite-v2-glow invite-v2-glow-two"></i>
     </div>
 
-    <div class="intro-scene">
-      <p class="intro-script-title">Wedding Invitation</p>
-      <p class="intro-save" data-i18n="intro.tap">Chạm để mở thiệp</p>
+    <div class="invite-v2-scene">
+      <header class="invite-v2-heading">
+        <p class="invite-v2-title">Wedding Invitation</p>
+        <p class="invite-v2-tap" data-i18n="intro.tap">Chạm để mở thiệp</p>
+      </header>
 
-      <div class="intro-card-stage intro-click-target" role="button" tabindex="0" data-i18n-aria="intro.open">
-        <div class="intro-envelope-hero" aria-hidden="true">
-          <span class="intro-envelope-back"></span>
-          <div class="intro-envelope-photo">
-            <img id="introEnvelopeImage" alt="" decoding="async" />
-          </div>
-          <span class="intro-envelope-flap"></span>
-          <span class="intro-envelope-left"></span>
-          <span class="intro-envelope-right"></span>
-          <span class="intro-envelope-front"></span>
-          <span class="intro-seal">H<span>♥</span>M</span>
-          <span class="intro-spark intro-spark-a"></span>
-          <span class="intro-spark intro-spark-b"></span>
-          <span class="intro-spark intro-spark-c"></span>
+      <div class="invite-v2-stage" role="button" tabindex="0" data-i18n-aria="intro.open">
+        <div class="invite-v2-envelope" aria-hidden="true">
+          <span class="invite-v2-envelope-back"></span>
+          <span class="invite-v2-envelope-flap"></span>
+          <span class="invite-v2-envelope-left"></span>
+          <span class="invite-v2-envelope-right"></span>
+          <span class="invite-v2-envelope-front"></span>
+          <span class="invite-v2-seal">H<span>♥</span>M</span>
+          <span class="invite-v2-spark invite-v2-spark-a"></span>
+          <span class="invite-v2-spark invite-v2-spark-b"></span>
+          <span class="invite-v2-spark invite-v2-spark-c"></span>
         </div>
 
-        <article class="intro-card" aria-label="Wedding invitation card">
-          <div class="intro-paper">
-            <div class="intro-card-monogram" aria-hidden="true">H <span>♥</span> M</div>
-            <p class="intro-invite" data-i18n="intro.invite">TRÂN TRỌNG KÍNH MỜI</p>
-            <div class="personal-invite-copy" id="personalInviteCopy">
-              <p class="personal-invite-name" id="personalInviteName" hidden></p>
-              <p class="personal-invite-lead" id="personalInviteLead" data-i18n="intro.formalLead">Đến chung vui cùng chúng tôi trong ngày hạnh phúc</p>
+        <article class="invite-v2-card" aria-label="Wedding invitation card">
+          <div class="invite-v2-paper">
+            <div class="invite-v2-monogram" aria-hidden="true">H <span>♥</span> M</div>
+            <p class="invite-v2-kicker" data-i18n="intro.invite">TRÂN TRỌNG KÍNH MỜI</p>
+
+            <div class="invite-v2-personal" id="personalInviteCopy">
+              <p class="invite-v2-guest-name" id="personalInviteName" hidden></p>
+              <p class="invite-v2-lead" id="personalInviteLead" data-i18n="intro.formalLead">Đến chung vui cùng chúng tôi trong ngày hạnh phúc</p>
             </div>
 
-            <div class="intro-photo-wrap">
-              <div class="intro-photo-polaroid">
+            <div class="invite-v2-photo-wrap">
+              <div class="invite-v2-photo-frame">
                 <img id="introImage" alt="Hải Phạm & Mỹ Nguyễn" decoding="async" />
               </div>
-              <span class="intro-botanical intro-botanical-left" aria-hidden="true"></span>
-              <span class="intro-botanical intro-botanical-right" aria-hidden="true"></span>
             </div>
 
-            <h1 class="intro-names"><b data-i18n="name.groom">Hải Phạm</b> <span>&</span> <b data-i18n="name.bride">Mỹ Nguyễn</b></h1>
-            <div class="intro-event-detail" id="introEventDetail">
+            <h1 class="invite-v2-names"><b data-i18n="name.groom">Hải Phạm</b><span>&</span><b data-i18n="name.bride">Mỹ Nguyễn</b></h1>
+
+            <div class="invite-v2-event" id="introEventDetail">
               <strong id="introEventDate" data-i18n="intro.eventDate">18 — 20 · 12 · 2026</strong>
               <span id="introEventPlace" data-i18n="intro.eventPlace">TP. HỒ CHÍ MINH · RẠCH GIÁ</span>
             </div>
-            <p class="personal-invite-note intro-closing-line" id="personalInviteNote" data-i18n="intro.closing">Sự hiện diện của bạn là niềm vui của chúng tôi.</p>
-            <span class="intro-ornament" aria-hidden="true">❦</span>
+
+            <p class="invite-v2-closing" id="personalInviteNote" data-i18n="intro.closing">Sự hiện diện của bạn là niềm vui của chúng tôi.</p>
+            <span class="invite-v2-ornament" aria-hidden="true">❦</span>
           </div>
         </article>
       </div>
 
-      <button class="intro-open-btn" id="openInvitation" type="button">
+      <button class="invite-v2-open-btn" id="openInvitation" type="button">
         <span data-i18n="intro.open">MỞ THIỆP</span>
         <i aria-hidden="true">↗</i>
       </button>
 
-      <p class="personal-invite-private" id="personalInvitePrivate" hidden></p>
-      <aside class="personal-link-notice personal-link-notice-cover" id="personalLinkNotice" hidden>
-        <span class="personal-link-note-icon" aria-hidden="true">🔒</span>
-        <p id="personalLinkNoticeText"></p>
-        <button class="personal-share-btn" id="personalSharePublic" type="button"></button>
-      </aside>
-      <p class="intro-audio-note" aria-hidden="true">♪</p>
+      <div class="invite-v2-personal-meta">
+        <p class="personal-invite-private invite-v2-private" id="personalInvitePrivate" hidden></p>
+        <aside class="personal-link-notice personal-link-notice-cover invite-v2-link-notice" id="personalLinkNotice" hidden>
+          <span class="personal-link-note-icon" aria-hidden="true">🔒</span>
+          <p id="personalLinkNoticeText"></p>
+          <button class="personal-share-btn" id="personalSharePublic" type="button"></button>
+        </aside>
+      </div>
     </div>
   </section>
 
