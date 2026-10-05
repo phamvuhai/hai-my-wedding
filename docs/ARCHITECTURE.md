@@ -31,6 +31,8 @@ Main areas:
 - Guest invites
 - Album/gallery
 
+Public album browsing is handled inside the main frontend (`index.html` + `app.js`). The old standalone `album/` implementation has been removed.
+
 When an existing public gallery image is edited, the admin uploads it to a new Storage object path, updates `gallery_images.image_path`, then removes the old object. This avoids stale CDN/browser images.
 
 ### Backend
@@ -60,3 +62,12 @@ GitHub `main` → Vercel production.
 - The couple photo must not animate upward.
 - The moving object is the inner invitation card emerging from the envelope.
 - Wedding schedule scroll animation is owned by `app.js`; do not restore the deleted legacy detailed-schedule animation in `motion.js`.
+
+
+## Cache strategy
+
+- Customer HTML and mutable frontend assets are served with `Cache-Control: no-store` to avoid stale in-app browser/Safari layouts.
+- Gallery/Hero image URLs include the database `updated_at` value as a version query.
+- Replacing an image from Admin writes a new Storage object path instead of overwriting the previous public path.
+- When a page is restored from Safari/iOS BFCache, the frontend reloads once so the current deployed UI is used.
+- Album data cached in memory is invalidated after the page stays in the background for more than 60 seconds.
