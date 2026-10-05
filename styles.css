@@ -13392,3 +13392,111 @@ img,video,svg{height:auto}
   .invite-v2-seal>b{grid-template-columns:1fr 14px 1fr!important;font-size:.7rem!important}
   .seal-botanical{width:13px!important;height:25px!important}
 }
+
+
+/* =========================================
+   V55 — Cinematic physical letter extraction
+   seal -> cord -> flap -> ivory letter rises -> focus
+   ========================================= */
+.invite-v2-stage{perspective:1900px!important;transform-style:preserve-3d!important}
+.invite-v2-envelope{transform-style:preserve-3d!important}
+.invite-v2-card{
+  z-index:4!important;
+  width:91%!important;max-width:none!important;
+  left:50%!important;top:51%!important;
+  transform:translate(-50%,-31%) scale(.93)!important;
+  opacity:0!important;
+  filter:blur(1.5px);
+  will-change:transform,opacity,filter;
+}
+/* Card is visually inside the envelope before the flap opens. */
+.invite-v2-paper{
+  border-radius:3px!important;
+  box-shadow:0 8px 14px rgba(55,26,22,.12),inset 0 0 0 1px rgba(255,255,255,.8)!important;
+}
+.invitation-intro.invite-v2.is-opening .invite-v2-seal{
+  animation:v55SealLift .72s cubic-bezier(.2,.72,.18,1) .08s both!important;
+}
+@keyframes v55SealLift{
+  0%{transform:translate(-50%,-50%) scale(1) rotate(0);opacity:1}
+  26%{transform:translate(-50%,-50%) scale(.93) rotate(-1deg)}
+  58%{transform:translate(-50%,-57%) scale(1.07) rotate(3deg);opacity:1}
+  100%{transform:translate(-50%,-88%) scale(.84) rotate(9deg);opacity:0;filter:blur(1px)}
+}
+.invitation-intro.invite-v2.is-opening .invite-real-cord-a{
+  animation:v55CordLeft .68s cubic-bezier(.25,.7,.2,1) .34s both!important;
+}
+.invitation-intro.invite-v2.is-opening .invite-real-cord-b{
+  animation:v55CordRight .7s cubic-bezier(.25,.7,.2,1) .34s both!important;
+}
+@keyframes v55CordLeft{0%{transform:translateX(0) rotate(0);opacity:1}100%{transform:translateX(-55%) rotate(-2.2deg);opacity:0}}
+@keyframes v55CordRight{0%{transform:translateX(0) rotate(.4deg);opacity:.9}100%{transform:translateX(55%) rotate(2.4deg);opacity:0}}
+.invitation-intro.invite-v2.is-opening .invite-v2-envelope-flap{
+  animation:v55FlapOpen 1.05s cubic-bezier(.18,.7,.16,1) .72s both!important;
+}
+@keyframes v55FlapOpen{
+  0%{transform:rotateX(0);filter:drop-shadow(0 4px 3px rgba(57,8,15,.27));z-index:6}
+  42%{transform:rotateX(-78deg);filter:drop-shadow(0 13px 9px rgba(57,8,15,.2))}
+  70%{transform:rotateX(-132deg);filter:drop-shadow(0 8px 7px rgba(57,8,15,.16))}
+  100%{transform:rotateX(-178deg);filter:drop-shadow(0 -3px 3px rgba(57,8,15,.1));z-index:2}
+}
+.invitation-intro.invite-v2.is-opening .invite-v2-envelope::after{
+  animation:v55EdgeFade .58s ease .74s both!important;
+}
+@keyframes v55EdgeFade{0%{opacity:.9}100%{opacity:0}}
+/* Letter appears only once the flap has substantially opened, then physically rises. */
+.invitation-intro.invite-v2.is-opening .invite-v2-card{
+  animation:v55LetterRise 1.62s cubic-bezier(.18,.72,.14,1) 1.18s both!important;
+}
+@keyframes v55LetterRise{
+  0%{opacity:0;transform:translate(-50%,-30%) scale(.91);filter:blur(2px)}
+  12%{opacity:1;transform:translate(-50%,-34%) scale(.92);filter:blur(0)}
+  38%{opacity:1;transform:translate(-50%,-50%) scale(.95);filter:none}
+  70%{opacity:1;transform:translate(-50%,-67%) scale(.985);filter:none}
+  100%{opacity:1;transform:translate(-50%,-76%) scale(1);filter:none}
+}
+/* Pocket stays in front of the lower part of the letter while it is being extracted. */
+.invitation-intro.invite-v2.is-opening .invite-v2-envelope-front,
+.invitation-intro.invite-v2.is-opening .invite-real-fold{
+  z-index:7!important;
+}
+.invitation-intro.invite-v2.is-opening .invite-real-botanical,
+.invitation-intro.invite-v2.is-opening .invite-real-caption{
+  animation:v55PaperDetailFade .6s ease 1.9s both!important;
+}
+@keyframes v55PaperDetailFade{to{opacity:.2}}
+.invitation-intro.invite-v2.is-opening .invite-v2-envelope{
+  animation:v55EnvelopeSettle .8s cubic-bezier(.2,.7,.2,1) 2.55s both!important;
+}
+@keyframes v55EnvelopeSettle{
+  0%{transform:translateY(0) scale(1);opacity:1;filter:none}
+  100%{transform:translateY(64px) scale(.94);opacity:.46;filter:blur(1.2px)}
+}
+/* Keep the extracted letter crisp and above the settling envelope at the end. */
+.invitation-intro.invite-v2.is-opening .invite-v2-card{z-index:12!important}
+.invitation-intro.invite-v2.is-opening .invite-v2-open-btn,
+.invitation-intro.invite-v2.is-opening .invite-v2-personal-meta{
+  animation:v55ControlsOut .38s ease .18s both!important;
+}
+@keyframes v55ControlsOut{to{opacity:0;transform:translateY(8px);pointer-events:none}}
+
+@media(max-width:760px){
+  .invite-v2-card{width:92%!important;top:52%!important}
+  @keyframes v55LetterRise{
+    0%{opacity:0;transform:translate(-50%,-28%) scale(.91);filter:blur(2px)}
+    12%{opacity:1;transform:translate(-50%,-33%) scale(.92);filter:blur(0)}
+    40%{opacity:1;transform:translate(-50%,-49%) scale(.95);filter:none}
+    72%{opacity:1;transform:translate(-50%,-63%) scale(.98);filter:none}
+    100%{opacity:1;transform:translate(-50%,-70%) scale(1);filter:none}
+  }
+  @keyframes v55EnvelopeSettle{
+    0%{transform:translateY(0) scale(1);opacity:1}
+    100%{transform:translateY(42px) scale(.95);opacity:.42;filter:blur(1px)}
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .invitation-intro.invite-v2.is-opening .invite-v2-card{
+    animation:none!important;opacity:1!important;filter:none!important;
+    transform:translate(-50%,-70%) scale(1)!important;
+  }
+}
