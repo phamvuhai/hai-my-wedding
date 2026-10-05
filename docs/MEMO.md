@@ -138,3 +138,29 @@ Removed:
 - several large legacy CSS blocks for old Guide/Schedule/Travel/Wishes layouts
 
 Keep cleanup conservative when a CSS rule mixes active and legacy selectors; preserve active selectors first, then remove dead names in a separate verified change.
+
+
+## 2026-10-05 cache hardening + legacy cleanup
+
+Cache hardening:
+- Public HTML, Admin HTML and mutable local CSS/JS are served with no-store headers.
+- Safari/iOS BFCache restores trigger a refresh so an old DOM is not revived after a deployment.
+- Gallery data is refreshed/in-memory cache invalidated after returning from the background.
+- Public gallery/Hero URLs include `updated_at` as a version.
+- Admin image replacement now creates a new Storage path, updates the database, then removes the previous public object.
+
+Legacy cleanup:
+- Removed the old standalone `album/` implementation.
+- Removed the obsolete `.vercel-redeploy` marker.
+- Removed legacy Guide / old Schedule / Travel / FAQ / Wishes translations that are no longer rendered.
+- Removed the old detailed Schedule motion system and references to removed homepage sections.
+- Removed obsolete timeline connector markup and old event switcher/compact-guide CSS.
+- Kept current unified Wedding Events scroll timeline, personalized invitations, Album overlay, RSVP and Admin behavior intact.
+
+Release QA after cleanup:
+- JavaScript syntax checks passed for public and Admin scripts.
+- `vercel.json` parses successfully.
+- CSS braces are balanced.
+- Public HTML has balanced section/div tags and no duplicate IDs.
+- Current `data-i18n` references all have matching keys.
+- Current `app.js` DOM ID lookups all resolve to elements in the public page.
