@@ -124,7 +124,7 @@
   }
 
   function openInvitation() {
-    if (!isEntryRoute || opening || !intro) return;
+    if (!isEntryRoute || opening || !intro || !intro.classList.contains('is-ready')) return;
     opening = true;
 
     if (openButton) openButton.disabled = true;
@@ -239,7 +239,25 @@
     });
   }
 
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => intro.classList.add('is-ready'));
-  });
+  const revealReadyState = () => {
+    if (!intro || intro.classList.contains('is-ready')) return;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => intro.classList.add('is-ready'));
+    });
+  };
+
+  if (window.WeddingHeroReady || document.body.classList.contains('hero-image-ready') || document.body.classList.contains('hero-image-fallback')) {
+    revealReadyState();
+  } else {
+    document.addEventListener('wedding:hero-ready', revealReadyState, {once:true});
+    // Never trap the guest if the remote image service is unavailable.
+    setTimeout(() => {
+      if (!window.WeddingHeroReady) {
+        document.body.classList.remove('hero-image-loading');
+        document.body.classList.add('hero-image-fallback');
+        window.WeddingHeroReady = true;
+      }
+      revealReadyState();
+    }, 2200);
+  }
 })();
