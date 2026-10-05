@@ -1924,75 +1924,7 @@ html[data-motion="wow"] .music-disc{
   color:#fff;
 }
 
-/* Reveal safety: transforms never alter layout dimensions */
-.guide-card,
-.schedule-day,
-.travel-card,
-.city-notes,
-.faq-item,
-.wishes-card{
-  will-change:transform,opacity;
-}
-
-/* Tablet/mobile */
-@media(max-width:900px){
-  .guide-grid{grid-template-columns:1fr}
-  .guide-card{min-height:0}
-  .guide-index{margin-bottom:24px}
-  .schedule-head,
-  .travel-layout,
-  .faq-layout,
-  .wishes-layout{
-    grid-template-columns:1fr;
-  }
-  .schedule-head{gap:24px}
-  .schedule-head > p{margin-left:0}
-  .travel-heading,
-  .faq-heading{position:static}
-  .city-notes{grid-template-columns:1fr}
-  .city-notes > div{
-    border-right:0;
-    border-bottom:1px solid rgba(255,255,255,.14);
-  }
-  .city-notes > div:last-child{border-bottom:0}
-}
 @media(max-width:680px){
-  .guest-guide-section,
-  .schedule-section,
-  .travel-section,
-  .faq-section,
-  .wishes-section{
-    padding:78px 0 84px;
-  }
-  .schedule-head{margin-bottom:38px}
-  .schedule-day{
-    grid-template-columns:1fr;
-    gap:20px;
-    padding:22px;
-  }
-  .schedule-day-label{
-    border-right:0;
-    border-bottom:1px solid rgba(155,109,85,.14);
-    padding:0 0 22px;
-  }
-  .schedule-day-label strong{font-size:5.4rem}
-  .schedule-timeline::before{left:68px}
-  .schedule-item{
-    grid-template-columns:68px minmax(0,1fr);
-    gap:20px;
-  }
-  .schedule-item::before{left:64px}
-  .travel-card{padding:24px}
-  .faq-item summary{padding:20px 0;font-size:1.35rem}
-  .faq-item p{padding-right:0}
-  .wishes-display{
-    grid-template-columns:auto auto;
-    justify-content:start;
-    gap:.14em;
-    font-size:clamp(3.8rem,18vw,5.4rem);
-  }
-  .wishes-display em{padding-left:0}
-  .wishes-card{padding:24px}
   .music-dock{
     right:14px;
     bottom:14px;
@@ -2033,23 +1965,12 @@ body{
     radial-gradient(circle at 12% 10%,rgba(201,157,149,.11),transparent 30%),
     linear-gradient(180deg,#F8F1EC 0%,#F4E9E3 100%);
 }
-.guest-guide-section{
-  background:
-    radial-gradient(circle at 84% 16%,rgba(208,170,142,.12),transparent 30%),
-    linear-gradient(180deg,#F7F2EC,#FFFDFC);
-}
-.schedule-section{
-  background:
-    radial-gradient(circle at 10% 80%,rgba(167,173,157,.08),transparent 24%),
-    #FFFDFC;
-}
 .gallery-section{
   background:
     radial-gradient(circle at 82% 12%,rgba(201,157,149,.11),transparent 28%),
     radial-gradient(circle at 10% 82%,rgba(208,170,142,.09),transparent 26%),
     linear-gradient(180deg,#FFFDFC,#F7F2EC);
 }
-.wishes-section{background:linear-gradient(180deg,#F6EEE9,#FFFDFC)}
 .rsvp-section{background:linear-gradient(180deg,#FFFDFC,#F7F2EC)}
 
 /* Nav adapts to the current section */
@@ -2224,7 +2145,6 @@ html[data-motion="wow"] .music-dock.is-playing .music-disc{
 }
 
 /* Tiny ambient glows move independently without affecting document flow */
-.guest-guide-section::before,
 .gallery-section::before{
   content:"";
   position:absolute;
@@ -2237,7 +2157,6 @@ html[data-motion="wow"] .music-dock.is-playing .music-disc{
   background:var(--rose);
   animation:ambientDrift 18s ease-in-out infinite alternate;
 }
-.guest-guide-section::before{right:-150px;top:80px}
 .gallery-section::before{left:-170px;bottom:12%}
 @keyframes ambientDrift{
   to{transform:translate3d(32px,-24px,0) scale(1.08)}
@@ -2268,7 +2187,7 @@ html[data-motion="wow"] .music-dock.is-playing .music-disc{
   .guide-card,.travel-card{transform:none!important}
   .photo-curtain{display:none!important}
   .forever-rail,.forever-copy strong{transform:none!important}
-  .guest-guide-section::before,.gallery-section::before{animation:none!important}
+  .gallery-section::before{animation:none!important}
 }
 
 
