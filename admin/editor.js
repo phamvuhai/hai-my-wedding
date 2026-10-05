@@ -482,12 +482,14 @@
     const sortOrder = Number(document.getElementById('sortOrder').value || 0);
 
     let id, originalPath, imagePath;
+    let oldImagePath = null;
     let masterOptimized = null;
     let createdOriginal = false;
     if (A.editRecord) {
       id = A.editRecord.id;
       originalPath = A.editRecord.original_path;
-      imagePath = A.editRecord.image_path;
+      oldImagePath = A.editRecord.image_path;
+      imagePath = `${al.slug}/${id}-${Date.now()}.webp`;
     } else {
       id = crypto.randomUUID();
       originalPath = `${al.slug}/${id}-master.webp`;
@@ -511,8 +513,8 @@
 
     const p = await db.storage.from('wedding-gallery').upload(imagePath, rendered.blob, {
       contentType:'image/webp',
-      cacheControl:'3600',
-      upsert:!!A.editRecord
+      cacheControl:'31536000',
+      upsert:false
     });
     if (p.error) {
       if (createdOriginal) {
@@ -562,15 +564,18 @@
 
     const { error } = await op;
     if (error) {
-      if (!A.editRecord) {
-        await Promise.all([
-          db.storage.from('wedding-gallery').remove([imagePath]),
-          createdOriginal
-            ? db.storage.from('wedding-originals').remove([originalPath])
-            : Promise.resolve()
-        ]);
-      }
+      await Promise.all([
+        db.storage.from('wedding-gallery').remove([imagePath]),
+        !A.editRecord && createdOriginal
+          ? db.storage.from('wedding-originals').remove([originalPath])
+          : Promise.resolve()
+      ]);
       return A.setStatus(status, error.message, 'error');
+    }
+
+    if (oldImagePath && oldImagePath !== imagePath) {
+      const cleanup = await db.storage.from('wedding-gallery').remove([oldImagePath]);
+      if (cleanup.error) console.warn('Could not remove previous public image:', cleanup.error);
     }
 
     await A.loadData();
