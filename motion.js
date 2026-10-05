@@ -473,35 +473,15 @@
     if (body.dataset.sectionMotionInit) return;
     body.dataset.sectionMotionInit = '1';
 
-    const guide = qs('.guide-grid');
-    const travel = qs('.travel-cards');
     const forever = qs('.forever-transition');
     const topRail = qs('.forever-rail-top');
     const bottomRail = qs('.forever-rail-bottom');
     const foreverWord = qs('.forever-copy strong');
-    const scheduleDays = qs('.schedule-days');
     let sectionRaf = 0;
 
     const update = () => {
       cancelAnimationFrame(sectionRaf);
       sectionRaf = requestAnimationFrame(() => {
-        if (guide && !coarse) {
-          const p = sectionProgress(guide);
-          const shift = (p - .5) * 34;
-          guide.style.setProperty('--guide-shift', `${shift.toFixed(2)}px`);
-        }
-
-        if (travel && !coarse) {
-          const p = sectionProgress(travel);
-          const shift = (p - .5) * 38;
-          travel.style.setProperty('--travel-shift', `${shift.toFixed(2)}px`);
-        }
-
-        if (scheduleDays) {
-          const p = sectionProgress(scheduleDays);
-          scheduleDays.style.setProperty('--schedule-progress', p.toFixed(3));
-        }
-
         if (forever) {
           const p = sectionProgress(forever);
           forever.style.setProperty('--forever-progress', p.toFixed(3));
