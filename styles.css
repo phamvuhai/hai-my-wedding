@@ -12351,3 +12351,93 @@ img,video,svg{height:auto}
   .editorial-story .story-copy{padding-inline:20px!important}
   .editorial-story .story-copy h2{font-size:clamp(2.35rem,12vw,3.25rem)!important}
 }
+
+
+/* =========================================
+   V46 — Burgundy wedding invitation
+   Red envelope + ivory keepsake card.
+   ========================================= */
+.invitation-intro.invite-v2{
+  background:
+    radial-gradient(circle at 18% 16%,rgba(134,31,45,.09),transparent 28%),
+    radial-gradient(circle at 84% 78%,rgba(201,164,106,.12),transparent 30%),
+    linear-gradient(145deg,#f8eee9 0%,#fffaf4 50%,#f1e2dc 100%)!important;
+}
+.invite-v2-envelope{
+  filter:drop-shadow(0 30px 44px rgba(74,18,29,.26))!important;
+}
+.invite-v2-envelope-back{
+  background:
+    repeating-linear-gradient(112deg,rgba(255,255,255,.035) 0 1px,transparent 1px 4px),
+    linear-gradient(145deg,#941f32,#651722)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,239,220,.08)!important;
+}
+.invite-v2-envelope-flap{
+  background:linear-gradient(180deg,#9b2638,#721927)!important;
+}
+.invite-v2-envelope-left{
+  background:linear-gradient(135deg,#8f2233,#681723)!important;
+}
+.invite-v2-envelope-right{
+  background:linear-gradient(225deg,#9c2939,#741b28)!important;
+}
+.invite-v2-envelope-front{
+  background:
+    repeating-linear-gradient(112deg,rgba(255,255,255,.035) 0 1px,transparent 1px 4px),
+    linear-gradient(180deg,#8f2233,#681723)!important;
+}
+.invite-v2-seal{
+  border-color:rgba(255,235,190,.68)!important;
+  background:radial-gradient(circle at 35% 28%,#d8b97b,#b98b4f 58%,#8f6534)!important;
+  color:#651722!important;
+  box-shadow:0 8px 22px rgba(58,14,22,.32),inset 0 0 0 4px rgba(255,240,205,.2)!important;
+}
+.invite-v2-spark{background:#f1d49a!important}
+.invite-v2-paper{
+  border-color:rgba(134,31,45,.18)!important;
+  background:
+    repeating-linear-gradient(104deg,rgba(101,23,34,.012) 0 1px,transparent 1px 5px),
+    radial-gradient(circle at 50% 0%,#fffdf9 0%,#fff9f2 58%,#f7ece2 100%)!important;
+  box-shadow:0 40px 105px rgba(73,25,28,.22),inset 0 0 0 1px rgba(255,255,255,.82)!important;
+}
+.invite-v2-paper::before{
+  border-color:rgba(134,31,45,.25)!important;
+}
+.invite-v2-paper::after{
+  border-color:rgba(201,164,106,.24)!important;
+}
+.invite-v2-monogram,
+.invite-v2-kicker,
+.invite-v2-guest-name,
+.invite-v2-names,
+.invite-v2-event strong{
+  color:#861f2d!important;
+}
+.invite-v2-monogram span,
+.invite-v2-names span,
+.invite-v2-ornament{
+  color:#b38a4e!important;
+}
+.invite-v2-lead,
+.invite-v2-closing{
+  color:rgba(67,42,37,.74)!important;
+}
+.invite-v2-event{
+  border-top-color:rgba(134,31,45,.17)!important;
+}
+.invite-v2-event span{
+  color:rgba(101,23,34,.62)!important;
+}
+.invite-v2-photo-frame{
+  background:linear-gradient(145deg,#fffdf9,#f8eee5)!important;
+  box-shadow:0 16px 38px rgba(101,23,34,.14),0 0 0 1px rgba(134,31,45,.08)!important;
+}
+.invite-v2-open-btn{
+  background:linear-gradient(135deg,#941f32,#651722)!important;
+  box-shadow:0 16px 36px rgba(101,23,34,.24)!important;
+}
+.invite-v2-open-btn:hover{
+  box-shadow:0 20px 44px rgba(101,23,34,.3)!important;
+}
+.invite-v2-title{color:#651722!important}
+.invite-v2-tap{color:rgba(101,23,34,.6)!important}
