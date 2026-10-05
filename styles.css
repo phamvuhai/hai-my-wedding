@@ -5983,30 +5983,6 @@ html[lang="ja"] .countdown-heading h2{
    V19 + V20 — music, Vietnamese type, entry routing UX, chapter rhythm
    ========================================= */
 
-/* Vietnamese/English Guest Guide headings use a font with stable Vietnamese glyph metrics. */
-html:lang(vi) .guest-guide-section .section-heading h2,
-html:lang(vi) .guest-guide-section .guide-card h3,
-html:lang(en) .guest-guide-section .section-heading h2,
-html:lang(en) .guest-guide-section .guide-card h3{
-  font-family:"Lora","Iowan Old Style","Baskerville",Georgia,serif!important;
-  font-kerning:normal!important;
-  font-feature-settings:"kern" 1!important;
-  letter-spacing:-.025em!important;
-  word-break:normal!important;
-  overflow-wrap:normal!important;
-  hyphens:none!important;
-}
-html:lang(vi) .guest-guide-section .section-heading h2,
-html:lang(vi) .guest-guide-section .guide-card h3{
-  text-rendering:optimizeLegibility;
-}
-html:lang(ja) .guest-guide-section .section-heading h2,
-html:lang(ja) .guest-guide-section .guide-card h3{
-  font-family:"Yu Mincho","Hiragino Mincho ProN","Noto Serif JP",serif!important;
-  word-break:normal!important;
-  line-break:strict!important;
-}
-
 /* Chapter rhythm: soft groups, not mandatory full-screen snapping. */
 .chapter-start{
   scroll-margin-top:calc(var(--header-h) + 18px);
@@ -6349,75 +6325,6 @@ body.invitation-opening .hero{
 }
 .map-link:active{
   scale:.97;
-}
-
-/* Schedule: focus the hovered row and its timeline dot. */
-.schedule-item{
-  transition:
-    opacity var(--ui-medium) ease,
-    background-color var(--ui-medium) ease,
-    transform var(--ui-medium) var(--ui-ease),
-    box-shadow var(--ui-medium) ease!important;
-}
-.schedule-item h3,
-.schedule-time,
-.schedule-kind{
-  transition:
-    transform var(--ui-medium) var(--ui-ease),
-    color var(--ui-fast) ease,
-    background-color var(--ui-fast) ease,
-    border-color var(--ui-fast) ease!important;
-}
-@media(hover:hover) and (pointer:fine){
-  .schedule-timeline:hover .schedule-item:not(:hover){
-    opacity:.88;
-  }
-  .schedule-item:hover{
-    transform:translateX(3px);
-    box-shadow:0 12px 28px color-mix(in srgb,var(--day-accent) 9%,transparent);
-  }
-  .schedule-item:hover h3{
-    transform:translateX(3px);
-  }
-  .schedule-item:hover .schedule-time{
-    transform:translateX(-2px) scale(1.035);
-  }
-  .schedule-item:hover .schedule-kind{
-    transform:translateY(-1px);
-  }
-  .schedule-item:hover::before{
-    transform:translateX(-50%) scale(1.18)!important;
-    box-shadow:0 0 0 7px color-mix(in srgb,var(--day-accent) 12%,transparent)!important;
-  }
-}
-
-/* Guest Guide: editorial depth without moving document flow. */
-.guide-card{
-  transform-origin:center center;
-}
-.guide-card::after,
-.guide-index,
-.guide-card h3{
-  transition:
-    transform var(--ui-medium) var(--ui-ease),
-    opacity var(--ui-medium) ease,
-    color var(--ui-fast) ease;
-}
-@media(hover:hover) and (pointer:fine){
-  .guide-card:hover{
-    border-color:rgba(201,157,149,.40)!important;
-    box-shadow:0 25px 55px rgba(56,42,33,.10)!important;
-  }
-  .guide-card:hover .guide-index{
-    transform:translateY(-4px) scale(1.045);
-    opacity:.78;
-  }
-  .guide-card:hover h3{
-    transform:translateX(3px);
-  }
-  .guide-card:hover::after{
-    transform:translate(-5px,-4px) scale(1.035);
-  }
 }
 
 /* Gallery: zoom only the media, never the grid box. */
@@ -7022,19 +6929,6 @@ body.invitation-opening .hero{
 @media(pointer:coarse){
   .hero-copy{
     transform:none!important;
-  }
-}
-
-/* Final layout safety for schedule copy. */
-@media(max-width:680px){
-  .schedule-item h3,
-  .schedule-item p{
-    max-width:100%!important;
-  }
-  .schedule-item p{
-    overflow-wrap:normal!important;
-    word-break:normal!important;
-    hyphens:none!important;
   }
 }
 
