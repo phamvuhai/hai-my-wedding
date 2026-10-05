@@ -8707,45 +8707,6 @@ html[lang="ja"] p{
   text-align:center;
 }
 
-.event-day-switcher{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  margin:26px auto 34px;
-}
-
-.event-day-tab{
-  appearance:none;
-  border:1px solid rgba(87,58,47,.16);
-  background:rgba(255,255,255,.72);
-  color:inherit;
-  border-radius:999px;
-  min-width:180px;
-  padding:11px 18px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:9px;
-  font:inherit;
-  cursor:pointer;
-  transition:transform .2s ease,border-color .2s ease,background .2s ease,box-shadow .2s ease;
-}
-
-.event-day-tab:hover{
-  transform:translateY(-1px);
-}
-
-.event-day-tab.is-active{
-  background:#fff;
-  border-color:rgba(121,76,59,.42);
-  box-shadow:0 10px 30px rgba(70,44,34,.08);
-}
-
-.event-tab-date{
-  font-weight:800;
-  letter-spacing:.06em;
-}
-
 .event-invite-badge{
   display:inline-flex;
   align-items:center;
@@ -8756,10 +8717,6 @@ html[lang="ja"] p{
   line-height:1;
   letter-spacing:.04em;
   white-space:nowrap;
-}
-
-.event-day-tab.is-invited{
-  border-color:rgba(139,82,62,.5);
 }
 
 .event-day-panels{
@@ -8781,64 +8738,6 @@ html[lang="ja"] p{
   display:flex!important;
   flex-direction:column;
   gap:0!important;
-}
-
-.event-timeline-connector{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width:30px;
-  height:30px;
-  margin:4px auto;
-  border-radius:50%;
-  border:1px solid rgba(95,62,49,.16);
-  color:rgba(95,62,49,.65);
-  background:rgba(255,255,255,.72);
-  font-size:.85rem;
-}
-
-.guide-compact{
-  padding-top:24px;
-}
-
-.guide-compact-card{
-  max-width:920px;
-  margin-inline:auto;
-  display:grid;
-  grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);
-  gap:28px;
-  align-items:center;
-  padding:26px 30px;
-  border:1px solid rgba(89,59,47,.12);
-  border-radius:24px;
-  background:rgba(255,255,255,.64);
-}
-
-.guide-compact-card h2,
-.guide-compact-card h3,
-.guide-compact-card p{
-  margin-top:0;
-}
-
-.guide-compact-copy{
-  display:flex;
-  align-items:flex-start;
-  gap:14px;
-}
-
-.guide-compact-copy p{
-  margin-bottom:0;
-}
-
-.guide-compact-icon{
-  flex:0 0 auto;
-  width:38px;
-  height:38px;
-  display:grid;
-  place-items:center;
-  border-radius:50%;
-  border:1px solid rgba(89,59,47,.14);
-  font-size:1.15rem;
 }
 
 .personal-link-notice{
@@ -8899,35 +8798,6 @@ html[lang="ja"] p{
 }
 
 @media(max-width:760px){
-  .event-day-switcher{
-    position:sticky;
-    top:68px;
-    z-index:20;
-    width:calc(100% - 8px);
-    gap:7px;
-    margin:18px auto 22px;
-    padding:6px;
-    border-radius:18px;
-    background:rgba(250,246,242,.88);
-    backdrop-filter:blur(12px);
-    -webkit-backdrop-filter:blur(12px);
-  }
-
-  .event-day-tab{
-    flex:1 1 0;
-    min-width:0;
-    padding:10px 8px;
-    border-radius:14px;
-    flex-wrap:wrap;
-    gap:3px 6px;
-    font-size:.82rem;
-  }
-
-  .event-tab-date{
-    width:100%;
-    font-size:.72rem;
-  }
-
   .event-invite-badge{
     font-size:.58rem;
     padding:3px 6px;
@@ -8945,21 +8815,6 @@ html[lang="ja"] p{
     display:block;
   }
 
-  .event-timeline-connector{
-    margin:6px auto;
-  }
-
-  .guide-compact-card{
-    grid-template-columns:1fr;
-    gap:14px;
-    padding:20px 18px;
-    border-radius:20px;
-  }
-
-  .guide-compact-copy{
-    padding-top:2px;
-  }
-
   .personal-link-notice-cover{
     margin-top:8px;
     padding:9px 11px;
@@ -8972,17 +8827,6 @@ html[lang="ja"] p{
   .personal-link-notice-cover p,
   .personal-link-notice-cover a{
     font-size:.66rem;
-  }
-}
-
-@media(max-width:380px){
-  .event-day-tab{
-    font-size:.76rem;
-  }
-
-  .event-invite-badge{
-    width:100%;
-    justify-content:center;
   }
 }
 
@@ -9212,9 +9056,6 @@ html[lang="ja"] p{
 .events-unified .map-link{
   font-size:.68rem!important;
   padding:0!important;
-}
-.event-timeline-connector{
-  display:none!important;
 }
 .event-arrival-note{
   display:flex;
