@@ -1,3 +1,7 @@
+window.addEventListener('pageshow', event => {
+  if (event.persisted) location.reload();
+});
+
 const targetDate = new Date('2026-12-18T08:00:00+07:00');
 
 function updateCountdown() {
@@ -283,6 +287,7 @@ const galleryState = {
   albumImages: [],
   albums: [],
   albumFilter: 'all',
+  albumLoadedAt: 0,
   activeImages: [],
   activeIndex: -1,
   albumOpen: false,
@@ -422,8 +427,8 @@ function renderAlbumFilters() {
   root.hidden = buttons.length <= 1;
 }
 
-async function loadAlbumImages() {
-  if (galleryState.albumImages.length) return galleryState.albumImages;
+async function loadAlbumImages({force=false} = {}) {
+  if (!force && galleryState.albumImages.length) return galleryState.albumImages;
   const client = galleryClient();
   if (!client) return [];
 
@@ -440,6 +445,7 @@ async function loadAlbumImages() {
   if (albumResult.error) throw albumResult.error;
   if (imageResult.error) throw imageResult.error;
   galleryState.albumImages = (imageResult.data || []).map(img => ({...img, publicUrl: galleryPublicUrl(img)}));
+  galleryState.albumLoadedAt = Date.now();
   const usedAlbumIds = new Set(galleryState.albumImages.map(img => String(img.album_id)));
   galleryState.albums = (albumResult.data || []).filter(album => usedAlbumIds.has(String(album.id)));
   if (galleryState.albumFilter !== 'all' && !galleryState.albums.some(a => a.slug === galleryState.albumFilter)) {
@@ -481,7 +487,7 @@ async function showAlbumOverlay({push = true} = {}) {
   const overlay = document.getElementById('albumOverlay');
   if (!overlay) return;
   try {
-    await loadAlbumImages();
+    await loadAlbumImages({force: Date.now() - galleryState.albumLoadedAt > 60000});
   } catch (error) {
     console.error('Album overlay error:', error);
   }
@@ -671,6 +677,19 @@ function initGalleryInteractions() {
 
 initGalleryInteractions();
 loadHomeGallery();
+
+let galleryVisibilityHiddenAt = 0;
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    galleryVisibilityHiddenAt = Date.now();
+    return;
+  }
+  if (galleryVisibilityHiddenAt && Date.now() - galleryVisibilityHiddenAt > 60000) {
+    galleryState.albumImages = [];
+    galleryState.albums = [];
+    galleryState.albumLoadedAt = 0;
+  }
+});
 
 document.addEventListener('wedding:language', () => {
   renderHomeGallery();
