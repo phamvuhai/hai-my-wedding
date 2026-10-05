@@ -10110,3 +10110,443 @@ body.particles-muted .hero-fall-layer{
     transition:none!important;
   }
 }
+
+
+/* =========================================
+   V39 — invitation-suite polish + responsive safety
+   ========================================= */
+
+.invitation-intro{
+  isolation:isolate;
+}
+.intro-scene{
+  padding:clamp(64px,6vh,92px) 20px clamp(36px,5vh,56px)!important;
+}
+.intro-card-stage{
+  width:min(560px,calc(100vw - 36px))!important;
+}
+.intro-card{
+  position:relative;
+}
+.intro-paper{
+  position:relative!important;
+  isolation:isolate;
+  overflow:visible!important;
+  padding:30px 34px 28px!important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(255,255,255,.96),rgba(255,251,247,.97) 58%,rgba(247,238,230,.96)),
+    linear-gradient(135deg,rgba(255,255,255,.9),rgba(247,237,229,.82))!important;
+  border:1px solid rgba(121,82,62,.13)!important;
+  box-shadow:
+    0 28px 70px rgba(72,46,36,.12),
+    inset 0 0 0 1px rgba(255,255,255,.58)!important;
+}
+.intro-paper::before{
+  content:"";
+  position:absolute;
+  z-index:1;
+  inset:10px;
+  pointer-events:none;
+  border:1px solid rgba(143,94,73,.15);
+  border-radius:20px;
+}
+.intro-paper > *{
+  position:relative;
+  z-index:2;
+}
+.intro-card-monogram{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.55em;
+  margin:0 0 10px;
+  color:#9a6a57;
+  font:600 .72rem/1 Georgia,"Times New Roman",serif;
+  letter-spacing:.22em;
+}
+.intro-card-monogram span{
+  font-size:.72em;
+  letter-spacing:0;
+}
+.intro-invite{
+  margin:0!important;
+  font-size:.62rem!important;
+  letter-spacing:.22em!important;
+}
+.personal-invite-copy{
+  width:min(500px,100%)!important;
+  margin:7px auto 10px!important;
+  padding-inline:8px!important;
+}
+.personal-invite-name{
+  max-width:100%!important;
+  margin:2px auto 7px!important;
+  font-size:clamp(2.1rem,5.2vw,3.55rem)!important;
+  line-height:.96!important;
+  text-align:center!important;
+  text-wrap:balance;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+}
+.personal-invite-name.is-long-name{
+  font-size:clamp(1.78rem,4.5vw,2.8rem)!important;
+  line-height:1!important;
+}
+.personal-invite-name.is-very-long-name{
+  font-size:clamp(1.5rem,3.9vw,2.25rem)!important;
+  line-height:1.05!important;
+}
+.personal-invite-lead{
+  max-width:420px!important;
+  margin:0 auto!important;
+  color:rgba(74,52,44,.70)!important;
+  font-family:"Lora",Georgia,serif!important;
+  font-size:clamp(.82rem,1.4vw,.96rem)!important;
+  line-height:1.55!important;
+  font-weight:400!important;
+  text-align:center!important;
+  text-wrap:balance;
+}
+.intro-photo-wrap{
+  width:min(360px,78%)!important;
+  margin:11px auto 14px!important;
+}
+.intro-photo-polaroid{
+  aspect-ratio:4/3!important;
+}
+.intro-names{
+  max-width:500px!important;
+  margin:24px auto 8px!important;
+  font-size:clamp(1.9rem,4.6vw,3rem)!important;
+}
+.intro-event-detail{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  width:min(460px,100%);
+  margin:4px auto 0;
+  padding:10px 14px 0;
+  border-top:1px solid rgba(129,86,67,.12);
+  text-align:center;
+}
+.intro-event-detail strong{
+  color:#5c4036;
+  font-size:.72rem;
+  line-height:1.25;
+  letter-spacing:.13em;
+  font-weight:800;
+  text-transform:uppercase;
+  overflow-wrap:anywhere;
+}
+.intro-event-detail span{
+  color:rgba(86,61,50,.58);
+  font-size:.59rem;
+  line-height:1.35;
+  letter-spacing:.11em;
+  font-weight:700;
+  text-transform:uppercase;
+  overflow-wrap:anywhere;
+}
+.intro-closing-line{
+  display:block!important;
+  max-width:420px!important;
+  margin:11px auto 0!important;
+  padding:0 10px!important;
+  color:rgba(72,50,42,.68)!important;
+  font-family:"Lora",Georgia,serif!important;
+  font-size:clamp(.76rem,1.3vw,.9rem)!important;
+  line-height:1.55!important;
+  font-style:italic;
+  font-weight:400!important;
+  text-align:center!important;
+  text-wrap:balance;
+}
+.intro-ornament{
+  display:block;
+  margin:6px auto 0;
+  color:rgba(154,106,87,.58);
+  font-size:.9rem;
+  line-height:1;
+}
+.intro-open-btn{
+  margin-top:14px!important;
+  z-index:70;
+}
+.intro-language{
+  z-index:80!important;
+}
+.intro-envelope{
+  z-index:30!important;
+}
+.intro-seal{
+  z-index:40!important;
+}
+.intro-inner-letter{
+  z-index:50!important;
+}
+
+/* Keep all meaningful card copy stationary while the envelope opens. */
+.invitation-intro.is-opening .intro-card-monogram,
+.invitation-intro.is-opening .intro-invite,
+.invitation-intro.is-opening .personal-invite-copy,
+.invitation-intro.is-opening .intro-names,
+.invitation-intro.is-opening .intro-event-detail,
+.invitation-intro.is-opening .intro-closing-line,
+.invitation-intro.is-opening .intro-ornament,
+.invitation-intro.is-opening .intro-photo-polaroid{
+  animation:none!important;
+  transform:none!important;
+  filter:none!important;
+}
+
+/* Invitation motion: seal → flap → inner card → quiet dissolve. */
+.invitation-intro.is-opening .intro-inner-letter{
+  animation:innerLetterRevealV39 1.45s cubic-bezier(.16,.84,.24,1) .66s both!important;
+}
+@keyframes innerLetterRevealV39{
+  0%{
+    opacity:0;
+    transform:translateX(-50%) translateY(34px) scale(.92);
+  }
+  24%{opacity:1}
+  72%{
+    opacity:1;
+    transform:translateX(-50%) translateY(-64px) scale(1.01);
+  }
+  100%{
+    opacity:1;
+    transform:translateX(-50%) translateY(-78px) scale(1.035);
+  }
+}
+.invitation-intro.is-opening .intro-card{
+  animation:coverDissolveV39 .78s ease 2.08s both!important;
+}
+@keyframes coverDissolveV39{
+  0%{opacity:1;transform:none;filter:blur(0)}
+  55%{opacity:1;transform:scale(1.012);filter:blur(0)}
+  100%{opacity:0;transform:scale(1.035);filter:blur(5px)}
+}
+.invitation-intro.is-opening .intro-atmosphere{
+  animation:coverAtmosphereFadeV39 .8s ease 2.02s both!important;
+}
+@keyframes coverAtmosphereFadeV39{
+  from{opacity:1}
+  to{opacity:0}
+}
+
+/* Compact phones: preserve the invitation hierarchy without hiding essential copy. */
+@media(max-width:480px){
+  .intro-scene{
+    gap:8px!important;
+    padding:
+      max(8px,env(safe-area-inset-top))
+      0
+      max(12px,env(safe-area-inset-bottom))!important;
+  }
+  .intro-card-stage{
+    width:calc(100vw - 18px)!important;
+  }
+  .intro-paper{
+    padding:15px 12px 14px!important;
+    border-radius:22px!important;
+  }
+  .intro-paper::before{
+    inset:7px;
+    border-radius:17px;
+  }
+  .intro-card-monogram{
+    margin-bottom:6px;
+    font-size:.62rem;
+  }
+  .intro-invite{
+    font-size:.54rem!important;
+    letter-spacing:.17em!important;
+  }
+  .personal-invite-copy{
+    margin:5px auto 8px!important;
+    padding-inline:4px!important;
+  }
+  .personal-invite-name{
+    margin:1px auto 5px!important;
+    font-size:clamp(1.75rem,9.2vw,2.5rem)!important;
+    line-height:.98!important;
+  }
+  .personal-invite-name.is-long-name{
+    font-size:clamp(1.52rem,7.7vw,2.05rem)!important;
+  }
+  .personal-invite-name.is-very-long-name{
+    font-size:clamp(1.32rem,6.7vw,1.78rem)!important;
+    line-height:1.04!important;
+  }
+  .personal-invite-lead{
+    max-width:310px!important;
+    font-size:clamp(.72rem,3.2vw,.84rem)!important;
+    line-height:1.4!important;
+  }
+  .intro-photo-wrap{
+    width:82%!important;
+    max-width:320px!important;
+    margin:9px auto 10px!important;
+    padding-bottom:34px!important;
+  }
+  .intro-photo-polaroid{
+    aspect-ratio:4/3!important;
+    padding:7px!important;
+  }
+  .intro-envelope{
+    width:min(64%,220px)!important;
+    height:54px!important;
+  }
+  .intro-names{
+    margin:6px auto 5px!important;
+    font-size:clamp(1.32rem,6.6vw,1.75rem)!important;
+    line-height:1!important;
+  }
+  .intro-event-detail{
+    width:100%;
+    gap:2px;
+    margin-top:3px;
+    padding:7px 6px 0;
+  }
+  .intro-event-detail strong{
+    font-size:.58rem;
+    letter-spacing:.08em;
+  }
+  .intro-event-detail span{
+    max-width:100%;
+    font-size:.49rem;
+    line-height:1.3;
+    letter-spacing:.07em;
+  }
+  .intro-closing-line{
+    max-width:310px!important;
+    margin:7px auto 0!important;
+    padding-inline:5px!important;
+    font-size:clamp(.68rem,2.9vw,.78rem)!important;
+    line-height:1.38!important;
+  }
+  .intro-ornament{
+    margin-top:4px;
+    font-size:.72rem;
+  }
+  .intro-open-btn{
+    width:calc(100vw - 28px)!important;
+    max-width:380px!important;
+    min-height:48px!important;
+    margin-top:1px!important;
+  }
+  .personal-link-notice-cover{
+    width:calc(100vw - 28px)!important;
+  }
+  .intro-inner-letter{
+    width:74%!important;
+    height:80px!important;
+    padding:9px 10px!important;
+  }
+  .invitation-intro.is-opening .intro-inner-letter{
+    animation-name:innerLetterRevealV39Mobile!important;
+  }
+  @keyframes innerLetterRevealV39Mobile{
+    0%{opacity:0;transform:translateX(-50%) translateY(26px) scale(.92)}
+    26%{opacity:1}
+    74%{opacity:1;transform:translateX(-50%) translateY(-40px) scale(.99)}
+    100%{opacity:1;transform:translateX(-50%) translateY(-48px) scale(1.02)}
+  }
+}
+
+/* Short iPhone/in-app browser viewport: decoration shrinks first, never the core invitation. */
+@media(max-width:480px) and (max-height:700px){
+  .intro-save,
+  .intro-audio-note,
+  .intro-botanical{
+    display:none!important;
+  }
+  .intro-scene{
+    gap:5px!important;
+    padding-top:max(6px,env(safe-area-inset-top))!important;
+  }
+  .intro-paper{
+    padding:12px 10px 11px!important;
+  }
+  .intro-card-monogram{
+    margin-bottom:4px;
+    font-size:.56rem;
+  }
+  .intro-photo-wrap{
+    width:70%!important;
+    max-width:270px!important;
+    margin:6px auto 7px!important;
+    padding-bottom:30px!important;
+  }
+  .intro-photo-polaroid{
+    aspect-ratio:16/10!important;
+  }
+  .intro-envelope{
+    width:min(62%,190px)!important;
+    height:48px!important;
+  }
+  .intro-names{
+    margin-top:4px!important;
+  }
+  .intro-event-detail{
+    padding-top:5px;
+  }
+  .intro-closing-line{
+    margin-top:5px!important;
+  }
+  .intro-open-btn{
+    min-height:44px!important;
+    margin-top:0!important;
+  }
+  .personal-invite-private{
+    margin-top:0!important;
+    font-size:.64rem!important;
+  }
+  .personal-link-notice-cover{
+    margin-top:4px!important;
+    padding:7px 9px!important;
+  }
+}
+
+/* Very narrow screens: keep all essential lines inside the card. */
+@media(max-width:360px){
+  .intro-card-stage{
+    width:calc(100vw - 12px)!important;
+  }
+  .intro-paper{
+    padding-inline:9px!important;
+  }
+  .personal-invite-name{
+    font-size:1.72rem!important;
+  }
+  .personal-invite-name.is-long-name{
+    font-size:1.42rem!important;
+  }
+  .personal-invite-name.is-very-long-name{
+    font-size:1.22rem!important;
+  }
+  .intro-event-detail strong{
+    font-size:.54rem;
+  }
+  .intro-event-detail span{
+    font-size:.46rem;
+  }
+  .intro-closing-line{
+    font-size:.66rem!important;
+  }
+}
+
+/* Reduced motion keeps every field visible and uses a simple fade. */
+@media(prefers-reduced-motion:reduce){
+  .invitation-intro.is-opening .intro-inner-letter{
+    animation:none!important;
+    opacity:1!important;
+    transform:translateX(-50%) translateY(-42px) scale(1)!important;
+  }
+  .invitation-intro.is-opening .intro-card,
+  .invitation-intro.is-opening .intro-atmosphere{
+    animation:none!important;
+    transition:opacity .28s ease!important;
+  }
+}
