@@ -138,7 +138,7 @@
     window.WeddingMusic?.start?.(lang);
 
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    setTimeout(finishOpening, reduceMotion ? 520 : 2920);
+    setTimeout(finishOpening, reduceMotion ? 560 : 3400);
   }
 
   function bindEntryInteractions() {
