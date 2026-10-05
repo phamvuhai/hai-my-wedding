@@ -45,3 +45,16 @@ Check:
 Production database changes should be applied as migrations.
 
 The root `supabase.sql` file is a reference snapshot/documentation file and should be updated whenever the deployed schema changes.
+
+
+## Cache / stale-content checks
+
+Production deliberately disables caching for HTML and mutable CSS/JS through Vercel response headers. After a release, verify:
+
+- `/`, `/vi`, `/en`, `/jp`, Album and Admin return `Cache-Control: no-store`.
+- `app.js` and `styles.css` return the same no-store policy.
+- Hero/gallery image URLs change when an image record is edited.
+- Editing an image from Admin creates a new public Storage path and removes the previous object after the database update succeeds.
+- Restoring the site from iOS/Safari BFCache reloads the current deployment.
+
+Do not reintroduce same-path Storage upserts for public wedding images; stale CDN/browser images can otherwise survive a deployment.
