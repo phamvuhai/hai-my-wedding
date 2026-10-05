@@ -1336,18 +1336,6 @@ html[data-motion="wow"] .hero:hover .hero-amp{transform:rotate(-2deg) scale(1.02
   top:calc(var(--header-h) + 44px);
   text-align:left;
 }
-.story-display{
-  display:grid;
-  margin:14px 0 30px;
-  font:400 clamp(4.7rem,9vw,8.6rem)/.78 Georgia,"Times New Roman",serif;
-  letter-spacing:-.07em;
-  color:#382f2a;
-}
-.story-display span:last-child{
-  padding-left:.32em;
-  color:var(--accent);
-  font-style:italic;
-}
 .story-copy{
   padding-top:62px;
   max-width:680px;
@@ -1668,9 +1656,7 @@ html[data-motion="wow"] .event-bg-date{
     grid-template-columns:1fr;
   }
   .story-side{position:static}
-  .story-copy{padding-top:0}
-  .story-display{font-size:clamp(4.2rem,14vw,7rem)}
-  .gallery-editorial-head{gap:28px}
+  .story-copy{padding-top:0}  .gallery-editorial-head{gap:28px}
   .gallery-editorial-head .section-heading{margin-left:0}
   .countdown-heading{text-align:center}
   .countdown-heading h2{margin-left:auto;margin-right:auto}
@@ -1685,15 +1671,7 @@ html[data-motion="wow"] .event-bg-date{
   .editorial-story,
   .gallery-section,
   .rsvp-section{padding:78px 0 82px}
-  .story-grid{gap:30px}
-  .story-display{
-    grid-template-columns:auto auto;
-    justify-content:start;
-    gap:.16em;
-    font-size:clamp(3.5rem,17vw,5.5rem);
-  }
-  .story-display span:last-child{padding-left:0}
-  .story-copy h2{font-size:clamp(2.55rem,11vw,4rem)}
+  .story-grid{gap:30px}  .story-copy h2{font-size:clamp(2.55rem,11vw,4rem)}
   .floating-word{font-size:7rem}
 
   .countdown-section{padding:96px 0 82px}
@@ -1746,7 +1724,7 @@ html[data-motion="wow"] .event-bg-date{
 }
 @media(max-width:430px){
   .kinetic-names{gap:.08em}
-  .story-display,.gallery-display{font-size:3.6rem}
+  .gallery-display{font-size:3.6rem}
   .home-gallery{grid-auto-rows:132px}
   .rsvp-display{font-size:4.4rem}
 }
@@ -1761,7 +1739,6 @@ html[data-motion="wow"] .event-bg-date{
 
 
 /* Editorial display-word entrances */
-.story-display span,
 .gallery-display span,
 .rsvp-display span,
 .rsvp-display em{
@@ -1769,12 +1746,10 @@ html[data-motion="wow"] .event-bg-date{
   opacity:0;
   will-change:transform,opacity;
 }
-.story-side.motion-in .story-display span:first-child,
 .gallery-display.motion-in span:first-child,
 .rsvp-display.motion-in span:first-child{
   animation:editorialWordLeft .92s cubic-bezier(.16,.84,.24,1) .08s forwards;
 }
-.story-side.motion-in .story-display span:last-child,
 .gallery-display.motion-in span:last-child,
 .rsvp-display.motion-in em{
   animation:editorialWordRight 1.02s cubic-bezier(.16,.84,.24,1) .2s forwards;
@@ -1789,7 +1764,6 @@ html[data-motion="wow"] .event-bg-date{
 }
 
 /* Soft wave after the entrance in Wow mode */
-html[data-motion="wow"] .story-side.motion-in .story-display span:last-child,
 html[data-motion="wow"] .gallery-display.motion-in span:last-child{
   animation:
     editorialWordRight 1.02s cubic-bezier(.16,.84,.24,1) .2s forwards,
@@ -8936,9 +8910,6 @@ html[lang="ja"] p{
 .events-unified .section-heading > p:last-child{
   max-width:620px;
   margin-inline:auto;
-}
-.event-day-switcher{
-  display:none!important;
 }
 .event-day-panels{
   display:grid!important;
