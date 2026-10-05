@@ -303,6 +303,116 @@
     });
   }
 
+  function guestCountLabel(count, language = lang()) {
+    if (language === 'jp') language = 'ja';
+    if (language === 'ja') return `${count}名`;
+    if (language === 'en') return `${count} ${count === 1 ? 'guest' : 'guests'}`;
+    return `${count} người`;
+  }
+
+  function rsvpConstraintCopy(language, invite) {
+    if (language === 'jp') language = 'ja';
+    const max = Math.max(1, Math.min(10, Number(invite?.max_guests || 1)));
+    const choice = invite?.event_choice || 'both';
+    const texts = {
+      vi: {
+        max: `Thiệp này dành cho tối đa ${max} khách.`,
+        both: 'Bạn có thể chọn Nhà gái, Nhà trai hoặc cả hai ngày.',
+        bride: 'Thiệp này dành cho lễ Nhà gái ngày 18/12/2026.',
+        groom: 'Thiệp này dành cho lễ Nhà trai ngày 20/12/2026.'
+      },
+      en: {
+        max: `This invitation is for up to ${max} ${max === 1 ? 'guest' : 'guests'}.`,
+        both: "You may attend the Bride's Family event, Groom's Family event, or both days.",
+        bride: "This invitation is for the Bride's Family event on 18/12/2026.",
+        groom: "This invitation is for the Groom's Family event on 20/12/2026."
+      },
+      ja: {
+        max: `この招待状は最大${max}名様までご参加いただけます。`,
+        both: '新婦側・新郎側・両日のいずれかをお選びいただけます。',
+        bride: 'この招待状は2026年12月18日の新婦側の式へのご招待です。',
+        groom: 'この招待状は2026年12月20日の新郎側の式へのご招待です。'
+      }
+    };
+    const set = texts[language] || texts.vi;
+    return {max:set.max, event:set[choice] || set.both};
+  }
+
+  function eventOptionLabel(choice, language = lang()) {
+    if (language === 'jp') language = 'ja';
+    const labels = {
+      vi: {
+        bride:'Nhà gái — 18/12/2026',
+        groom:'Nhà trai — 20/12/2026',
+        both:'Cả hai ngày'
+      },
+      en: {
+        bride:"Bride's family — 18/12/2026",
+        groom:"Groom's family — 20/12/2026",
+        both:'Both days'
+      },
+      ja: {
+        bride:'新婦側 — 18/12/2026',
+        groom:'新郎側 — 20/12/2026',
+        both:'両日'
+      }
+    };
+    return (labels[language] || labels.vi)[choice] || '';
+  }
+
+  function renderRsvpConstraints(invite, {preserveCount=true} = {}) {
+    const form = document.getElementById('rsvpForm');
+    if (!form || !invite) return;
+
+    const guestSelect = form.querySelector('[name="guest_count"]');
+    const eventSelect = form.querySelector('[name="event_choice"]');
+    const guestHelp = document.getElementById('rsvpGuestLimitHelp');
+    const eventHelp = document.getElementById('rsvpEventHelp');
+    const eventFixed = document.getElementById('rsvpEventFixed');
+    const eventFixedText = document.getElementById('rsvpEventFixedText');
+    const maxGuests = Math.max(1, Math.min(10, Number(invite.max_guests || 1)));
+    const scope = invite.event_choice || 'both';
+    const copy = rsvpConstraintCopy(lang(), invite);
+
+    if (guestSelect) {
+      const previous = preserveCount ? Number(guestSelect.value || 1) : 1;
+      guestSelect.innerHTML = Array.from({length:maxGuests}, (_, i) => {
+        const value = i + 1;
+        return `<option value="${value}">${guestCountLabel(value)}</option>`;
+      }).join('');
+      guestSelect.value = String(Math.min(Math.max(previous,1),maxGuests));
+      guestSelect.dataset.maxGuests = String(maxGuests);
+    }
+
+    if (guestHelp) {
+      guestHelp.textContent = copy.max;
+      guestHelp.hidden = false;
+    }
+
+    if (eventSelect) {
+      if (scope === 'both') {
+        eventSelect.hidden = false;
+        eventSelect.disabled = false;
+        if (!['bride','groom','both'].includes(eventSelect.value)) eventSelect.value = 'both';
+        if (eventFixed) eventFixed.hidden = true;
+      } else {
+        eventSelect.value = scope;
+        eventSelect.hidden = true;
+        eventSelect.disabled = true;
+        if (eventFixed) eventFixed.hidden = false;
+        if (eventFixedText) eventFixedText.textContent = eventOptionLabel(scope);
+      }
+    }
+
+    if (eventHelp) {
+      eventHelp.textContent = copy.event;
+      eventHelp.hidden = false;
+    }
+
+    form.dataset.inviteEvent = scope;
+    form.dataset.maxGuests = String(maxGuests);
+  }
+
   function prefill(invite) {
     const form = document.getElementById('rsvpForm');
     if (!form) return;
@@ -319,24 +429,9 @@
     }
     if (phoneInput && invite.phone) phoneInput.value = invite.phone;
 
-    if (eventSelect && invite.event_choice) {
-      eventSelect.value = invite.event_choice;
-      if (invite.event_choice !== 'both') {
-        [...eventSelect.options].forEach(o => o.hidden = o.value !== invite.event_choice);
-        eventSelect.disabled = true;
-      }
-    }
-
-    if (guestSelect && invite.max_guests) {
-      [...guestSelect.options].forEach(o => {
-        o.hidden = Number(o.value) > Number(invite.max_guests);
-      });
-      if (Number(guestSelect.value) > Number(invite.max_guests)) guestSelect.value = '1';
-    }
+    renderRsvpConstraints(invite, {preserveCount:false});
 
     form.dataset.inviteId = invite.id;
-    form.dataset.inviteEvent = invite.event_choice || 'both';
-    form.dataset.maxGuests = String(invite.max_guests || 1);
   }
 
   async function loadExistingRsvp(token) {
@@ -363,7 +458,12 @@
         attendance.checked = true;
         attendance.dispatchEvent(new Event('change', {bubbles:true}));
       }
-      if (guestSelect && rsvp.attendance !== 'no') guestSelect.value = String(rsvp.guest_count ?? 1);
+      if (guestSelect && rsvp.attendance !== 'no') {
+        const max = Number(form.dataset.maxGuests || guestSelect.dataset.maxGuests || 1);
+        const count = Math.min(Math.max(Number(rsvp.guest_count ?? 1),1),max);
+        guestSelect.value = String(count);
+        guestSelect.dataset.lastValue = String(count);
+      }
       if (eventSelect && !eventSelect.disabled) eventSelect.value = rsvp.event_choice || 'both';
       if (messageInput) messageInput.value = rsvp.message || '';
 
@@ -419,6 +519,10 @@
       renderWelcome(invite);
       renderPrivateNotices(invite);
       applyInviteEventPriority(invite);
+      const currentEvent = document.querySelector('#rsvpForm [name="event_choice"]')?.value;
+      renderRsvpConstraints(invite, {preserveCount:true});
+      const eventSelect = document.querySelector('#rsvpForm [name="event_choice"]');
+      if (eventSelect && !eventSelect.disabled && currentEvent) eventSelect.value = currentEvent;
     });
   }
 
