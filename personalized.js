@@ -126,6 +126,9 @@
     if (nameEl) {
       nameEl.textContent = c.display;
       nameEl.hidden = !c.display;
+      const nameLength = [...(c.display || '')].length;
+      nameEl.classList.toggle('is-long-name', nameLength > 24);
+      nameEl.classList.toggle('is-very-long-name', nameLength > 38);
     }
     if (leadEl) {
       leadEl.textContent = c.lead;
