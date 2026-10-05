@@ -13671,3 +13671,74 @@ img,video,svg{height:auto}
     100%{opacity:1;transform:translate(-50%,-71%) scale(1)}
   }
 }
+
+
+/* =========================================
+   V58 — Fix extraction direction / final composition
+   One authoritative card transform overrides V55–V57.
+   ========================================= */
+.invite-v2-card{
+  top:50%!important;
+  left:50%!important;
+  z-index:4!important;
+  opacity:.01!important;
+  transform:translate3d(-50%,-28%,0) scale(.92)!important;
+  transform-origin:50% 100%!important;
+  visibility:visible!important;
+}
+.invitation-intro.invite-v2.is-opening .invite-v2-card{
+  z-index:4!important;
+  animation:v58LetterUp 2.28s cubic-bezier(.18,.72,.12,1) 1.58s both!important;
+}
+@keyframes v58LetterUp{
+  0%{opacity:.01;transform:translate3d(-50%,-28%,0) scale(.92)}
+  10%{opacity:1;transform:translate3d(-50%,-36%,0) scale(.93)}
+  32%{opacity:1;transform:translate3d(-50%,-55%,0) scale(.95)}
+  55%{opacity:1;transform:translate3d(-50%,-78%,0) scale(.97)}
+  76%{opacity:1;transform:translate3d(-50%,-101%,0) scale(.99)}
+  100%{opacity:1;transform:translate3d(-50%,-116%,0) scale(1)}
+}
+/* Once clear of the pocket, JS promotes the card and it keeps its extracted pose. */
+.invitation-intro.invite-v2.is-letter-out .invite-v2-card{
+  z-index:30!important;
+  opacity:1!important;
+  transform:translate3d(-50%,-116%,0) scale(1)!important;
+  filter:none!important;
+}
+/* The envelope settles DOWN only after the card is already visibly above its mouth. */
+.invitation-intro.invite-v2.is-opening .invite-v2-envelope{
+  animation:v58EnvelopeDown .9s cubic-bezier(.2,.7,.18,1) 3.62s both!important;
+}
+@keyframes v58EnvelopeDown{
+  from{transform:translate3d(0,0,0) scale(1);filter:none}
+  to{transform:translate3d(0,42px,0) scale(.955);filter:blur(.25px)}
+}
+/* Front pocket stays above card only during extraction; promotion wins afterwards. */
+.invitation-intro.invite-v2.is-opening:not(.is-letter-out) .invite-v2-envelope-front{z-index:5!important}
+.invitation-intro.invite-v2.is-opening:not(.is-letter-out) .invite-real-fold{z-index:6!important}
+.invitation-intro.invite-v2.is-letter-out .invite-v2-envelope-front{z-index:5!important}
+.invitation-intro.invite-v2.is-letter-out .invite-real-fold{z-index:6!important}
+.invitation-intro.invite-v2.is-letter-out .invite-v2-envelope-flap{z-index:2!important}
+
+/* Preserve removed cord + seal beside the lowered envelope. */
+.invitation-intro.invite-v2.is-letter-out .invite-real-cord,
+.invitation-intro.invite-v2.is-letter-out .invite-v2-seal{z-index:31!important}
+
+@media(max-width:760px){
+  .invite-v2-card{top:48%!important;width:91%!important}
+  @keyframes v58LetterUp{
+    0%{opacity:.01;transform:translate3d(-50%,-26%,0) scale(.91)}
+    10%{opacity:1;transform:translate3d(-50%,-34%,0) scale(.93)}
+    34%{opacity:1;transform:translate3d(-50%,-53%,0) scale(.95)}
+    57%{opacity:1;transform:translate3d(-50%,-76%,0) scale(.97)}
+    78%{opacity:1;transform:translate3d(-50%,-98%,0) scale(.99)}
+    100%{opacity:1;transform:translate3d(-50%,-111%,0) scale(1)}
+  }
+  .invitation-intro.invite-v2.is-letter-out .invite-v2-card{
+    transform:translate3d(-50%,-111%,0) scale(1)!important;
+  }
+  @keyframes v58EnvelopeDown{
+    from{transform:translate3d(0,0,0) scale(1)}
+    to{transform:translate3d(0,30px,0) scale(.96);filter:blur(.2px)}
+  }
+}
