@@ -13355,3 +13355,40 @@ img,video,svg{height:auto}
   .invite-v2-open-btn{margin-top:12px!important;height:46px!important;min-height:46px!important}
   .invite-v2-personal-meta{margin-top:7px!important}
 }
+
+
+/* V54 — Botanical foil + H botanical M seal fidelity */
+.invite-real-botanical{
+  stroke:#e4c17f!important;stroke-width:1.12!important;
+  vector-effect:non-scaling-stroke;opacity:.9!important;
+  filter:drop-shadow(0 .7px rgba(255,231,174,.16)) drop-shadow(0 1px rgba(70,36,10,.24))!important;
+}
+.invite-real-botanical-l{
+  width:27%!important;height:58%!important;left:.6%!important;bottom:.3%!important;
+  transform:rotate(-4deg)!important;
+}
+.invite-real-botanical-r{
+  width:25%!important;height:56%!important;right:.8%!important;top:.4%!important;
+  transform:none!important;
+}
+.invite-v2-seal>b{
+  width:64%!important;height:58%!important;display:grid!important;
+  grid-template-columns:1fr 18px 1fr!important;align-items:center!important;justify-items:center!important;
+  gap:2px!important;font-size:.96rem!important;letter-spacing:0!important;
+}
+.invite-v2-seal>b i{font-style:normal!important;font-weight:500!important;text-shadow:0 1px rgba(255,246,213,.25)}
+.seal-botanical{
+  width:17px!important;height:32px!important;overflow:visible!important;
+  fill:none!important;stroke:#f1d79c!important;stroke-width:1.05!important;
+  stroke-linecap:round!important;stroke-linejoin:round!important;
+  filter:drop-shadow(0 1px rgba(72,43,17,.28));
+}
+.seal-botanical circle{fill:#f1d79c!important;stroke:none!important}
+.invite-v2-seal::before{border-color:rgba(255,230,174,.62)!important}
+.invite-v2-seal::after{border-color:rgba(93,59,26,.36)!important}
+@media(max-width:760px){
+  .invite-real-botanical-l{width:26%!important;height:56%!important}
+  .invite-real-botanical-r{width:24%!important;height:54%!important}
+  .invite-v2-seal>b{grid-template-columns:1fr 14px 1fr!important;font-size:.7rem!important}
+  .seal-botanical{width:13px!important;height:25px!important}
+}
