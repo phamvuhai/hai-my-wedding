@@ -671,16 +671,22 @@ begin
 
   if v_invite.event_choice <> 'both' then
     v_event := v_invite.event_choice;
-  elsif p_event_choice in ('bride','groom','both') then
-    v_event := p_event_choice;
   else
-    v_event := 'both';
+    if p_event_choice not in ('bride','groom','both') then
+      raise exception 'Invalid event choice';
+    end if;
+    v_event := p_event_choice;
   end if;
 
   if p_attendance = 'no' then
     v_count := 0;
   else
-    v_count := greatest(1, least(coalesce(p_guest_count,1), v_invite.max_guests));
+    if p_guest_count is null
+      or p_guest_count < 1
+      or p_guest_count > v_invite.max_guests then
+      raise exception 'Guest count exceeds invitation limit';
+    end if;
+    v_count := p_guest_count;
   end if;
 
   insert into public.rsvp (
