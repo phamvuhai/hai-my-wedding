@@ -746,7 +746,6 @@ async function loadHeroPhoto() {
   const hero = document.getElementById('home');
   const framedImg = document.getElementById('heroImage');
   const fullImg = document.getElementById('heroFullImage');
-  const introImg = document.getElementById('introImage');
   if (!hero || !framedImg || !fullImg) return;
 
   const markReady = (mode = 'image') => {
@@ -833,11 +832,6 @@ async function loadHeroPhoto() {
     fullImg.alt = '';
     fullImg.style.objectPosition = `${fx}% ${fy}%`;
 
-    if (introImg) {
-      introImg.src = url;
-      introImg.alt = alt || 'Hải Phạm & Mỹ Nguyễn';
-      introImg.style.objectPosition = `${fx}% ${fy}%`;
-    }
     markReady('image');
   } catch (error) {
     console.error('Hero photo error:', error);
