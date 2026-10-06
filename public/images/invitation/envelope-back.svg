@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1100">
+<defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8b2b39"/><stop offset=".48" stop-color="#661522"/><stop offset="1" stop-color="#420811"/></linearGradient><filter id="g"><feTurbulence type="fractalNoise" baseFrequency=".55" numOctaves="2" seed="5"/><feComponentTransfer><feFuncA type="table" tableValues="0 .05"/></feComponentTransfer></filter></defs>
+<rect x="12" y="12" width="1776" height="1076" rx="28" fill="url(#b)" stroke="#c7924d" stroke-width="10"/>
+<rect x="18" y="18" width="1764" height="1064" rx="25" filter="url(#g)" opacity=".75"/>
+<path d="M35 45L900 650L1765 45" fill="none" stroke="#d5a45d" stroke-width="7" opacity=".75"/>
+</svg>
