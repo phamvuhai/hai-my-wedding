@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+<defs>
+ <radialGradient id="wax" cx=".30" cy=".24" r=".78"><stop stop-color="#d86d67"/><stop offset=".24" stop-color="#aa4143"/><stop offset=".58" stop-color="#7d252e"/><stop offset="1" stop-color="#3c0a12"/></radialGradient>
+ <radialGradient id="inner" cx=".36" cy=".3" r=".7"><stop stop-color="#ad4546"/><stop offset=".72" stop-color="#70212a"/><stop offset="1" stop-color="#4a0d16"/></radialGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f6d897"/><stop offset=".42" stop-color="#9f6527"/><stop offset=".72" stop-color="#e7bc70"/><stop offset="1" stop-color="#86501d"/></linearGradient>
+ <filter id="s" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="18" stdDeviation="17" flood-color="#180207" flood-opacity=".52"/></filter>
+ <filter id="emboss"><feGaussianBlur in="SourceAlpha" stdDeviation="2" result="b"/><feSpecularLighting in="b" surfaceScale="4" specularConstant=".8" specularExponent="18" lighting-color="#f6dca8" result="sp"><feDistantLight azimuth="225" elevation="45"/></feSpecularLighting><feComposite in="sp" in2="SourceAlpha" operator="in" result="sp2"/><feComposite in="SourceGraphic" in2="sp2" operator="arithmetic" k1="0" k2="1" k3=".45" k4="0"/></filter>
+</defs>
+<path d="M248 18C292 1 330 28 367 44C404 60 450 58 469 96C489 136 457 174 469 216C482 260 501 301 472 337C443 372 399 367 369 402C339 438 327 479 283 489C239 498 207 466 165 462C121 458 77 472 49 436C20 399 43 356 25 316C6 274-6 231 17 192C39 154 84 151 112 117C141 81 152 40 196 29C214 25 231 25 248 18Z" fill="url(#wax)" stroke="url(#gold)" stroke-width="11" filter="url(#s)"/>
+<circle cx="250" cy="250" r="171" fill="url(#inner)" stroke="url(#gold)" stroke-width="7"/>
+<circle cx="250" cy="250" r="147" fill="none" stroke="#e8bd72" stroke-width="2.8" opacity=".58"/>
+<g fill="none" stroke="#d5a45b" stroke-width="3.5" opacity=".72">
+ <path d="M120 250C142 208 166 183 198 165M380 250C358 208 334 183 302 165"/>
+ <path d="M138 302C163 325 187 338 218 347M362 302C337 325 313 338 282 347"/>
+</g>
+<g filter="url(#emboss)">
+ <text x="250" y="260" text-anchor="middle" fill="#f4d596" font-family="Georgia,serif" font-size="80" font-style="italic">H·M</text>
+ <path d="M182 290H318" stroke="#d5a55c" stroke-width="3"/>
+</g>
+<ellipse cx="183" cy="137" rx="56" ry="22" transform="rotate(-31 183 137)" fill="#ffd7c7" opacity=".13"/>
+</svg>
