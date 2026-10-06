@@ -1,5 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 760">
-<defs><linearGradient id="p" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff4df"/><stop offset=".6" stop-color="#efd7b4"/><stop offset="1" stop-color="#e0bf91"/></linearGradient><pattern id="bot" width="180" height="150" patternUnits="userSpaceOnUse"><g fill="none" stroke="#9d6c3b" stroke-width="4" opacity=".18"><path d="M20 135C58 93 92 64 146 16"/><path d="M65 86c-35 3-49-18-48-38M88 66c31 4 51-8 63-31"/></g></pattern></defs>
-<path d="M12 16H1788L900 744Z" fill="url(#p)" stroke="#c9954f" stroke-width="9"/>
-<path d="M12 16H1788L900 744Z" fill="url(#bot)"/>
+<defs>
+ <linearGradient id="ivory" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff8e9"/><stop offset=".56" stop-color="#f1d9b6"/><stop offset="1" stop-color="#dfbd8d"/></linearGradient>
+ <linearGradient id="rim"><stop stop-color="#f2d497"/><stop offset=".45" stop-color="#a66d31"/><stop offset="1" stop-color="#e1b66d"/></linearGradient>
+ <pattern id="bot" width="230" height="180" patternUnits="userSpaceOnUse">
+  <g fill="none" stroke="#9c6d3c" stroke-width="4" opacity=".17"><path d="M24 160C66 115 117 74 204 18"/><path d="M68 112C40 108 24 91 20 66M95 88C123 93 145 79 163 55"/></g>
+  <g fill="#b48651" opacity=".12"><ellipse cx="63" cy="119" rx="12" ry="31" transform="rotate(-48 63 119)"/><ellipse cx="117" cy="78" rx="11" ry="28" transform="rotate(42 117 78)"/><ellipse cx="162" cy="48" rx="10" ry="25" transform="rotate(-42 162 48)"/></g>
+ </pattern>
+ <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed="11"/><feColorMatrix values="0 0 0 0 .53 0 0 0 0 .39 0 0 0 0 .25 0 0 0 .04 0"/></filter>
+</defs>
+<path d="M14 16H1786L900 744Z" fill="url(#ivory)" stroke="url(#rim)" stroke-width="10"/>
+<path d="M14 16H1786L900 744Z" fill="url(#bot)"/>
+<path d="M14 16H1786L900 744Z" filter="url(#grain)" opacity=".5"/>
 </svg>
