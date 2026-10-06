@@ -87,62 +87,11 @@
     return {...(texts[language] || texts.vi), display};
   }
 
-  function eventCopyFor(language, choice = 'both') {
-    if (language === 'jp') language = 'ja';
-    const map = {
-      vi: {
-        bride: {date:'THỨ SÁU · 18.12.2026', place:'NHÀ GÁI · TP. HỒ CHÍ MINH'},
-        groom: {date:'CHỦ NHẬT · 20.12.2026', place:'NHÀ TRAI · RẠCH GIÁ, AN GIANG'},
-        both: {date:'18 — 20 · 12 · 2026', place:'TP. HỒ CHÍ MINH · RẠCH GIÁ'}
-      },
-      en: {
-        bride: {date:'FRIDAY · 18.12.2026', place:"BRIDE'S FAMILY · HO CHI MINH CITY"},
-        groom: {date:'SUNDAY · 20.12.2026', place:"GROOM'S FAMILY · RACH GIA, AN GIANG"},
-        both: {date:'18 — 20 · 12 · 2026', place:'HO CHI MINH CITY · RACH GIA'}
-      },
-      ja: {
-        bride: {date:'金曜日 · 18.12.2026', place:'新婦側 · ホーチミン市'},
-        groom: {date:'日曜日 · 20.12.2026', place:'新郎側 · ラックザー、アンザン'},
-        both: {date:'2026 · 12 · 18 — 2026 · 12 · 20', place:'ホーチミン市 · ラックザー'}
-      }
-    };
-    const set = map[language] || map.vi;
-    return set[choice] || set.both;
-  }
-
   function renderInvite(invite) {
     const c = copyFor(lang(), invite);
-    const nameEl = document.getElementById('personalInviteName');
-    const leadEl = document.getElementById('personalInviteLead');
-    const noteEl = document.getElementById('personalInviteNote');
     const privateEl = document.getElementById('personalInvitePrivate');
-    const eventDateEl = document.getElementById('introEventDate');
-    const eventPlaceEl = document.getElementById('introEventPlace');
-    const innerDateEl = document.querySelector('.inner-letter-date');
-    const kickerEl = document.querySelector('.intro-invite');
     const openLabel = document.querySelector('#openInvitation [data-i18n="intro.open"]');
 
-    if (kickerEl) kickerEl.textContent = c.kicker;
-    if (nameEl) {
-      nameEl.textContent = c.display;
-      nameEl.hidden = !c.display;
-      const nameLength = [...(c.display || '')].length;
-      nameEl.classList.toggle('is-long-name', nameLength > 24);
-      nameEl.classList.toggle('is-very-long-name', nameLength > 38);
-    }
-    if (leadEl) {
-      leadEl.textContent = c.lead;
-      leadEl.hidden = false;
-    }
-    if (noteEl) {
-      noteEl.textContent = c.note;
-      noteEl.hidden = false;
-    }
-
-    const eventCopy = eventCopyFor(lang(), invite?.event_choice || 'both');
-    if (eventDateEl) eventDateEl.textContent = eventCopy.date;
-    if (eventPlaceEl) eventPlaceEl.textContent = eventCopy.place;
-    if (innerDateEl) innerDateEl.textContent = eventCopy.date;
     if (privateEl) {
       if (!c.display) {
         privateEl.textContent = '';
@@ -155,6 +104,7 @@
         privateEl.hidden = false;
       }
     }
+
     if (openLabel) openLabel.textContent = c.open;
 
     window.WeddingInvitationData = {
@@ -166,6 +116,7 @@
       script: 'Wedding Invitation',
       guestName: c.display || ''
     };
+
     document.dispatchEvent(new CustomEvent('invitation:data', {
       detail: window.WeddingInvitationData
     }));
