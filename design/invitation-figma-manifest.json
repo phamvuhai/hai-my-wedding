@@ -34,14 +34,14 @@
     }
   },
   "timeline": {
-    "tap": 0.0,
+    "tap": 0,
     "sealOpen": 0.1,
     "flapOpen": 0.2,
     "cardStart": 0.36,
     "cardClear": 0.68,
     "cardPresented": 0.84,
     "transition": 0.94,
-    "complete": 1.0
+    "complete": 1
   },
   "palette": {
     "burgundy": "#4B0E1A",
@@ -49,5 +49,23 @@
     "ivory": "#FDF6ED",
     "gold": "#D4AF37",
     "warmBrown": "#8B5E3C"
+  },
+  "sourceAssets": {
+    "base": "/images/invitation/figma/",
+    "directFigmaExportStatus": "rate-limited-on-starter-plan",
+    "note": "The website now uses the same editable vector artwork used to build the Figma source nodes. Direct re-export via Figma MCP was attempted but blocked by the Starter plan call limit.",
+    "files": {
+      "card": "figma-card.svg",
+      "envelopeBack": "figma-envelope-back.svg",
+      "envelopeFront": "figma-envelope-front.svg",
+      "envelopeFlap": "figma-envelope-flap.svg",
+      "lining": "figma-envelope-lining.svg",
+      "cord": "figma-cord.svg",
+      "seal": "figma-wax-seal.svg",
+      "floralLeft": "figma-floral-left.svg",
+      "floralRight": "figma-floral-right.svg",
+      "petal01": "figma-petal-01.svg",
+      "petal02": "figma-petal-02.svg"
+    }
   }
 }
