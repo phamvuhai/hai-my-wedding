@@ -1,18 +1,18 @@
 (() => {
-  const base = '/images/invitation/';
+  const base = '/images/invitation/figma/';
   window.WeddingInvitationAssets = {
-    card: base + 'card-shell.svg',
-    envelopeBack: base + 'envelope-back.svg',
-    envelopeFront: base + 'envelope-front.svg',
-    envelopeFlap: base + 'envelope-flap.svg',
-    lining: base + 'envelope-lining.svg',
-    cord: base + 'envelope-cord.svg',
-    seal: base + 'wax-seal-hm.svg',
-    floralLeft: base + 'floral-left.svg',
-    floralRight: base + 'floral-right.svg',
+    card: base + 'figma-card.svg',
+    envelopeBack: base + 'figma-envelope-back.svg',
+    envelopeFront: base + 'figma-envelope-front.svg',
+    envelopeFlap: base + 'figma-envelope-flap.svg',
+    lining: base + 'figma-envelope-lining.svg',
+    cord: base + 'figma-cord.svg',
+    seal: base + 'figma-wax-seal.svg',
+    floralLeft: base + 'figma-floral-left.svg',
+    floralRight: base + 'figma-floral-right.svg',
     petals: [
-      base + 'petal-01.svg',
-      base + 'petal-02.svg'
+      base + 'figma-petal-01.svg',
+      base + 'figma-petal-02.svg'
     ]
   };
 })();
