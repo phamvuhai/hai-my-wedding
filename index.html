@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body class="invitation-locked hero-image-loading">
-  <section class="invitation-intro invite-v2" id="invitationIntro" aria-label="Wedding invitation">
+  <section class="invitation-intro invite-v2" id="invitationIntro" aria-label="Wedding invitation opening">
     <div class="intro-language language-switcher invite-v2-language" aria-label="Language">
       <button type="button" data-lang="vi">VI</button>
       <button type="button" data-lang="en">EN</button>
@@ -28,7 +28,13 @@
         <p class="invite-v2-tap" data-i18n="intro.tap">Chạm để mở thiệp</p>
       </header>
 
-      <div class="invite-v2-stage" role="button" tabindex="0" data-i18n-aria="intro.open"></div>
+      <div
+        class="invite-v2-stage"
+        role="button"
+        tabindex="0"
+        aria-label="Open wedding invitation"
+        data-i18n-aria="intro.open"
+      ></div>
 
       <button class="invite-v2-open-btn" id="openInvitation" type="button">
         <span data-i18n="intro.open">MỞ THIỆP</span>
@@ -43,6 +49,8 @@
           <button class="personal-share-btn" id="personalSharePublic" type="button"></button>
         </aside>
       </div>
+
+      <p class="sr-only" id="invitationCanvasStatus" aria-live="polite"></p>
     </div>
   </section>
 
