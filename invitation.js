@@ -149,13 +149,13 @@
     // Promote the letter only after it has cleared the front pocket.
     setTimeout(() => {
       if (opening) intro.classList.add('is-letter-out');
-    }, 2800);
+    }, 2450);
 
     // Hold the fully extracted invitation before entering the site.
     setTimeout(() => {
       if (opening) intro.classList.add('is-exiting');
-    }, 7200);
-    setTimeout(finishOpening, 7600);
+    }, 7450);
+    setTimeout(finishOpening, 7900);
   }
 
   function bindEntryInteractions() {
