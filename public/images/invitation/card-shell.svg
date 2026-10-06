@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 2200">
+<defs>
+ <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff8e9"/><stop offset=".55" stop-color="#f7e7cf"/><stop offset="1" stop-color="#ecd1ad"/></linearGradient>
+ <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="18"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 .055"/></feComponentTransfer></filter>
+ <radialGradient id="rose"><stop stop-color="#bd4c56"/><stop offset=".5" stop-color="#801c2a"/><stop offset="1" stop-color="#3b0710"/></radialGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f0c77c"/><stop offset=".48" stop-color="#b57831"/><stop offset="1" stop-color="#e0b264"/></linearGradient>
+</defs>
+<rect width="1600" height="2200" rx="18" fill="url(#paper)"/>
+<rect width="1600" height="2200" rx="18" filter="url(#grain)" opacity=".75"/>
+<rect x="54" y="54" width="1492" height="2092" rx="10" fill="none" stroke="#bf8540" stroke-width="5"/>
+<rect x="78" y="78" width="1444" height="2044" rx="8" fill="none" stroke="#d8aa61" stroke-width="2" opacity=".58"/>
+<!-- top-left floral -->
+<g transform="translate(88 110)">
+ <g stroke="url(#gold)" stroke-width="10" fill="none" stroke-linecap="round"><path d="M90 310C155 210 214 133 334 34"/><path d="M86 280C55 225 49 166 70 111"/><path d="M147 230C213 221 272 185 320 132"/></g>
+ <g fill="url(#gold)">
+  <ellipse cx="80" cy="250" rx="28" ry="72" transform="rotate(-36 80 250)"/><ellipse cx="117" cy="198" rx="26" ry="68" transform="rotate(34 117 198)"/>
+  <ellipse cx="176" cy="160" rx="25" ry="66" transform="rotate(-44 176 160)"/><ellipse cx="224" cy="116" rx="23" ry="61" transform="rotate(36 224 116)"/>
+  <ellipse cx="277" cy="72" rx="20" ry="55" transform="rotate(-46 277 72)"/><ellipse cx="66" cy="145" rx="22" ry="57" transform="rotate(-16 66 145)"/>
+ </g>
+ <g fill="url(#rose)" stroke="#5c0d19" stroke-width="4">
+  <g transform="translate(102 258)"><circle r="83"/><path d="M-54 0C-20-70 50-70 70-5C46 61-24 68-54 0Z" fill="#9a2936"/><path d="M-18-45C24-32 38 6 10 41C-34 33-48-8-18-45Z" fill="#6f1724"/></g>
+  <g transform="translate(198 166)"><circle r="58"/><path d="M-38 0C-15-48 34-46 47-4C30 40-17 43-38 0Z" fill="#962735"/></g>
+  <g transform="translate(272 92)"><circle r="42"/><path d="M-27 0C-10-34 24-33 33-3C20 28-12 30-27 0Z" fill="#942532"/></g>
+ </g>
+</g>
+<!-- bottom-right floral -->
+<g transform="translate(1510 2084) rotate(180)">
+ <g stroke="url(#gold)" stroke-width="10" fill="none" stroke-linecap="round"><path d="M90 310C155 210 214 133 334 34"/><path d="M86 280C55 225 49 166 70 111"/><path d="M147 230C213 221 272 185 320 132"/></g>
+ <g fill="url(#gold)">
+  <ellipse cx="80" cy="250" rx="28" ry="72" transform="rotate(-36 80 250)"/><ellipse cx="117" cy="198" rx="26" ry="68" transform="rotate(34 117 198)"/>
+  <ellipse cx="176" cy="160" rx="25" ry="66" transform="rotate(-44 176 160)"/><ellipse cx="224" cy="116" rx="23" ry="61" transform="rotate(36 224 116)"/>
+  <ellipse cx="277" cy="72" rx="20" ry="55" transform="rotate(-46 277 72)"/>
+ </g>
+ <g fill="url(#rose)" stroke="#5c0d19" stroke-width="4">
+  <circle cx="106" cy="255" r="82"/><circle cx="203" cy="164" r="56"/><circle cx="278" cy="94" r="40"/>
+ </g>
+</g>
+<!-- decorative corner marks -->
+<g fill="none" stroke="#c68a42" stroke-width="3" opacity=".8">
+ <path d="M1298 110h188v188M1460 112c-5 47-44 78-89 73 2-43 35-76 89-73Z"/>
+ <path d="M302 2090H114v-188M140 2088c5-47 44-78 89-73-2 43-35 76-89 73Z"/>
+</g>
+</svg>
