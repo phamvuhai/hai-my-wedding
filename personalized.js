@@ -156,6 +156,20 @@
       }
     }
     if (openLabel) openLabel.textContent = c.open;
+
+    window.WeddingInvitationData = {
+      ...(window.WeddingInvitationData || {}),
+      lang: lang(),
+      groom: 'PHẠM VŨ HẢI',
+      bride: 'NGUYỄN THỊ MỸ',
+      date: '19 · 12 · 2026',
+      script: 'Wedding Invitation',
+      guestName: c.display || ''
+    };
+    document.dispatchEvent(new CustomEvent('invitation:data', {
+      detail: window.WeddingInvitationData
+    }));
+
     renderPrivateNotices(invite);
     applyInviteEventPriority(invite);
   }
