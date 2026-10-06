@@ -270,28 +270,8 @@
     });
   });
 
-  // Mobile lifecycle: never leave wedding audio playing after Safari/tab is hidden.
-  // Do not auto-resume on return; the guest must explicitly tap play/open again.
-  function pauseForPageLifecycle() {
-    pendingStart = null;
-    clearFade();
-    clearWatchdog();
-    setLoading(false);
-    if (player) {
-      try { player.pauseVideo(); } catch {}
-    }
-    setPlaying(false);
-  }
-
-  document.addEventListener('visibilitychange',() => {
-    if (document.visibilityState === 'hidden') pauseForPageLifecycle();
-  });
-  window.addEventListener('pagehide',pauseForPageLifecycle);
-  window.addEventListener('pageshow',() => {
-    // Covers iOS Safari BFCache restores as well as ordinary navigation back.
-    setLoading(false);
-    setPlaying(false);
-  });
+  // Keep playback untouched when the page moves to the background.
+  // iOS may still suspend browser media at OS level; the site does not proactively pause it.
 
   updateMeta(currentLang);
   setLoading(false);
