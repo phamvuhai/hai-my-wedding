@@ -13558,3 +13558,72 @@ img,video,svg{height:auto}
     100%{transform:translate3d(-50%,-79%,0) scale(.99)}
   }
 }
+
+
+/* V61 — Open-envelope silhouette: visible rear triangular flap around the card */
+.invitation-intro.invite-v2.is-opening .invite-v2-envelope-flap{
+  transform-origin:50% 0!important;
+  backface-visibility:visible!important;
+  -webkit-backface-visibility:visible!important;
+  animation:referenceFlapOpen 1.42s cubic-bezier(.18,.7,.16,1) 1.02s both!important;
+}
+@keyframes referenceFlapOpen{
+  0%{transform:rotateX(0deg);z-index:7;filter:drop-shadow(0 4px 3px rgba(57,8,15,.26))}
+  45%{transform:rotateX(-78deg);z-index:7;filter:drop-shadow(0 13px 9px rgba(57,8,15,.2))}
+  72%{transform:rotateX(-116deg);z-index:3;filter:drop-shadow(0 -5px 6px rgba(57,8,15,.15))}
+  100%{transform:rotateX(-136deg);z-index:3;filter:drop-shadow(0 -7px 7px rgba(57,8,15,.14))}
+}
+/* Give the rear face a darker paper character when opened. */
+.invitation-intro.invite-v2.is-opening .invite-v2-envelope-flap{
+  background:
+    radial-gradient(ellipse at 50% 8%,rgba(255,210,190,.055),transparent 45%),
+    repeating-linear-gradient(101deg,rgba(255,255,255,.014) 0 1px,transparent 1px 4px),
+    linear-gradient(158deg,#812632 0%,#711d29 52%,#601720 100%)!important;
+}
+/* Once open, keep rear flap visible behind the invitation instead of burying it. */
+.invitation-intro.invite-v2.is-letter-out .invite-v2-envelope-flap{
+  z-index:3!important;
+  transform:rotateX(-136deg)!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+/* Card sits in front of rear flap, but behind the front pocket. */
+.invitation-intro.invite-v2.is-letter-out .invite-v2-card{z-index:4!important}
+.invitation-intro.invite-v2.is-letter-out .invite-v2-envelope-front,
+.invitation-intro.invite-v2.is-letter-out .invite-real-fold{z-index:6!important}
+
+/* Rear-flap side shoulders: visible left/right around the card like the reference. */
+.invitation-intro.invite-v2.is-letter-out .invite-v2-envelope::before{
+  content:""!important;position:absolute!important;z-index:3!important;
+  left:2%!important;right:2%!important;top:-25%!important;height:55%!important;
+  clip-path:polygon(50% 0,100% 100%,78% 100%,50% 28%,22% 100%,0 100%)!important;
+  background:
+    repeating-linear-gradient(101deg,rgba(255,255,255,.012) 0 1px,transparent 1px 4px),
+    linear-gradient(155deg,#70202a,#58151e)!important;
+  filter:drop-shadow(0 5px 6px rgba(47,13,17,.18))!important;
+  opacity:.98!important;pointer-events:none!important;
+}
+/* Subtle inner rim gives the opened triangle a finished stationery edge. */
+.invitation-intro.invite-v2.is-letter-out .invite-v2-envelope::after{
+  content:""!important;position:absolute!important;z-index:3!important;
+  left:4.5%!important;right:4.5%!important;top:-21.5%!important;height:48%!important;
+  clip-path:polygon(50% 0,98% 100%,94% 100%,50% 8%,6% 100%,2% 100%)!important;
+  background:linear-gradient(90deg,rgba(222,188,130,.42),rgba(246,220,168,.58),rgba(222,188,130,.42))!important;
+  opacity:.55!important;pointer-events:none!important;animation:none!important;
+}
+
+@media(max-width:760px){
+  /* Make room for the open triangle while keeping the card safely below iPhone chrome. */
+  .invite-v2-stage{transform:scale(.96)!important;transform-origin:50% 55%!important}
+  .invitation-intro.invite-v2.is-letter-out .invite-v2-envelope::before{
+    top:-22%!important;height:50%!important;left:3%!important;right:3%!important;
+  }
+  .invitation-intro.invite-v2.is-letter-out .invite-v2-envelope::after{
+    top:-19%!important;height:44%!important;
+  }
+}
+@media(max-width:430px) and (max-height:760px){
+  .invite-v2-stage{transform:scale(.91)!important}
+  .invitation-intro.invite-v2.is-letter-out .invite-v2-envelope::before{top:-18%!important;height:45%!important}
+  .invitation-intro.invite-v2.is-letter-out .invite-v2-envelope::after{top:-15.5%!important;height:39%!important}
+}
