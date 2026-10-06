@@ -105,6 +105,7 @@
     document.body.classList.remove('invitation-opening');
     invitationOpened = true;
     opening = false;
+    window.WeddingInvitationCanvas?.stop?.();
 
     await waitForLayout();
 
@@ -130,6 +131,7 @@
     if (openButton) openButton.disabled = true;
     intro.classList.add('is-opening');
     document.body.classList.add('invitation-opening');
+    window.WeddingInvitationCanvas?.play?.();
 
     canonicalizeAfterOpen();
 
