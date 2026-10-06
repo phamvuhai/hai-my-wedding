@@ -100,6 +100,7 @@
   }
 
   async function finishOpening() {
+    if (invitationOpened) return;
     intro?.classList.add('is-opened');
     document.body.classList.remove('invitation-locked');
     document.body.classList.remove('invitation-opening');
@@ -131,11 +132,10 @@
     if (openButton) openButton.disabled = true;
     intro.classList.add('is-opening');
     document.body.classList.add('invitation-opening');
-    window.WeddingInvitationCanvas?.play?.();
 
     canonicalizeAfterOpen();
 
-    // This runs in the user's click/tap gesture so mobile browsers can start audio.
+    // Start audio inside the user gesture before the visual timeline begins.
     const lang = window.WeddingI18n?.language || 'vi';
     window.WeddingMusic?.start?.(lang);
 
@@ -146,18 +146,31 @@
       return;
     }
 
-    // Let the invitation finish opening, hold long enough to read it,
-    // then cross-fade quickly into the already-preloaded Admin Hero.
-    // Promote the letter only after it has cleared the front pocket.
-    setTimeout(() => {
-      if (opening) intro.classList.add('is-letter-out');
-    }, 1750);
-
-    // Hold the fully extracted invitation before entering the site.
-    setTimeout(() => {
+    const onTransition = () => {
       if (opening) intro.classList.add('is-exiting');
-    }, 5550);
-    setTimeout(finishOpening, 6000);
+    };
+    const onComplete = () => {
+      if (opening) finishOpening();
+    };
+
+    document.addEventListener('invitation:transition', onTransition, { once: true });
+    document.addEventListener('invitation:complete', onComplete, { once: true });
+
+    const canvasStarted = window.WeddingInvitationCanvas?.play?.();
+    if (!canvasStarted) {
+      // Safe fallback when Canvas is unavailable.
+      setTimeout(() => intro.classList.add('is-exiting'), 900);
+      setTimeout(finishOpening, 1250);
+      return;
+    }
+
+    // Safety net: never trap a guest if a browser suspends requestAnimationFrame.
+    setTimeout(() => {
+      if (opening) {
+        intro.classList.add('is-exiting');
+        finishOpening();
+      }
+    }, (window.WeddingInvitationCanvas?.duration || 6200) + 900);
   }
 
   function bindEntryInteractions() {
