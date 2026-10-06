@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
-<defs><radialGradient id="w" cx=".32" cy=".26" r=".78"><stop stop-color="#c05a55"/><stop offset=".42" stop-color="#8a2d32"/><stop offset="1" stop-color="#4a1018"/></radialGradient><filter id="s"><feDropShadow dx="0" dy="15" stdDeviation="15" flood-color="#1a0207" flood-opacity=".45"/></filter></defs>
-<path d="M248 20C295 2 332 30 367 45C405 61 450 60 468 98C486 136 456 173 468 215C480 257 500 300 471 335C443 369 398 365 369 399C341 434 330 478 286 488C242 497 211 465 168 461C125 457 78 470 51 434C24 398 44 356 26 315C8 275-5 232 18 194C41 156 86 153 113 119C141 84 154 40 198 31C215 27 232 26 248 20Z" fill="url(#w)" stroke="#d9aa5c" stroke-width="12" filter="url(#s)"/>
-<circle cx="250" cy="250" r="170" fill="none" stroke="#e0b86e" stroke-width="7" opacity=".8"/>
-<circle cx="250" cy="250" r="145" fill="none" stroke="#a85d35" stroke-width="3" opacity=".9"/>
-<text x="250" y="270" text-anchor="middle" fill="#f0cf8d" font-family="Georgia,serif" font-size="92" font-style="italic">H·M</text>
-</svg>
