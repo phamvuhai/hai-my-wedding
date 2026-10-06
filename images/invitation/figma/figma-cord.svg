@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1100">
+<defs>
+ <linearGradient id="rope" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#7d4b18"/><stop offset=".18" stop-color="#d5a75d"/><stop offset=".42" stop-color="#f3d495"/><stop offset=".62" stop-color="#ae7431"/><stop offset=".82" stop-color="#e7be73"/><stop offset="1" stop-color="#7b4918"/></linearGradient>
+ <filter id="s"><feDropShadow dx="0" dy="6" stdDeviation="4" flood-color="#22050b" flood-opacity=".55"/></filter>
+</defs>
+<g fill="none" stroke-linecap="round" filter="url(#s)">
+ <g stroke="#4f2b0d" stroke-width="23" opacity=".7">
+  <path d="M52 86C394 302 662 486 900 626C1140 770 1370 892 1748 1030"/>
+  <path d="M1748 86C1406 302 1138 486 900 626C660 770 430 892 52 1030"/>
+ </g>
+ <g stroke="url(#rope)" stroke-width="15">
+  <path d="M52 86C394 302 662 486 900 626C1140 770 1370 892 1748 1030"/>
+  <path d="M1748 86C1406 302 1138 486 900 626C660 770 430 892 52 1030"/>
+  <path d="M900 626C1030 686 1162 711 1292 718C1400 724 1487 778 1540 866"/>
+  <path d="M900 626C770 686 638 711 508 718C400 724 313 778 260 866"/>
+ </g>
+ <g stroke="#f8e0aa" stroke-width="3.2" opacity=".7">
+  <path d="M56 81C398 297 666 481 904 621"/>
+  <path d="M1744 81C1402 297 1134 481 896 621"/>
+ </g>
+</g>
+</svg>
