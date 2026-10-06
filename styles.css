@@ -11786,8 +11786,10 @@ img,video,svg{height:auto}
 }
 
 
-/* OPENING MOTION — canvas-only burgundy stationery */
+/* OPENING MOTION — Figma-source Canvas stationery */
 .invitation-intro.invite-v2{
+  position:relative!important;
+  min-height:100dvh!important;
   background:#130306!important;
   overflow:hidden!important;
   transition:opacity .34s ease,visibility .34s ease!important;
@@ -11797,16 +11799,19 @@ img,video,svg{height:auto}
   inset:0!important;
   width:100vw!important;
   height:100dvh!important;
+  display:block!important;
   z-index:2!important;
   pointer-events:none!important;
-  display:block!important;
 }
 .invitation-intro.invite-v2 .invite-v2-scene{
   position:relative!important;
   z-index:4!important;
   width:100%!important;
   min-height:100dvh!important;
-  padding:max(68px,calc(env(safe-area-inset-top) + 46px)) max(18px,env(safe-area-inset-right)) max(24px,calc(env(safe-area-inset-bottom) + 16px)) max(18px,env(safe-area-inset-left))!important;
+  padding:max(68px,calc(env(safe-area-inset-top) + 46px))
+          max(18px,env(safe-area-inset-right))
+          max(24px,calc(env(safe-area-inset-bottom) + 16px))
+          max(18px,env(safe-area-inset-left))!important;
   display:grid!important;
   grid-template-rows:auto 1fr auto auto!important;
   justify-items:center!important;
@@ -11862,12 +11867,15 @@ img,video,svg{height:auto}
   justify-content:center!important;
   gap:15px!important;
   padding:0 25px!important;
-  border:1px solid rgba(216,171,99,.72)!important;
+  margin-bottom:2px!important;
+  border:1px solid rgba(216,171,99,.68)!important;
   border-radius:999px!important;
   color:#f9ead1!important;
   background:linear-gradient(180deg,rgba(101,22,34,.78),rgba(65,10,20,.88))!important;
   box-shadow:0 10px 24px rgba(0,0,0,.22),inset 0 0 0 1px rgba(255,225,173,.07)!important;
   backdrop-filter:blur(8px)!important;
+  cursor:pointer!important;
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease,opacity .2s ease!important;
 }
 .invitation-intro.invite-v2 .invite-v2-open-btn:hover{
   transform:translateY(-2px)!important;
@@ -11883,15 +11891,26 @@ img,video,svg{height:auto}
 .invitation-intro.invite-v2.is-opening .invite-v2-personal-meta{
   animation:canvasControlsOut .34s ease .08s both!important;
 }
-@keyframes canvasControlsOut{to{opacity:0;transform:translateY(8px);pointer-events:none}}
+@keyframes canvasControlsOut{
+  to{opacity:0;transform:translateY(8px);pointer-events:none}
+}
 .invitation-intro.invite-v2.is-opening .invite-v2-heading{
   animation:canvasHeadingOut .5s ease .12s both!important;
 }
-@keyframes canvasHeadingOut{to{opacity:.14;transform:translateY(-6px)}}
+@keyframes canvasHeadingOut{
+  to{opacity:.14;transform:translateY(-6px)}
+}
 .invitation-intro.invite-v2.is-exiting .invite-canvas-fx{
   animation:canvasSceneExit .42s ease both!important;
 }
-@keyframes canvasSceneExit{to{opacity:0;filter:blur(3px);transform:scale(1.012)}}
+@keyframes canvasSceneExit{
+  to{opacity:0;filter:blur(3px);transform:scale(1.012)}
+}
+.invitation-intro.invite-v2.is-opened{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
 @media(max-width:760px){
   .invitation-intro.invite-v2 .invite-v2-scene{
     padding-top:max(56px,calc(env(safe-area-inset-top) + 38px))!important;
@@ -11910,5 +11929,9 @@ img,video,svg{height:auto}
 }
 @media(prefers-reduced-motion:reduce){
   .invitation-intro.invite-v2 .invite-v2-heading,
-  .invitation-intro.invite-v2 .invite-v2-open-btn{animation:none!important}
+  .invitation-intro.invite-v2 .invite-v2-open-btn,
+  .invitation-intro.invite-v2 .invite-canvas-fx{
+    animation:none!important;
+    transition:none!important;
+  }
 }
