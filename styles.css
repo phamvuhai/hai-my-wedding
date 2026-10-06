@@ -13486,64 +13486,75 @@ img,video,svg{height:auto}
 }
 
 
-/* V59 — Slow physical final reveal: card readable, envelope eases downward */
+/* V60 — Reference-style reveal: invitation slowly rises from the pocket */
 .invitation-intro.invite-v2.is-letter-out .invite-v2-card{
-  z-index:40!important;opacity:1!important;filter:none!important;
+  z-index:4!important;opacity:1!important;filter:none!important;
+  animation:referenceCardRise 2.45s cubic-bezier(.22,.62,.18,1) both!important;
 }
-.invitation-intro.invite-v2.is-letter-out .invite-v2-envelope{
-  z-index:12!important;
-  animation:openingEnvelopeFinal 2.05s cubic-bezier(.22,.61,.22,1) both!important;
+@keyframes referenceCardRise{
+  0%{transform:translate3d(-50%,-56%,0) scale(.97)}
+  18%{transform:translate3d(-50%,-61%,0) scale(.975)}
+  42%{transform:translate3d(-50%,-68%,0) scale(.982)}
+  68%{transform:translate3d(-50%,-75%,0) scale(.99)}
+  86%{transform:translate3d(-50%,-80%,0) scale(.996)}
+  100%{transform:translate3d(-50%,-83%,0) scale(1)}
 }
-@keyframes openingEnvelopeFinal{
-  0%{transform:translate3d(0,34px,0) scale(.96)}
-  18%{transform:translate3d(0,52px,0) scale(.957)}
-  42%{transform:translate3d(0,83px,0) scale(.95)}
-  68%{transform:translate3d(0,116px,0) scale(.942)}
-  86%{transform:translate3d(0,143px,0) scale(.935)}
-  100%{transform:translate3d(0,160px,0) scale(.93)}
-}
-.invitation-intro.invite-v2.is-letter-out .invite-real-cord,
-.invitation-intro.invite-v2.is-letter-out .invite-v2-seal{z-index:14!important}
+/* Pocket remains physically in front of the lower card edge. */
 .invitation-intro.invite-v2.is-letter-out .invite-v2-envelope-front,
 .invitation-intro.invite-v2.is-letter-out .invite-real-fold,
 .invitation-intro.invite-v2.is-letter-out .invite-real-botanical,
-.invitation-intro.invite-v2.is-letter-out .invite-real-caption{z-index:13!important}
-.invitation-intro.invite-v2.is-letter-out .invite-v2-envelope-flap{z-index:11!important}
+.invitation-intro.invite-v2.is-letter-out .invite-real-caption{z-index:6!important}
+.invitation-intro.invite-v2.is-letter-out .invite-v2-envelope-flap{z-index:2!important}
+.invitation-intro.invite-v2.is-letter-out .invite-real-cord,
+.invitation-intro.invite-v2.is-letter-out .invite-v2-seal{z-index:9!important}
+/* Envelope barely settles; the card does the visible motion. */
+.invitation-intro.invite-v2.is-letter-out .invite-v2-envelope{
+  z-index:5!important;
+  animation:referenceEnvelopeSettle 2.45s cubic-bezier(.22,.62,.18,1) both!important;
+}
+@keyframes referenceEnvelopeSettle{
+  0%{transform:translate3d(0,28px,0) scale(.965)}
+  45%{transform:translate3d(0,34px,0) scale(.96)}
+  100%{transform:translate3d(0,44px,0) scale(.955)}
+}
 
 @media(max-width:760px){
   .invitation-intro.invite-v2.is-letter-out .invite-v2-card{
-    top:52%!important;transform:translate3d(-50%,-69%,0) scale(.97)!important;
+    top:52%!important;width:90%!important;
+    animation:referenceCardRiseMobile 2.45s cubic-bezier(.22,.62,.18,1) both!important;
   }
-  @keyframes openingEnvelopeFinal{
-    0%{transform:translate3d(0,28px,0) scale(.965)}
-    18%{transform:translate3d(0,42px,0) scale(.96)}
-    42%{transform:translate3d(0,65px,0) scale(.952)}
-    68%{transform:translate3d(0,91px,0) scale(.944)}
-    86%{transform:translate3d(0,113px,0) scale(.936)}
-    100%{transform:translate3d(0,128px,0) scale(.93)}
+  @keyframes referenceCardRiseMobile{
+    0%{transform:translate3d(-50%,-51%,0) scale(.95)}
+    20%{transform:translate3d(-50%,-56%,0) scale(.958)}
+    45%{transform:translate3d(-50%,-62%,0) scale(.968)}
+    70%{transform:translate3d(-50%,-68%,0) scale(.98)}
+    88%{transform:translate3d(-50%,-72%,0) scale(.99)}
+    100%{transform:translate3d(-50%,-74%,0) scale(.995)}
+  }
+  @keyframes referenceEnvelopeSettle{
+    0%{transform:translate3d(0,22px,0) scale(.97)}
+    50%{transform:translate3d(0,27px,0) scale(.965)}
+    100%{transform:translate3d(0,34px,0) scale(.96)}
   }
 }
 @media(max-width:430px) and (max-height:760px){
   .invitation-intro.invite-v2.is-letter-out .invite-v2-card{
-    top:54%!important;transform:translate3d(-50%,-64%,0) scale(.92)!important;
+    top:54%!important;width:84%!important;
+    animation:referenceCardRiseShort 2.35s cubic-bezier(.22,.62,.18,1) both!important;
   }
-  @keyframes openingEnvelopeFinal{
-    0%{transform:translate3d(0,24px,0) scale(.96)}
-    22%{transform:translate3d(0,39px,0) scale(.95)}
-    50%{transform:translate3d(0,68px,0) scale(.93)}
-    78%{transform:translate3d(0,94px,0) scale(.91)}
-    100%{transform:translate3d(0,108px,0) scale(.9)}
+  @keyframes referenceCardRiseShort{
+    0%{transform:translate3d(-50%,-47%,0) scale(.92)}
+    50%{transform:translate3d(-50%,-57%,0) scale(.93)}
+    100%{transform:translate3d(-50%,-65%,0) scale(.94)}
   }
 }
 @media(min-width:761px) and (max-width:1100px){
   .invitation-intro.invite-v2.is-letter-out .invite-v2-card{
-    transform:translate3d(-50%,-76%,0) scale(.97)!important;
+    animation:referenceCardRiseTablet 2.45s cubic-bezier(.22,.62,.18,1) both!important;
   }
-  @keyframes openingEnvelopeFinal{
-    0%{transform:translate3d(0,34px,0) scale(.96)}
-    20%{transform:translate3d(0,53px,0) scale(.956)}
-    45%{transform:translate3d(0,84px,0) scale(.948)}
-    72%{transform:translate3d(0,117px,0) scale(.94)}
-    100%{transform:translate3d(0,142px,0) scale(.93)}
+  @keyframes referenceCardRiseTablet{
+    0%{transform:translate3d(-50%,-54%,0) scale(.96)}
+    50%{transform:translate3d(-50%,-68%,0) scale(.98)}
+    100%{transform:translate3d(-50%,-79%,0) scale(.99)}
   }
 }
