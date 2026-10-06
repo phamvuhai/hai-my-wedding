@@ -1,6 +1,6 @@
 (() => {
   const base = '/images/invitation/figma/';
-  window.WeddingInvitationAssets = {
+  window.WeddingInvitationAssets = Object.freeze({
     card: base + 'figma-card.svg',
     envelopeBack: base + 'figma-envelope-back.svg',
     envelopeFront: base + 'figma-envelope-front.svg',
@@ -14,5 +14,5 @@
       base + 'figma-petal-01.svg',
       base + 'figma-petal-02.svg'
     ]
-  };
+  });
 })();
