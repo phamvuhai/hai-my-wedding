@@ -11824,18 +11824,19 @@ img,video,svg{height:auto}
   margin:0!important;
   color:#f4dfbd!important;
   font-family:"Cormorant Garamond",Georgia,serif!important;
-  font-size:clamp(2rem,4.4vw,3.6rem)!important;
-  font-style:italic!important;
-  font-weight:500!important;
-  line-height:.96!important;
-  letter-spacing:.02em!important;
+  font-size:clamp(.78rem,1.25vw,1rem)!important;
+  font-style:normal!important;
+  font-weight:600!important;
+  line-height:1.1!important;
+  letter-spacing:.25em!important;
+  text-transform:uppercase!important;
 }
 .invitation-intro.invite-v2 .invite-v2-tap{
-  margin:9px 0 0!important;
-  color:rgba(248,229,198,.75)!important;
-  font-size:.64rem!important;
-  font-weight:700!important;
-  letter-spacing:.17em!important;
+  margin:8px 0 0!important;
+  color:rgba(248,229,198,.68)!important;
+  font-size:.58rem!important;
+  font-weight:600!important;
+  letter-spacing:.14em!important;
   text-transform:uppercase!important;
 }
 .invitation-intro.invite-v2 .invite-v2-stage{
@@ -11854,8 +11855,8 @@ img,video,svg{height:auto}
 .invitation-intro.invite-v2 .invite-v2-open-btn{
   position:relative!important;
   z-index:8!important;
-  min-width:174px!important;
-  min-height:50px!important;
+  min-width:158px!important;
+  min-height:46px!important;
   display:inline-flex!important;
   align-items:center!important;
   justify-content:center!important;
@@ -11864,8 +11865,8 @@ img,video,svg{height:auto}
   border:1px solid rgba(216,171,99,.72)!important;
   border-radius:999px!important;
   color:#f9ead1!important;
-  background:linear-gradient(180deg,rgba(117,28,42,.94),rgba(76,13,24,.97))!important;
-  box-shadow:0 12px 28px rgba(0,0,0,.28),inset 0 0 0 1px rgba(255,225,173,.08)!important;
+  background:linear-gradient(180deg,rgba(101,22,34,.78),rgba(65,10,20,.88))!important;
+  box-shadow:0 10px 24px rgba(0,0,0,.22),inset 0 0 0 1px rgba(255,225,173,.07)!important;
   backdrop-filter:blur(8px)!important;
 }
 .invitation-intro.invite-v2 .invite-v2-open-btn:hover{
@@ -11895,8 +11896,8 @@ img,video,svg{height:auto}
   .invitation-intro.invite-v2 .invite-v2-scene{
     padding-top:max(56px,calc(env(safe-area-inset-top) + 38px))!important;
   }
-  .invitation-intro.invite-v2 .invite-v2-title{font-size:1.75rem!important}
-  .invitation-intro.invite-v2 .invite-v2-tap{font-size:.58rem!important}
+  .invitation-intro.invite-v2 .invite-v2-title{font-size:.72rem!important}
+  .invitation-intro.invite-v2 .invite-v2-tap{font-size:.54rem!important}
   .invitation-intro.invite-v2 .invite-v2-open-btn{
     min-width:158px!important;
     min-height:48px!important;
@@ -11904,7 +11905,7 @@ img,video,svg{height:auto}
   }
 }
 @media(max-height:760px) and (max-width:760px){
-  .invitation-intro.invite-v2 .invite-v2-title{font-size:1.48rem!important}
+  .invitation-intro.invite-v2 .invite-v2-title{font-size:.68rem!important}
   .invitation-intro.invite-v2 .invite-v2-open-btn{min-height:44px!important}
 }
 @media(prefers-reduced-motion:reduce){
