@@ -1,0 +1,53 @@
+{
+  "figma": {
+    "fileKey": "CIjp5ZYyRAK8mHqpLLOMaQ",
+    "url": "https://www.figma.com/design/CIjp5ZYyRAK8mHqpLLOMaQ",
+    "account": "Hai Pham",
+    "team": "Nhom 10's team",
+    "pages": {
+      "storyboard": {
+        "pageId": "0:1",
+        "masterMockupNodeId": "2:2"
+      },
+      "assets": {
+        "pageId": "2:2468",
+        "assetPackNodeId": "3:2",
+        "nodes": {
+          "cardComplete": "3:5",
+          "cardShell": "3:6",
+          "envelopeClosed": "3:124",
+          "envelopeBack": "3:125",
+          "envelopeFront": "3:131",
+          "envelopeCord": "3:138",
+          "waxSeal": "3:151",
+          "envelopeOpen": "3:163",
+          "envelopeBackOpen": "3:164",
+          "envelopeLiningOpen": "3:170",
+          "envelopeFrontOpen": "3:174",
+          "floralLeft": "3:183",
+          "floralRight": "3:252",
+          "petal01": "3:322",
+          "petal02": "3:325",
+          "effects": "3:341"
+        }
+      }
+    }
+  },
+  "timeline": {
+    "tap": 0.0,
+    "sealOpen": 0.1,
+    "flapOpen": 0.2,
+    "cardStart": 0.36,
+    "cardClear": 0.68,
+    "cardPresented": 0.84,
+    "transition": 0.94,
+    "complete": 1.0
+  },
+  "palette": {
+    "burgundy": "#4B0E1A",
+    "darkRed": "#7A1E2D",
+    "ivory": "#FDF6ED",
+    "gold": "#D4AF37",
+    "warmBrown": "#8B5E3C"
+  }
+}
