@@ -181,20 +181,27 @@
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, w, h);
 
-    const floorY = h * .76;
+    const floorY = h * .735;
     const floor = ctx.createLinearGradient(0, floorY, 0, h);
-    floor.addColorStop(0, 'rgba(255,245,226,.025)');
-    floor.addColorStop(1, 'rgba(237,211,174,.16)');
+    floor.addColorStop(0, 'rgba(255,247,234,.025)');
+    floor.addColorStop(.45, 'rgba(248,231,204,.105)');
+    floor.addColorStop(1, 'rgba(236,207,171,.22)');
     ctx.fillStyle = floor;
     ctx.fillRect(0, floorY, w, h - floorY);
 
-    ctx.strokeStyle = 'rgba(233,204,164,.055)';
+    const floorGlow = ctx.createRadialGradient(w*.5, floorY+24, 0, w*.5, floorY+24, Math.min(w*.55,420));
+    floorGlow.addColorStop(0,'rgba(255,235,197,.15)');
+    floorGlow.addColorStop(1,'rgba(255,235,197,0)');
+    ctx.fillStyle=floorGlow;
+    ctx.fillRect(0,floorY,w,h-floorY);
+
+    ctx.strokeStyle = 'rgba(170,126,82,.075)';
     ctx.lineWidth = 1;
-    for (let i = 0; i < 8; i++) {
-      const yy = floorY + (i / 7) * (h - floorY);
+    for (let i = 0; i < 9; i++) {
+      const yy = floorY + (i / 8) * (h - floorY);
       ctx.beginPath();
       ctx.moveTo(0, yy);
-      ctx.lineTo(w, yy + 3);
+      ctx.bezierCurveTo(w*.34, yy-2, w*.68, yy+4, w, yy+2);
       ctx.stroke();
     }
 
@@ -244,28 +251,75 @@
   }
 
   function drawSceneFlorals(L, p) {
-    const alpha = .76 + range(p, .20, .52) * .22;
-    const leftW = L.envW * (L.mobile ? .56 : .60);
+    const alpha = .86 + range(p, .20, .52) * .12;
+    const leftW = L.envW * (L.mobile ? .68 : .72);
     const leftH = leftW * 1.33;
-    const rightW = L.envW * (L.mobile ? .46 : .50);
+    const rightW = L.envW * (L.mobile ? .52 : .57);
     const rightH = rightW * 1.33;
 
     drawImageFit(
       images.floralLeft,
-      L.envX - leftW * .50,
-      L.envY - leftH * .45,
+      L.envX - leftW * .48,
+      L.envY - leftH * .48,
       leftW,
       leftH,
       alpha
     );
     drawImageFit(
       images.floralRight,
-      L.envX + L.envW - rightW * .38,
-      L.envY - rightH * .25,
+      L.envX + L.envW - rightW * .40,
+      L.envY - rightH * .30,
       rightW,
       rightH,
-      alpha * .82
+      alpha * .88
     );
+  }
+
+  function drawForegroundFlorals(L, p) {
+    const reveal = .58 + range(p,.64,.86) * .28;
+    const leftW = L.envW * (L.mobile ? .27 : .31);
+    const rightW = L.envW * (L.mobile ? .22 : .26);
+
+    ctx.save();
+    ctx.filter = 'blur(.25px)';
+    drawImageFit(images.floralLeft,
+      L.envX - leftW*.32,
+      L.envY + L.envH*.50,
+      leftW,
+      leftW*1.33,
+      reveal*.58
+    );
+    drawImageFit(images.floralRight,
+      L.envX + L.envW - rightW*.64,
+      L.envY + L.envH*.58,
+      rightW,
+      rightW*1.33,
+      reveal*.50
+    );
+    ctx.restore();
+  }
+
+  function drawSealSpark(L, p) {
+    const q = range(p, .095, .255);
+    if (q <= 0 || q >= 1) return;
+    const cx = L.envX + L.envW*.5;
+    const cy = L.envY + L.envH*.55;
+    const fade = Math.sin(q*Math.PI);
+    for (let i=0;i<20;i++) {
+      const a = i*2.399 + .45;
+      const r = (18 + (i%7)*8) * easeOut(q);
+      const x = cx + Math.cos(a)*r;
+      const y = cy + Math.sin(a)*r*.58;
+      ctx.save();
+      ctx.globalAlpha = fade * (.18 + (i%4)*.07);
+      ctx.fillStyle = i%3 ? '#e5b761' : '#ffe0a1';
+      ctx.shadowColor = 'rgba(237,185,86,.7)';
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.arc(x,y, i%5===0?1.8:1.05,0,TAU);
+      ctx.fill();
+      ctx.restore();
+    }
   }
 
   function drawDust(p, time) {
@@ -376,24 +430,17 @@
     ctx.textBaseline = 'alphabetic';
 
     ctx.fillStyle = '#7a2230';
-    ctx.font = `italic ${Math.max(30, cardW * .125)}px "Cormorant Garamond", Georgia, serif`;
+    ctx.font = `${Math.max(33, cardW * .132)}px "UTM Beautiful Caps","Cormorant Garamond",Georgia,serif`;
     ctx.fillText('H & M', center, cardH * (t.monogramY || .22));
 
-    if (d.guestName) {
-      ctx.fillStyle = '#9a6a43';
-      ctx.font = `500 ${Math.max(10, cardW * .032)}px "Lora", Georgia, serif`;
-      const guest = String(d.guestName).length > 34 ? String(d.guestName).slice(0, 32) + '…' : String(d.guestName);
-      ctx.fillText(guest, center, cardH * .31);
-    }
-
     ctx.fillStyle = '#69202a';
-    ctx.font = `600 ${Math.max(13, cardW * .057)}px "Cormorant Garamond", Georgia, serif`;
+    ctx.font = `500 ${Math.max(13, cardW * .055)}px "Cormorant Garamond", Georgia, serif`;
     ctx.fillText(d.groom || 'PHẠM VŨ HẢI', center, cardH * (t.groomY || .40));
 
     ctx.font = `500 ${Math.max(12, cardW * .049)}px "Cormorant Garamond", Georgia, serif`;
     ctx.fillText('&', center, cardH * (t.ampY || .465));
 
-    ctx.font = `600 ${Math.max(13, cardW * .057)}px "Cormorant Garamond", Georgia, serif`;
+    ctx.font = `500 ${Math.max(13, cardW * .055)}px "Cormorant Garamond", Georgia, serif`;
     ctx.fillText(d.bride || 'NGUYỄN THỊ MỸ', center, cardH * (t.brideY || .53));
 
     const ornamentY = cardH * (t.ornamentY || .595);
@@ -415,7 +462,7 @@
     ctx.fillText(d.date || '19 · 12 · 2026', center, cardH * (t.dateY || .665));
 
     ctx.fillStyle = '#8b5d43';
-    ctx.font = `italic ${Math.max(15, cardW * .060)}px "Cormorant Garamond", Georgia, serif`;
+    ctx.font = `${Math.max(18, cardW * .069)}px "UTM Beautiful Caps","Cormorant Garamond",Georgia,serif`;
     ctx.fillText(d.script || 'Wedding Invitation', center, cardH * (t.scriptY || .80));
   }
 
@@ -485,6 +532,7 @@
     drawSceneFlorals(L, progress);
     drawEnvelopeBack(L);
     drawFlap(L, flapP);
+    drawSealSpark(L, progress);
 
     if (!cardClear && progress >= (timeline.cardStart ?? .36)) {
       ctx.save();
@@ -502,6 +550,7 @@
       drawCard(L, cardP, progress);
     }
 
+    drawForegroundFlorals(L, progress);
     drawPetals(progress, time);
 
     const transitionP = range(progress, timeline.transition ?? .94, 1);
