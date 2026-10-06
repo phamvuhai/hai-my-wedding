@@ -19,9 +19,9 @@
       complete: 1.00
     },
     layout: {
-      mobile: { envelopeVW: 0.84, maxEnvelope: 430, cardRatio: 0.70 },
-      tablet: { envelopeVW: 0.62, maxEnvelope: 560, cardRatio: 0.67 },
-      desktop: { envelopeVW: 0.43, maxEnvelope: 590, cardRatio: 0.66 }
+      mobile: { envelopeVW: 0.90, maxEnvelope: 450, cardRatio: 0.72 },
+      tablet: { envelopeVW: 0.64, maxEnvelope: 575, cardRatio: 0.69 },
+      desktop: { envelopeVW: 0.45, maxEnvelope: 610, cardRatio: 0.68 }
     },
     typography: {
       monogramY: 0.22,
