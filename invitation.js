@@ -106,7 +106,7 @@
     document.body.classList.remove('invitation-opening');
     invitationOpened = true;
     opening = false;
-    window.WeddingInvitationCanvas?.stop?.();
+    window.WeddingInvitationCanvas?.destroy?.();
 
     await waitForLayout();
 
@@ -271,8 +271,19 @@
     });
   }
 
-  const revealReadyState = () => {
+  const revealReadyState = async () => {
     if (!intro || intro.classList.contains('is-ready')) return;
+
+    try {
+      const canvasReady = window.WeddingInvitationCanvas?.readyPromise;
+      if (canvasReady) {
+        await Promise.race([
+          canvasReady,
+          new Promise(resolve => setTimeout(resolve, 2600))
+        ]);
+      }
+    } catch {}
+
     requestAnimationFrame(() => {
       requestAnimationFrame(() => intro.classList.add('is-ready'));
     });
