@@ -129,6 +129,21 @@
       const y = floorY + (i / 6) * (h - floorY);
       ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y + 4); ctx.stroke();
     }
+
+    // Soft burgundy / champagne bokeh like the approved mockup.
+    const bokeh = [
+      [.08,.18,34,'126,28,43'],[.18,.10,20,'190,79,69'],[.84,.15,28,'132,31,45'],
+      [.92,.31,18,'221,155,79'],[.10,.56,20,'208,138,65'],[.88,.57,32,'116,23,37'],
+      [.22,.72,15,'229,182,105'],[.76,.70,18,'187,96,56']
+    ];
+    bokeh.forEach((b,i) => {
+      const pulse=.70+.20*Math.sin(p*7+i);
+      const bg=ctx.createRadialGradient(w*b[0],h*b[1],0,w*b[0],h*b[1],b[2]);
+      bg.addColorStop(0,'rgba('+b[3]+','+(.10*pulse)+')');
+      bg.addColorStop(1,'rgba('+b[3]+',0)');
+      ctx.fillStyle=bg;
+      ctx.fillRect(w*b[0]-b[2],h*b[1]-b[2],b[2]*2,b[2]*2);
+    });
   }
 
   function drawLeaf(x, y, angle, scale, color = '#b88645') {
@@ -492,10 +507,12 @@
   function drawForegroundDecor(L, p) {
     const alpha = .75 + range(p, .2, .5) * .25;
     const s = L.mobile ? .78 : 1;
-    drawBotanicalCluster(L.x - 32, L.y - 58, 1.05 * s, 1, alpha);
-    drawBotanicalCluster(L.x + L.envW + 26, L.y + 12, .72 * s, -1, alpha * .72);
-    drawRose(L.x - 10, L.y + L.envH * .92, 13 * s, .82);
-    drawRose(L.x + L.envW + 12, L.y + L.envH * .82, 10 * s, .72);
+    drawBotanicalCluster(L.x - 38, L.y - 64, 1.12 * s, 1, alpha);
+    drawBotanicalCluster(L.x + L.envW + 30, L.y - 22, .86 * s, -1, alpha * .84);
+    drawRose(L.x - 12, L.y + L.envH * .92, 14 * s, .86);
+    drawRose(L.x + L.envW + 14, L.y + L.envH * .82, 11 * s, .76);
+    drawRose(L.x + L.envW * .03, L.y - 18, 9 * s, .72);
+    drawRose(L.x + L.envW * .94, L.y + L.envH * .16, 8 * s, .64);
   }
 
   function drawFloorPetals(L) {
@@ -520,7 +537,14 @@
     drawForegroundDecor(L, progress);
     drawEnvelopeBack(L, flapP);
 
-    if (!cardClear) drawCard(L, cardP, progress);
+    if (!cardClear) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, 0, w, L.y + L.envH + 1);
+      ctx.clip();
+      drawCard(L, cardP, progress);
+      ctx.restore();
+    }
     drawFlapClosed(L, flapP);
     drawFrontPocket(L);
     drawCordAndSeal(L, sealP);
