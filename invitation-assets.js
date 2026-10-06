@@ -1,5 +1,5 @@
 (() => {
-  const base = '/public/images/invitation/';
+  const base = '/images/invitation/';
   window.WeddingInvitationAssets = {
     card: base + 'card-shell.svg',
     envelopeBack: base + 'envelope-back.svg',
