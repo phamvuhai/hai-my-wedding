@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "source": "approved-storyboard-2026-10-06",
+  "reference": "reference/storyboard.webp",
+  "keyframes": [
+    "keyframes/keyframe-01.webp",
+    "keyframes/keyframe-02.webp",
+    "keyframes/keyframe-03.webp",
+    "keyframes/keyframe-04.webp",
+    "keyframes/keyframe-05.webp",
+    "keyframes/keyframe-06.webp"
+  ],
+  "layers": {
+    "cardArtwork": "layers/card-artwork.webp",
+    "cardMini": "layers/card-mini.webp",
+    "envelopeClosed": "layers/envelope-closed.webp",
+    "lining": "layers/lining.webp",
+    "sealCord": "layers/seal-cord.webp",
+    "floral": "layers/floral.webp",
+    "petal": "layers/petal.webp",
+    "goldDust": "layers/gold-dust.webp",
+    "lightFlare": "layers/light-flare.webp"
+  },
+  "palette": {
+    "burgundy": "#4B0E1A",
+    "darkRed": "#7A1E2D",
+    "ivory": "#FDF6ED",
+    "gold": "#D4AF37",
+    "warmBrown": "#8B5E3C"
+  },
+  "timeline": [
+    {
+      "at": 0,
+      "event": "invitation:tap"
+    },
+    {
+      "at": 0.1,
+      "event": "invitation:seal-open"
+    },
+    {
+      "at": 0.2,
+      "event": "invitation:flap-open"
+    },
+    {
+      "at": 0.36,
+      "event": "invitation:card-start"
+    },
+    {
+      "at": 0.68,
+      "event": "invitation:card-clear"
+    },
+    {
+      "at": 0.84,
+      "event": "invitation:card-presented"
+    },
+    {
+      "at": 0.94,
+      "event": "invitation:transition"
+    },
+    {
+      "at": 1,
+      "event": "invitation:complete"
+    }
+  ]
+}
