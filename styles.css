@@ -13560,47 +13560,47 @@ img,video,svg{height:auto}
 }
 
 
-/* V62 — Soft physical reveal: rear flap never covers invitation copy */
+/* V63 — Organic envelope motion: continuous easing + subtle physical settle */
 .invitation-intro.invite-v2.is-opening .invite-v2-envelope-flap{
   transform-origin:50% 0!important;
   backface-visibility:visible!important;-webkit-backface-visibility:visible!important;
-  animation:softFlapOpen 1.9s cubic-bezier(.16,.72,.18,1) .92s both!important;
+  animation:organicFlap 2.35s cubic-bezier(.34,.02,.16,1) .82s both!important;
+  will-change:transform,filter;
 }
-@keyframes softFlapOpen{
+@keyframes organicFlap{
   0%{transform:rotateX(0deg);z-index:7;filter:drop-shadow(0 4px 3px rgba(57,8,15,.25))}
-  28%{transform:rotateX(-38deg);z-index:7}
-  58%{transform:rotateX(-88deg);z-index:3;filter:drop-shadow(0 -2px 5px rgba(57,8,15,.16))}
-  82%{transform:rotateX(-120deg);z-index:3}
+  52%{transform:rotateX(-91deg);z-index:3;filter:drop-shadow(0 -2px 5px rgba(57,8,15,.17))}
+  84%{transform:rotateX(-135deg);z-index:3;filter:drop-shadow(0 -7px 8px rgba(57,8,15,.14))}
+  94%{transform:rotateX(-129deg);z-index:3}
   100%{transform:rotateX(-132deg);z-index:3;filter:drop-shadow(0 -6px 7px rgba(57,8,15,.13))}
 }
 .invitation-intro.invite-v2.is-opening .invite-v2-envelope-flap{
   background:repeating-linear-gradient(101deg,rgba(255,255,255,.014) 0 1px,transparent 1px 4px),
   linear-gradient(158deg,#812632 0%,#711d29 52%,#601720 100%)!important;
 }
-/* Real hierarchy: rear flap < card < front pocket. */
 .invitation-intro.invite-v2.is-letter-out .invite-v2-envelope-flap{
   z-index:2!important;transform:rotateX(-132deg)!important;opacity:1!important;visibility:visible!important;
 }
+/* Card rises as one continuous gesture, overlapping the flap opening. */
 .invitation-intro.invite-v2.is-letter-out .invite-v2-card{
   z-index:5!important;opacity:1!important;filter:none!important;
-  animation:softCardRise 3.05s cubic-bezier(.18,.68,.16,1) both!important;
-  box-shadow:0 12px 22px rgba(61,28,24,.14)!important;
+  animation:organicCardRise 3.35s cubic-bezier(.25,.04,.14,1) both!important;
+  will-change:transform,box-shadow;
 }
-@keyframes softCardRise{
-  0%{transform:translate3d(-50%,-50%,0) scale(.955);box-shadow:0 3px 7px rgba(61,28,24,.07)}
-  18%{transform:translate3d(-50%,-54%,0) scale(.96)}
-  42%{transform:translate3d(-50%,-61%,0) scale(.97)}
-  68%{transform:translate3d(-50%,-68%,0) scale(.982)}
-  86%{transform:translate3d(-50%,-72%,0) scale(.99)}
-  100%{transform:translate3d(-50%,-75%,0) scale(.995);box-shadow:0 13px 24px rgba(61,28,24,.15)}
+@keyframes organicCardRise{
+  0%{transform:translate3d(-50%,-49%,0) scale(.952);box-shadow:0 3px 7px rgba(61,28,24,.06)}
+  72%{transform:translate3d(-50%,-72%,0) scale(.989);box-shadow:0 12px 22px rgba(61,28,24,.14)}
+  90%{transform:translate3d(-50%,-76%,0) scale(.997);box-shadow:0 14px 25px rgba(61,28,24,.15)}
+  96%{transform:translate3d(-50%,-74.8%,0) scale(.995)}
+  100%{transform:translate3d(-50%,-75.5%,0) scale(.996);box-shadow:0 13px 24px rgba(61,28,24,.15)}
 }
+/* Stable physical hierarchy: rear flap < card < front pocket. */
 .invitation-intro.invite-v2.is-letter-out .invite-v2-envelope-front,
 .invitation-intro.invite-v2.is-letter-out .invite-real-fold{z-index:6!important}
 .invitation-intro.invite-v2.is-letter-out .invite-real-botanical,
 .invitation-intro.invite-v2.is-letter-out .invite-real-caption{z-index:7!important}
 .invitation-intro.invite-v2.is-letter-out .invite-real-cord,
 .invitation-intro.invite-v2.is-letter-out .invite-v2-seal{z-index:9!important}
-/* Only a narrow rear-flap silhouette may show outside the card; never across its text. */
 .invitation-intro.invite-v2.is-letter-out .invite-v2-envelope::before{
   content:""!important;position:absolute!important;z-index:2!important;
   left:7%!important;right:7%!important;top:-20%!important;height:43%!important;
@@ -13610,27 +13610,26 @@ img,video,svg{height:auto}
   filter:drop-shadow(0 5px 6px rgba(47,13,17,.16))!important;opacity:.96!important;pointer-events:none!important;
 }
 .invitation-intro.invite-v2.is-letter-out .invite-v2-envelope::after{content:none!important}
-/* Envelope settles almost imperceptibly; card carries the motion. */
 .invitation-intro.invite-v2.is-letter-out .invite-v2-envelope{
-  z-index:4!important;animation:softEnvelopeSettle 3.05s cubic-bezier(.18,.68,.16,1) both!important;
+  z-index:4!important;animation:organicEnvelopeSettle 3.35s cubic-bezier(.25,.04,.14,1) both!important;
 }
-@keyframes softEnvelopeSettle{
+@keyframes organicEnvelopeSettle{
   0%{transform:translate3d(0,22px,0) scale(.97)}
-  50%{transform:translate3d(0,27px,0) scale(.967)}
-  100%{transform:translate3d(0,34px,0) scale(.962)}
+  82%{transform:translate3d(0,34px,0) scale(.962)}
+  94%{transform:translate3d(0,32px,0) scale(.963)}
+  100%{transform:translate3d(0,33px,0) scale(.962)}
 }
 @media(max-width:760px){
   .invite-v2-stage{transform:scale(.96)!important;transform-origin:50% 55%!important}
   .invitation-intro.invite-v2.is-letter-out .invite-v2-card{
-    top:52%!important;width:90%!important;animation:softCardRiseMobile 3.05s cubic-bezier(.18,.68,.16,1) both!important;
+    top:52%!important;width:90%!important;animation:organicCardRiseMobile 3.35s cubic-bezier(.25,.04,.14,1) both!important;
   }
-  @keyframes softCardRiseMobile{
-    0%{transform:translate3d(-50%,-48%,0) scale(.945)}
-    20%{transform:translate3d(-50%,-52%,0) scale(.952)}
-    45%{transform:translate3d(-50%,-58%,0) scale(.962)}
-    70%{transform:translate3d(-50%,-64%,0) scale(.975)}
-    88%{transform:translate3d(-50%,-68%,0) scale(.985)}
-    100%{transform:translate3d(-50%,-70%,0) scale(.99)}
+  @keyframes organicCardRiseMobile{
+    0%{transform:translate3d(-50%,-47%,0) scale(.945)}
+    72%{transform:translate3d(-50%,-67%,0) scale(.982)}
+    90%{transform:translate3d(-50%,-71%,0) scale(.991)}
+    96%{transform:translate3d(-50%,-69.7%,0) scale(.989)}
+    100%{transform:translate3d(-50%,-70.4%,0) scale(.99)}
   }
   .invitation-intro.invite-v2.is-letter-out .invite-v2-envelope::before{left:9%!important;right:9%!important;top:-18%!important;height:39%!important}
 }
