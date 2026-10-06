@@ -270,6 +270,29 @@
     });
   });
 
+  // Mobile lifecycle: never leave wedding audio playing after Safari/tab is hidden.
+  // Do not auto-resume on return; the guest must explicitly tap play/open again.
+  function pauseForPageLifecycle() {
+    pendingStart = null;
+    clearFade();
+    clearWatchdog();
+    setLoading(false);
+    if (player) {
+      try { player.pauseVideo(); } catch {}
+    }
+    setPlaying(false);
+  }
+
+  document.addEventListener('visibilitychange',() => {
+    if (document.visibilityState === 'hidden') pauseForPageLifecycle();
+  });
+  window.addEventListener('pagehide',pauseForPageLifecycle);
+  window.addEventListener('pageshow',() => {
+    // Covers iOS Safari BFCache restores as well as ordinary navigation back.
+    setLoading(false);
+    setPlaying(false);
+  });
+
   updateMeta(currentLang);
   setLoading(false);
   setPlaying(false);
