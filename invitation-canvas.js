@@ -331,7 +331,9 @@
     ctx.save();
     ctx.shadowColor = 'rgba(0,0,0,.18)';
     ctx.shadowBlur = 10;
-    ctx.drawImage(images.lining, L.envX, L.envY, L.envW, -drawH);
+    ctx.translate(L.envX, L.envY);
+    ctx.scale(1, -1);
+    ctx.drawImage(images.lining, 0, 0, L.envW, drawH);
     ctx.restore();
   }
 
@@ -422,7 +424,7 @@
     const startY = L.envY + L.envH * .13;
     const finalX = (w - L.cardW) / 2;
     const topSafe = L.mobile ? Math.max(88, h * .105) : Math.max(78, h * .095);
-    const finalY = Math.min(
+    const finalY = Math.max(
       topSafe,
       L.envY - L.cardH * .60
     );
@@ -484,7 +486,7 @@
     drawEnvelopeBack(L);
     drawFlap(L, flapP);
 
-    if (!cardClear) {
+    if (!cardClear && progress >= (timeline.cardStart ?? .36)) {
       ctx.save();
       ctx.beginPath();
       ctx.rect(L.envX, 0, L.envW, L.envY + L.envH + 2);
