@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1100">
+<defs>
+ <linearGradient id="wine" x1="0" y1=".1" x2="1" y2=".95"><stop stop-color="#8e2636"/><stop offset=".48" stop-color="#64131f"/><stop offset="1" stop-color="#39070f"/></linearGradient>
+ <linearGradient id="rim"><stop stop-color="#efca80"/><stop offset=".42" stop-color="#9b6126"/><stop offset=".7" stop-color="#e3b269"/><stop offset="1" stop-color="#85501d"/></linearGradient>
+ <radialGradient id="light" cx=".5" cy=".2" r=".9"><stop stop-color="#d76470" stop-opacity=".18"/><stop offset=".7" stop-color="#4b0915" stop-opacity=".04"/><stop offset="1" stop-color="#29040b" stop-opacity=".14"/></radialGradient>
+ <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".58" numOctaves="2" seed="7"/><feColorMatrix values="0 0 0 0 .31 0 0 0 0 .04 0 0 0 0 .07 0 0 0 .075 0"/></filter>
+</defs>
+<path d="M16 178L900 720L1784 178V1083H16Z" fill="url(#wine)"/>
+<path d="M16 178L900 720L1784 178V1083H16Z" fill="url(#light)"/>
+<path d="M16 178L900 720L1784 178V1083H16Z" filter="url(#grain)" opacity=".56"/>
+<path d="M16 178L900 720L1784 178" fill="none" stroke="url(#rim)" stroke-width="9"/>
+<path d="M18 1080L900 720L1782 1080" fill="none" stroke="url(#rim)" stroke-width="7" opacity=".72"/>
+<path d="M16 178V1083H1784V178" fill="none" stroke="url(#rim)" stroke-width="9"/>
+</svg>
