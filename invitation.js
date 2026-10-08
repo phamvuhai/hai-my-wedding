@@ -128,6 +128,7 @@
   function openInvitation() {
     if (!isEntryRoute || opening || !intro || !intro.classList.contains('is-ready')) return;
     opening = true;
+    intro.classList.remove('is-awaiting-open','is-envelope-hover','is-cue-reminder');
 
     if (openButton) openButton.disabled = true;
     intro.classList.add('is-opening');
@@ -191,14 +192,24 @@
       openInvitation();
     });
 
+    stage?.addEventListener('pointerenter', () => {
+      if (!opening) intro?.classList.add('is-envelope-hover');
+    }, {passive:true});
+
     stage?.addEventListener('pointerdown', () => {
-      if (!opening) intro?.classList.add('is-pressed');
+      if (!opening) {
+        intro?.classList.add('is-pressed');
+        intro?.classList.remove('is-cue-reminder');
+      }
     }, {passive:true});
 
     const releasePress = () => intro?.classList.remove('is-pressed');
     stage?.addEventListener('pointerup', releasePress, {passive:true});
     stage?.addEventListener('pointercancel', releasePress, {passive:true});
-    stage?.addEventListener('pointerleave', releasePress, {passive:true});
+    stage?.addEventListener('pointerleave', () => {
+      releasePress();
+      intro?.classList.remove('is-envelope-hover');
+    }, {passive:true});
   }
 
   function bindRouteListeners() {
@@ -285,7 +296,16 @@
     } catch {}
 
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => intro.classList.add('is-ready'));
+      requestAnimationFrame(() => {
+        intro.classList.add('is-ready','is-awaiting-open');
+
+        // If the guest has not interacted yet, gently repeat the affordance.
+        setTimeout(() => {
+          if (!opening && !invitationOpened && intro.classList.contains('is-awaiting-open')) {
+            intro.classList.add('is-cue-reminder');
+          }
+        }, 1800);
+      });
     });
   };
 

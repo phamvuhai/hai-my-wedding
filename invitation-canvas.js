@@ -29,6 +29,7 @@
   let idleStartedAt = performance.now();
   let pointerX = 0, pointerY = 0;
   let pointerTX = 0, pointerTY = 0;
+  let idleEnvelopeOffset = 0;
 
   const clamp = (v,a=0,b=1)=>Math.max(a,Math.min(b,v));
   const mix = (a,b,t)=>a+(b-a)*t;
@@ -141,16 +142,20 @@
   }
 
   function sceneTransform() {
-    const widthFit=(w*Number(DS.fitWidth||.94))/DESIGN_W;
-    const fitHeightRatio=w<760?Number(DS.mobileFitHeight||.78):Number(DS.desktopFitHeight||.78);
+    const phone=w<600;
+    const tablet=!phone&&w<1050;
+    const fitWidthRatio=phone?.965:(tablet?.86:.78);
+    const fitHeightRatio=phone?.68:(tablet?.73:.79);
+    const widthFit=(w*fitWidthRatio)/DESIGN_W;
     const heightFit=(h*fitHeightRatio)/DESIGN_H;
     const scale=Math.min(widthFit,heightFit);
     const sceneW=DESIGN_W*scale, sceneH=DESIGN_H*scale;
     const idleAmount=active?Math.max(0,1-range(progress,.08,.32)):1;
+    const verticalBias=phone?-18:(tablet?-10:-4);
     return {
       scale,
-      x:(w-sceneW)/2 + pointerX*ss(1.7,{scale})*idleAmount,
-      y:Math.max(12,(h-sceneH)/2 - (w<760?8:10)) + pointerY*ss(1.1,{scale})*idleAmount,
+      x:(w-sceneW)/2 + pointerX*ss(phone?.4:1.7,{scale})*idleAmount,
+      y:Math.max(8,(h-sceneH)/2 + verticalBias) + pointerY*ss(phone?.25:1.1,{scale})*idleAmount,
       sceneW,sceneH
     };
   }
@@ -262,7 +267,7 @@
   function envYFor(p){
     const E=DS.envelope||{};
     const y1=Number(E.closedY||164),y3=Number(E.openY||184),y4=Number(E.cardY||190),y5=Number(E.presentedY||222);
-    if(p<.20) return y1;
+    if(p<.20) return y1+idleEnvelopeOffset;
     if(p<.38) return mix(y1,y3,range(p,.20,.38));
     if(p<.68) return mix(y3,y4,range(p,.38,.68));
     return mix(y4,y5,range(p,.68,.86));
@@ -382,6 +387,27 @@
     ctx.shadowOffsetY=ss(2+sealP*2,S);
     ctx.drawImage(images.seal,-ss(size/2,S),-ss(size/2,S),ss(size,S),ss(size,S));
 
+    // Idle affordance: two restrained rings radiate from the actual wax seal.
+    // Because this is drawn in the same design coordinate space, it stays aligned
+    // on desktop, tablet and phone rather than relying on a fixed CSS position.
+    if(!active && p<.01){
+      const pulse=(time*.00042)%1;
+      const pulse2=(pulse+.48)%1;
+      [pulse,pulse2].forEach((wave,idx)=>{
+        const radius=ss(size*(.52+wave*.70),S);
+        ctx.save();
+        ctx.globalAlpha=(1-wave)*(idx?0.17:0.24);
+        ctx.strokeStyle=idx?'#F1D2A0':'#E8B86F';
+        ctx.lineWidth=Math.max(.7,ss(.42,S)*(1-wave*.45));
+        ctx.shadowColor='rgba(229,183,109,.28)';
+        ctx.shadowBlur=ss(3+wave*4,S);
+        ctx.beginPath();
+        ctx.arc(0,0,radius,0,TAU);
+        ctx.stroke();
+        ctx.restore();
+      });
+    }
+
     // A small moving specular reflection before the seal releases.
     if(sealP<.64){
       const shine=ctx.createRadialGradient(-ss(size*.14,S),-ss(size*.17,S),0,-ss(size*.14,S),-ss(size*.17,S),ss(size*.24,S));
@@ -399,133 +425,143 @@
     const d=data(),t=C.typography||{};
     const cx=x+cw*.5;
     const cxPx=sx(cx,S);
-    const maxNameWidth=ss(cw*.76,S);
-    const maxTitleWidth=ss(cw*.62,S);
+    const pxX=v=>sx(x+cw*v,S);
+    const pxY=v=>sy(y+ch*v,S);
 
-    ctx.save();
-    ctx.textAlign='center';
-    ctx.textBaseline='middle';
-
-    const drawFittedText=(text,designY,sizeRatio,minPx,weight,family,color,maxWidth)=>{
-      let size=Math.max(minPx,ss(cw*sizeRatio,S));
-      const makeFont=px=>`${weight} ${px.toFixed(2)}px ${family}`;
-      ctx.font=makeFont(size);
-      const measured=ctx.measureText(text).width;
-      if(measured>maxWidth&&measured>0){
-        size=Math.max(minPx,size*(maxWidth/measured));
-        ctx.font=makeFont(size);
+    const fitText=(text,sizePx,family,weight,maxWidth,letterSpacing=0)=>{
+      let size=sizePx;
+      ctx.font=`${weight} ${size.toFixed(2)}px ${family}`;
+      if(letterSpacing===0){
+        const measured=ctx.measureText(text).width;
+        if(measured>maxWidth&&measured>0){
+          size=Math.max(6,size*(maxWidth/measured));
+          ctx.font=`${weight} ${size.toFixed(2)}px ${family}`;
+        }
       }
-      ctx.fillStyle=color;
-      ctx.fillText(text,cxPx,sy(y+ch*designY,S));
+      return size;
     };
 
-    const drawOrnament=(designY,span=.22)=>{
-      const py=sy(y+ch*designY,S);
-      const gap=ss(cw*.055,S);
-      const half=ss(cw*span,S);
-      const diamond=Math.max(1.4,ss(cw*.010,S));
+    const drawTracked=(text,yPos,size,tracking,color,weight='500',family='"Lora",Georgia,serif')=>{
+      const chars=[...text];
+      ctx.font=`${weight} ${size.toFixed(2)}px ${family}`;
+      ctx.fillStyle=color;
+      let total=chars.reduce((n,ch)=>n+ctx.measureText(ch).width,0)+tracking*Math.max(0,chars.length-1);
+      let xx=cxPx-total/2;
+      chars.forEach((ch,i)=>{
+        ctx.fillText(ch,xx,pxY(yPos));
+        xx+=ctx.measureText(ch).width+(i===chars.length-1?0:tracking);
+      });
+    };
 
+    const givenName=text=>{
+      const part=(text||'').trim().split(/\s+/).filter(Boolean).pop()||text||'';
+      const lower=part.toLocaleLowerCase('vi-VN');
+      return lower?lower.charAt(0).toLocaleUpperCase('vi-VN')+lower.slice(1):part;
+    };
+
+    const ornament=(yPos,width=.18)=>{
+      const py=pxY(yPos);
+      const half=ss(cw*width,S);
+      const gap=ss(cw*.035,S);
       ctx.save();
-      ctx.strokeStyle='rgba(177,124,59,.72)';
-      ctx.fillStyle='rgba(177,124,59,.86)';
-      ctx.lineWidth=Math.max(.7,ss(.38,S));
-
+      ctx.strokeStyle='rgba(157,111,58,.52)';
+      ctx.lineWidth=Math.max(.55,ss(.28,S));
       ctx.beginPath();
       ctx.moveTo(cxPx-half,py);
       ctx.lineTo(cxPx-gap,py);
       ctx.moveTo(cxPx+gap,py);
       ctx.lineTo(cxPx+half,py);
       ctx.stroke();
-
+      ctx.fillStyle='rgba(170,125,67,.72)';
       ctx.translate(cxPx,py);
       ctx.rotate(Math.PI/4);
-      ctx.fillRect(-diamond/2,-diamond/2,diamond,diamond);
+      const s=Math.max(1.1,ss(cw*.0065,S));
+      ctx.fillRect(-s/2,-s/2,s,s);
       ctx.restore();
     };
 
-    // Main monogram/title — classic serif like the approved mockup.
-    drawFittedText(
-      'H & M',
-      t.monogramY??.19,
-      .125,
-      12,
+    ctx.save();
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+
+    // Blind-embossed monogram: warm highlight above a shallow deboss shadow.
+    const monoSize=Math.max(11,ss(cw*.105,S));
+    ctx.font=`600 ${monoSize.toFixed(2)}px "Cormorant Garamond",Georgia,serif`;
+    ctx.fillStyle='rgba(255,255,255,.48)';
+    ctx.fillText('H · M',cxPx,pxY(t.monogramY??.145)-ss(.35,S));
+    ctx.fillStyle='rgba(100,65,42,.17)';
+    ctx.fillText('H · M',cxPx,pxY(t.monogramY??.145)+ss(.38,S));
+
+    drawTracked(
+      (d.script||'Wedding Invitation').toUpperCase(),
+      t.subtitleY??.218,
+      Math.max(6.5,ss(cw*.026,S)),
+      Math.max(.65,ss(cw*.0068,S)),
+      'rgba(111,72,48,.66)',
+      '600'
+    );
+
+    ornament(t.ornamentTopY??.275,.17);
+
+    // Large first names in the wedding script; full legal names remain directly below.
+    const groomGiven=givenName(d.groom);
+    const brideGiven=givenName(d.bride);
+    const scriptFamily='"UTM Beautiful Caps","Great Vibes","Snell Roundhand","Apple Chancery",cursive';
+    const scriptSize=Math.max(22,ss(cw*.195,S));
+
+    fitText(groomGiven,scriptSize,scriptFamily,'400',ss(cw*.68,S));
+    ctx.fillStyle='#762A35';
+    ctx.fillText(groomGiven,cxPx,pxY(t.groomScriptY??.365));
+
+    drawTracked(
+      (d.groom||'').toUpperCase(),
+      t.groomY??.438,
+      Math.max(6.1,ss(cw*.027,S)),
+      Math.max(.48,ss(cw*.0045,S)),
+      'rgba(91,57,42,.77)',
       '600',
-      '"Cormorant Garamond",Georgia,serif',
-      '#6B1726',
-      maxTitleWidth
+      '"Cormorant Garamond",Georgia,serif'
     );
 
-    // Subtitle sits directly under the monogram, never at the bottom of the card.
-    drawFittedText(
-      d.script,
-      t.subtitleY??.265,
-      .035,
-      7,
-      '500',
-      '"Lora","Cormorant Garamond",Georgia,serif',
-      '#8A5B43',
-      ss(cw*.58,S)
-    );
+    // Ampersand becomes a small foil mark, not another headline.
+    const ampSize=Math.max(11,ss(cw*.072,S));
+    ctx.font=`500 italic ${ampSize.toFixed(2)}px "Cormorant Garamond",Georgia,serif`;
+    ctx.fillStyle='rgba(173,125,65,.80)';
+    ctx.fillText('&',cxPx,pxY(t.ampY??.505));
 
-    drawOrnament(t.ornamentTopY??.325,.19);
+    fitText(brideGiven,scriptSize,scriptFamily,'400',ss(cw*.68,S));
+    ctx.fillStyle='#762A35';
+    ctx.fillText(brideGiven,cxPx,pxY(t.brideScriptY??.585));
 
-    drawFittedText(
-      d.groom,
-      t.groomY??.435,
-      .054,
-      8,
+    drawTracked(
+      (d.bride||'').toUpperCase(),
+      t.brideY??.658,
+      Math.max(6.1,ss(cw*.027,S)),
+      Math.max(.48,ss(cw*.0045,S)),
+      'rgba(91,57,42,.77)',
       '600',
-      '"Cormorant Garamond",Georgia,serif',
-      '#6A1C29',
-      maxNameWidth
+      '"Cormorant Garamond",Georgia,serif'
     );
 
-    // Ampersand with short gold rules for a cleaner wedding-invitation hierarchy.
-    const ampY=t.ampY??.505;
-    const ampPx=sy(y+ch*ampY,S);
-    const ampGap=ss(cw*.075,S);
-    const ampLine=ss(cw*.19,S);
-    ctx.strokeStyle='rgba(177,124,59,.70)';
-    ctx.lineWidth=Math.max(.7,ss(.36,S));
-    ctx.beginPath();
-    ctx.moveTo(cxPx-ampLine,ampPx);
-    ctx.lineTo(cxPx-ampGap,ampPx);
-    ctx.moveTo(cxPx+ampGap,ampPx);
-    ctx.lineTo(cxPx+ampLine,ampPx);
-    ctx.stroke();
-    drawFittedText(
-      '&',
-      ampY,
-      .047,
-      8,
-      '500',
-      '"Cormorant Garamond",Georgia,serif',
-      '#A87337',
-      ss(cw*.14,S)
+    ornament(t.ornamentBottomY??.723,.155);
+
+    drawTracked(
+      d.date||'19 · 12 · 2026',
+      t.dateY??.785,
+      Math.max(6.5,ss(cw*.029,S)),
+      Math.max(.55,ss(cw*.0048,S)),
+      'rgba(117,75,45,.74)',
+      '600'
     );
 
-    drawFittedText(
-      d.bride,
-      t.brideY??.575,
-      .054,
-      8,
-      '600',
-      '"Cormorant Garamond",Georgia,serif',
-      '#6A1C29',
-      maxNameWidth
-    );
-
-    drawOrnament(t.ornamentBottomY??.655,.18);
-
-    drawFittedText(
-      d.date,
-      t.dateY??.735,
-      .036,
-      7,
-      '500',
-      '"Lora","Cormorant Garamond",Georgia,serif',
-      '#7D4C34',
-      ss(cw*.54,S)
+    // Tiny finishing line gives the printed card a real stationery hierarchy.
+    drawTracked(
+      'SAVE THE DATE',
+      t.footerY??.855,
+      Math.max(5.5,ss(cw*.0205,S)),
+      Math.max(.55,ss(cw*.006,S)),
+      'rgba(126,91,59,.46)',
+      '600'
     );
 
     ctx.restore();
@@ -623,6 +659,7 @@
   function render(p,time=performance.now()){
     if(!ready||destroyed)return;
     progress=clamp(p);
+    idleEnvelopeOffset=(!active&&progress<.01)?Math.sin(time*.00145)*.42:0;
     ctx.clearRect(0,0,w,h);
     const S=sceneTransform();
 
