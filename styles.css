@@ -787,29 +787,223 @@ html[data-motion="wow"] .event-family.motion-in{
 @keyframes featuredFloat{
   from{translate:0 0}
   to{translate:0 -4px}
-}.motion-cursor{
+}/* Context-aware desktop cursor.
+   One persistent pointer system; action labels only appear on real interactive targets. */
+.motion-cursor{
+  --cursor-ink:#692231;
+  --cursor-accent:#b77d59;
+  --cursor-fill:rgba(255,250,246,.72);
+  --cursor-shadow:rgba(88,43,35,.14);
   position:fixed;
-  z-index:5000;
-  left:0;
-  top:0;
-  width:58px;
-  height:58px;
-  margin:-29px 0 0 -29px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
+  z-index:2147483000;
+  inset:0;
+  width:100%;
+  height:100%;
   pointer-events:none;
   opacity:0;
-  background:rgba(43,34,30,.84);
-  color:#fff;
-  backdrop-filter:blur(8px);
-  transition:opacity .18s ease,width .18s ease,height .18s ease;
+  transition:opacity .18s ease;
+  contain:layout style;
+}.motion-cursor.is-active{opacity:1}.motion-cursor[data-theme="light"]{
+  --cursor-ink:#fff7e9;
+  --cursor-accent:#d7ad68;
+  --cursor-fill:rgba(71,24,31,.36);
+  --cursor-shadow:rgba(0,0,0,.25);
+}.motion-cursor-ring,
+.motion-cursor-core,
+.motion-cursor-label{
+  position:absolute;
+  left:0;
+  top:0;
+  pointer-events:none;
   will-change:transform;
-}.motion-cursor.visible{opacity:1}.motion-cursor span{
-  font-size:.55rem;
+}.motion-cursor-ring{
+  width:36px;
+  height:36px;
+  border:1px solid color-mix(in srgb,var(--cursor-accent) 78%,transparent);
+  border-radius:50%;
+  background:color-mix(in srgb,var(--cursor-fill) 36%,transparent);
+  box-shadow:0 8px 28px var(--cursor-shadow),inset 0 0 0 1px rgba(255,255,255,.06);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+  transition:
+    width .24s var(--ui-ease),
+    height .24s var(--ui-ease),
+    border-color .22s ease,
+    background .22s ease,
+    box-shadow .22s ease,
+    opacity .18s ease,
+    scale .22s var(--ui-ease);
+}.motion-cursor-core{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--cursor-ink);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--cursor-accent) 14%,transparent);
+  transition:
+    width .18s ease,
+    height .18s ease,
+    opacity .18s ease,
+    background .18s ease,
+    box-shadow .18s ease;
+}.motion-cursor-label{
+  z-index:2;
+  min-width:0;
+  color:var(--cursor-ink);
+  font-size:.48rem;
+  font-weight:850;
+  line-height:1;
   letter-spacing:.13em;
-  font-weight:800;
-}.monogram{
+  text-align:center;
+  white-space:nowrap;
+  opacity:0;
+  transition:opacity .16s ease,color .18s ease;
+}.motion-cursor.has-label .motion-cursor-label{opacity:1}.motion-cursor.has-label .motion-cursor-core{opacity:0}.motion-cursor[data-action="link"] .motion-cursor-ring{
+  width:24px;
+  height:24px;
+  background:color-mix(in srgb,var(--cursor-fill) 24%,transparent);
+}.motion-cursor[data-action="explore"] .motion-cursor-ring{
+  width:72px;
+  height:72px;
+  border-color:color-mix(in srgb,var(--cursor-accent) 88%,transparent);
+  background:color-mix(in srgb,var(--cursor-fill) 50%,transparent);
+  box-shadow:0 12px 38px var(--cursor-shadow),0 0 34px color-mix(in srgb,var(--cursor-accent) 13%,transparent);
+}.motion-cursor[data-action="view"] .motion-cursor-ring,
+.motion-cursor[data-action="open"] .motion-cursor-ring,
+.motion-cursor[data-action="event"] .motion-cursor-ring,
+.motion-cursor[data-action="map"] .motion-cursor-ring,
+.motion-cursor[data-action="send"] .motion-cursor-ring,
+.motion-cursor[data-action="signature"] .motion-cursor-ring{
+  width:58px;
+  height:58px;
+  border-color:color-mix(in srgb,var(--cursor-accent) 74%,transparent);
+  background:rgba(54,40,35,.88);
+  box-shadow:0 12px 34px rgba(45,27,23,.24);
+}.motion-cursor[data-action="open"] .motion-cursor-ring{width:66px;height:66px}.motion-cursor[data-action="event"] .motion-cursor-ring{width:62px;height:62px}.motion-cursor[data-action="map"] .motion-cursor-ring{width:60px;height:60px}.motion-cursor[data-action="send"] .motion-cursor-ring{width:58px;height:58px;background:rgba(105,62,52,.92)}.motion-cursor[data-action="view"] .motion-cursor-label,
+.motion-cursor[data-action="open"] .motion-cursor-label,
+.motion-cursor[data-action="event"] .motion-cursor-label,
+.motion-cursor[data-action="map"] .motion-cursor-label,
+.motion-cursor[data-action="send"] .motion-cursor-label,
+.motion-cursor[data-action="signature"] .motion-cursor-label{
+  color:#fffaf4;
+}.motion-cursor[data-action="pulse"] .motion-cursor-ring{
+  width:42px;
+  height:42px;
+  animation:contextCursorPulse 1.7s ease-in-out infinite;
+}.motion-cursor[data-action="heart"] .motion-cursor-ring{
+  width:48px;
+  height:48px;
+  border-color:rgba(230,191,126,.72);
+  background:rgba(91,33,42,.32);
+  box-shadow:0 0 32px rgba(225,179,105,.14);
+}.motion-cursor[data-action="heart"] .motion-cursor-label{
+  color:#f3d7aa;
+  font-family:Georgia,serif;
+  font-size:.78rem;
+  letter-spacing:0;
+}.motion-cursor[data-action="form"]{
+  opacity:.48;
+}.motion-cursor[data-action="form"] .motion-cursor-ring{
+  width:18px;
+  height:18px;
+  opacity:.42;
+  background:transparent;
+  box-shadow:none;
+}.motion-cursor[data-action="form"] .motion-cursor-core{
+  width:4px;
+  height:4px;
+  opacity:.6;
+}.motion-cursor[data-section="gallery"][data-action="default"] .motion-cursor-ring{
+  width:32px;
+  height:32px;
+}.motion-cursor[data-section="countdown"] .motion-cursor-core{
+  background:#f2d49c;
+}.motion-cursor[data-section="forever"] .motion-cursor-ring{
+  border-color:rgba(231,195,135,.64);
+}.motion-cursor-trail{
+  position:fixed;
+  z-index:2147482999;
+  width:5px;
+  height:5px;
+  margin:-2.5px 0 0 -2.5px;
+  border-radius:50%;
+  pointer-events:none;
+  background:#9e6657;
+  opacity:.34;
+  animation:contextCursorTrail .42s ease-out forwards;
+}.motion-cursor-trail[data-theme="light"]{
+  background:#e2bb78;
+  opacity:.32;
+}
+@keyframes contextCursorPulse{
+  0%,100%{scale:1;box-shadow:0 8px 28px var(--cursor-shadow),0 0 0 0 color-mix(in srgb,var(--cursor-accent) 18%,transparent)}
+  50%{scale:1.10;box-shadow:0 10px 34px var(--cursor-shadow),0 0 0 9px transparent}
+}
+@keyframes contextCursorTrail{
+  from{opacity:.36;scale:1}
+  to{opacity:0;scale:.2}
+}
+
+/* Section-level mouse response: restrained and non-layout-shifting. */
+.editorial-story .story-paper-stack .story-copy{
+  translate:var(--story-pointer-x,0px) var(--story-pointer-y,0px);
+  rotate:var(--story-pointer-rotate,0deg);
+  transition:
+    translate .34s cubic-bezier(.16,.84,.24,1),
+    rotate .34s cubic-bezier(.16,.84,.24,1),
+    box-shadow .32s ease;
+}.editorial-story:hover .story-paper-stack .story-copy{
+  box-shadow:0 28px 68px rgba(80,54,44,.14);
+}.home-photo{
+  isolation:isolate;
+}.home-photo::before{
+  content:"";
+  position:absolute;
+  z-index:1;
+  inset:0;
+  pointer-events:none;
+  opacity:0;
+  background:
+    radial-gradient(
+      circle at var(--gallery-pointer-x,50%) var(--gallery-pointer-y,50%),
+      rgba(255,247,235,.19) 0,
+      rgba(255,247,235,.08) 19%,
+      transparent 46%
+    );
+  transition:opacity .24s ease;
+}.home-photo.cursor-photo-active::before{opacity:1}.home-photo.cursor-photo-active img{
+  transform:scale(1.045);
+}.home-photo-copy{z-index:2}.gallery-cta{
+  position:relative;
+}.gallery-cta::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:min(360px,80vw);
+  height:86px;
+  translate:-50% -50%;
+  border-radius:999px;
+  background:radial-gradient(circle,rgba(174,120,95,.07),transparent 70%);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .28s ease;
+}.gallery-cta:hover::before{opacity:1}
+
+/* Keep the native text caret where it is useful; the custom cursor becomes minimal there. */
+@media(hover:hover) and (pointer:fine){
+  body.context-cursor-enabled,
+  body.context-cursor-enabled a,
+  body.context-cursor-enabled button,
+  body.context-cursor-enabled .home-photo,
+  body.context-cursor-enabled .event-card{
+    cursor:none!important;
+  }
+  body.context-cursor-enabled input,
+  body.context-cursor-enabled textarea{cursor:text!important}
+  body.context-cursor-enabled select{cursor:pointer!important}
+}
+
+.monogram{
   cursor:default;
   user-select:none;
 }html[data-motion="wow"] .monogram span{
