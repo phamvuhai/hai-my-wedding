@@ -7720,3 +7720,418 @@ svg{height:auto}.invite-v2-open-btn{
     transition:none!important;
   }
 }
+
+
+/* =========================================
+   Cinematic Love Trail V2
+   Silk light, depth, lens and section-specific pointer reactions
+   ========================================= */
+.motion-silk-canvas{
+  position:fixed;
+  z-index:2147482997;
+  inset:0;
+  width:100vw;
+  height:100vh;
+  pointer-events:none;
+  opacity:.92;
+  mix-blend-mode:normal;
+}
+.motion-cursor.motion-cursor-cinematic{
+  z-index:2147483000;
+  background:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+.motion-cursor-aura{
+  position:absolute;
+  left:0;
+  top:0;
+  width:92px;
+  height:92px;
+  border-radius:50%;
+  pointer-events:none;
+  will-change:transform;
+  background:radial-gradient(circle,
+    color-mix(in srgb,var(--cursor-accent) 13%,transparent) 0,
+    color-mix(in srgb,var(--cursor-accent) 5%,transparent) 42%,
+    transparent 72%);
+  filter:blur(2px);
+  opacity:.72;
+  transition:width .28s var(--ui-ease),height .28s var(--ui-ease),opacity .22s ease;
+}
+.motion-cursor-cinematic .motion-cursor-ring{
+  width:28px;
+  height:28px;
+  background:transparent;
+  border-color:color-mix(in srgb,var(--cursor-accent) 62%,transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb,var(--cursor-accent) 7%,transparent),
+    0 0 28px color-mix(in srgb,var(--cursor-accent) 13%,transparent);
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+}
+.motion-cursor-cinematic .motion-cursor-core{
+  width:6px;
+  height:6px;
+  background:var(--cursor-ink);
+  box-shadow:
+    0 0 0 2px color-mix(in srgb,var(--cursor-accent) 16%,transparent),
+    0 0 16px color-mix(in srgb,var(--cursor-accent) 34%,transparent);
+}
+.motion-cursor-cinematic.has-label .motion-cursor-core{opacity:1}
+.motion-cursor-cinematic.has-label .motion-cursor-label{
+  translate:0 38px;
+  padding:7px 10px 6px;
+  border-radius:999px;
+  background:rgba(35,21,20,.76);
+  border:1px solid rgba(255,255,255,.11);
+  box-shadow:0 10px 28px rgba(32,18,17,.16);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  color:#fffaf3!important;
+  font-size:.47rem;
+  letter-spacing:.14em;
+}
+.motion-cursor-cinematic[data-theme="light"].has-label .motion-cursor-label{
+  background:rgba(72,28,34,.72);
+  border-color:rgba(244,208,147,.18);
+}
+.motion-cursor-cinematic[data-action="view"] .motion-cursor-ring,
+.motion-cursor-cinematic[data-action="open"] .motion-cursor-ring,
+.motion-cursor-cinematic[data-action="event"] .motion-cursor-ring,
+.motion-cursor-cinematic[data-action="map"] .motion-cursor-ring,
+.motion-cursor-cinematic[data-action="send"] .motion-cursor-ring,
+.motion-cursor-cinematic[data-action="explore"] .motion-cursor-ring{
+  width:46px;
+  height:46px;
+  background:radial-gradient(circle,
+    color-mix(in srgb,var(--cursor-accent) 9%,transparent),
+    transparent 68%);
+  border-color:color-mix(in srgb,var(--cursor-accent) 78%,transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb,var(--cursor-accent) 8%,transparent),
+    0 0 38px color-mix(in srgb,var(--cursor-accent) 19%,transparent);
+}
+.motion-cursor-cinematic[data-action="explore"] .motion-cursor-ring{
+  width:58px;
+  height:58px;
+}
+.motion-cursor-cinematic[data-action="heart"] .motion-cursor-ring{
+  width:52px;
+  height:52px;
+  background:radial-gradient(circle,rgba(225,181,110,.12),transparent 68%);
+  animation:cinematicHeartCursor 1.8s ease-in-out infinite;
+}
+.motion-cursor-cinematic[data-action="pulse"] .motion-cursor-ring{
+  width:42px;
+  height:42px;
+  background:rgba(255,238,203,.025);
+  animation:cinematicPulseCursor 1.5s ease-in-out infinite;
+}
+.motion-cursor-cinematic[data-action="form"] .motion-cursor-aura{opacity:.18}
+.motion-cursor-cinematic[data-action="form"] .motion-cursor-ring{
+  width:14px;
+  height:14px;
+  opacity:.32;
+}
+@keyframes cinematicHeartCursor{
+  0%,100%{scale:1;box-shadow:0 0 30px rgba(225,181,110,.12)}
+  50%{scale:1.12;box-shadow:0 0 48px rgba(225,181,110,.23)}
+}
+@keyframes cinematicPulseCursor{
+  0%,100%{scale:.94;opacity:.72}
+  50%{scale:1.15;opacity:1}
+}
+
+/* HERO — four-depth cinematic parallax plus a soft champagne spotlight. */
+html[data-motion="wow"] .hero::before{
+  width:clamp(280px,34vw,560px);
+  height:clamp(280px,34vw,560px);
+  top:calc(var(--cinema-y,50%) - 17vw);
+  left:calc(var(--cinema-x,50%) - 17vw);
+  right:auto;
+  border:0;
+  border-radius:50%;
+  background:radial-gradient(circle,
+    rgba(245,214,158,.16) 0,
+    rgba(238,188,115,.07) 28%,
+    transparent 70%);
+  filter:blur(12px);
+  transform:translate3d(var(--hero-decor-pointer-x,0),var(--hero-decor-pointer-y,0),0);
+  animation:none;
+  pointer-events:none;
+}
+html[data-motion="wow"] .hero .hero-copy{
+  translate:var(--hero-copy-pointer-x,0) var(--hero-copy-pointer-y,0);
+  transition:translate .34s cubic-bezier(.16,.84,.24,1);
+}
+html[data-motion="wow"] .hero .hero-full-photo{
+  translate:calc(var(--hero-photo-pointer-x,0) * .55) calc(var(--hero-photo-pointer-y,0) * .55);
+  transition:translate .42s cubic-bezier(.16,.84,.24,1);
+}
+html[data-motion="wow"] .hero .hero-feature-photo{
+  translate:var(--hero-photo-pointer-x,0) var(--hero-photo-pointer-y,0);
+  transition:translate .4s cubic-bezier(.16,.84,.24,1),box-shadow .4s ease;
+}
+html[data-motion="wow"] .hero:hover .hero-feature-photo{
+  box-shadow:0 34px 100px rgba(25,13,10,.34),0 0 0 1px rgba(242,211,164,.12);
+}
+html[data-motion="wow"] .hero .hero-curtain{
+  translate:calc(var(--hero-decor-pointer-x,0) * -.18) calc(var(--hero-decor-pointer-y,0) * -.12);
+}
+
+/* STORY — stacked paper depth with moving reflective bloom. */
+html[data-motion="wow"] .editorial-story .story-paper-stack{
+  perspective:1200px;
+}
+html[data-motion="wow"] .editorial-story .story-paper-back{
+  translate:calc(var(--story-pointer-x,0px) * -.75) calc(var(--story-pointer-y,0px) * -.75);
+}
+html[data-motion="wow"] .editorial-story .story-paper-mid{
+  translate:calc(var(--story-pointer-x,0px) * -.35) calc(var(--story-pointer-y,0px) * -.35);
+}
+html[data-motion="wow"] .editorial-story .story-paper-stack .story-copy{
+  translate:var(--story-pointer-x,0px) var(--story-pointer-y,0px);
+  rotate:var(--story-pointer-rotate,0deg);
+}
+html[data-motion="wow"] .editorial-story .story-paper-stack .story-copy::after{
+  content:"";
+  position:absolute;
+  z-index:0;
+  inset:0;
+  pointer-events:none;
+  opacity:.9;
+  background:
+    radial-gradient(circle at var(--story-light-x,50%) var(--story-light-y,50%),
+      rgba(255,255,255,.46) 0,
+      rgba(245,214,193,.12) 16%,
+      transparent 44%);
+  mix-blend-mode:screen;
+  transition:opacity .25s ease;
+}
+html[data-motion="wow"] .story-paper-stack .story-copy > *{
+  position:relative;
+  z-index:1;
+}
+
+/* COUNTDOWN — glass halo follows the active number. */
+html[data-motion="wow"] .countdown > div{
+  position:relative;
+  isolation:isolate;
+  transition:transform .32s var(--ui-ease),border-color .32s ease,box-shadow .32s ease;
+}
+html[data-motion="wow"] .countdown > div::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:-1px;
+  border-radius:inherit;
+  opacity:0;
+  background:
+    radial-gradient(circle at var(--count-light-x,50%) var(--count-light-y,50%),
+      rgba(245,215,158,.24),
+      rgba(245,215,158,.06) 24%,
+      transparent 60%);
+  box-shadow:inset 0 0 30px rgba(255,232,191,.05);
+  transition:opacity .28s ease;
+}
+html[data-motion="wow"] .countdown > div.cursor-count-active{
+  transform:translateY(-5px) scale(1.018);
+  border-color:rgba(234,199,139,.31);
+  box-shadow:0 22px 58px rgba(15,8,7,.18),0 0 40px rgba(225,182,111,.08);
+}
+html[data-motion="wow"] .countdown > div.cursor-count-active::after{opacity:1}
+html[data-motion="wow"] .countdown > div.cursor-count-active strong{
+  text-shadow:0 0 26px rgba(245,216,161,.22);
+}
+
+/* EVENTS — no card tilt; use lift plus a moving gold sweep. */
+html[data-motion="wow"] .event-family{
+  transform:none!important;
+}
+html[data-motion="wow"] .event-card{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  transition:translate .32s var(--ui-ease),box-shadow .35s ease,background .35s ease;
+}
+html[data-motion="wow"] .event-card::after{
+  content:"";
+  position:absolute;
+  z-index:0;
+  inset:-30%;
+  pointer-events:none;
+  opacity:0;
+  background:
+    radial-gradient(circle at var(--event-light-x,50%) var(--event-light-y,50%),
+      rgba(229,184,111,.18) 0,
+      rgba(229,184,111,.07) 17%,
+      transparent 42%),
+    linear-gradient(112deg,
+      transparent 38%,
+      rgba(255,237,197,.00) 42%,
+      rgba(255,237,197,.17) 50%,
+      rgba(255,237,197,.00) 58%,
+      transparent 62%);
+  transform:translate3d(calc((var(--event-light-x,50%) - 50%) * .08),0,0);
+  transition:opacity .28s ease;
+}
+html[data-motion="wow"] .event-card.cursor-event-active{
+  translate:0 -7px;
+  box-shadow:0 24px 52px rgba(82,54,43,.11);
+}
+html[data-motion="wow"] .event-card.cursor-event-active::after{opacity:1}
+html[data-motion="wow"] .event-card > *{
+  position:relative;
+  z-index:1;
+}
+
+/* GALLERY — soft lens under the pointer and subtle repulsion of nearby photos. */
+html[data-motion="wow"] .home-photo{
+  translate:var(--gallery-neighbor-x,0px) var(--gallery-neighbor-y,0px);
+  transition:
+    translate .38s cubic-bezier(.16,.84,.24,1),
+    transform .42s cubic-bezier(.16,.84,.24,1),
+    filter .34s ease,
+    box-shadow .34s ease;
+}
+html[data-motion="wow"] .home-photo::before{
+  z-index:3;
+  background:
+    radial-gradient(circle at var(--gallery-pointer-x,50%) var(--gallery-pointer-y,50%),
+      rgba(255,248,236,.30) 0,
+      rgba(255,238,214,.11) 16%,
+      rgba(255,238,214,.025) 31%,
+      transparent 53%);
+  mix-blend-mode:screen;
+}
+html[data-motion="wow"] .home-photo.cursor-photo-active{
+  translate:0 -7px;
+  box-shadow:0 30px 72px rgba(69,42,34,.19);
+  filter:saturate(1.04) contrast(1.015);
+}
+html[data-motion="wow"] .home-photo.cursor-photo-active img{
+  transform:scale(1.055);
+}
+html[data-motion="wow"] .home-photo.cursor-photo-active .home-photo-copy{
+  transform:translateY(-2px);
+}
+
+/* Album CTA gets a traveling champagne edge instead of a static hover. */
+html[data-motion="wow"] .gallery-cta .btn{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+}
+html[data-motion="wow"] .gallery-cta .btn::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:-2px;
+  border-radius:inherit;
+  opacity:0;
+  background:conic-gradient(from 0deg,
+    transparent 0 28%,
+    rgba(204,157,112,.08) 36%,
+    rgba(204,157,112,.40) 42%,
+    rgba(245,220,186,.55) 46%,
+    rgba(204,157,112,.16) 52%,
+    transparent 61% 100%);
+  animation:albumHaloSpin 2.6s linear infinite;
+  transition:opacity .28s ease;
+}
+html[data-motion="wow"] .gallery-cta .btn:hover::after{opacity:1}
+@keyframes albumHaloSpin{to{rotate:360deg}}
+
+/* FOREVER — moving heart-light field behind the typography. */
+html[data-motion="wow"] .forever-transition{
+  position:relative;
+}
+html[data-motion="wow"] .forever-transition::before{
+  content:"";
+  position:absolute;
+  z-index:1;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at var(--forever-light-x,50%) var(--forever-light-y,50%),
+      rgba(227,186,117,.16) 0,
+      rgba(227,186,117,.055) 18%,
+      transparent 47%);
+  opacity:.9;
+}
+html[data-motion="wow"] .forever-sticky{
+  position:relative;
+  z-index:2;
+}
+html[data-motion="wow"] .forever-copy strong{
+  text-shadow:
+    0 0 28px rgba(231,195,135,.08),
+    0 0 80px rgba(231,195,135,.05);
+  transition:text-shadow .34s ease;
+}
+
+/* RSVP — intentionally restrained; pointer adds only a soft warm glow. */
+html[data-motion="wow"] .rsvp-section{
+  position:relative;
+}
+html[data-motion="wow"] .rsvp-form{
+  background:
+    radial-gradient(circle at var(--rsvp-light-x,50%) var(--rsvp-light-y,50%),
+      rgba(203,151,126,.085),
+      transparent 34%),
+    var(--paper);
+  transition:box-shadow .35s ease,transform .35s var(--ui-ease);
+}
+html[data-motion="wow"] .rsvp-form.cursor-rsvp-active{
+  box-shadow:0 30px 78px rgba(70,48,40,.12);
+}
+html[data-motion="wow"] .rsvp-form .btn-primary:hover{
+  box-shadow:0 12px 30px rgba(139,102,84,.18);
+}
+
+/* Section entrances receive a thin ceremonial line before the heading. */
+html[data-motion="wow"] #story .story-side::before,
+html[data-motion="wow"] #events .section-heading::before,
+html[data-motion="wow"] .gallery-section .section-heading::before,
+html[data-motion="wow"] #rsvp .rsvp-copy::before{
+  content:"";
+  display:block;
+  width:min(110px,28vw);
+  height:1px;
+  margin:0 auto 18px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  transform:scaleX(0);
+  opacity:.78;
+}
+html[data-motion="wow"] #story .story-side.motion-in::before,
+html[data-motion="wow"] #events .section-heading.motion-in::before,
+html[data-motion="wow"] .gallery-section .section-heading.motion-in::before,
+html[data-motion="wow"] #rsvp .rsvp-copy.motion-in::before{
+  animation:ceremonialLineDraw .95s cubic-bezier(.16,.84,.24,1) .08s forwards;
+}
+@keyframes ceremonialLineDraw{to{transform:scaleX(1)}}
+
+/* Touch/reduced motion: keep all content stable and remove pointer-only layers. */
+@media(pointer:coarse){
+  .motion-silk-canvas,
+  .motion-cursor{display:none!important}
+  html[data-motion="wow"] .home-photo,
+  html[data-motion="wow"] .event-card,
+  html[data-motion="wow"] .story-paper-layer,
+  html[data-motion="wow"] .story-paper-stack .story-copy{
+    translate:none!important;
+    rotate:0deg!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .motion-silk-canvas,
+  .motion-cursor{display:none!important}
+  html[data-motion="wow"] .home-photo,
+  html[data-motion="wow"] .event-card,
+  html[data-motion="wow"] .story-paper-layer,
+  html[data-motion="wow"] .story-paper-stack .story-copy{
+    translate:none!important;
+    rotate:0deg!important;
+  }
+}
