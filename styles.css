@@ -900,8 +900,6 @@ html[data-motion="wow"] .event-family.motion-in{
   font-family:Georgia,serif;
   font-size:.78rem;
   letter-spacing:0;
-}.motion-cursor[data-action="form"]{
-  opacity:.48;
 }.motion-cursor[data-action="form"] .motion-cursor-ring{
   width:18px;
   height:18px;
