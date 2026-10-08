@@ -36,7 +36,7 @@
     initRsvpSuccess();
     initSignature();
     initEasterEgg();
-    initCursor();
+    initContextCursor();
   }
 
   async function loadMode() {
@@ -768,23 +768,203 @@
     });
   }
 
-  function initCursor() {
-    if (mode !== 'wow' || reduce || coarse) return;
-    if (qs('.motion-cursor')) return;
+  function initContextCursor() {
+    const disabled = reduce || coarse || mode === 'minimal';
+    const existing = qs('.motion-cursor');
+
+    if (disabled) {
+      existing?.remove();
+      qsa('.motion-cursor-trail').forEach(el => el.remove());
+      body.classList.remove('context-cursor-enabled');
+      return;
+    }
+
+    if (existing) {
+      existing.dataset.motionMode = mode;
+      body.classList.add('context-cursor-enabled');
+      return;
+    }
+
+    body.classList.add('context-cursor-enabled');
 
     const cursor = document.createElement('div');
     cursor.className = 'motion-cursor';
-    cursor.innerHTML = '<span>VIEW</span>';
+    cursor.dataset.theme = 'wine';
+    cursor.dataset.section = 'default';
+    cursor.dataset.action = 'default';
+    cursor.dataset.motionMode = mode;
+    cursor.setAttribute('aria-hidden','true');
+    cursor.innerHTML = [
+      '<span class="motion-cursor-ring"></span>',
+      '<span class="motion-cursor-core"></span>',
+      '<span class="motion-cursor-label"></span>'
+    ].join('');
     body.appendChild(cursor);
 
-    addEventListener('pointermove', e => {
-      cursor.style.transform = `translate3d(${e.clientX}px,${e.clientY}px,0)`;
-    },{passive:true});
+    const ring = qs('.motion-cursor-ring',cursor);
+    const core = qs('.motion-cursor-core',cursor);
+    const label = qs('.motion-cursor-label',cursor);
 
-    qsa('.home-gallery, .gallery-cta').forEach(area => {
-      area.addEventListener('pointerenter',()=>cursor.classList.add('visible'));
-      area.addEventListener('pointerleave',()=>cursor.classList.remove('visible'));
+    let targetX = innerWidth * .5;
+    let targetY = innerHeight * .5;
+    let ringX = targetX;
+    let ringY = targetY;
+    let labelX = targetX;
+    let labelY = targetY;
+    let frame = 0;
+    let lastTrailAt = 0;
+    let lastTrailX = targetX;
+    let lastTrailY = targetY;
+    let activeGalleryPhoto = null;
+    let activeStory = null;
+
+    const setLabel = value => {
+      const next = value || '';
+      if (label.textContent !== next) label.textContent = next;
+      cursor.classList.toggle('has-label', Boolean(next));
+    };
+
+    const setStoryPointer = (story,clientX,clientY) => {
+      if (activeStory && activeStory !== story) {
+        activeStory.style.removeProperty('--story-pointer-x');
+        activeStory.style.removeProperty('--story-pointer-y');
+        activeStory.style.removeProperty('--story-pointer-rotate');
+      }
+      activeStory = story;
+      if (!story) return;
+
+      const r = story.getBoundingClientRect();
+      const nx = Math.max(-1,Math.min(1,((clientX-r.left)/Math.max(1,r.width)-.5)*2));
+      const ny = Math.max(-1,Math.min(1,((clientY-r.top)/Math.max(1,r.height)-.5)*2));
+      story.style.setProperty('--story-pointer-x',`${(nx*3.2).toFixed(2)}px`);
+      story.style.setProperty('--story-pointer-y',`${(ny*2.4).toFixed(2)}px`);
+      story.style.setProperty('--story-pointer-rotate',`${(nx*.32).toFixed(3)}deg`);
+    };
+
+    const setGalleryPointer = (photo,clientX,clientY) => {
+      if (activeGalleryPhoto && activeGalleryPhoto !== photo) {
+        activeGalleryPhoto.classList.remove('cursor-photo-active');
+      }
+      activeGalleryPhoto = photo;
+      if (!photo) return;
+
+      const r = photo.getBoundingClientRect();
+      const x = Math.max(0,Math.min(100,((clientX-r.left)/Math.max(1,r.width))*100));
+      const y = Math.max(0,Math.min(100,((clientY-r.top)/Math.max(1,r.height))*100));
+      photo.style.setProperty('--gallery-pointer-x',`${x.toFixed(1)}%`);
+      photo.style.setProperty('--gallery-pointer-y',`${y.toFixed(1)}%`);
+      photo.classList.add('cursor-photo-active');
+    };
+
+    const sectionInfo = target => {
+      if (!target?.closest) return { section:'default', theme:'wine' };
+
+      if (target.closest('.invitation-intro')) return { section:'opening', theme:'light' };
+      if (target.closest('.nav')) return { section:'nav', theme:'light' };
+      if (target.closest('.hero')) return { section:'hero', theme:'light' };
+      if (target.closest('.editorial-story,#story')) return { section:'story', theme:'wine' };
+      if (target.closest('.countdown-section')) return { section:'countdown', theme:'light' };
+      if (target.closest('.events,#events')) return { section:'events', theme:'wine' };
+      if (target.closest('.gallery-section')) return { section:'gallery', theme:'wine' };
+      if (target.closest('.forever-transition,#forever')) return { section:'forever', theme:'light' };
+      if (target.closest('.rsvp-section,#rsvp')) return { section:'rsvp', theme:'wine' };
+      if (target.closest('.footer')) return { section:'footer', theme:'light' };
+      return { section:'default', theme:'wine' };
+    };
+
+    const actionInfo = (target,section) => {
+      if (!target?.closest) return { action:'default', label:'' };
+
+      if (target.closest('input,select,textarea,[contenteditable="true"]')) {
+        return { action:'form', label:'' };
+      }
+      if (target.closest('.home-photo')) return { action:'view', label:'VIEW' };
+      if (target.closest('.gallery-cta .btn,[data-album-link]')) return { action:'open', label:'OPEN →' };
+      if (target.closest('.map-link')) return { action:'map', label:'MAP ↗' };
+      if (target.closest('#rsvpForm button[type="submit"],.rsvp-form .btn-primary')) {
+        return { action:'send', label:'SEND' };
+      }
+      if (target.closest('.event-card,.event-family')) return { action:'event', label:'EVENT' };
+      if (target.closest('.invite-v2-open-btn,.invite-v2-stage')) return { action:'open', label:'OPEN' };
+      if (target.closest('.hero .btn')) return { action:'explore', label:'EXPLORE' };
+      if (target.closest('a,button')) return { action:'link', label:'' };
+
+      if (section === 'hero') return { action:'explore', label:'EXPLORE' };
+      if (section === 'countdown') return { action:'pulse', label:'' };
+      if (section === 'forever') return { action:'heart', label:'♡' };
+      if (section === 'footer') return { action:'signature', label:'H&M' };
+      return { action:'default', label:'' };
+    };
+
+    const spawnTrail = (x,y) => {
+      if (mode !== 'wow') return;
+      const now = performance.now();
+      const distance = Math.hypot(x-lastTrailX,y-lastTrailY);
+      if (now-lastTrailAt < 58 || distance < 18) return;
+
+      lastTrailAt = now;
+      lastTrailX = x;
+      lastTrailY = y;
+
+      const dot = document.createElement('span');
+      dot.className = 'motion-cursor-trail';
+      dot.dataset.theme = cursor.dataset.theme || 'wine';
+      dot.style.left = `${x}px`;
+      dot.style.top = `${y}px`;
+      body.appendChild(dot);
+      setTimeout(()=>dot.remove(),430);
+    };
+
+    const updateContext = (target,x,y) => {
+      const info = sectionInfo(target);
+      const action = actionInfo(target,info.section);
+
+      cursor.dataset.section = info.section;
+      cursor.dataset.theme = info.theme;
+      cursor.dataset.action = action.action;
+      setLabel(action.label);
+
+      setStoryPointer(target?.closest?.('.editorial-story,#story') || null,x,y);
+      setGalleryPointer(target?.closest?.('.home-photo') || null,x,y);
+    };
+
+    const renderCursor = () => {
+      ringX += (targetX-ringX) * .17;
+      ringY += (targetY-ringY) * .17;
+      labelX += (targetX-labelX) * .22;
+      labelY += (targetY-labelY) * .22;
+
+      core.style.transform = `translate3d(${targetX}px,${targetY}px,0) translate(-50%,-50%)`;
+      ring.style.transform = `translate3d(${ringX}px,${ringY}px,0) translate(-50%,-50%)`;
+      label.style.transform = `translate3d(${labelX}px,${labelY}px,0) translate(-50%,-50%)`;
+
+      frame = requestAnimationFrame(renderCursor);
+    };
+
+    const onPointerMove = e => {
+      if (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+      targetX = e.clientX;
+      targetY = e.clientY;
+      cursor.classList.add('is-active');
+      updateContext(e.target,targetX,targetY);
+      spawnTrail(targetX,targetY);
+    };
+
+    addEventListener('pointermove',onPointerMove,{passive:true});
+    document.documentElement.addEventListener('mouseleave',()=>{
+      cursor.classList.remove('is-active');
+      activeGalleryPhoto?.classList.remove('cursor-photo-active');
     });
+    document.documentElement.addEventListener('mouseenter',()=>{
+      cursor.classList.add('is-active');
+    });
+    addEventListener('blur',()=>cursor.classList.remove('is-active'));
+
+    frame = requestAnimationFrame(renderCursor);
+    cursor._motionCleanup = () => {
+      cancelAnimationFrame(frame);
+      removeEventListener('pointermove',onPointerMove);
+    };
   }
 
   function heartBurst(origin) {
@@ -867,7 +1047,7 @@
     new MutationObserver(() => {
       initReveal();
       initGalleryCuriosity();
-      initCursor();
+      initContextCursor();
     }).observe(galleryRoot,{childList:true,subtree:true});
   }
 
