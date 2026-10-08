@@ -1,14 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1100">
 <defs>
- <linearGradient id="wine" x1="0" y1=".1" x2="1" y2=".95"><stop stop-color="#8e2636"/><stop offset=".48" stop-color="#64131f"/><stop offset="1" stop-color="#39070f"/></linearGradient>
- <linearGradient id="rim"><stop stop-color="#efca80"/><stop offset=".42" stop-color="#9b6126"/><stop offset=".7" stop-color="#e3b269"/><stop offset="1" stop-color="#85501d"/></linearGradient>
- <radialGradient id="light" cx=".5" cy=".2" r=".9"><stop stop-color="#d76470" stop-opacity=".18"/><stop offset=".7" stop-color="#4b0915" stop-opacity=".04"/><stop offset="1" stop-color="#29040b" stop-opacity=".14"/></radialGradient>
- <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".58" numOctaves="2" seed="7"/><feColorMatrix values="0 0 0 0 .31 0 0 0 0 .04 0 0 0 0 .07 0 0 0 .075 0"/></filter>
+  <linearGradient id="wine" x1=".08" y1="0" x2=".92" y2="1">
+    <stop stop-color="#762431"/>
+    <stop offset=".46" stop-color="#551521"/>
+    <stop offset="1" stop-color="#320a12"/>
+  </linearGradient>
+  <radialGradient id="sheen" cx=".24" cy=".08" r=".95">
+    <stop stop-color="#d27d83" stop-opacity=".13"/>
+    <stop offset=".52" stop-color="#893744" stop-opacity=".025"/>
+    <stop offset="1" stop-color="#150308" stop-opacity=".15"/>
+  </radialGradient>
+  <filter id="grain">
+    <feTurbulence type="fractalNoise" baseFrequency=".55 .82" numOctaves="4" seed="31"/>
+    <feColorMatrix values="0 0 0 0 .32 0 0 0 0 .08 0 0 0 0 .11 0 0 0 .07 0"/>
+  </filter>
 </defs>
-<path d="M16 178L900 720L1784 178V1083H16Z" fill="url(#wine)"/>
-<path d="M16 178L900 720L1784 178V1083H16Z" fill="url(#light)"/>
-<path d="M16 178L900 720L1784 178V1083H16Z" filter="url(#grain)" opacity=".56"/>
-<path d="M16 178L900 720L1784 178" fill="none" stroke="url(#rim)" stroke-width="9"/>
-<path d="M18 1080L900 720L1782 1080" fill="none" stroke="url(#rim)" stroke-width="7" opacity=".72"/>
-<path d="M16 178V1083H1784V178" fill="none" stroke="url(#rim)" stroke-width="9"/>
+<path d="M18 176L900 720L1782 176V1082H18Z" fill="url(#wine)"/>
+<path d="M18 176L900 720L1782 176V1082H18Z" fill="url(#sheen)"/>
+<path d="M18 176L900 720L1782 176" fill="none" stroke="#d8aa70" stroke-width="4" opacity=".48"/>
+<path d="M20 1078L900 720L1780 1078" fill="none" stroke="#2c0810" stroke-width="4" opacity=".38"/>
+<path d="M20 177V1079H1780V177" fill="none" stroke="#c99961" stroke-width="4" opacity=".48"/>
+<path d="M39 201L900 742L1761 201" fill="none" stroke="#f0d2a5" stroke-width="1.5" opacity=".13"/>
+<path d="M18 176L900 720L1782 176V1082H18Z" filter="url(#grain)" opacity=".66"/>
 </svg>

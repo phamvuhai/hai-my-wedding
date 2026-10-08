@@ -1,6 +1,6 @@
 (() => {
   const base = '/images/invitation/figma/';
-  const v = '?v=figma-opening-20261008-1';
+  const v = '?v=physical-opening-20261009-1';
 
   window.WeddingInvitationAssets = Object.freeze({
     source: 'figma',

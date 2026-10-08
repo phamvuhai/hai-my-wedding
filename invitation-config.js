@@ -1,7 +1,7 @@
 (() => {
   window.WeddingInvitationConfig = Object.freeze({
-    duration: 6200,
-    holdMs: 800,
+    duration: 5600,
+    holdMs: 950,
 
     colors: Object.freeze({
       background: '#100205',
@@ -14,14 +14,14 @@
 
     timeline: Object.freeze({
       tap: 0.00,
-      sealOpen: 0.10,
-      cordLoose: 0.16,
-      flapOpen: 0.20,
-      flapOpenDone: 0.38,
-      cardStart: 0.36,
-      cardClear: 0.68,
+      sealOpen: 0.08,
+      cordLoose: 0.12,
+      flapOpen: 0.16,
+      flapOpenDone: 0.36,
+      cardStart: 0.31,
+      cardClear: 0.66,
       cardPresented: 0.84,
-      transition: 0.94,
+      transition: 0.955,
       complete: 1.00
     }),
 
@@ -48,37 +48,37 @@
       mobileFitHeight: 0.78,
       floorY: 245,
 
-      floralLeft: Object.freeze({ x: -28, y: 58, w: 118, h: 158 }),
-      floralRight: Object.freeze({ x: 155, y: 105, w: 88, h: 118 }),
+      floralLeft: Object.freeze({ x: -5, y: 72, w: 72, h: 132 }),
+      floralRight: Object.freeze({ x: 168, y: 110, w: 58, h: 106 }),
 
       envelope: Object.freeze({
-        x: 10,
-        w: 200,
-        h: 122,
-        closedY: 164,
-        openY: 184,
-        cardY: 190,
-        presentedY: 222
+        x: 15,
+        w: 190,
+        h: 116,
+        closedY: 168,
+        openY: 181,
+        cardY: 188,
+        presentedY: 219
       }),
 
       lining: Object.freeze({
-        x: 10,
-        y03: 106,
-        y04: 111,
-        w: 200,
-        h: 84
+        x: 15,
+        y03: 111,
+        y04: 115,
+        w: 190,
+        h: 80
       }),
 
       seal: Object.freeze({
-        x: 92,
-        y: 214,
-        w: 36,
-        h: 36
+        x: 95,
+        y: 216,
+        w: 30,
+        h: 30
       }),
 
-      card04: Object.freeze({ x: 58, y: 135, w: 106, h: 146 }),
-      card05: Object.freeze({ x: 57, y: 74, w: 108, h: 149 }),
-      card06: Object.freeze({ x: 60, y: 70, w: 102, h: 140 })
+      card04: Object.freeze({ x: 61, y: 139, w: 98, h: 142 }),
+      card05: Object.freeze({ x: 58, y: 72, w: 104, h: 151 }),
+      card06: Object.freeze({ x: 59, y: 69, w: 102, h: 148 })
     }),
 
     typography: Object.freeze({

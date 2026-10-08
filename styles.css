@@ -8134,3 +8134,90 @@ html[data-motion="wow"] #rsvp .rsvp-copy.motion-in::before{
     rotate:0deg!important;
   }
 }
+
+
+/* =========================================
+   Physical Invitation V3 — realistic luxury stationery
+   ========================================= */
+.invitation-intro.invite-v2{
+  background:#0d0507!important;
+}
+.invitation-intro.invite-v2 .invite-v2-heading{
+  top:max(24px,calc(env(safe-area-inset-top) + 14px))!important;
+  text-shadow:0 2px 22px rgba(0,0,0,.48)!important;
+}
+.invitation-intro.invite-v2 .invite-v2-title{
+  color:rgba(247,229,199,.90)!important;
+  font-size:clamp(.67rem,1vw,.86rem)!important;
+  font-weight:500!important;
+  letter-spacing:.34em!important;
+}
+.invitation-intro.invite-v2 .invite-v2-tap{
+  margin-top:7px!important;
+  color:rgba(243,224,196,.47)!important;
+  font-size:.50rem!important;
+  letter-spacing:.19em!important;
+}
+.invitation-intro.invite-v2 .invite-v2-open-btn{
+  min-width:174px!important;
+  min-height:48px!important;
+  padding:0 28px!important;
+  border:1px solid rgba(219,183,126,.46)!important;
+  color:#f7e8d2!important;
+  background:
+    linear-gradient(180deg,rgba(91,31,42,.72),rgba(51,14,22,.82))!important;
+  box-shadow:
+    0 15px 40px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,242,220,.08),
+    inset 0 -1px 0 rgba(0,0,0,.16)!important;
+  backdrop-filter:blur(12px)!important;
+  -webkit-backdrop-filter:blur(12px)!important;
+  font-family:"Lora",Georgia,serif!important;
+  font-size:.65rem!important;
+  font-weight:500!important;
+  letter-spacing:.16em!important;
+}
+.invitation-intro.invite-v2 .invite-v2-open-btn:hover{
+  transform:translateX(-50%) translateY(-3px)!important;
+  border-color:rgba(230,197,143,.72)!important;
+  box-shadow:
+    0 20px 50px rgba(0,0,0,.36),
+    0 0 32px rgba(215,173,105,.08),
+    inset 0 1px 0 rgba(255,242,220,.12)!important;
+}
+.invitation-intro.invite-v2.canvas-opening-ready .invite-canvas-fx{
+  animation:physicalInvitationBreath 6.8s ease-in-out infinite alternate;
+}
+.invitation-intro.invite-v2.is-opening .invite-canvas-fx{
+  animation:none!important;
+}
+@keyframes physicalInvitationBreath{
+  from{filter:brightness(.985) contrast(1.01)}
+  to{filter:brightness(1.018) contrast(1.005)}
+}
+.invitation-intro.invite-v2.is-pressed .invite-canvas-fx{
+  transform:scale(.997)!important;
+  transition:transform .16s ease!important;
+}
+.invitation-intro.invite-v2.is-exiting .invite-canvas-fx{
+  animation:physicalInvitationExit .48s cubic-bezier(.2,.72,.2,1) both!important;
+}
+@keyframes physicalInvitationExit{
+  0%{opacity:1;filter:blur(0) brightness(1);transform:scale(1)}
+  55%{opacity:.78;filter:blur(1.5px) brightness(1.06);transform:scale(1.018)}
+  100%{opacity:0;filter:blur(7px) brightness(1.10);transform:scale(1.048)}
+}
+@media(max-width:760px){
+  .invitation-intro.invite-v2 .invite-v2-heading{
+    top:max(16px,calc(env(safe-area-inset-top) + 10px))!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-open-btn{
+    min-width:164px!important;
+    min-height:46px!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .invitation-intro.invite-v2.canvas-opening-ready .invite-canvas-fx{
+    animation:none!important;
+  }
+}

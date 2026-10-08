@@ -25,6 +25,10 @@
   let active = false, ready = false, destroyed = false;
   let progress = 0;
   let fired = new Set();
+  let idleRaf = 0;
+  let idleStartedAt = performance.now();
+  let pointerX = 0, pointerY = 0;
+  let pointerTX = 0, pointerTY = 0;
 
   const clamp = (v,a=0,b=1)=>Math.max(a,Math.min(b,v));
   const mix = (a,b,t)=>a+(b-a)*t;
@@ -98,6 +102,7 @@
       resize();
       seedParticles();
       render(0,0);
+      if(!REDUCED) idleRaf=requestAnimationFrame(idleFrame);
       intro.classList.add('canvas-opening-ready');
       dispatch('invitation:canvas-ready',0,'Invitation ready');
       return true;
@@ -141,10 +146,11 @@
     const heightFit=(h*fitHeightRatio)/DESIGN_H;
     const scale=Math.min(widthFit,heightFit);
     const sceneW=DESIGN_W*scale, sceneH=DESIGN_H*scale;
+    const idleAmount=active?Math.max(0,1-range(progress,.08,.32)):1;
     return {
       scale,
-      x:(w-sceneW)/2,
-      y:Math.max(12,(h-sceneH)/2 - (w<760?8:10)),
+      x:(w-sceneW)/2 + pointerX*ss(1.7,{scale})*idleAmount,
+      y:Math.max(12,(h-sceneH)/2 - (w<760?8:10)) + pointerY*ss(1.1,{scale})*idleAmount,
       sceneW,sceneH
     };
   }
@@ -159,34 +165,75 @@
   }
 
   function drawBackground(S,p,time) {
-    const g=ctx.createRadialGradient(w*.5,h*.34,20,w*.5,h*.45,Math.max(w,h)*.8);
-    g.addColorStop(0,'#4B0E1A');g.addColorStop(.48,'#25060D');g.addColorStop(1,'#0D0104');
-    ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+    const lightX=w*(.48+pointerX*.035);
+    const lightY=h*(.34+pointerY*.025);
 
-    const floorY=sy(Number(DS.floorY||245),S);
-    const floor=ctx.createLinearGradient(0,floorY,0,h);
-    floor.addColorStop(0,'rgba(255,247,234,.02)');
-    floor.addColorStop(.55,'rgba(247,231,204,.10)');
-    floor.addColorStop(1,'rgba(235,207,173,.22)');
-    ctx.fillStyle=floor;ctx.fillRect(0,floorY,w,h-floorY);
+    const base=ctx.createRadialGradient(lightX,lightY,10,w*.50,h*.48,Math.max(w,h)*.86);
+    base.addColorStop(0,'#3B171E');
+    base.addColorStop(.36,'#241015');
+    base.addColorStop(.72,'#16080C');
+    base.addColorStop(1,'#090306');
+    ctx.fillStyle=base;
+    ctx.fillRect(0,0,w,h);
 
-    const dots=[[.08,.14,34],[.18,.07,20],[.84,.13,28],[.92,.30,18],[.12,.56,22],[.78,.69,18]];
-    dots.forEach((d,i)=>{
-      const pulse=.7+.15*Math.sin(time*.001+i);
-      const rg=ctx.createRadialGradient(w*d[0],h*d[1],0,w*d[0],h*d[1],d[2]);
-      rg.addColorStop(0,'rgba(190,90,58,'+(.09*pulse)+')');
-      rg.addColorStop(1,'rgba(190,90,58,0)');
-      ctx.fillStyle=rg;ctx.fillRect(w*d[0]-d[2],h*d[1]-d[2],d[2]*2,d[2]*2);
-    });
+    // Soft fabric sheen — deliberately irregular, like a photographed burgundy cloth.
+    const sheen=ctx.createLinearGradient(0,h*.08,w,h*.92);
+    sheen.addColorStop(0,'rgba(255,238,211,.028)');
+    sheen.addColorStop(.34,'rgba(145,76,76,.018)');
+    sheen.addColorStop(.52,'rgba(255,240,216,.045)');
+    sheen.addColorStop(.72,'rgba(89,28,39,.015)');
+    sheen.addColorStop(1,'rgba(255,255,255,.012)');
+    ctx.fillStyle=sheen;
+    ctx.fillRect(0,0,w,h);
 
-    const bloom=range(p,T.cardClear??.68,T.cardPresented??.84);
-    if(bloom>0){
-      const rr=Math.min(w,h)*(.20+.10*bloom);
-      const rg=ctx.createRadialGradient(w*.5,sy(132,S),0,w*.5,sy(132,S),rr);
-      rg.addColorStop(0,'rgba(246,191,96,'+(.22*bloom)+')');
-      rg.addColorStop(1,'rgba(181,81,37,0)');
-      ctx.fillStyle=rg;ctx.fillRect(w*.5-rr,sy(132,S)-rr,rr*2,rr*2);
+    // Fine fabric fibers. Static geometry keeps the scene photographic rather than "sparkly".
+    ctx.save();
+    ctx.globalAlpha=.055;
+    ctx.strokeStyle='#F4D8C0';
+    ctx.lineWidth=.45;
+    const gap=Math.max(18,Math.min(34,w/54));
+    for(let x=-h;x<w+h;x+=gap){
+      ctx.beginPath();
+      ctx.moveTo(x,0);
+      ctx.lineTo(x-h*.16,h);
+      ctx.stroke();
     }
+    ctx.restore();
+
+    const tableY=sy(Number(DS.floorY||245),S);
+    const table=ctx.createLinearGradient(0,tableY,0,h);
+    table.addColorStop(0,'rgba(0,0,0,.03)');
+    table.addColorStop(.3,'rgba(26,8,12,.10)');
+    table.addColorStop(1,'rgba(4,1,2,.34)');
+    ctx.fillStyle=table;
+    ctx.fillRect(0,tableY,w,h-tableY);
+
+    // Pool of warm light under the stationery.
+    const pool=ctx.createRadialGradient(w*.5,sy(230,S),0,w*.5,sy(230,S),ss(112,S));
+    pool.addColorStop(0,'rgba(231,187,125,.13)');
+    pool.addColorStop(.34,'rgba(193,118,75,.055)');
+    pool.addColorStop(1,'rgba(80,20,31,0)');
+    ctx.fillStyle=pool;
+    ctx.fillRect(w*.5-ss(125,S),sy(112,S),ss(250,S),ss(210,S));
+
+    // Final presentation glow is subtle and warm, not an artificial halo.
+    const bloom=range(p,T.cardClear??.66,T.cardPresented??.84);
+    if(bloom>0){
+      const rr=Math.min(w,h)*(.18+.055*bloom);
+      const rg=ctx.createRadialGradient(w*.5,sy(123,S),0,w*.5,sy(123,S),rr);
+      rg.addColorStop(0,'rgba(255,236,194,'+(.095*bloom)+')');
+      rg.addColorStop(.52,'rgba(221,170,110,'+(.035*bloom)+')');
+      rg.addColorStop(1,'rgba(130,60,45,0)');
+      ctx.fillStyle=rg;
+      ctx.fillRect(w*.5-rr,sy(123,S)-rr,rr*2,rr*2);
+    }
+
+    // Gentle photographic vignette.
+    const vignette=ctx.createRadialGradient(w*.5,h*.46,Math.min(w,h)*.28,w*.5,h*.46,Math.max(w,h)*.72);
+    vignette.addColorStop(.45,'rgba(0,0,0,0)');
+    vignette.addColorStop(1,'rgba(0,0,0,.38)');
+    ctx.fillStyle=vignette;
+    ctx.fillRect(0,0,w,h);
   }
 
   function drawDust(p,time){
@@ -195,18 +242,21 @@
       const d=dust[i];
       const x=d.x*w+Math.sin(time*.00045+d.phase)*6;
       const y=d.y*h+Math.cos(time*.00031+d.phase)*4;
-      ctx.save();ctx.globalAlpha=d.alpha*reveal*(.58+.42*Math.sin(time*.002+d.phase));
-      ctx.fillStyle=i%4?'#DCAA55':'#FFE0A1';ctx.shadowColor='rgba(237,185,86,.6)';ctx.shadowBlur=6;
-      ctx.beginPath();ctx.arc(x,y,d.r,0,TAU);ctx.fill();ctx.restore();
+      ctx.save();ctx.globalAlpha=d.alpha*reveal*.18*(.70+.30*Math.sin(time*.0012+d.phase));
+      ctx.fillStyle=i%5?'#E9CDA8':'#FFF1D8';ctx.shadowColor='rgba(231,199,151,.20)';ctx.shadowBlur=3;
+      ctx.beginPath();ctx.arc(x,y,Math.max(.35,d.r*.58),0,TAU);ctx.fill();ctx.restore();
     }
   }
 
   function drawFlorals(S,p){
-    const l=DS.floralLeft||{x:-28,y:58,w:118,h:158};
-    const r=DS.floralRight||{x:155,y:105,w:88,h:118};
-    const alpha=.92+range(p,.2,.52)*.08;
-    drawImage(images.floralLeft,sx(l.x,S),sy(l.y,S),ss(l.w,S),ss(l.h,S),alpha);
-    drawImage(images.floralRight,sx(r.x,S),sy(r.y,S),ss(r.w,S),ss(r.h,S),alpha*.88);
+    const l=DS.floralLeft||{x:-5,y:72,w:72,h:132};
+    const r=DS.floralRight||{x:168,y:110,w:58,h:106};
+    const settle=1-range(p,.14,.36)*.08;
+    ctx.save();
+    ctx.filter='saturate(.82) brightness(.90)';
+    drawImage(images.floralLeft,sx(l.x,S),sy(l.y,S),ss(l.w,S),ss(l.h,S),.54*settle);
+    drawImage(images.floralRight,sx(r.x,S),sy(r.y,S),ss(r.w,S),ss(r.h,S),.42*settle);
+    ctx.restore();
   }
 
   function envYFor(p){
@@ -219,59 +269,130 @@
   }
 
   function drawEnvelopeBack(S,p){
-    const E=DS.envelope||{x:10,w:200,h:122};
+    const E=DS.envelope||{x:15,w:190,h:116};
     const y=envYFor(p);
-    ctx.save();ctx.shadowColor='rgba(0,0,0,.38)';ctx.shadowBlur=ss(8,S);ctx.shadowOffsetY=ss(5,S);
-    ctx.drawImage(images.envelopeBack,sx(E.x,S),sy(y,S),ss(E.w,S),ss(E.h,S));ctx.restore();
+    const rise=range(p,.31,.84);
+
+    // Contact shadow grows softer as the envelope slides down and the card rises.
+    ctx.save();
+    const shadowY=sy(y+(E.h||116)+4,S);
+    const shadowW=ss(E.w*.88,S);
+    const shadowH=ss(14+rise*5,S);
+    const sg=ctx.createRadialGradient(w*.5,shadowY,0,w*.5,shadowY,shadowW*.56);
+    sg.addColorStop(0,'rgba(0,0,0,'+(0.32-rise*.08)+')');
+    sg.addColorStop(.62,'rgba(0,0,0,'+(0.12-rise*.03)+')');
+    sg.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=sg;
+    ctx.beginPath();
+    ctx.ellipse(w*.5,shadowY,shadowW*.56,shadowH,0,0,TAU);
+    ctx.fill();
+    ctx.restore();
+
+    ctx.save();
+    ctx.shadowColor='rgba(0,0,0,.30)';
+    ctx.shadowBlur=ss(7+rise*2,S);
+    ctx.shadowOffsetY=ss(4,S);
+    ctx.drawImage(images.envelopeBack,sx(E.x,S),sy(y,S),ss(E.w,S),ss(E.h,S));
+    ctx.restore();
   }
 
   function drawFlap(S,p){
-    const E=DS.envelope||{x:10,w:200};
+    const E=DS.envelope||{x:15,w:190};
     const y=envYFor(p);
-    const flapProgress=range(p,T.flapOpen??.20,T.flapOpenDone??.38);
-    const flapH=84;
-    if(flapProgress<=0){
-      ctx.drawImage(images.envelopeFlap,sx(E.x,S),sy(y,S),ss(E.w,S),ss(flapH,S));
-      return;
-    }
-    if(flapProgress<.5){
-      const t=ease(flapProgress/.5);
-      ctx.drawImage(images.envelopeFlap,sx(E.x,S),sy(y,S),ss(E.w,S),Math.max(2,ss(flapH*(1-t),S)));
-    }else{
-      const t=easeOut((flapProgress-.5)/.5);
-      const L=DS.lining||{x:10,y03:106,w:200,h:84};
-      const ly=mix(Number(L.y03||106),Number(L.y04||111),range(p,.20,.53));
+    const fp=range(p,T.flapOpen??.16,T.flapOpenDone??.36);
+    const flapH=80;
+    const angle=Math.PI*ease(fp);
+    const face=Math.cos(angle);
+    const absFace=Math.max(.018,Math.abs(face));
+    const hingeY=sy(y,S);
+    const edgeDark=1-Math.min(1,Math.abs(face));
+
+    // Moving hinge shadow sells the paper thickness at the 90° moment.
+    if(fp>0&&fp<1){
       ctx.save();
-      ctx.translate(sx(L.x,S),sy(y,S));
-      ctx.scale(1,-1);
-      ctx.drawImage(images.lining,0,0,ss(L.w,S),Math.max(2,ss((L.h||84)*t,S)));
+      ctx.globalAlpha=.08+.25*edgeDark;
+      ctx.shadowColor='rgba(0,0,0,.55)';
+      ctx.shadowBlur=ss(4+8*edgeDark,S);
+      ctx.fillStyle='rgba(25,4,9,.45)';
+      ctx.fillRect(sx(E.x+3,S),hingeY-ss(.7,S),ss(E.w-6,S),ss(1.4,S));
       ctx.restore();
     }
+
+    ctx.save();
+    const squeeze=.985+.015*Math.abs(face);
+    const drawW=ss(E.w*squeeze,S);
+    const left=sx(E.x+(E.w-E.w*squeeze)/2,S);
+
+    if(face>=0){
+      const hh=ss(flapH*absFace,S);
+      ctx.shadowColor='rgba(0,0,0,'+(0.16+edgeDark*.20)+')';
+      ctx.shadowBlur=ss(5+edgeDark*7,S);
+      ctx.shadowOffsetY=ss(2,S);
+      ctx.drawImage(images.envelopeFlap,left,hingeY,drawW,hh);
+    }else{
+      const L=DS.lining||{x:15,w:190,h:80};
+      const hh=ss((L.h||80)*absFace,S);
+      ctx.translate(left,hingeY);
+      ctx.scale(1,-1);
+      ctx.shadowColor='rgba(0,0,0,'+(0.10+edgeDark*.14)+')';
+      ctx.shadowBlur=ss(4+edgeDark*5,S);
+      ctx.drawImage(images.lining,0,0,drawW,hh);
+    }
+    ctx.restore();
   }
 
   function drawFrontPocket(S,p){
-    const E=DS.envelope||{x:10,w:200,h:122};
+    const E=DS.envelope||{x:15,w:190,h:116};
     const y=envYFor(p);
     ctx.drawImage(images.envelopeFront,sx(E.x,S),sy(y,S),ss(E.w,S),ss(E.h,S));
+
+    const cardLift=range(p,T.cardStart??.31,T.cardPresented??.84);
+    if(cardLift>0){
+      const edgeY=sy(y+17,S);
+      const g=ctx.createLinearGradient(0,edgeY-ss(5,S),0,edgeY+ss(3,S));
+      g.addColorStop(0,'rgba(0,0,0,0)');
+      g.addColorStop(.66,'rgba(0,0,0,'+(0.10+.10*cardLift)+')');
+      g.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=g;
+      ctx.fillRect(sx(E.x+5,S),edgeY-ss(5,S),ss(E.w-10,S),ss(9,S));
+    }
   }
 
   function drawCordSeal(S,p){
-    const E=DS.envelope||{x:10,w:200,h:122};
+    const E=DS.envelope||{x:15,w:190,h:116};
     const y=envYFor(p);
-    const cordP=range(p,T.cordLoose??.16,.34);
-    const sealP=range(p,T.sealOpen??.10,.26);
+    const sealP=easeOut(range(p,T.sealOpen??.08,.23));
 
-    ctx.save();ctx.globalAlpha=1-cordP*.58;
-    ctx.translate(ss(cordP*5,S),ss(cordP*4,S));ctx.rotate(cordP*.03);
-    ctx.drawImage(images.cord,sx(E.x,S),sy(y,S),ss(E.w,S),ss(E.h,S));ctx.restore();
+    const S0=DS.seal||{x:95,y:216,w:30,h:30};
+    const dy=y-Number(E.closedY||168);
+    const x0=Number(S0.x||95),y0=Number(S0.y||216)+dy;
+    const driftX=sealP*10;
+    const driftY=sealP*14+sealP*sealP*7;
+    const size=Number(S0.w||30)*(1-sealP*.08);
+    const alpha=1-range(p,.12,.28);
 
-    const S0=DS.seal||{x:92,y:214,w:36,h:36};
-    const dy=y-Number(E.closedY||164);
-    const x0=Number(S0.x||92), y0=Number(S0.y||214)+dy;
-    const x=x0+sealP*18, yy=y0+sealP*10, size=Number(S0.w||36)*(1-sealP*.16);
+    if(alpha<=.01)return;
+
     ctx.save();
-    ctx.translate(sx(x+size/2,S),sy(yy+size/2,S));ctx.rotate(sealP*.14);ctx.globalAlpha=1-sealP*.22;
-    ctx.drawImage(images.seal,-ss(size/2,S),-ss(size/2,S),ss(size,S),ss(size,S));ctx.restore();
+    ctx.translate(sx(x0+size/2+driftX,S),sy(y0+size/2+driftY,S));
+    ctx.rotate(sealP*.10);
+    ctx.globalAlpha=alpha;
+    ctx.shadowColor='rgba(0,0,0,.42)';
+    ctx.shadowBlur=ss(5+sealP*3,S);
+    ctx.shadowOffsetY=ss(2+sealP*2,S);
+    ctx.drawImage(images.seal,-ss(size/2,S),-ss(size/2,S),ss(size,S),ss(size,S));
+
+    // A small moving specular reflection before the seal releases.
+    if(sealP<.64){
+      const shine=ctx.createRadialGradient(-ss(size*.14,S),-ss(size*.17,S),0,-ss(size*.14,S),-ss(size*.17,S),ss(size*.24,S));
+      shine.addColorStop(0,'rgba(255,230,205,'+(0.18*(1-sealP))+')');
+      shine.addColorStop(1,'rgba(255,230,205,0)');
+      ctx.fillStyle=shine;
+      ctx.beginPath();
+      ctx.arc(0,0,ss(size*.47,S),0,TAU);
+      ctx.fill();
+    }
+    ctx.restore();
   }
 
   function drawCardText(x,y,cw,ch,S){
@@ -411,54 +532,92 @@
   }
 
   function cardRectFor(p){
-    const c4=DS.card04||{x:58,y:135,w:106,h:146};
-    const c5=DS.card05||{x:57,y:74,w:108,h:149};
-    const c6=DS.card06||{x:60,y:70,w:102,h:140};
-    if(p<.36) return null;
-    if(p<.68){
-      const t=ease(range(p,.36,.68));
+    const c4=DS.card04||{x:61,y:139,w:98,h:142};
+    const c5=DS.card05||{x:58,y:72,w:104,h:151};
+    const c6=DS.card06||{x:59,y:69,w:102,h:148};
+
+    if(p<(T.cardStart??.31)) return null;
+
+    if(p<(T.cardClear??.66)){
+      const t=easeOut(range(p,T.cardStart??.31,T.cardClear??.66));
+      const lift=t<.86 ? t/0.86 : 1;
+      const settle=t>0.86 ? (t-.86)/.14 : 0;
+      const overshoot=Math.sin(Math.PI*clamp(settle))*2.3;
       return {
-        x:mix(c4.x,c5.x,t*.42),y:mix(c4.y,c5.y,t*.42),
-        w:mix(c4.w,c5.w,t*.42),h:mix(c4.h,c5.h,t*.42)
+        x:mix(c4.x,c5.x,lift),
+        y:mix(c4.y,c5.y,lift)-overshoot,
+        w:mix(c4.w,c5.w,lift),
+        h:mix(c4.h,c5.h,lift)
       };
     }
-    if(p<.94){
-      const t=ease(range(p,.68,.86));
-      return {x:mix(c4.x,c5.x,t),y:mix(c4.y,c5.y,t),w:mix(c4.w,c5.w,t),h:mix(c4.h,c5.h,t)};
+
+    if(p<(T.transition??.955)){
+      const t=ease(range(p,T.cardClear??.66,T.cardPresented??.84));
+      return {
+        x:mix(c5.x,c6.x,t),
+        y:mix(c5.y,c6.y,t),
+        w:mix(c5.w,c6.w,t),
+        h:mix(c5.h,c6.h,t)
+      };
     }
-    const t=ease(range(p,.94,1));
-    return {x:mix(c5.x,c6.x,t),y:mix(c5.y,c6.y,t),w:mix(c5.w,c6.w,t),h:mix(c5.h,c6.h,t)};
+
+    const t=easeOut(range(p,T.transition??.955,1));
+    const zoom=1+t*.035;
+    const ww=c6.w*zoom,hh=c6.h*zoom;
+    return {
+      x:c6.x-(ww-c6.w)/2,
+      y:c6.y-(hh-c6.h)/2-t*2.2,
+      w:ww,h:hh
+    };
   }
 
   function drawCard(S,p,clipped){
     const R=cardRectFor(p); if(!R) return;
+    const lift=range(p,T.cardStart??.31,T.cardPresented??.84);
+
     const draw=()=>{
+      const px=sx(R.x,S),py=sy(R.y,S),pw=ss(R.w,S),ph=ss(R.h,S);
+
       ctx.save();
-      ctx.shadowColor='rgba(0,0,0,'+mix(.10,.26,range(p,.36,.84))+')';
-      ctx.shadowBlur=ss(mix(2,8,range(p,.36,.84)),S);
-      ctx.shadowOffsetY=ss(mix(1,4,range(p,.36,.84)),S);
-      ctx.drawImage(images.card,sx(R.x,S),sy(R.y,S),ss(R.w,S),ss(R.h,S));
+      ctx.shadowColor='rgba(0,0,0,'+mix(.14,.34,lift)+')';
+      ctx.shadowBlur=ss(mix(3.5,12,lift),S);
+      ctx.shadowOffsetY=ss(mix(2,7,lift),S);
+      ctx.drawImage(images.card,px,py,pw,ph);
       ctx.restore();
+
+      // Warm grazing light across the cotton paper as it clears the envelope.
+      if(lift>.18){
+        ctx.save();
+        ctx.globalCompositeOperation='screen';
+        const gx=px+pw*(.18+.45*range(p,.38,.82));
+        const shine=ctx.createLinearGradient(gx-pw*.23,py,gx+pw*.16,py+ph);
+        shine.addColorStop(0,'rgba(255,255,255,0)');
+        shine.addColorStop(.48,'rgba(255,246,226,'+(.035+.055*lift)+')');
+        shine.addColorStop(.62,'rgba(255,255,255,0)');
+        ctx.fillStyle=shine;
+        ctx.fillRect(px,py,pw,ph);
+        ctx.restore();
+      }
+
       drawCardText(R.x,R.y,R.w,R.h,S);
     };
+
     if(clipped){
-      const E=DS.envelope||{x:10,w:200,h:122};
+      const E=DS.envelope||{x:15,w:190,h:116};
       const y=envYFor(p);
-      ctx.save();ctx.beginPath();ctx.rect(sx(E.x,S),0,ss(E.w,S),sy(y+(E.h||122),S));ctx.clip();draw();ctx.restore();
-    }else draw();
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(sx(E.x,S),0,ss(E.w,S),sy(y+(E.h||116),S));
+      ctx.clip();
+      draw();
+      ctx.restore();
+    }else{
+      draw();
+    }
   }
 
   function drawPetals(p,time){
-    if(!images.petals?.length||p<.18)return;
-    const reveal=range(p,.18,.42);
-    for(const pt of petals){
-      const tt=((time*.000028*pt.speed)+pt.y)%1.22;
-      const x=pt.x*w+Math.sin(time*.00056+pt.phase)*18;
-      const y=tt*h;
-      const img=images.petals[pt.asset%images.petals.length],sz=pt.size;
-      ctx.save();ctx.globalAlpha=pt.alpha*reveal;ctx.translate(x,y);ctx.rotate(time*.00025*pt.spin+pt.phase);
-      ctx.drawImage(img,-sz,-sz*.55,sz*2,sz*1.1);ctx.restore();
-    }
+    // Intentionally empty: realistic stationery should not look like an illustrated confetti scene.
   }
 
   function render(p,time=performance.now()){
@@ -482,11 +641,23 @@
 
     drawPetals(progress,time);
 
-    const out=range(progress,T.transition??.94,1);
+    const out=range(progress,T.transition??.955,1);
     if(out>0){
-      ctx.fillStyle='rgba(13,1,4,'+(out*.62)+')';
+      const exposure=ctx.createRadialGradient(w*.5,h*.42,0,w*.5,h*.42,Math.max(w,h)*.74);
+      exposure.addColorStop(0,'rgba(255,248,236,'+(out*.18)+')');
+      exposure.addColorStop(.55,'rgba(74,29,34,'+(out*.12)+')');
+      exposure.addColorStop(1,'rgba(8,2,4,'+(out*.58)+')');
+      ctx.fillStyle=exposure;
       ctx.fillRect(0,0,w,h);
     }
+  }
+
+  function idleFrame(now){
+    if(destroyed||active||!ready)return;
+    pointerX=mix(pointerX,pointerTX,.045);
+    pointerY=mix(pointerY,pointerTY,.045);
+    render(0,now-idleStartedAt);
+    idleRaf=requestAnimationFrame(idleFrame);
   }
 
   function frame(now){
@@ -498,19 +669,38 @@
 
   function play(){
     if(REDUCED||active||!ready||destroyed)return false;
+    cancelAnimationFrame(idleRaf);
+    pointerTX=pointerTY=0;
     active=true;progress=0;fired=new Set();startedAt=performance.now();fireEvents(0);
     raf=requestAnimationFrame(frame);return true;
   }
 
-  function stop(){active=false;cancelAnimationFrame(raf);}
-  function destroy(){stop();destroyed=true;removeEventListener('resize',resize);ctx.clearRect(0,0,w,h);}
+  function stop(){active=false;cancelAnimationFrame(raf);cancelAnimationFrame(idleRaf);}
+  function destroy(){
+    stop();destroyed=true;
+    removeEventListener('resize',resize);
+    removeEventListener('pointermove',onScenePointerMove);
+    removeEventListener('pointerleave',onScenePointerLeave);
+    ctx.clearRect(0,0,w,h);
+  }
   function renderAt(p){if(!ready||destroyed)return false;stop();render(clamp(p),0);return true;}
   function renderKeyframe(stage){
     const value=K[String(stage).padStart(2,'0')];
     return typeof value==='number'?renderAt(value):false;
   }
 
+  function onScenePointerMove(e){
+    if(active||destroyed||w<760)return;
+    pointerTX=clamp((e.clientX/w-.5)*2,-1,1);
+    pointerTY=clamp((e.clientY/h-.5)*2,-1,1);
+  }
+  function onScenePointerLeave(){
+    pointerTX=pointerTY=0;
+  }
+
   addEventListener('resize',resize,{passive:true});
+  addEventListener('pointermove',onScenePointerMove,{passive:true});
+  addEventListener('pointerleave',onScenePointerLeave,{passive:true});
   document.addEventListener('invitation:data',()=>{if(ready&&!active)render(progress,0);});
   document.addEventListener('wedding:language',()=>{if(ready&&!active)render(progress,0);});
 
