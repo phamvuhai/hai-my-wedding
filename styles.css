@@ -7866,7 +7866,7 @@ html[data-motion="wow"] .hero .hero-copy{
   transition:translate .34s cubic-bezier(.16,.84,.24,1);
 }
 html[data-motion="wow"] .hero .hero-full-photo{
-  translate:calc(var(--hero-photo-pointer-x,0) * .55) calc(var(--hero-photo-pointer-y,0) * .55);
+  translate:var(--hero-full-pointer-x,0) var(--hero-full-pointer-y,0);
   transition:translate .42s cubic-bezier(.16,.84,.24,1);
 }
 html[data-motion="wow"] .hero .hero-feature-photo{
@@ -7877,7 +7877,7 @@ html[data-motion="wow"] .hero:hover .hero-feature-photo{
   box-shadow:0 34px 100px rgba(25,13,10,.34),0 0 0 1px rgba(242,211,164,.12);
 }
 html[data-motion="wow"] .hero .hero-curtain{
-  translate:calc(var(--hero-decor-pointer-x,0) * -.18) calc(var(--hero-decor-pointer-y,0) * -.12);
+  translate:var(--hero-curtain-pointer-x,0) var(--hero-curtain-pointer-y,0);
 }
 
 /* STORY — stacked paper depth with moving reflective bloom. */
@@ -7885,10 +7885,10 @@ html[data-motion="wow"] .editorial-story .story-paper-stack{
   perspective:1200px;
 }
 html[data-motion="wow"] .editorial-story .story-paper-back{
-  translate:calc(var(--story-pointer-x,0px) * -.75) calc(var(--story-pointer-y,0px) * -.75);
+  translate:var(--story-back-x,0px) var(--story-back-y,0px);
 }
 html[data-motion="wow"] .editorial-story .story-paper-mid{
-  translate:calc(var(--story-pointer-x,0px) * -.35) calc(var(--story-pointer-y,0px) * -.35);
+  translate:var(--story-mid-x,0px) var(--story-mid-y,0px);
 }
 html[data-motion="wow"] .editorial-story .story-paper-stack .story-copy{
   translate:var(--story-pointer-x,0px) var(--story-pointer-y,0px);
@@ -7973,7 +7973,6 @@ html[data-motion="wow"] .event-card::after{
       rgba(255,237,197,.17) 50%,
       rgba(255,237,197,.00) 58%,
       transparent 62%);
-  transform:translate3d(calc((var(--event-light-x,50%) - 50%) * .08),0,0);
   transition:opacity .28s ease;
 }
 html[data-motion="wow"] .event-card.cursor-event-active{

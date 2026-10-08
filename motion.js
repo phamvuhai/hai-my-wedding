@@ -849,7 +849,7 @@
 
     const clearStory = () => {
       if (!activeStory) return;
-      ['--story-pointer-x','--story-pointer-y','--story-pointer-rotate','--story-light-x','--story-light-y']
+      ['--story-pointer-x','--story-pointer-y','--story-pointer-rotate','--story-light-x','--story-light-y','--story-back-x','--story-back-y','--story-mid-x','--story-mid-y']
         .forEach(k=>activeStory.style.removeProperty(k));
       activeStory=null;
     };
@@ -865,6 +865,10 @@
       story.style.setProperty('--story-pointer-x',`${(dx*5.5).toFixed(2)}px`);
       story.style.setProperty('--story-pointer-y',`${(dy*4).toFixed(2)}px`);
       story.style.setProperty('--story-pointer-rotate',`${(dx*.48).toFixed(3)}deg`);
+      story.style.setProperty('--story-back-x',`${(-dx*4.1).toFixed(2)}px`);
+      story.style.setProperty('--story-back-y',`${(-dy*3).toFixed(2)}px`);
+      story.style.setProperty('--story-mid-x',`${(-dx*2.1).toFixed(2)}px`);
+      story.style.setProperty('--story-mid-y',`${(-dy*1.5).toFixed(2)}px`);
       story.style.setProperty('--story-light-x',`${(nx*100).toFixed(1)}%`);
       story.style.setProperty('--story-light-y',`${(ny*100).toFixed(1)}%`);
     };
@@ -956,6 +960,10 @@
       hero.style.setProperty('--hero-copy-pointer-y',`${(-dy*3).toFixed(2)}px`);
       hero.style.setProperty('--hero-photo-pointer-x',`${(dx*9).toFixed(2)}px`);
       hero.style.setProperty('--hero-photo-pointer-y',`${(dy*6).toFixed(2)}px`);
+      hero.style.setProperty('--hero-full-pointer-x',`${(dx*5).toFixed(2)}px`);
+      hero.style.setProperty('--hero-full-pointer-y',`${(dy*3.3).toFixed(2)}px`);
+      hero.style.setProperty('--hero-curtain-pointer-x',`${(-dx*2.5).toFixed(2)}px`);
+      hero.style.setProperty('--hero-curtain-pointer-y',`${(-dy*1.5).toFixed(2)}px`);
       hero.style.setProperty('--hero-decor-pointer-x',`${(dx*14).toFixed(2)}px`);
       hero.style.setProperty('--hero-decor-pointer-y',`${(dy*8).toFixed(2)}px`);
     };
