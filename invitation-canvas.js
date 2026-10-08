@@ -144,18 +144,18 @@
   function sceneTransform() {
     const phone=w<600;
     const tablet=!phone&&w<1050;
-    const fitWidthRatio=phone?.965:(tablet?.86:.78);
-    const fitHeightRatio=phone?.68:(tablet?.73:.79);
+    const fitWidthRatio=phone?.98:(tablet?.92:.86);
+    const fitHeightRatio=phone?.80:(tablet?.88:.96);
     const widthFit=(w*fitWidthRatio)/DESIGN_W;
     const heightFit=(h*fitHeightRatio)/DESIGN_H;
     const scale=Math.min(widthFit,heightFit);
     const sceneW=DESIGN_W*scale, sceneH=DESIGN_H*scale;
     const idleAmount=active?Math.max(0,1-range(progress,.08,.32)):1;
-    const verticalBias=phone?-18:(tablet?-10:-4);
+    const verticalBias=phone?-10:(tablet?-4:0);
     return {
       scale,
-      x:(w-sceneW)/2 + pointerX*ss(phone?.4:1.7,{scale})*idleAmount,
-      y:Math.max(8,(h-sceneH)/2 + verticalBias) + pointerY*ss(phone?.25:1.1,{scale})*idleAmount,
+      x:(w-sceneW)/2 + pointerX*ss(phone?.25:1.05,{scale})*idleAmount,
+      y:(h-sceneH)/2 + verticalBias + pointerY*ss(phone?.18:.65,{scale})*idleAmount,
       sceneW,sceneH
     };
   }
@@ -170,73 +170,74 @@
   }
 
   function drawBackground(S,p,time) {
-    const lightX=w*(.48+pointerX*.035);
-    const lightY=h*(.34+pointerY*.025);
+    const lightX=w*(.48+pointerX*.018);
+    const lightY=h*(.42+pointerY*.012);
 
-    const base=ctx.createRadialGradient(lightX,lightY,10,w*.50,h*.48,Math.max(w,h)*.86);
-    base.addColorStop(0,'#3B171E');
-    base.addColorStop(.36,'#241015');
+    const base=ctx.createRadialGradient(lightX,lightY,30,w*.50,h*.48,Math.max(w,h)*.86);
+    base.addColorStop(0,'#401A22');
+    base.addColorStop(.34,'#281116');
     base.addColorStop(.72,'#16080C');
-    base.addColorStop(1,'#090306');
+    base.addColorStop(1,'#080305');
     ctx.fillStyle=base;
     ctx.fillRect(0,0,w,h);
 
-    // Soft fabric sheen — deliberately irregular, like a photographed burgundy cloth.
-    const sheen=ctx.createLinearGradient(0,h*.08,w,h*.92);
-    sheen.addColorStop(0,'rgba(255,238,211,.028)');
-    sheen.addColorStop(.34,'rgba(145,76,76,.018)');
-    sheen.addColorStop(.52,'rgba(255,240,216,.045)');
-    sheen.addColorStop(.72,'rgba(89,28,39,.015)');
-    sheen.addColorStop(1,'rgba(255,255,255,.012)');
+    // Soft velvet/fabric direction without visible grid seams.
+    const sheen=ctx.createLinearGradient(-w*.12,0,w*1.08,h);
+    sheen.addColorStop(0,'rgba(255,239,218,.018)');
+    sheen.addColorStop(.30,'rgba(160,86,84,.012)');
+    sheen.addColorStop(.53,'rgba(255,236,213,.032)');
+    sheen.addColorStop(.76,'rgba(100,36,46,.010)');
+    sheen.addColorStop(1,'rgba(255,255,255,.009)');
     ctx.fillStyle=sheen;
     ctx.fillRect(0,0,w,h);
 
-    // Fine fabric fibers. Static geometry keeps the scene photographic rather than "sparkly".
+    // Extremely subtle fibers; no square pattern.
     ctx.save();
-    ctx.globalAlpha=.055;
-    ctx.strokeStyle='#F4D8C0';
-    ctx.lineWidth=.45;
-    const gap=Math.max(18,Math.min(34,w/54));
+    ctx.globalAlpha=.028;
+    ctx.strokeStyle='#F0D4BE';
+    ctx.lineWidth=.42;
+    const gap=Math.max(26,Math.min(46,w/42));
     for(let x=-h;x<w+h;x+=gap){
       ctx.beginPath();
-      ctx.moveTo(x,0);
-      ctx.lineTo(x-h*.16,h);
+      ctx.moveTo(x,-40);
+      ctx.lineTo(x-h*.08,h+40);
       ctx.stroke();
     }
     ctx.restore();
 
-    const tableY=sy(Number(DS.floorY||245),S);
-    const table=ctx.createLinearGradient(0,tableY,0,h);
-    table.addColorStop(0,'rgba(0,0,0,.03)');
-    table.addColorStop(.3,'rgba(26,8,12,.10)');
-    table.addColorStop(1,'rgba(4,1,2,.34)');
-    ctx.fillStyle=table;
-    ctx.fillRect(0,tableY,w,h-tableY);
+    // Contact pool beneath stationery, replacing the old rectangular floor.
+    const contactY=sy(246,S);
+    const contact=ctx.createRadialGradient(w*.5,contactY,0,w*.5,contactY,ss(112,S));
+    contact.addColorStop(0,'rgba(0,0,0,.24)');
+    contact.addColorStop(.42,'rgba(0,0,0,.10)');
+    contact.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=contact;
+    ctx.beginPath();
+    ctx.ellipse(w*.5,contactY,ss(108,S),ss(24,S),0,0,TAU);
+    ctx.fill();
 
-    // Pool of warm light under the stationery.
-    const pool=ctx.createRadialGradient(w*.5,sy(230,S),0,w*.5,sy(230,S),ss(112,S));
-    pool.addColorStop(0,'rgba(231,187,125,.13)');
-    pool.addColorStop(.34,'rgba(193,118,75,.055)');
+    // Warm, natural practical light on the stationery.
+    const pool=ctx.createRadialGradient(w*.5,sy(195,S),0,w*.5,sy(195,S),ss(128,S));
+    pool.addColorStop(0,'rgba(232,188,128,.105)');
+    pool.addColorStop(.34,'rgba(193,118,75,.035)');
     pool.addColorStop(1,'rgba(80,20,31,0)');
     ctx.fillStyle=pool;
-    ctx.fillRect(w*.5-ss(125,S),sy(112,S),ss(250,S),ss(210,S));
+    ctx.fillRect(w*.5-ss(145,S),sy(70,S),ss(290,S),ss(235,S));
 
-    // Final presentation glow is subtle and warm, not an artificial halo.
     const bloom=range(p,T.cardClear??.66,T.cardPresented??.84);
     if(bloom>0){
-      const rr=Math.min(w,h)*(.18+.055*bloom);
-      const rg=ctx.createRadialGradient(w*.5,sy(123,S),0,w*.5,sy(123,S),rr);
-      rg.addColorStop(0,'rgba(255,236,194,'+(.095*bloom)+')');
-      rg.addColorStop(.52,'rgba(221,170,110,'+(.035*bloom)+')');
+      const rr=Math.min(w,h)*(.17+.045*bloom);
+      const rg=ctx.createRadialGradient(w*.5,sy(120,S),0,w*.5,sy(120,S),rr);
+      rg.addColorStop(0,'rgba(255,238,202,'+(.075*bloom)+')');
+      rg.addColorStop(.55,'rgba(219,168,110,'+(.026*bloom)+')');
       rg.addColorStop(1,'rgba(130,60,45,0)');
       ctx.fillStyle=rg;
-      ctx.fillRect(w*.5-rr,sy(123,S)-rr,rr*2,rr*2);
+      ctx.fillRect(w*.5-rr,sy(120,S)-rr,rr*2,rr*2);
     }
 
-    // Gentle photographic vignette.
-    const vignette=ctx.createRadialGradient(w*.5,h*.46,Math.min(w,h)*.28,w*.5,h*.46,Math.max(w,h)*.72);
-    vignette.addColorStop(.45,'rgba(0,0,0,0)');
-    vignette.addColorStop(1,'rgba(0,0,0,.38)');
+    const vignette=ctx.createRadialGradient(w*.5,h*.47,Math.min(w,h)*.34,w*.5,h*.47,Math.max(w,h)*.74);
+    vignette.addColorStop(.44,'rgba(0,0,0,0)');
+    vignette.addColorStop(1,'rgba(0,0,0,.34)');
     ctx.fillStyle=vignette;
     ctx.fillRect(0,0,w,h);
   }
@@ -254,13 +255,13 @@
   }
 
   function drawFlorals(S,p){
-    const l=DS.floralLeft||{x:-5,y:72,w:72,h:132};
-    const r=DS.floralRight||{x:168,y:110,w:58,h:106};
-    const settle=1-range(p,.14,.36)*.08;
+    const l=DS.floralLeft||{x:15,y:89,w:48,h:96};
+    const r=DS.floralRight||{x:172,y:116,w:38,h:78};
+    const settle=1-range(p,.14,.36)*.06;
     ctx.save();
-    ctx.filter='saturate(.82) brightness(.90)';
-    drawImage(images.floralLeft,sx(l.x,S),sy(l.y,S),ss(l.w,S),ss(l.h,S),.54*settle);
-    drawImage(images.floralRight,sx(r.x,S),sy(r.y,S),ss(r.w,S),ss(r.h,S),.42*settle);
+    ctx.filter='saturate(.72) brightness(.82)';
+    drawImage(images.floralLeft,sx(l.x,S),sy(l.y,S),ss(l.w,S),ss(l.h,S),.27*settle);
+    drawImage(images.floralRight,sx(r.x,S),sy(r.y,S),ss(r.w,S),ss(r.h,S),.22*settle);
     ctx.restore();
   }
 

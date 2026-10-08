@@ -48,17 +48,17 @@
       mobileFitHeight: 0.78,
       floorY: 245,
 
-      floralLeft: Object.freeze({ x: -5, y: 72, w: 72, h: 132 }),
-      floralRight: Object.freeze({ x: 168, y: 110, w: 58, h: 106 }),
+      floralLeft: Object.freeze({ x: 15, y: 89, w: 48, h: 96 }),
+      floralRight: Object.freeze({ x: 172, y: 116, w: 38, h: 78 }),
 
       envelope: Object.freeze({
         x: 15,
         w: 190,
         h: 116,
-        closedY: 168,
-        openY: 181,
-        cardY: 188,
-        presentedY: 219
+        closedY: 156,
+        openY: 171,
+        cardY: 179,
+        presentedY: 210
       }),
 
       lining: Object.freeze({
@@ -71,14 +71,14 @@
 
       seal: Object.freeze({
         x: 95,
-        y: 216,
+        y: 204,
         w: 30,
         h: 30
       }),
 
-      card04: Object.freeze({ x: 61, y: 139, w: 98, h: 142 }),
-      card05: Object.freeze({ x: 58, y: 72, w: 104, h: 151 }),
-      card06: Object.freeze({ x: 59, y: 69, w: 102, h: 148 })
+      card04: Object.freeze({ x: 61, y: 127, w: 98, h: 142 }),
+      card05: Object.freeze({ x: 58, y: 62, w: 104, h: 151 }),
+      card06: Object.freeze({ x: 59, y: 59, w: 102, h: 148 })
     }),
 
     typography: Object.freeze({
