@@ -11788,78 +11788,111 @@ img,video,svg{height:auto}
 
 /* OPENING MOTION — Figma-source Canvas stationery */
 .invitation-intro.invite-v2{
-  position:relative!important;
+  position:fixed!important;
+  inset:0!important;
+  z-index:9999!important;
   min-height:100dvh!important;
   background:#130306!important;
   overflow:hidden!important;
+  opacity:1!important;
+  visibility:visible!important;
   transition:opacity .34s ease,visibility .34s ease!important;
 }
 .invite-canvas-fx{
-  position:fixed!important;
+  position:absolute!important;
   inset:0!important;
-  width:100vw!important;
-  height:100dvh!important;
+  width:100%!important;
+  height:100%!important;
   display:block!important;
-  z-index:2!important;
+  z-index:1!important;
   pointer-events:none!important;
 }
 .invitation-intro.invite-v2 .invite-v2-scene{
   position:relative!important;
-  z-index:4!important;
+  z-index:3!important;
   width:100%!important;
+  height:100dvh!important;
   min-height:100dvh!important;
-  padding:max(68px,calc(env(safe-area-inset-top) + 46px))
-          max(18px,env(safe-area-inset-right))
-          max(24px,calc(env(safe-area-inset-bottom) + 16px))
-          max(18px,env(safe-area-inset-left))!important;
-  display:grid!important;
-  grid-template-rows:auto 1fr auto auto!important;
-  justify-items:center!important;
-  align-items:center!important;
-  gap:14px!important;
+  pointer-events:none!important;
 }
 .invitation-intro.invite-v2 .invite-v2-heading{
-  position:relative!important;
+  position:absolute!important;
   z-index:7!important;
+  top:max(28px,calc(env(safe-area-inset-top) + 16px))!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  width:min(90vw,620px)!important;
+  margin:0!important;
   text-align:center!important;
   pointer-events:none!important;
-  text-shadow:0 2px 16px rgba(0,0,0,.36)!important;
+  text-shadow:0 2px 16px rgba(0,0,0,.38)!important;
 }
 .invitation-intro.invite-v2 .invite-v2-title{
   margin:0!important;
   color:#f4dfbd!important;
   font-family:"Cormorant Garamond",Georgia,serif!important;
-  font-size:clamp(.78rem,1.25vw,1rem)!important;
+  font-size:clamp(.76rem,1.18vw,.98rem)!important;
   font-style:normal!important;
   font-weight:600!important;
   line-height:1.1!important;
-  letter-spacing:.25em!important;
+  letter-spacing:.26em!important;
   text-transform:uppercase!important;
 }
 .invitation-intro.invite-v2 .invite-v2-tap{
   margin:8px 0 0!important;
-  color:rgba(248,229,198,.68)!important;
-  font-size:.58rem!important;
+  color:rgba(248,229,198,.66)!important;
+  font-size:.56rem!important;
   font-weight:600!important;
+  line-height:1.3!important;
   letter-spacing:.14em!important;
   text-transform:uppercase!important;
 }
 .invitation-intro.invite-v2 .invite-v2-stage{
-  position:fixed!important;
+  position:absolute!important;
   inset:0!important;
   z-index:5!important;
   width:100%!important;
   height:100%!important;
   outline:none!important;
   cursor:pointer!important;
+  pointer-events:auto!important;
+  transform-style:preserve-3d!important;
 }
 .invitation-intro.invite-v2 .invite-v2-stage:focus-visible{
   outline:2px solid rgba(220,173,96,.72)!important;
   outline-offset:-12px!important;
 }
+.invitation-intro.invite-v2 .invite-v2-language{
+  position:absolute!important;
+  z-index:10!important;
+  top:max(14px,calc(env(safe-area-inset-top) + 8px))!important;
+  right:max(14px,calc(env(safe-area-inset-right) + 8px))!important;
+  pointer-events:auto!important;
+}
+.invitation-intro.invite-v2 .invite-v2-personal-meta{
+  position:absolute!important;
+  z-index:9!important;
+  left:50%!important;
+  bottom:max(88px,calc(env(safe-area-inset-bottom) + 76px))!important;
+  transform:translateX(-50%)!important;
+  width:min(92vw,760px)!important;
+  pointer-events:auto!important;
+}
+.invitation-intro.invite-v2 .invite-v2-private{
+  margin:0!important;
+  color:rgba(248,229,198,.86)!important;
+  text-align:center!important;
+  font-size:.74rem!important;
+  line-height:1.35!important;
+  letter-spacing:.04em!important;
+  text-shadow:0 2px 14px rgba(0,0,0,.45)!important;
+}
 .invitation-intro.invite-v2 .invite-v2-open-btn{
-  position:relative!important;
-  z-index:8!important;
+  position:absolute!important;
+  z-index:11!important;
+  left:50%!important;
+  bottom:max(28px,calc(env(safe-area-inset-bottom) + 18px))!important;
+  transform:translateX(-50%)!important;
   min-width:158px!important;
   min-height:46px!important;
   display:inline-flex!important;
@@ -11867,38 +11900,40 @@ img,video,svg{height:auto}
   justify-content:center!important;
   gap:15px!important;
   padding:0 25px!important;
-  margin-bottom:2px!important;
   border:1px solid rgba(216,171,99,.68)!important;
   border-radius:999px!important;
   color:#f9ead1!important;
-  background:linear-gradient(180deg,rgba(101,22,34,.78),rgba(65,10,20,.88))!important;
+  background:linear-gradient(180deg,rgba(101,22,34,.78),rgba(65,10,20,.90))!important;
   box-shadow:0 10px 24px rgba(0,0,0,.22),inset 0 0 0 1px rgba(255,225,173,.07)!important;
   backdrop-filter:blur(8px)!important;
   cursor:pointer!important;
+  pointer-events:auto!important;
   transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease,opacity .2s ease!important;
 }
 .invitation-intro.invite-v2 .invite-v2-open-btn:hover{
-  transform:translateY(-2px)!important;
+  transform:translateX(-50%) translateY(-2px)!important;
   border-color:#d9aa62!important;
   box-shadow:0 15px 34px rgba(0,0,0,.31),0 0 28px rgba(196,130,55,.12)!important;
 }
-.invitation-intro.invite-v2 .invite-v2-language,
-.invitation-intro.invite-v2 .invite-v2-personal-meta{
-  position:relative!important;
-  z-index:9!important;
+.invitation-intro.invite-v2 .invite-v2-open-btn:active{
+  transform:translateX(-50%) translateY(0) scale(.985)!important;
+}
+.invitation-intro.invite-v2.is-pressed .invite-canvas-fx{
+  transform:scale(.998)!important;
 }
 .invitation-intro.invite-v2.is-opening .invite-v2-open-btn,
 .invitation-intro.invite-v2.is-opening .invite-v2-personal-meta{
   animation:canvasControlsOut .34s ease .08s both!important;
+  pointer-events:none!important;
 }
 @keyframes canvasControlsOut{
-  to{opacity:0;transform:translateY(8px);pointer-events:none}
+  to{opacity:0;translate:0 8px}
 }
 .invitation-intro.invite-v2.is-opening .invite-v2-heading{
   animation:canvasHeadingOut .5s ease .12s both!important;
 }
 @keyframes canvasHeadingOut{
-  to{opacity:.14;transform:translateY(-6px)}
+  to{opacity:.10;translate:0 -6px}
 }
 .invitation-intro.invite-v2.is-exiting .invite-canvas-fx{
   animation:canvasSceneExit .42s ease both!important;
@@ -11906,26 +11941,44 @@ img,video,svg{height:auto}
 @keyframes canvasSceneExit{
   to{opacity:0;filter:blur(3px);transform:scale(1.012)}
 }
-.invitation-intro.invite-v2.is-opened{
+.invitation-intro.invite-v2.is-opened,
+.invitation-intro.invite-v2.is-bypassed{
   opacity:0!important;
   visibility:hidden!important;
   pointer-events:none!important;
 }
+.invitation-intro.invite-v2.canvas-opening-error .invite-v2-open-btn{
+  opacity:.92!important;
+}
 @media(max-width:760px){
-  .invitation-intro.invite-v2 .invite-v2-scene{
-    padding-top:max(56px,calc(env(safe-area-inset-top) + 38px))!important;
+  .invitation-intro.invite-v2 .invite-v2-heading{
+    top:max(22px,calc(env(safe-area-inset-top) + 14px))!important;
   }
-  .invitation-intro.invite-v2 .invite-v2-title{font-size:.72rem!important}
-  .invitation-intro.invite-v2 .invite-v2-tap{font-size:.54rem!important}
+  .invitation-intro.invite-v2 .invite-v2-title{font-size:.70rem!important}
+  .invitation-intro.invite-v2 .invite-v2-tap{font-size:.52rem!important}
   .invitation-intro.invite-v2 .invite-v2-open-btn{
     min-width:158px!important;
     min-height:48px!important;
-    margin-bottom:max(8px,env(safe-area-inset-bottom))!important;
+    bottom:max(18px,calc(env(safe-area-inset-bottom) + 12px))!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-personal-meta{
+    bottom:max(78px,calc(env(safe-area-inset-bottom) + 68px))!important;
   }
 }
 @media(max-height:760px) and (max-width:760px){
-  .invitation-intro.invite-v2 .invite-v2-title{font-size:.68rem!important}
+  .invitation-intro.invite-v2 .invite-v2-heading{
+    top:max(16px,calc(env(safe-area-inset-top) + 8px))!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-title{font-size:.66rem!important}
   .invitation-intro.invite-v2 .invite-v2-open-btn{min-height:44px!important}
+}
+@media(orientation:landscape) and (max-height:560px){
+  .invitation-intro.invite-v2 .invite-v2-heading{top:12px!important}
+  .invitation-intro.invite-v2 .invite-v2-open-btn{
+    bottom:12px!important;
+    min-height:42px!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-personal-meta{display:none!important}
 }
 @media(prefers-reduced-motion:reduce){
   .invitation-intro.invite-v2 .invite-v2-heading,
