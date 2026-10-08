@@ -29,7 +29,8 @@
   color: var(--ink);
   background: var(--bg);
   line-height: 1.7;
-}a{ color: inherit; text-decoration: none; }img{ max-width: 100%; display: block; }.container{ width: min(1120px, calc(100% - 40px)); margin: 0 auto; }.narrow{ width: min(760px, 100%); text-align: center; }.section{ padding: 96px 0; }.eyebrow{
+}a{ color: inherit; text-decoration: none; }img{ max-width: 100%; display: block; }.container{ width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+.section{ padding: 96px 0; }.eyebrow{
   margin: 0 0 10px;
   letter-spacing: .24em;
   font-size: .72rem;
@@ -5012,7 +5013,6 @@ body.invitation-opening .hero-fall-layer{
 }
 
 
-/* V32 — refine selected wedding particles */
 .hero-fall-item.sparkle{
   filter:drop-shadow(0 0 8px rgba(255,226,155,.35));
   opacity:calc(var(--fall-opacity) * .92);
@@ -5162,7 +5162,6 @@ html[lang="ja"] p{
 }
 
 
-/* V34 — simplified wedding schedule + personalized invite safety */
 .events-unified .section-heading{
   max-width:760px;
   margin-inline:auto;
@@ -5241,7 +5240,6 @@ html[lang="ja"] p{
 }
 
 
-/* V36 — calm, compact homepage hierarchy */
 .hero-marquee{
   opacity:.46;
   min-height:30px;
@@ -5623,8 +5621,6 @@ html[lang="ja"] p{
   }
 }
 
-
-/* V37 — customer-facing polish, scroll story, responsive hardening */
 
 /* ---------- Wedding schedule scroll story ---------- */
 .events-unified{
@@ -6012,8 +6008,6 @@ body.particles-muted .hero-fall-layer{
 }
 
 
-/* V38 — iPhone countdown + premium continuous wedding timeline */
-
 /* Countdown: keep heading readable and remove the oversized empty vertical space. */
 .countdown-compact .countdown{
   min-height:0!important;
@@ -6395,7 +6389,6 @@ body.particles-muted .hero-fall-layer{
 /* Reduced motion keeps every field visible and uses a simple fade. */
 
 
-/* V40 — personalized RSVP scope and guest-limit clarity */
 .rsvp-field-help{
   display:block;
   margin-top:7px;
