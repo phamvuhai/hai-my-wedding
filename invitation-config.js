@@ -34,39 +34,51 @@
       '06': 0.965
     }),
 
-    layout: Object.freeze({
-      mobile: Object.freeze({
-        envelopeVW: 0.90,
-        maxEnvelope: 450,
-        cardRatio: 0.72,
-        anchorY: 0.515,
-        floralScale: 1.00
-      }),
-      tablet: Object.freeze({
-        envelopeVW: 0.64,
-        maxEnvelope: 575,
-        cardRatio: 0.69,
-        anchorY: 0.505,
-        floralScale: 1.05
-      }),
-      desktop: Object.freeze({
-        envelopeVW: 0.45,
-        maxEnvelope: 610,
-        cardRatio: 0.68,
-        anchorY: 0.505,
-        floralScale: 1.08
-      })
-    }),
+    /*
+      Figma Storyboard source coordinate system.
+      These numbers mirror the editable storyboard frames exactly:
+      220 x 320 design space, envelope/card/floral positions below.
+    */
+    designSpace: Object.freeze({
+      width: 220,
+      height: 320,
+      fitWidth: 0.94,
+      fitHeight: 0.82,
+      desktopFitHeight: 0.78,
+      mobileFitHeight: 0.78,
+      floorY: 245,
 
-    card: Object.freeze({
-      aspect: 1.375,
-      startScale: 0.955,
-      finalScale: 1.00,
-      startRotation: -0.004,
-      finalRotation: 0,
-      riseEnvelopeRatio: 0.61,
-      topMobile: 0.10,
-      topDesktop: 0.09
+      floralLeft: Object.freeze({ x: -28, y: 58, w: 118, h: 158 }),
+      floralRight: Object.freeze({ x: 155, y: 105, w: 88, h: 118 }),
+
+      envelope: Object.freeze({
+        x: 10,
+        w: 200,
+        h: 122,
+        closedY: 164,
+        openY: 184,
+        cardY: 190,
+        presentedY: 222
+      }),
+
+      lining: Object.freeze({
+        x: 10,
+        y03: 106,
+        y04: 111,
+        w: 200,
+        h: 84
+      }),
+
+      seal: Object.freeze({
+        x: 92,
+        y: 214,
+        w: 36,
+        h: 36
+      }),
+
+      card04: Object.freeze({ x: 58, y: 135, w: 106, h: 146 }),
+      card05: Object.freeze({ x: 57, y: 74, w: 108, h: 149 }),
+      card06: Object.freeze({ x: 60, y: 70, w: 102, h: 140 })
     }),
 
     typography: Object.freeze({
