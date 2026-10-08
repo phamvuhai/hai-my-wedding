@@ -82,13 +82,16 @@
     }),
 
     typography: Object.freeze({
-      monogramY: 0.22,
-      groomY: 0.40,
-      ampY: 0.465,
-      brideY: 0.53,
-      ornamentY: 0.595,
-      dateY: 0.665,
-      scriptY: 0.80
+      // Balanced vertical rhythm for the visible card face.
+      // Keep the title clear of the upper-left floral artwork.
+      monogramY: 0.19,
+      subtitleY: 0.265,
+      ornamentTopY: 0.325,
+      groomY: 0.435,
+      ampY: 0.505,
+      brideY: 0.575,
+      ornamentBottomY: 0.655,
+      dateY: 0.735
     })
   });
 })();
