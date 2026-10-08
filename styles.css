@@ -8754,3 +8754,122 @@ body.invitation-locked .invite-v2-stage{
     transform:translateX(-50%) translateY(-2px)!important;
   }
 }
+
+
+/* =========================================
+   Cover stability V6 — Safari canvas compositor + mobile legibility
+   ========================================= */
+
+/* Removing filter animation prevents an oversized canvas from becoming
+   a partially invalidated GPU tile in iOS Safari and Chromium. */
+.invitation-intro.invite-v2 .invite-canvas-fx,
+.invitation-intro.invite-v2.canvas-opening-ready .invite-canvas-fx,
+.invitation-intro.invite-v2.is-pressed .invite-canvas-fx,
+.invitation-intro.invite-v2.is-opening .invite-canvas-fx{
+  animation:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  transition:none!important;
+  opacity:1!important;
+}
+.invitation-intro.invite-v2.is-exiting .invite-canvas-fx{
+  animation:inviteSafeExitV6 .32s ease-out both!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+}
+@keyframes inviteSafeExitV6{
+  from{opacity:1}
+  to{opacity:0}
+}
+
+/* Remove obsolete crosshatch overlay from the old paper-cover implementation. */
+.invitation-intro.invite-v2::after{
+  content:none!important;
+  display:none!important;
+}
+
+/* Readable typographic hierarchy over a dark backdrop. */
+.invitation-intro.invite-v2 .invite-v2-heading{
+  opacity:1!important;
+  visibility:visible!important;
+  text-shadow:0 2px 14px rgba(0,0,0,.52)!important;
+}
+.invitation-intro.invite-v2 .invite-v2-title{
+  color:#F3D8B3!important;
+  font-size:clamp(.92rem,1.2vw,1.08rem)!important;
+  font-weight:600!important;
+  letter-spacing:.30em!important;
+  line-height:1.25!important;
+}
+.invitation-intro.invite-v2 .invite-v2-tap{
+  color:rgba(254,233,204,.85)!important;
+  font-size:clamp(.68rem,.82vw,.76rem)!important;
+  font-weight:400!important;
+  line-height:1.5!important;
+  letter-spacing:.04em!important;
+}
+.invitation-intro.invite-v2 .invite-open-cue-copy{
+  color:#F4DDC4!important;
+  font-size:.76rem!important;
+  font-weight:500!important;
+  text-shadow:0 2px 14px rgba(0,0,0,.58)!important;
+}
+.invitation-intro.invite-v2 .invite-open-cue{
+  opacity:1;
+  visibility:visible;
+}
+.invitation-intro.invite-v2 .invite-v2-open-btn{
+  box-shadow:0 12px 30px rgba(0,0,0,.28)!important;
+  font-size:.76rem!important;
+  font-weight:600!important;
+  letter-spacing:.15em!important;
+}
+@media(max-width:599px){
+  .invitation-intro.invite-v2 .invite-v2-heading{
+    top:max(20px,calc(env(safe-area-inset-top) + 12px))!important;
+    width:min(88vw,350px)!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-title{
+    font-size:.82rem!important;
+    letter-spacing:.25em!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-tap{
+    display:block!important;
+    margin-top:5px!important;
+    font-size:.64rem!important;
+  }
+  .invitation-intro.invite-v2 .invite-open-cue{
+    bottom:max(80px,calc(env(safe-area-inset-bottom) + 70px))!important;
+    width:min(86vw,320px)!important;
+  }
+  .invitation-intro.invite-v2 .invite-open-cue-copy{
+    font-size:.70rem!important;
+    line-height:1.4!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-open-btn{
+    bottom:max(18px,calc(env(safe-area-inset-bottom) + 12px))!important;
+    width:min(78vw,262px)!important;
+    min-height:52px!important;
+    font-size:.75rem!important;
+  }
+}
+/* Protect space for controls in landscape and short phones. */
+@media(max-width:599px) and (max-height:650px){
+  .invitation-intro.invite-v2 .invite-v2-heading{
+    top:max(8px,env(safe-area-inset-top))!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-tap{
+    font-size:.56rem!important;
+  }
+  .invitation-intro.invite-v2 .invite-open-cue{
+    bottom:max(70px,calc(env(safe-area-inset-bottom) + 60px))!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .invitation-intro.invite-v2 .invite-canvas-fx,
+  .invitation-intro.invite-v2 .invite-open-cue{
+    animation:none!important;
+  }
+}

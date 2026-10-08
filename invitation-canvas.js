@@ -103,7 +103,10 @@
       resize();
       seedParticles();
       render(0,0);
-      if(!REDUCED) idleRaf=requestAnimationFrame(idleFrame);
+      // A static cover is more stable on iOS Safari; the DOM cue pulses separately.
+      if(!REDUCED && matchMedia('(pointer:fine)').matches) {
+        idleRaf=requestAnimationFrame(idleFrame);
+      }
       intro.classList.add('canvas-opening-ready');
       dispatch('invitation:canvas-ready',0,'Invitation ready');
       return true;
@@ -144,14 +147,15 @@
   function sceneTransform() {
     const phone=w<600;
     const tablet=!phone&&w<1050;
-    const fitWidthRatio=phone?.98:(tablet?.92:.86);
-    const fitHeightRatio=phone?.80:(tablet?.88:.96);
+    const fitWidthRatio=phone?.94:(tablet?.90:.86);
+    const fitHeightRatio=phone?.80:(tablet?.86:.94);
     const widthFit=(w*fitWidthRatio)/DESIGN_W;
     const heightFit=(h*fitHeightRatio)/DESIGN_H;
     const scale=Math.min(widthFit,heightFit);
     const sceneW=DESIGN_W*scale, sceneH=DESIGN_H*scale;
     const idleAmount=active?Math.max(0,1-range(progress,.08,.32)):1;
-    const verticalBias=phone?-10:(tablet?-4:0);
+    // Shift the object toward the optical center, leaving a clear CTA zone.
+    const verticalBias=phone?-47:(tablet?-14:-3);
     return {
       scale,
       x:(w-sceneW)/2 + pointerX*ss(phone?.25:1.05,{scale})*idleAmount,
@@ -170,79 +174,44 @@
   }
 
   function drawBackground(S,p,time) {
-    const lightX=w*(.48+pointerX*.018);
-    const lightY=h*(.42+pointerY*.012);
-
-    const base=ctx.createRadialGradient(lightX,lightY,30,w*.50,h*.48,Math.max(w,h)*.86);
-    base.addColorStop(0,'#401A22');
-    base.addColorStop(.34,'#281116');
-    base.addColorStop(.72,'#16080C');
-    base.addColorStop(1,'#080305');
-    ctx.fillStyle=base;
-    ctx.fillRect(0,0,w,h);
-
-    // Soft velvet/fabric direction without visible grid seams.
-    const sheen=ctx.createLinearGradient(-w*.12,0,w*1.08,h);
-    sheen.addColorStop(0,'rgba(255,239,218,.018)');
-    sheen.addColorStop(.30,'rgba(160,86,84,.012)');
-    sheen.addColorStop(.53,'rgba(255,236,213,.032)');
-    sheen.addColorStop(.76,'rgba(100,36,46,.010)');
-    sheen.addColorStop(1,'rgba(255,255,255,.009)');
-    ctx.fillStyle=sheen;
-    ctx.fillRect(0,0,w,h);
-
-    // Extremely subtle fibers; no square pattern.
+    const glowX=w*(.50+pointerX*.018);
+    const glowY=h*(.45+pointerY*.016);
     ctx.save();
-    ctx.globalAlpha=.028;
-    ctx.strokeStyle='#F0D4BE';
-    ctx.lineWidth=.42;
-    const gap=Math.max(26,Math.min(46,w/42));
-    for(let x=-h;x<w+h;x+=gap){
-      ctx.beginPath();
-      ctx.moveTo(x,-40);
-      ctx.lineTo(x-h*.08,h+40);
-      ctx.stroke();
-    }
-    ctx.restore();
 
-    // Contact pool beneath stationery, replacing the old rectangular floor.
-    const contactY=sy(246,S);
-    const contact=ctx.createRadialGradient(w*.5,contactY,0,w*.5,contactY,ss(112,S));
-    contact.addColorStop(0,'rgba(0,0,0,.24)');
-    contact.addColorStop(.42,'rgba(0,0,0,.10)');
-    contact.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=contact;
+    const velvet=ctx.createRadialGradient(glowX,glowY,0,w*.50,h*.47,Math.max(w,h)*.92);
+    velvet.addColorStop(0,'#442029');
+    velvet.addColorStop(.30,'#2C151C');
+    velvet.addColorStop(.64,'#190C11');
+    velvet.addColorStop(1,'#0C0609');
+    ctx.fillStyle=velvet;
+    ctx.fillRect(0,0,w,h);
+
+    // Studio softbox from the top-left, drawn full-screen to avoid hard tile edges.
+    const softbox=ctx.createLinearGradient(0,0,w,h);
+    softbox.addColorStop(0,'rgba(254,220,173,.055)');
+    softbox.addColorStop(.38,'rgba(254,220,173,.015)');
+    softbox.addColorStop(.76,'rgba(48,9,18,.025)');
+    softbox.addColorStop(1,'rgba(0,0,0,.04)');
+    ctx.fillStyle=softbox;
+    ctx.fillRect(0,0,w,h);
+
+    // A true, elliptic contact shadow under the envelope.
+    const tableY=sy(268,S);
+    const spread=ss(104,S);
+    const shadow=ctx.createRadialGradient(w*.5,tableY,0,w*.5,tableY,spread);
+    shadow.addColorStop(0,'rgba(0,0,0,.29)');
+    shadow.addColorStop(.52,'rgba(0,0,0,.10)');
+    shadow.addColorStop(1,'rgba(0,0,0,0)');
     ctx.beginPath();
-    ctx.ellipse(w*.5,contactY,ss(108,S),ss(24,S),0,0,TAU);
+    ctx.ellipse(w*.5,tableY,spread,ss(24,S),0,0,TAU);
+    ctx.fillStyle=shadow;
     ctx.fill();
 
-    // Warm, natural practical light on the stationery.
-    const pool=ctx.createRadialGradient(w*.5,sy(195,S),0,w*.5,sy(195,S),ss(128,S));
-    pool.addColorStop(0,'rgba(232,188,128,.105)');
-    pool.addColorStop(.34,'rgba(193,118,75,.035)');
-    pool.addColorStop(1,'rgba(80,20,31,0)');
-    ctx.fillStyle=pool;
-    ctx.fillRect(w*.5-ss(145,S),sy(70,S),ss(290,S),ss(235,S));
-
-    const bloom=range(p,T.cardClear??.66,T.cardPresented??.84);
-    if(bloom>0){
-      const rr=Math.min(w,h)*(.17+.045*bloom);
-      const rg=ctx.createRadialGradient(w*.5,sy(120,S),0,w*.5,sy(120,S),rr);
-      rg.addColorStop(0,'rgba(255,238,202,'+(.075*bloom)+')');
-      rg.addColorStop(.55,'rgba(219,168,110,'+(.026*bloom)+')');
-      rg.addColorStop(1,'rgba(130,60,45,0)');
-      ctx.fillStyle=rg;
-      ctx.fillRect(w*.5-rr,sy(120,S)-rr,rr*2,rr*2);
-    }
-
-    const vignette=ctx.createRadialGradient(w*.5,h*.47,Math.min(w,h)*.34,w*.5,h*.47,Math.max(w,h)*.74);
-    vignette.addColorStop(.44,'rgba(0,0,0,0)');
-    vignette.addColorStop(1,'rgba(0,0,0,.34)');
-    ctx.fillStyle=vignette;
-    ctx.fillRect(0,0,w,h);
+    ctx.restore();
   }
 
   function drawDust(p,time){
+    if(w<600&&p<.01)return;
     const reveal=.25+range(p,.08,.42)*.75;
     for(let i=0;i<dust.length;i++){
       const d=dust[i];
@@ -259,7 +228,7 @@
     const r=DS.floralRight||{x:172,y:116,w:38,h:78};
     const settle=1-range(p,.14,.36)*.06;
     ctx.save();
-    ctx.filter='saturate(.72) brightness(.82)';
+    // Keep CSS and canvas hardware compositing paths simple on mobile.
     drawImage(images.floralLeft,sx(l.x,S),sy(l.y,S),ss(l.w,S),ss(l.h,S),.27*settle);
     drawImage(images.floralRight,sx(r.x,S),sy(r.y,S),ss(r.w,S),ss(r.h,S),.22*settle);
     ctx.restore();
