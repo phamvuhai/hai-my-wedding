@@ -1,18 +1,24 @@
 (() => {
   const base = '/images/invitation/figma/';
+  const v = '?v=figma-opening-20261008-1';
+
   window.WeddingInvitationAssets = Object.freeze({
-    card: base + 'figma-card.svg',
-    envelopeBack: base + 'figma-envelope-back.svg',
-    envelopeFront: base + 'figma-envelope-front.svg',
-    envelopeFlap: base + 'figma-envelope-flap.svg',
-    lining: base + 'figma-envelope-lining.svg',
-    cord: base + 'figma-cord.svg',
-    seal: base + 'figma-wax-seal.svg',
-    floralLeft: base + 'figma-floral-left.svg',
-    floralRight: base + 'figma-floral-right.svg',
-    petals: [
-      base + 'figma-petal-01.svg',
-      base + 'figma-petal-02.svg'
-    ]
+    source: 'figma',
+    figmaFileKey: 'CIjp5ZYyRAK8mHqpLLOMaQ',
+    figmaAssetPackNodeId: '3:2',
+
+    card: base + 'figma-card.svg' + v,
+    envelopeBack: base + 'figma-envelope-back.svg' + v,
+    envelopeFront: base + 'figma-envelope-front.svg' + v,
+    envelopeFlap: base + 'figma-envelope-flap.svg' + v,
+    lining: base + 'figma-envelope-lining.svg' + v,
+    cord: base + 'figma-cord.svg' + v,
+    seal: base + 'figma-wax-seal.svg' + v,
+    floralLeft: base + 'figma-floral-left.svg' + v,
+    floralRight: base + 'figma-floral-right.svg' + v,
+    petals: Object.freeze([
+      base + 'figma-petal-01.svg' + v,
+      base + 'figma-petal-02.svg' + v
+    ])
   });
 })();
