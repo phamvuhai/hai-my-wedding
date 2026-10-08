@@ -8816,7 +8816,7 @@ body.invitation-locked .invite-v2-stage{
   font-weight:500!important;
   text-shadow:0 2px 14px rgba(0,0,0,.58)!important;
 }
-.invitation-intro.invite-v2 .invite-open-cue{
+.invitation-intro.invite-v2.is-ready.is-awaiting-open .invite-open-cue{
   opacity:1;
   visibility:visible;
 }
