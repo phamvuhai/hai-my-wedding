@@ -29,7 +29,6 @@
     initParallax();
     initScrollCue();
     initMagnetic();
-    initParticles();
     initEventTimeline();
     initEventTilt();
     initGalleryCuriosity();
@@ -667,31 +666,6 @@
         el.style.setProperty('--magnetic-y','0px');
       });
     });
-  }
-
-  function initParticles() {
-    const hero = qs('.hero');
-    if (!hero) return;
-
-    let layer = qs('.motion-particles', hero);
-    if (mode !== 'wow' || reduce) {
-      layer?.remove();
-      return;
-    }
-    if (layer) return;
-
-    layer = document.createElement('div');
-    layer.className = 'motion-particles';
-
-    for (let i=0;i<11;i++) {
-      const p = document.createElement('span');
-      p.style.setProperty('--x', `${6 + (i*9)%88}%`);
-      p.style.setProperty('--delay', `${(i*.72).toFixed(1)}s`);
-      p.style.setProperty('--duration', `${9 + (i%5)*1.7}s`);
-      p.style.setProperty('--size', `${4 + (i%4)*2}px`);
-      layer.appendChild(p);
-    }
-    hero.appendChild(layer);
   }
 
   function initEventTimeline() {
