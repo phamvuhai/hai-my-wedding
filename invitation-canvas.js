@@ -277,23 +277,137 @@
   function drawCardText(x,y,cw,ch,S){
     const d=data(),t=C.typography||{};
     const cx=x+cw*.5;
-    ctx.textAlign='center';ctx.textBaseline='alphabetic';
-    ctx.fillStyle='#7A2230';
-    ctx.font=`${Math.max(12,ss(cw*.132,S))}px "Great Vibes","Cormorant Garamond",Georgia,serif`;
-    ctx.fillText('H & M',sx(cx,S),sy(y+ch*(t.monogramY||.22),S));
-    ctx.fillStyle='#69202A';
-    ctx.font=`500 ${Math.max(6,ss(cw*.055,S))}px "Cormorant Garamond",Georgia,serif`;
-    ctx.fillText(d.groom,sx(cx,S),sy(y+ch*(t.groomY||.40),S));
-    ctx.font=`500 ${Math.max(6,ss(cw*.049,S))}px "Cormorant Garamond",Georgia,serif`;
-    ctx.fillText('&',sx(cx,S),sy(y+ch*(t.ampY||.465),S));
-    ctx.font=`500 ${Math.max(6,ss(cw*.055,S))}px "Cormorant Garamond",Georgia,serif`;
-    ctx.fillText(d.bride,sx(cx,S),sy(y+ch*(t.brideY||.53),S));
-    ctx.fillStyle='#7D4C34';
-    ctx.font=`500 ${Math.max(5,ss(cw*.039,S))}px "Lora",Georgia,serif`;
-    ctx.fillText(d.date,sx(cx,S),sy(y+ch*(t.dateY||.665),S));
-    ctx.fillStyle='#8B5D43';
-    ctx.font=`${Math.max(7,ss(cw*.069,S))}px "Great Vibes","Cormorant Garamond",Georgia,serif`;
-    ctx.fillText(d.script,sx(cx,S),sy(y+ch*(t.scriptY||.80),S));
+    const cxPx=sx(cx,S);
+    const maxNameWidth=ss(cw*.76,S);
+    const maxTitleWidth=ss(cw*.62,S);
+
+    ctx.save();
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+
+    const drawFittedText=(text,designY,sizeRatio,minPx,weight,family,color,maxWidth)=>{
+      let size=Math.max(minPx,ss(cw*sizeRatio,S));
+      const makeFont=px=>`${weight} ${px.toFixed(2)}px ${family}`;
+      ctx.font=makeFont(size);
+      const measured=ctx.measureText(text).width;
+      if(measured>maxWidth&&measured>0){
+        size=Math.max(minPx,size*(maxWidth/measured));
+        ctx.font=makeFont(size);
+      }
+      ctx.fillStyle=color;
+      ctx.fillText(text,cxPx,sy(y+ch*designY,S));
+    };
+
+    const drawOrnament=(designY,span=.22)=>{
+      const py=sy(y+ch*designY,S);
+      const gap=ss(cw*.055,S);
+      const half=ss(cw*span,S);
+      const diamond=Math.max(1.4,ss(cw*.010,S));
+
+      ctx.save();
+      ctx.strokeStyle='rgba(177,124,59,.72)';
+      ctx.fillStyle='rgba(177,124,59,.86)';
+      ctx.lineWidth=Math.max(.7,ss(.38,S));
+
+      ctx.beginPath();
+      ctx.moveTo(cxPx-half,py);
+      ctx.lineTo(cxPx-gap,py);
+      ctx.moveTo(cxPx+gap,py);
+      ctx.lineTo(cxPx+half,py);
+      ctx.stroke();
+
+      ctx.translate(cxPx,py);
+      ctx.rotate(Math.PI/4);
+      ctx.fillRect(-diamond/2,-diamond/2,diamond,diamond);
+      ctx.restore();
+    };
+
+    // Main monogram/title — classic serif like the approved mockup.
+    drawFittedText(
+      'H & M',
+      t.monogramY??.19,
+      .125,
+      12,
+      '600',
+      '"Cormorant Garamond",Georgia,serif',
+      '#6B1726',
+      maxTitleWidth
+    );
+
+    // Subtitle sits directly under the monogram, never at the bottom of the card.
+    drawFittedText(
+      d.script,
+      t.subtitleY??.265,
+      .035,
+      7,
+      '500',
+      '"Lora","Cormorant Garamond",Georgia,serif',
+      '#8A5B43',
+      ss(cw*.58,S)
+    );
+
+    drawOrnament(t.ornamentTopY??.325,.19);
+
+    drawFittedText(
+      d.groom,
+      t.groomY??.435,
+      .054,
+      8,
+      '600',
+      '"Cormorant Garamond",Georgia,serif',
+      '#6A1C29',
+      maxNameWidth
+    );
+
+    // Ampersand with short gold rules for a cleaner wedding-invitation hierarchy.
+    const ampY=t.ampY??.505;
+    const ampPx=sy(y+ch*ampY,S);
+    const ampGap=ss(cw*.075,S);
+    const ampLine=ss(cw*.19,S);
+    ctx.strokeStyle='rgba(177,124,59,.70)';
+    ctx.lineWidth=Math.max(.7,ss(.36,S));
+    ctx.beginPath();
+    ctx.moveTo(cxPx-ampLine,ampPx);
+    ctx.lineTo(cxPx-ampGap,ampPx);
+    ctx.moveTo(cxPx+ampGap,ampPx);
+    ctx.lineTo(cxPx+ampLine,ampPx);
+    ctx.stroke();
+    drawFittedText(
+      '&',
+      ampY,
+      .047,
+      8,
+      '500',
+      '"Cormorant Garamond",Georgia,serif',
+      '#A87337',
+      ss(cw*.14,S)
+    );
+
+    drawFittedText(
+      d.bride,
+      t.brideY??.575,
+      .054,
+      8,
+      '600',
+      '"Cormorant Garamond",Georgia,serif',
+      '#6A1C29',
+      maxNameWidth
+    );
+
+    drawOrnament(t.ornamentBottomY??.655,.18);
+
+    drawFittedText(
+      d.date,
+      t.dateY??.735,
+      .036,
+      7,
+      '500',
+      '"Lora","Cormorant Garamond",Georgia,serif',
+      '#7D4C34',
+      ss(cw*.54,S)
+    );
+
+    ctx.restore();
   }
 
   function cardRectFor(p){
