@@ -773,6 +773,7 @@
     const existing = qs('.motion-cursor');
 
     if (disabled) {
+      existing?._motionCleanup?.();
       existing?.remove();
       qsa('.motion-cursor-trail').forEach(el => el.remove());
       body.classList.remove('context-cursor-enabled');
@@ -860,6 +861,7 @@
       if (!target?.closest) return { section:'default', theme:'wine' };
 
       if (target.closest('.invitation-intro')) return { section:'opening', theme:'light' };
+      if (target.closest('.photo-lightbox,.album-overlay')) return { section:'gallery', theme:'light' };
       if (target.closest('.nav')) return { section:'nav', theme:'light' };
       if (target.closest('.hero')) return { section:'hero', theme:'light' };
       if (target.closest('.editorial-story,#story')) return { section:'story', theme:'wine' };
