@@ -150,10 +150,10 @@
     // Pure HTML/CSS stationery: no Canvas, no compositor tiles and no
     // font rasterization inside a low-resolution drawing surface.
     // Timers guarantee a full handoff even if Safari pauses CSS animations.
-    const duration = 3850;
+    const duration = 5250;
     setTimeout(() => {
       if (opening) intro.classList.add('is-exiting');
-    }, 3400);
+    }, 4800);
     setTimeout(() => {
       if (opening) finishOpening();
     }, duration);
