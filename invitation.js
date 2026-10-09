@@ -147,31 +147,17 @@
       return;
     }
 
-    const onTransition = () => {
-      if (opening) intro.classList.add('is-exiting');
-    };
-    const onComplete = () => {
-      if (opening) finishOpening();
-    };
-
-    document.addEventListener('invitation:transition', onTransition, { once: true });
-    document.addEventListener('invitation:complete', onComplete, { once: true });
-
-    const canvasStarted = window.WeddingInvitationCanvas?.play?.();
-    if (!canvasStarted) {
-      // Safe fallback when Canvas is unavailable.
-      setTimeout(() => intro.classList.add('is-exiting'), 900);
-      setTimeout(finishOpening, 1250);
-      return;
-    }
-
-    // Safety net: never trap a guest if a browser suspends requestAnimationFrame.
+    // Pure HTML/CSS stationery: no Canvas, no compositor tiles and no
+    // font rasterization inside a low-resolution drawing surface.
+    // Timers guarantee a full handoff even if Safari pauses CSS animations.
+    const duration = 3850;
     setTimeout(() => {
-      if (opening) {
-        intro.classList.add('is-exiting');
-        finishOpening();
-      }
-    }, (window.WeddingInvitationCanvas?.duration || 6200) + 900);
+      if (opening) intro.classList.add('is-exiting');
+    }, 3400);
+    setTimeout(() => {
+      if (opening) finishOpening();
+    }, duration);
+  
   }
 
   function bindEntryInteractions() {
@@ -267,33 +253,10 @@
     if (!invitationOpened) goTop('auto');
   }, {once:true});
 
-  // Very small perspective response on desktop; never changes dimensions.
-  if (stage && matchMedia('(pointer:fine) and (min-width:900px)').matches) {
-    intro.addEventListener('pointermove', event => {
-      if (opening) return;
-      const x = event.clientX / innerWidth - .5;
-      const y = event.clientY / innerHeight - .5;
-      stage.style.transform =
-        `rotateX(${(-y * 1.5).toFixed(2)}deg) rotateY(${(x * 1.9).toFixed(2)}deg) translate3d(${(x * 4).toFixed(2)}px,${(y * 3).toFixed(2)}px,0)`;
-    });
-
-    intro.addEventListener('pointerleave', () => {
-      stage.style.transform = '';
-    });
-  }
 
   const revealReadyState = async () => {
     if (!intro || intro.classList.contains('is-ready')) return;
 
-    try {
-      const canvasReady = window.WeddingInvitationCanvas?.readyPromise;
-      if (canvasReady) {
-        await Promise.race([
-          canvasReady,
-          new Promise(resolve => setTimeout(resolve, 2600))
-        ]);
-      }
-    } catch {}
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
