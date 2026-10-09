@@ -147,17 +147,18 @@
       return;
     }
 
-    // Pure HTML/CSS stationery: no Canvas, no compositor tiles and no
-    // font rasterization inside a low-resolution drawing surface.
-    // Timers guarantee a full handoff even if Safari pauses CSS animations.
-    const duration = 5250;
+    // One controlled opening timeline: seal, flap, card rise, pause, handoff.
+    // The fallback timer guarantees that the guest can always enter the site.
+    setTimeout(() => {
+      if (opening) intro.classList.add('is-letter-front');
+    }, 2320);
     setTimeout(() => {
       if (opening) intro.classList.add('is-exiting');
-    }, 4800);
+    }, 5300);
     setTimeout(() => {
       if (opening) finishOpening();
-    }, duration);
-  
+    }, 5820);
+
   }
 
   function bindEntryInteractions() {

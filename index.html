@@ -11,60 +11,65 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Lora:wght@400;500;600&display=swap" rel="stylesheet" />
   <link href="https://fonts.cdnfonts.com/css/utm-beautiful-caps" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css?v=cover-stable-v6" />
-  <link rel="stylesheet" href="/invitation-simple.css?v=2" />
+  <link rel="stylesheet" href="/invitation-couture.css?v=1" />
 </head>
 <body class="invitation-locked hero-image-loading">
 
-  <section class="invitation-intro invite-simple" id="invitationIntro"
-    aria-label="Wedding invitation opening" data-opening-source="html-css">
-    <div class="intro-language language-switcher simple-cover-language" aria-label="Language">
+
+  <section class="invitation-intro couture-invite" id="invitationIntro"
+    aria-label="Wedding invitation opening" data-opening-source="couture-css">
+    <div class="intro-language language-switcher couture-language" aria-label="Language">
       <button type="button" data-lang="vi">VI</button>
       <button type="button" data-lang="en">EN</button>
       <button type="button" data-lang="ja">日本語</button>
     </div>
 
-    <header class="simple-cover-heading">
-      <p class="simple-cover-eyebrow">WEDDING INVITATION</p>
-      <div class="simple-cover-ornament" aria-hidden="true"><span></span>✦<span></span></div>
-      <p class="simple-cover-subtitle" data-i18n="intro.tap">Một lời mời dành cho bạn</p>
+    <header class="couture-heading">
+      <p class="couture-kicker">WEDDING INVITATION</p>
+      <div class="couture-divider" aria-hidden="true">✦</div>
+      <p class="couture-subtitle" data-i18n="intro.tap">Một lời mời dành cho bạn</p>
     </header>
 
-    <div class="invite-v2-stage simple-cover-touch-target" role="button" tabindex="0"
+    <div class="invite-v2-stage" role="button" tabindex="0"
       aria-label="Open wedding invitation" data-i18n-aria="intro.open"
       aria-describedby="inviteOpenHint">
-      <div class="simple-envelope-scene" aria-hidden="true">
-        <div class="simple-envelope-shadow"></div>
-        <div class="simple-envelope-back"></div>
-        <div class="simple-letter">
-          <div class="simple-letter-frame">
-            <p class="simple-letter-monogram">H <span>&amp;</span> M</p>
-            <p class="simple-letter-label">WEDDING INVITATION</p>
-            <span class="simple-letter-rule" aria-hidden="true"></span>
-            <div class="simple-letter-couple">
+      <div class="couture-scene" aria-hidden="true">
+        <div class="couture-contact"></div>
+        <div class="couture-envelope-back"></div>
+        <div class="couture-letter">
+          <div class="couture-paper-frame">
+            <p class="couture-paper-mark">H <span>&amp;</span> M</p>
+            <p class="couture-paper-label">WEDDING INVITATION</p>
+            <i class="couture-paper-rule"></i>
+            <div class="couture-couple">
               <strong>PHẠM VŨ HẢI</strong>
-              <span class="simple-letter-amp">&amp;</span>
+              <span class="couture-ampersand">&amp;</span>
               <strong>NGUYỄN THỊ MỸ</strong>
             </div>
-            <span class="simple-letter-rule" aria-hidden="true"></span>
-            <time class="simple-letter-date" datetime="2026-12-19">19 · 12 · 2026</time>
+            <i class="couture-paper-rule"></i>
+            <time class="couture-date" datetime="2026-12-19">19 · 12 · 2026</time>
           </div>
         </div>
-        <div class="simple-envelope-flap"></div>
-        <div class="simple-envelope-pocket"></div>
-        <div class="simple-envelope-wax"><span>H&amp;M</span></div>
+        <div class="couture-flap"></div>
+        <div class="couture-envelope-front"></div>
+        <svg class="couture-seams" viewBox="0 0 600 364" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M3 73 L300 249 L597 73" fill="none" stroke="#dca16e" stroke-opacity=".45" stroke-width="1.5"/>
+          <path d="M3 362 L300 249 L597 362" fill="none" stroke="#250814" stroke-opacity=".45" stroke-width="1.4"/>
+          <path d="M3 73 L3 362 L597 362 L597 73" fill="none" stroke="#e2a778" stroke-opacity=".35" stroke-width="1.7"/>
+        </svg>
+        <div class="couture-wax"><span>H&amp;M</span></div>
       </div>
     </div>
 
-    <div class="simple-cover-controls">
-      <p class="simple-cover-hint" id="inviteOpenHint" data-i18n="intro.hint">
-        Nhấn vào phong bì hoặc nút bên dưới để mở
-      </p>
-      <button class="simple-cover-button" id="openInvitation" type="button">
-        <span data-i18n="intro.open">MỞ THIỆP</span><span class="simple-cover-arrow" aria-hidden="true">→</span>
+    <div class="couture-bottom">
+      <p class="couture-hint" id="inviteOpenHint" data-i18n="intro.hint">Nhấn vào phong bì hoặc nút bên dưới để mở</p>
+      <button class="couture-open-button" id="openInvitation" type="button">
+        <span data-i18n="intro.open">MỞ THIỆP</span>
+        <span class="couture-open-arrow" aria-hidden="true">→</span>
       </button>
     </div>
 
-    <div class="simple-cover-personal">
+    <div class="couture-private">
       <p class="personal-invite-private" id="personalInvitePrivate" hidden></p>
       <aside class="personal-link-notice personal-link-notice-cover" id="personalLinkNotice" hidden>
         <span class="personal-link-note-icon" aria-hidden="true">🔒</span>
@@ -74,7 +79,6 @@
     </div>
     <p class="sr-only" id="invitationCanvasStatus" aria-live="polite"></p>
   </section>
-
   <div class="invite-welcome" id="inviteWelcome" role="status" aria-live="polite" aria-hidden="true">
     <div class="invite-welcome-card">
       <span class="invite-welcome-heart" aria-hidden="true">♡</span>
@@ -460,6 +464,6 @@
   <script src="/motion.js"></script>
   <script src="/music.js"></script>
   <script src="/particles.js"></script>
-  <script src="/invitation.js?v=simple-v2"></script>
+  <script src="/invitation.js?v=couture-v1"></script>
 </body>
 </html>

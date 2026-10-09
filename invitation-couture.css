@@ -1,0 +1,101 @@
+
+/* COUTURE INVITATION — isolated responsive stationery, no Canvas */
+.invitation-intro.couture-invite{position:fixed!important;inset:0!important;z-index:9999!important;display:block!important;overflow:hidden!important;margin:0!important;padding:0!important;width:100%!important;height:100svh!important;min-height:0!important;box-sizing:border-box!important;background:radial-gradient(ellipse 76% 55% at 50% 52%,#58202e 0%,#37121e 42%,#1b0810 100%)!important;color:#f5dfbc!important;opacity:1;isolation:isolate;-webkit-tap-highlight-color:transparent}
+.couture-invite::before{content:""!important;display:block!important;position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(125deg,rgba(255,230,191,.035),transparent 39%,rgba(0,0,0,.10) 100%)}
+.couture-invite::after{display:none!important;content:none!important}
+.couture-invite *{box-sizing:border-box}
+body.invitation-locked .motion-cursor,body.invitation-locked .motion-silk-canvas{display:none!important}
+.couture-invite .couture-language{position:absolute!important;z-index:40!important;top:max(18px,env(safe-area-inset-top))!important;right:max(18px,env(safe-area-inset-right))!important;display:flex;gap:4px;align-items:center;border-radius:40px;background:rgba(16,5,9,.32)!important;border:1px solid rgba(244,220,185,.20)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:4px!important}
+.couture-invite .couture-language button{font-size:11px!important;border-radius:40px!important;min-width:31px!important;min-height:30px!important;color:#f1d7b7!important}
+.couture-invite .couture-heading{position:absolute;z-index:8;left:50%;top:clamp(84px,14svh,146px);transform:translateX(-50%);width:min(90vw,750px);text-align:center;pointer-events:none;transition:opacity .6s ease,transform .6s ease}
+.couture-invite .couture-kicker{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:clamp(20px,3.1vw,35px);letter-spacing:clamp(2px,.62vw,6px);white-space:nowrap;line-height:1.15;margin:0;color:#f9e7c9;text-shadow:0 2px 13px rgba(0,0,0,.26)}
+.couture-invite .couture-divider{display:flex;justify-content:center;align-items:center;gap:12px;margin:12px auto 10px;color:#ddae7e;font-size:11px}
+.couture-invite .couture-divider::before,.couture-invite .couture-divider::after{content:"";width:54px;height:1px;background:linear-gradient(90deg,transparent,rgba(221,174,126,.8))}
+.couture-invite .couture-divider::after{transform:rotate(180deg)}
+.couture-invite .couture-subtitle{font:400 clamp(12px,1.3vw,16px)/1.5 'Lora',Georgia,serif;margin:0;color:rgba(255,237,212,.82)}
+.couture-invite .invite-v2-stage{position:absolute!important;inset:0!important;z-index:5!important;width:100%!important;height:100%!important;min-height:0!important;display:block!important;pointer-events:auto!important;cursor:pointer!important;perspective:none!important;transform:none!important;border:0!important;outline:none!important}
+.couture-invite .invite-v2-stage:focus-visible{outline:2px solid #efc88e!important;outline-offset:-8px!important}
+.couture-invite .couture-scene{position:absolute;left:50%;top:54%;width:min(83vw,610px,calc(66svh * 1.6));aspect-ratio:1.65;transform:translate(-50%,-50%);pointer-events:none;filter:none;isolation:isolate}
+.couture-invite .couture-contact{position:absolute;left:8%;width:84%;bottom:-8%;height:20%;border-radius:50%;background:radial-gradient(ellipse,rgba(5,0,3,.48),transparent 67%);filter:blur(9px);z-index:0}
+.couture-invite .couture-envelope-back{position:absolute;inset:0;z-index:1;border:1px solid rgba(240,192,148,.29);border-radius:4px;background:linear-gradient(133deg,#99394b 0%,#7d273a 35%,#581728 75%,#410f1c 100%);box-shadow:0 19px 55px rgba(9,0,4,.39),inset 0 1px rgba(255,233,208,.23);overflow:hidden}
+.couture-invite .couture-envelope-back::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 22% 10%,rgba(255,231,210,.15),transparent 65%),repeating-linear-gradient(12deg,rgba(245,201,165,.014) 0 1px,transparent 1px 6px);pointer-events:none}
+.couture-invite .couture-letter{position:absolute;z-index:2;left:15%;width:70%;height:143%;top:22%;opacity:0;background:linear-gradient(124deg,#fffdf8,#f8efe2 63%,#ecdbc2);border:1px solid #d8c2a4;box-shadow:0 14px 33px rgba(17,2,8,.3);border-radius:2px;overflow:hidden}
+.couture-invite .couture-letter::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.42;background:repeating-linear-gradient(0deg,rgba(166,128,90,.018) 0 1px,transparent 1px 7px),radial-gradient(ellipse at 20% 13%,rgba(255,255,255,.72),transparent 65%)}
+.couture-invite .couture-paper-frame{position:absolute;inset:5.1%;border:1px solid rgba(178,138,87,.44);display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;padding:6% 4%;text-align:center;color:#6d2938}
+.couture-invite .couture-paper-mark{font:600 clamp(28px,3.6vw,42px)/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.035em;margin:0;white-space:nowrap}
+.couture-invite .couture-paper-mark span{font-size:.7em;color:#b59263}
+.couture-invite .couture-paper-label{font:600 clamp(8px,1vw,11px)/1.4 'Lora',Georgia,serif;letter-spacing:.15em;color:#957352;white-space:nowrap;margin:0}
+.couture-invite .couture-paper-rule{height:1px;width:26%;background:linear-gradient(90deg,transparent,#bd9465,transparent)}
+.couture-invite .couture-couple{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(10px,1.4vw,15px);width:100%;max-width:100%;white-space:nowrap}
+.couture-invite .couture-couple strong{display:block;font:600 clamp(16px,1.65vw,22px)/1.35 'Lora',Georgia,serif;letter-spacing:.012em;white-space:nowrap;color:#6a2231}
+.couture-invite .couture-ampersand{font:italic 600 clamp(17px,2vw,27px)/1 'Cormorant Garamond',Georgia,serif;color:#a87d55}
+.couture-invite .couture-date{font:600 clamp(11px,1.35vw,16px)/1.3 'Lora',Georgia,serif;letter-spacing:.1em;color:#725044;white-space:nowrap}
+.couture-invite .couture-flap{position:absolute;z-index:5;inset:0;clip-path:polygon(0 0,100% 0,50% 63%);background:linear-gradient(148deg,#a23e51,#7d293d 48%,#4a1223);transform-origin:center top;transform:rotateX(0deg);backface-visibility:hidden;box-shadow:0 5px 11px rgba(21,1,6,.42)}
+.couture-invite .couture-envelope-front{position:absolute;z-index:4;inset:0;clip-path:polygon(0 20%,50% 70%,100% 20%,100% 100%,0 100%);background:linear-gradient(140deg,#a13b4d,#792537 56%,#501421);box-shadow:inset 0 1px rgba(245,205,167,.17)}
+.couture-invite .couture-seams{position:absolute;inset:0;width:100%;height:100%;z-index:6;pointer-events:none;opacity:.68}
+.couture-invite .couture-wax{position:absolute;z-index:7;top:62%;left:50%;width:12%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:46% 53% 48% 50%;display:grid;place-items:center;background:radial-gradient(circle at 31% 24%,#cf6978,#9b374a 41%,#5c172b 85%);border:2px solid rgba(62,13,27,.55);box-shadow:0 5px 14px rgba(11,0,5,.53),inset 0 2px 3px rgba(255,218,204,.29),inset -2px -3px 4px rgba(30,1,9,.42);animation:coutureBreathe 2.8s ease-in-out infinite}
+.couture-invite .couture-wax::after{content:"";position:absolute;inset:14%;border-radius:50%;border:1px solid rgba(241,188,165,.32)}
+.couture-invite .couture-wax span{color:#e9b0a4;font:600 clamp(11px,1.3vw,15px)/1 Georgia,serif;text-shadow:0 1px 1px #411322}
+.couture-invite .couture-bottom{position:absolute;left:50%;bottom:max(35px,calc(env(safe-area-inset-bottom) + 25px));z-index:20;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:15px;width:min(89vw,420px);transition:opacity .3s}
+.couture-invite .couture-hint{margin:0;font:400 clamp(11px,1.1vw,13px)/1.45 'Lora',Georgia,serif;text-align:center;color:rgba(244,216,183,.77)}
+.couture-invite .couture-open-button{cursor:pointer;pointer-events:auto;min-width:min(86vw,270px);min-height:53px;border-radius:50px;border:1px solid rgba(228,178,121,.58);background:linear-gradient(180deg,rgba(117,39,53,.95),rgba(66,17,30,.97));color:#f8e1be;display:flex;align-items:center;justify-content:center;gap:23px;padding:11px 30px;box-shadow:inset 0 1px rgba(255,231,211,.10),0 13px 30px rgba(3,0,2,.25);font:600 17px/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.17em;transition:background .25s,border-color .25s,transform .25s}
+.couture-invite .couture-open-button:hover,.couture-invite .couture-open-button:focus-visible{background:#843449;border-color:#f3c99f;transform:translateY(-2px)}
+.couture-invite .couture-open-button:focus-visible{outline:2px solid #f3c99f;outline-offset:4px}
+.couture-invite .couture-open-button:active{transform:translateY(1px)}
+.couture-invite .couture-open-arrow{font:400 24px/0.7 Georgia,serif;letter-spacing:0}
+.couture-invite .couture-private{position:absolute;left:max(20px,env(safe-area-inset-left));bottom:max(28px,env(safe-area-inset-bottom));z-index:23;max-width:300px}
+.couture-invite .couture-private [hidden]{display:none!important}
+.couture-invite .couture-private .personal-invite-private{font-size:13px!important;color:#f5dfbc!important;text-align:left!important}
+.couture-invite.is-opening .couture-heading{opacity:0;transform:translate(-50%,-12px)}
+.couture-invite.is-opening .couture-bottom{opacity:0;pointer-events:none}
+.couture-invite.is-opening .couture-private{opacity:0;pointer-events:none}
+.couture-invite.is-opening .couture-wax{animation:coutureWaxRelease .58s ease-out both}
+.couture-invite.is-opening .couture-flap{animation:coutureFlap 1.18s cubic-bezier(.19,.75,.3,1) .3s both}
+.couture-invite.is-opening .couture-letter{animation:coutureLetter 2.65s cubic-bezier(.16,.70,.22,1) 1.04s both}
+.couture-invite.is-letter-front .couture-letter{z-index:8}
+.couture-invite.is-exiting{opacity:0!important;transition:opacity .52s ease!important;pointer-events:none!important}
+.couture-invite.is-opened,.couture-invite.is-bypassed{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+@keyframes coutureBreathe{0%,100%{box-shadow:0 5px 14px rgba(11,0,5,.53),inset 0 2px 3px rgba(255,218,204,.25)}50%{box-shadow:0 5px 19px rgba(11,0,5,.54),0 0 0 8px rgba(233,176,123,.06),inset 0 2px 3px rgba(255,218,204,.28)}}
+@keyframes coutureWaxRelease{0%,25%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-38%,-5%) scale(.72) rotate(11deg)}}
+@keyframes coutureFlap{0%{transform:rotateX(0)}100%{transform:rotateX(177deg)}}
+@keyframes coutureLetter{0%{top:22%;opacity:0}18%{opacity:1}72%{top:-43%;opacity:1}100%{top:-42%;opacity:1}}
+@media(max-width:700px){
+  .couture-invite .couture-language{top:max(10px,env(safe-area-inset-top))!important;right:10px!important;transform:scale(.91);transform-origin:top right}
+  .couture-invite .couture-heading{top:clamp(69px,11svh,108px)}
+  .couture-invite .couture-kicker{font-size:clamp(18px,5.4vw,25px);letter-spacing:.17em}
+  .couture-invite .couture-divider{margin:8px auto 7px}
+  .couture-invite .couture-divider::before,.couture-invite .couture-divider::after{width:36px}
+  .couture-invite .couture-subtitle{font-size:12px}
+  .couture-invite .couture-scene{top:51%;width:min(89vw,420px,calc(64svh * 1.65))}
+  .couture-invite .couture-letter{width:77%;left:11.5%;height:152%}
+  .couture-invite .couture-paper-mark{font-size:clamp(25px,7vw,35px)}
+  .couture-invite .couture-paper-label{font-size:clamp(8px,2.3vw,11px);letter-spacing:.08em}
+  .couture-invite .couture-couple{gap:clamp(8px,2.5vw,14px)}
+  .couture-invite .couture-couple strong{font-size:clamp(17px,4.3vw,20px);letter-spacing:0}
+  .couture-invite .couture-date{font-size:clamp(11px,3.1vw,14px);letter-spacing:.05em}
+  .couture-invite .couture-bottom{bottom:max(27px,calc(env(safe-area-inset-bottom) + 16px));gap:12px}
+  .couture-invite .couture-open-button{font-size:16px;min-height:50px}
+  .couture-invite .couture-hint{font-size:11px;max-width:315px}
+  .couture-invite .couture-private{left:50%;width:min(84vw,330px);bottom:125px;transform:translateX(-50%)}
+  .couture-invite .couture-private .personal-invite-private{text-align:center!important}
+}
+@media(max-height:620px){
+  .couture-invite .couture-heading{top:clamp(22px,5svh,60px)}
+  .couture-invite .couture-scene{top:53%;width:min(78vw,calc(55svh * 1.65))}
+  .couture-invite .couture-hint{display:none}
+  .couture-invite .couture-bottom{bottom:13px}
+  .couture-invite .couture-open-button{min-height:45px}
+}
+@media(orientation:landscape) and (max-height:530px){
+  .couture-invite .couture-heading{left:20px;top:18px;transform:none;text-align:left;width:38vw}
+  .couture-invite .couture-subtitle,.couture-invite .couture-divider{display:none}
+  .couture-invite .couture-kicker{font-size:19px;letter-spacing:.12em}
+  .couture-invite .couture-scene{top:54%;width:min(51vw,calc(79svh * 1.65))}
+  .couture-invite .couture-bottom{left:auto;right:18px;bottom:20px;transform:none;width:auto}
+  .couture-invite .couture-private{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .couture-invite .couture-wax{animation:none}
+  .couture-invite.is-opening .couture-flap{transform:rotateX(177deg);animation:none}
+  .couture-invite.is-opening .couture-letter{opacity:1;top:-42%;animation:none}
+}
