@@ -62,7 +62,7 @@ for(const entry of scenarios){
   bodyClasses:document.body.className
  }));
  // The site supports smooth scrolling; force an instant jump for screenshot assertions.
- await page.addStyleTag({content:'html,body{scroll-behavior:auto!important}'});
+ await page.addStyleTag({content:'html{overflow-x:visible!important;scroll-behavior:auto!important}body{scroll-behavior:auto!important}'});
  const form=page.locator('#rsvpForm');
  const exists=await form.count()>0;
  let formVisible=false;
