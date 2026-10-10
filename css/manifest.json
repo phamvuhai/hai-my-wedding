@@ -1,5 +1,5 @@
 {
-  "description": "Ordered CSS cascade after removal of unused invitation V3–V6 rules.",
+  "description": "Ordered CSS modules with obsolete invite-v2/Canvas and V3-V6 selectors removed.",
   "order": [
     "css/site-01.css",
     "css/site-02.css",
@@ -11,8 +11,8 @@
     "css/site-08.css",
     "css/site-09.css"
   ],
-  "originalLength": 246541,
-  "fnv1a32": "5b57b2ee",
+  "originalLength": 235628,
+  "fnv1a32": "d3558bae",
   "lengths": [
     31884,
     31984,
@@ -20,8 +20,8 @@
     31733,
     31515,
     30743,
-    32179,
-    24375,
+    27760,
+    17881,
     89
   ]
 }
