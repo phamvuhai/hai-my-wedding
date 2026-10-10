@@ -77,6 +77,17 @@ for(const entry of scenarios){
   });
   await page.screenshot({path:join(out,entry.name+'-rsvp-form.png')});
  }
+ const diagnostic=await page.evaluate(async()=>{
+  const sample=()=>[window.scrollY,document.documentElement.scrollTop,document.body.scrollTop];
+  window.scrollTo(0,1100);
+  await new Promise(done=>setTimeout(done,250));
+  const before=sample();
+  document.documentElement.style.setProperty('overflow-x','visible');
+  document.body.style.setProperty('overflow-x','visible');
+  window.scrollTo(0,1100);
+  await new Promise(done=>setTimeout(done,250));
+  return {before,after:sample()};
+ });
  const metrics=await page.evaluate(()=>({
   width:innerWidth,scrollWidth:document.documentElement.scrollWidth,
   title:document.title,language:document.documentElement.lang,
@@ -91,7 +102,7 @@ for(const entry of scenarios){
   bodyClasses:document.body.className,
   coupleNames:[...document.querySelectorAll('.couture-couple strong')].map(el=>el.textContent.trim())
  }));
- report.scenarios.push({name:entry.name,ready,opened,formVisible,scrollBefore,metrics,errors});
+ report.scenarios.push({name:entry.name,ready,opened,formVisible,scrollBefore,diagnostic,metrics,errors});
  report.errors.push(...errors.map(e=>entry.name+': '+e));
  await context.close();
  console.log(entry.name+' ready='+ready+' opened='+opened+' form='+formVisible+' overflow='+(metrics.scrollWidth>metrics.width+2)+' pageErrors='+errors.length);
