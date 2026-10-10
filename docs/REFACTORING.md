@@ -6,7 +6,7 @@ This project serves guests and administrators. A complete one-shot rewrite would
 
 ## Stage 1 — Completed on the refactor branch
 
-- Split the 269 KB `styles.css` cascade into nine ordered files under `css/`; preserve byte-for-byte declarations and cascade ordering through `css/manifest.json`.
+- Split the 269 KB `styles.css` cascade into ordered files under `css/`; the eight active modules preserve the stylesheet cascade tracked by `css/manifest.json`.
 - Keep `styles.css` as a compatibility shim for legacy page links.
 - Extract the 19 KB cinematic cursor engine into `motion/cursor.js` while preserving `motion.js` initialization.
 - Extract countdown logic into `public/countdown.js` before the public app.
@@ -61,3 +61,11 @@ No npm dependencies are required for the refactor checks.
 Relative to `main`, the refactor branch has **2,263 fewer net CSS/JS lines** (+8,290 added, -10,553 deleted) and **1,794 fewer net lines in all changed files** (including tests and docs), as measured on 2026-10-10. Check the comparison again after additional commits.
 
 Do not remove remaining generic `.invitation-intro` CSS just because it predates Couture: the active cover still uses that class. Any further cleanup needs a runtime selector audit and screenshots on iPhone, tablet and PC.
+
+## Runtime-driven cleanup evidence (2026-10-10)
+
+Chrome screenshot and CSS coverage audit ran at 1440×900, 820×1180, 390×844 and 360×640. Opening finished in all four cases; no horizontal overflow or JS errors were reported in the audited public flows. Screenshots and coverage JSON are attached to GitHub Actions run 38025802558.
+
+After this audit, removed the empty ninth CSS module (a comment-only file, with zero rule usage) and unnecessary request/import. Also removed 27 lines of invitation pointer-class changes and obsolete Canvas cleanup hooks after confirming those class names have no matching rules in the active stylesheet or the eight global CSS modules. CSS coverage of the tested flows is only indicative; it is not evidence that other selector rules are safe to delete without further scenario coverage.
+
+Authenticated Admin workflows and Safari iOS still require independent integration/device tests before merging the draft PR.
