@@ -105,6 +105,14 @@ for(const cfg of cases){
   await form.evaluate(el=>el.scrollIntoView({behavior:'instant',block:'center'}));
   await wait(800);
   formVisible=await form.evaluate(el=>el.getBoundingClientRect().height>0);
+  const radio=await form.evaluate(el=>{
+   const input=el.querySelector('input[type="radio"]');
+   const label=input?.parentElement?.querySelector('span');
+   if(!input||!label)return null;
+   const a=input.getBoundingClientRect(),b=label.getBoundingClientRect();
+   return {width:Math.round(a.width),gap:Math.round(b.left-a.right)};
+  });
+  if(!radio||radio.width>32||radio.gap<0||radio.gap>35)errors.push('RSVP radio control layout: '+JSON.stringify(radio));
   await screenshot('rsvp-form');
  }
  const after=await page.evaluate(()=>({
