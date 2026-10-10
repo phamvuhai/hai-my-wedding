@@ -181,13 +181,50 @@
 .atelier-invite.is-opening .atelier-actions,.atelier-invite.is-opening .atelier-personal{opacity:0;pointer-events:none}
 .atelier-invite.is-opening .atelier-wax{animation:atelierSealBreak .6s cubic-bezier(.3,.3,.6,1) forwards}
 .atelier-invite.is-opening .atelier-envelope-flap{animation:atelierFlapOpen 1.18s cubic-bezier(.25,.63,.3,1) .18s forwards}
-.atelier-invite.is-opening .atelier-paper{animation:atelierLetterReveal 2.75s cubic-bezier(.19,.71,.23,1) .9s forwards}
-.atelier-invite.is-letter-front .atelier-paper{z-index:9}
+.atelier-invite.is-opening .atelier-paper{animation:atelierLetterReveal 2.75s cubic-bezier(.19,.71,.23,1) .9s forwards;z-index:12}
+/* CSS owns the pocket fade; throttled JS timers cannot leave names masked. */
+.atelier-invite.is-opening .atelier-envelope-front,
+.atelier-invite.is-opening .atelier-fold-lines{
+ animation:atelierPocketRetire .95s cubic-bezier(.2,.7,.27,1) 1.25s forwards;
+}
+.atelier-invite.is-opening .atelier-envelope-back{
+ animation:atelierBackRetire .95s cubic-bezier(.2,.7,.27,1) 1.25s forwards;
+}
+/* After the card clears the envelope opening, it must read as one complete letter.
+   The envelope gently retires instead of masking the bride's name. */
+.atelier-invite.is-letter-front .atelier-paper{
+ z-index:12;
+ box-shadow:0 24px 56px rgba(12,0,9,.40),0 1px 0 rgba(255,255,255,.85) inset;
+}
+.atelier-invite .atelier-envelope-front,
+.atelier-invite .atelier-envelope-back,
+.atelier-invite .atelier-fold-lines{
+ transition:transform 1s cubic-bezier(.22,.72,.25,1),opacity .7s ease;
+ transform-origin:50% 100%;
+}
+.atelier-invite.is-letter-front .atelier-envelope-front,
+.atelier-invite.is-letter-front .atelier-fold-lines{
+ transform:translateY(39%) scale(.94);
+ opacity:.22;
+}
+.atelier-invite.is-letter-front .atelier-envelope-back{
+ transform:translateY(27%) scale(.95);
+ opacity:.30;
+}
+.atelier-invite.is-letter-front .atelier-floral{opacity:.33;transition:opacity .7s ease}
 .atelier-invite.is-exiting{opacity:0!important;transition:opacity .48s ease!important;pointer-events:none!important}
 .atelier-invite.is-opened,.atelier-invite.is-bypassed{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
 @keyframes atelierWaxGlow{0%,100%{box-shadow:0 5px 13px rgba(14,0,6,.57),inset 0 3px 4px rgba(255,210,191,.3)}50%{box-shadow:0 5px 16px rgba(14,0,6,.57),0 0 0 7px rgba(233,181,137,.045),inset 0 3px 4px rgba(255,210,191,.3)}}
 @keyframes atelierSealBreak{0%,28%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-20%,-5%) scale(.65) rotate(12deg)}}
 @keyframes atelierFlapOpen{0%{transform:rotateX(0deg);opacity:1}90%{opacity:1}100%{transform:rotateX(177deg);opacity:0}}
+@keyframes atelierPocketRetire{
+ 0%{opacity:1;transform:translateY(0) scale(1)}
+ 100%{opacity:.22;transform:translateY(39%) scale(.94)}
+}
+@keyframes atelierBackRetire{
+ 0%{opacity:1;transform:translateY(0) scale(1)}
+ 100%{opacity:.30;transform:translateY(27%) scale(.95)}
+}
 @keyframes atelierLetterReveal{0%{top:19%;opacity:0}12%{opacity:1}67%{top:-41%;opacity:1}100%{top:-41%;opacity:1}}
 @media(max-width:700px){
  .atelier-invite .atelier-border{inset:13px}
@@ -240,6 +277,10 @@
  .atelier-invite .atelier-floral{display:none}
 }
 @media(prefers-reduced-motion:reduce){
+ .atelier-invite.is-opening .atelier-envelope-front,
+ .atelier-invite.is-opening .atelier-fold-lines,
+ .atelier-invite.is-opening .atelier-envelope-back{animation:none;opacity:.18;transform:translateY(30%) scale(.94)}
+
  .atelier-invite .atelier-wax{animation:none}
  .atelier-invite.is-opening .atelier-wax{opacity:0;animation:none}
  .atelier-invite.is-opening .atelier-envelope-flap{transform:rotateX(177deg);opacity:0;animation:none}
