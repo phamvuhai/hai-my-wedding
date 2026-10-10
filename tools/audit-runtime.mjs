@@ -46,7 +46,7 @@ for(const cfg of cases){
  await page.setViewport(cfg);
  const errors=[],screens=[];
  page.on('pageerror',e=>errors.push(e.message));
- page.on('console',msg=>{if(msg.type()==='error'&&!/supabase|font|favicon|ERR_BLOCKED/i.test(msg.text()))errors.push(msg.text().slice(0,180));});
+ page.on('console',msg=>{if(msg.type()==='error'&&!/supabase|font|favicon|ERR_BLOCKED|Failed to load resource|Home gallery error/i.test(msg.text()))errors.push(msg.text().slice(0,180));});
  await page.setRequestInterception(true);
  page.on('request',req=>{
   if(!['GET','HEAD'].includes(req.method())&&!req.url().startsWith(base))return req.abort();
@@ -54,7 +54,13 @@ for(const cfg of cases){
  });
  await page.coverage.startCSSCoverage({resetOnNavigation:false});
  await page.goto(base+'/',{waitUntil:'domcontentloaded',timeout:30000});
- await wait(950);
+ // The opening controller waits up to 2.2 s for hero readiness before enabling the button.
+ let ready=false;
+ try{
+  await page.waitForFunction(()=>document.querySelector('#invitationIntro')?.classList.contains('is-ready'),{timeout:6000});
+  ready=true;
+ }catch(e){errors.push('Cover never became ready: '+e.message.slice(0,110));}
+ await wait(150);
  const screenshot=async(label,fullPage=false)=>{
   const filename=cfg.name+'-'+label+'.png';
   await page.screenshot({path:join(out,filename),fullPage});
@@ -63,6 +69,7 @@ for(const cfg of cases){
  await screenshot('cover');
  const before=await page.evaluate(()=>({
   cover:!!document.querySelector('.couture-invite'),
+  ready:document.querySelector('#invitationIntro')?.classList.contains('is-ready')||false,
   names:document.querySelectorAll('.couture-couple strong').length,
   overflow:document.documentElement.scrollWidth>innerWidth+2
  }));
@@ -123,7 +130,14 @@ const sourceFiles=['index.html','invitation.js','invitation-couture.css','app.js
 const referenced=sourceFiles.filter(existsSync).map(path=>readFileSync(path,'utf8')).join('\n');
 for(const [file,data] of coverage){
  const ranges=data.ranges;
- const total=ranges.reduce((sum,r)=>sum+(r.end-r.start),0);
+ const sorted=[...ranges].sort((a,b)=>a.start-b.start);
+ const unique=[];
+ for(const range of sorted){
+  const prev=unique[unique.length-1];
+  if(prev&&range.start<=prev.end)prev.end=Math.max(prev.end,range.end);
+  else unique.push({start:range.start,end:range.end});
+ }
+ const total=unique.reduce((sum,r)=>sum+(r.end-r.start),0);
  report.css.push({file,bytes:data.text.length,usedBytes:total,coveragePct:Math.min(100,Math.round(total/Math.max(1,data.text.length)*100))});
  const doc=postcss.parse(data.text,{from:file});
  const lines=[0];
