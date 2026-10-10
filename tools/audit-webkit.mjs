@@ -57,15 +57,25 @@ for(const entry of scenarios){
  const exists=await form.count()>0;
  let formVisible=false;
  if(exists){
-  await form.scrollIntoViewIfNeeded({timeout:5000}).catch(()=>{});
-  await page.waitForTimeout(1000);
-  formVisible=await form.isVisible();
+  await form.evaluate(node=>{
+   node.scrollIntoView({behavior:'instant',block:'start'});
+   const y=node.getBoundingClientRect().top+window.scrollY-90;
+   window.scrollTo({top:y,behavior:'instant'});
+  });
+  await page.waitForTimeout(900);
+  formVisible=await form.evaluate(node=>{
+   const box=node.getBoundingClientRect();
+   return box.width>0&&box.height>0&&box.top<window.innerHeight&&box.bottom>0;
+  });
   await page.screenshot({path:join(out,entry.name+'-rsvp-form.png')});
  }
  const metrics=await page.evaluate(()=>({
   width:innerWidth,scrollWidth:document.documentElement.scrollWidth,
   title:document.title,language:document.documentElement.lang,
   locked:document.body.classList.contains('invitation-locked'),
+  scrollY:window.scrollY,
+  rsvpTop:Math.round(document.getElementById('rsvpForm')?.getBoundingClientRect().top||0),
+  rsvpHeight:Math.round(document.getElementById('rsvpForm')?.getBoundingClientRect().height||0),
   coupleNames:[...document.querySelectorAll('.couture-couple strong')].map(el=>el.textContent.trim())
  }));
  report.scenarios.push({name:entry.name,ready,opened,formVisible,metrics,errors});
