@@ -1025,9 +1025,7 @@ body.invitation-opening .side-note{
 }
 
 /* Accessibility */
-@media(prefers-reduced-motion:reduce){.hero-fall-layer{
-    display:none!important;
-  }
+@media(prefers-reduced-motion:reduce){
 }
 
 
