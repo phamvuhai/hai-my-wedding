@@ -1,0 +1,1088 @@
+.countdown-heading h2{
+  width:min(100%,620px)!important;
+  max-width:620px!important;
+  margin:14px 0 0!important;
+  padding:.08em 0 .12em!important;
+  overflow:visible!important;
+
+  /* Never split Vietnamese/English words in the middle. */
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+  line-break:auto!important;
+  hyphens:none!important;
+  -webkit-hyphens:none!important;
+  white-space:pre-line!important;
+  text-wrap:balance;
+
+  font-family:"Lora","Iowan Old Style","Baskerville",Georgia,serif!important;
+  font-size:clamp(4rem,4.8vw,5.125rem)!important;
+  font-weight:500!important;
+  line-height:1.02!important;
+  letter-spacing:-.035em!important;
+}
+
+/* Give the title enough real estate on desktop instead of forcing it into
+   the narrow legacy .62fr column. */
+@media(min-width:1025px){.countdown-layout{
+    grid-template-columns:minmax(420px,.80fr) minmax(0,1.20fr)!important;
+    gap:clamp(52px,6vw,86px)!important;
+    align-items:center!important;
+  }.countdown-heading{
+    text-align:left!important;
+    justify-self:start;
+  }
+}
+
+/* Tablet uses the same deliberate two-line composition, centered. */
+@media(min-width:681px) and (max-width:1024px){.countdown-layout{
+    grid-template-columns:1fr!important;
+    gap:clamp(44px,7vw,62px)!important;
+  }.countdown-heading{
+    width:min(100%,540px)!important;
+    max-width:540px!important;
+    margin-inline:auto;
+    text-align:center!important;
+  }.countdown-heading h2{
+    width:min(100%,540px)!important;
+    max-width:540px!important;
+    margin:12px auto 0!important;
+    font-size:clamp(3.3rem,7vw,4.25rem)!important;
+    line-height:1.03!important;
+    letter-spacing:-.03em!important;
+  }
+}
+
+/* Mobile: one intentional break, never a broken word. */
+@media(max-width:680px){.countdown-heading{
+    width:min(92vw,420px)!important;
+    max-width:420px!important;
+    margin-inline:auto!important;
+    padding-inline:0!important;
+    text-align:center!important;
+  }.countdown-heading h2{
+    width:min(92vw,420px)!important;
+    max-width:420px!important;
+    margin:10px auto 0!important;
+    padding:.08em .04em .12em!important;
+    font-size:clamp(2.6rem,12vw,3.375rem)!important;
+    line-height:1.04!important;
+    letter-spacing:-.025em!important;
+  }.countdown-heading .eyebrow{
+    margin-bottom:12px!important;
+  }
+}@media(max-width:390px){.countdown-heading{
+    width:min(94vw,360px)!important;
+  }.countdown-heading h2{
+    width:min(94vw,360px)!important;
+    max-width:360px!important;
+    font-size:clamp(2.45rem,11.5vw,3rem)!important;
+    line-height:1.045!important;
+  }
+}
+
+/* Landscape phones stay compact but still respect whole words. */
+@media(max-height:500px) and (orientation:landscape){.countdown-heading{
+    width:min(54vw,480px)!important;
+    max-width:480px!important;
+  }.countdown-heading h2{
+    width:100%!important;
+    max-width:480px!important;
+    font-size:clamp(2.25rem,5.4vw,3rem)!important;
+    line-height:1!important;
+  }
+}
+
+/* Lora has no Japanese glyphs; use native Mincho serif instead. */
+html[lang="ja"] .countdown-heading h2{
+  font-family:"Yu Mincho","Hiragino Mincho ProN","Hiragino Mincho Pro","Noto Serif JP",serif!important;
+  letter-spacing:-.02em!important;
+  word-break:keep-all!important;
+  overflow-wrap:normal!important;
+}
+
+
+/* Chapter rhythm: soft groups, not mandatory full-screen snapping. */
+.chapter-start{
+  scroll-margin-top:calc(var(--header-h) + 18px);
+  box-shadow:inset 0 1px 0 rgba(112,83,68,.055);
+}@media(max-width:1024px){html{
+    scroll-snap-type:y proximity;
+  }.chapter-start{
+    scroll-snap-align:start;
+    scroll-snap-stop:normal;
+    scroll-margin-top:calc(var(--header-h) + 12px);
+  }
+}@media(max-width:680px){.chapter-start{
+    box-shadow:inset 0 1px 0 rgba(112,83,68,.075);
+  }
+}
+
+/* Localized routes bypass the cover completely. */
+.invitation-intro.is-bypassed{
+  display:none!important;
+}
+
+/* Click/tap discoverability for the invitation cover. */
+
+@keyframes introSealHint{
+  0%,72%,100%{transform:translate(-50%,-50%) scale(1)}
+  82%{transform:translate(-50%,-50%) scale(1.055)}
+  90%{transform:translate(-50%,-50%) scale(.985)}
+}
+@keyframes introPhotoHint{
+  0%,100%{transform:translateX(-50%) translateY(14px) rotate(-4deg) scale(.96)}
+  50%{transform:translateX(-50%) translateY(8px) rotate(-3.2deg) scale(.968)}
+}
+@keyframes introArrowHint{
+  0%,65%,100%{transform:translate3d(0,0,0)}
+  78%{transform:translate3d(4px,-3px,0)}
+}
+
+/* Opening sequence: seal -> envelope/photo -> cover dissolves into the hero. */
+body.invitation-locked .hero{
+  opacity:.72;
+  transform:scale(1.015);
+  filter:saturate(.9);
+  transition:opacity 1.15s ease,transform 1.45s cubic-bezier(.16,.84,.24,1),filter 1.15s ease;
+}body.invitation-opening .hero{
+  opacity:1;
+  transform:scale(1);
+  filter:none;
+}
+@keyframes introOpenCardV20{
+  0%{opacity:1;transform:translateY(0) scale(1)}
+  48%{opacity:1;transform:translateY(-1.5%) scale(1.025)}
+  76%{opacity:.94;transform:translateY(-3.5%) scale(1.055)}
+  100%{opacity:0;transform:translateY(-7%) scale(1.11)}
+}
+
+/* Localize cover names without changing the original composition. */
+
+
+/* Desktop invitation cover: intentionally larger than the mobile card. */
+
+
+/* Short laptops still keep the CTA inside the viewport. */
+
+
+/* Tablet keeps the mobile composition, just with a little more presence. */
+
+
+/* Reduced motion preserves discoverability without ambient loops. */
+@media(prefers-reduced-motion:reduce){body.invitation-locked .hero{
+    transition:none!important;
+  }
+}
+
+
+/* Navigation: animated underline + language pill feedback. */
+.nav-links a:hover,
+.nav-links a:focus-visible{
+  opacity:1;
+}.nav-links a:hover::after,
+.nav-links a:focus-visible::after{
+  transform:scaleX(1);
+}.language-switcher button{
+  transition:
+    transform var(--ui-fast) var(--ui-ease),
+    background-color var(--ui-fast) ease,
+    color var(--ui-fast) ease,
+    box-shadow var(--ui-fast) ease;
+}@media(hover:hover) and (pointer:fine){.language-switcher button:hover{
+    transform:scale(1.045);
+    box-shadow:0 5px 16px rgba(60,43,35,.08);
+  }
+}
+
+/* Hero CTA: a stronger but still restrained response.
+   Existing magnetic motion remains authoritative in WOW mode. */
+.hero .btn,
+.gallery-cta .btn,
+.rsvp-form .btn{
+  transition:
+    transform var(--ui-fast) var(--ui-ease),
+    box-shadow var(--ui-medium) ease,
+    background-color var(--ui-fast) ease,
+    border-color var(--ui-fast) ease,
+    filter var(--ui-fast) ease;
+}@media(hover:hover) and (pointer:fine){.hero .btn:hover,
+.gallery-cta .btn:hover,
+.rsvp-form .btn:hover{
+    scale:1.03;
+    box-shadow:0 15px 34px rgba(58,41,32,.14);
+  }
+}.hero .btn:active,
+.gallery-cta .btn:active,
+.rsvp-form .btn:active{
+  scale:.975;
+}
+
+/* Wedding event cards: lift, soften, and reveal hierarchy. */
+.event-card{
+  transform-origin:center center;
+  transition:
+    transform var(--ui-medium) var(--ui-ease),
+    box-shadow var(--ui-medium) ease,
+    background-color var(--ui-medium) ease,
+    border-color var(--ui-medium) ease,
+    filter var(--ui-medium) ease!important;
+}.event-card h4,
+.event-card .event-date strong,
+.event-card .event-index{
+  transition:
+    transform var(--ui-medium) var(--ui-ease),
+    color var(--ui-fast) ease,
+    opacity var(--ui-fast) ease;
+}@media(hover:hover) and (pointer:fine){.event-card:hover{
+    transform:translateY(-6px) scale(1.012)!important;
+    box-shadow:0 24px 52px rgba(67,46,36,.12), inset 0 0 0 1px rgba(208,170,142,.16)!important;
+  }.event-card:hover h4{
+    transform:translateX(3px);
+  }.event-card:hover .event-index{
+    transform:translateY(-3px);
+    opacity:.72;
+  }.event-card:hover .event-date strong{
+    transform:translateY(-1px);
+  }
+}
+
+/* Map actions: arrow movement is already animated in WOW mode; make all modes responsive. */
+.map-link{
+  transition:
+    transform var(--ui-fast) var(--ui-ease),
+    background-color var(--ui-fast) ease,
+    border-color var(--ui-fast) ease,
+    box-shadow var(--ui-fast) ease;
+}.map-link span:last-child{
+  display:inline-block;
+  transition:transform var(--ui-fast) var(--ui-ease);
+}@media(hover:hover) and (pointer:fine){.map-link:hover{
+    box-shadow:0 8px 20px rgba(70,48,37,.08);
+  }html:not([data-motion="wow"]) .map-link:hover span:last-child{
+    transform:translate(3px,-3px);
+  }
+}.map-link:active{
+  scale:.97;
+}
+
+/* Gallery: zoom only the media, never the grid box. */
+.home-photo,
+.album-overlay-photo{
+  overflow:hidden;
+  transform-origin:center center;
+}.home-photo img,
+.album-overlay-photo img{
+  transition:
+    transform 520ms var(--ui-ease),
+    filter var(--ui-medium) ease;
+  transform-origin:center center;
+}.home-photo-copy,
+.album-overlay-photo span{
+  transition:
+    transform var(--ui-medium) var(--ui-ease),
+    opacity var(--ui-medium) ease;
+}@media(hover:hover) and (pointer:fine){.home-photo:hover img,
+.album-overlay-photo:hover img{
+    transform:scale(1.055);
+    filter:saturate(1.035) contrast(1.015);
+  }.home-photo:hover .home-photo-copy{
+    transform:translateY(0)!important;
+  }.album-overlay-photo:hover span{
+    transform:translateY(-2px);
+  }.home-photo{
+    cursor:zoom-in;
+  }
+}.home-photo:active,
+.album-overlay-photo:active{
+  scale:.987;
+}
+
+/* RSVP: clearer focus and tactile options. */
+.rsvp-form input,
+.rsvp-form select,
+.rsvp-form textarea{
+  transition:
+    transform var(--ui-fast) var(--ui-ease),
+    border-color var(--ui-fast) ease,
+    box-shadow var(--ui-fast) ease,
+    background-color var(--ui-fast) ease!important;
+}.rsvp-form input:focus,
+.rsvp-form select:focus,
+.rsvp-form textarea:focus{
+  transform:translateY(-2px)!important;
+  border-color:rgba(155,109,85,.46)!important;
+  box-shadow:0 9px 24px rgba(84,59,46,.075)!important;
+}.rsvp-form .radio{
+  transition:
+    transform var(--ui-fast) var(--ui-ease),
+    background-color var(--ui-fast) ease,
+    border-color var(--ui-fast) ease,
+    box-shadow var(--ui-fast) ease;
+}@media(hover:hover) and (pointer:fine){.rsvp-form .radio:hover{
+    transform:translateY(-2px) scale(1.008);
+    box-shadow:0 8px 20px rgba(70,50,40,.055);
+  }
+}.rsvp-form .radio:active{
+  scale:.985;
+}
+
+/* Submit shimmer only on true hover devices. */
+.rsvp-form .btn[type="submit"]{
+  position:relative;
+  overflow:hidden;
+}.rsvp-form .btn[type="submit"]::after{
+  content:"";
+  position:absolute;
+  top:-120%;
+  left:-38%;
+  width:24%;
+  height:340%;
+  transform:rotate(24deg) translateX(-220%);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);
+  pointer-events:none;
+}@media(hover:hover) and (pointer:fine){.rsvp-form .btn[type="submit"]:hover::after{
+    animation:rsvpSubmitShimmer .82s ease-out both;
+  }
+}
+@keyframes rsvpSubmitShimmer{
+  to{transform:rotate(24deg) translateX(720%)}
+}
+
+/* Music dock: slightly opens and breathes under the pointer on desktop. */
+.music-dock,
+.music-toggle,
+.music-disc,
+.music-state{
+  transition:
+    transform var(--ui-medium) var(--ui-ease),
+    box-shadow var(--ui-medium) ease,
+    border-color var(--ui-fast) ease,
+    background-color var(--ui-fast) ease!important;
+}@media(hover:hover) and (pointer:fine){.music-dock:hover{
+    transform:translateY(-3px) scale(1.018);
+    box-shadow:0 18px 42px rgba(34,24,20,.18);
+  }.music-dock:hover .music-disc{
+    transform:scale(1.075);
+  }.music-dock:hover .music-state{
+    transform:scale(1.055);
+  }
+}.music-toggle:active{
+  scale:.97;
+}
+
+/* Invitation: reinforce that the entire card is interactive. */
+
+
+/* Generic touch feedback for actual controls only. */
+@media(pointer:coarse){.btn:active,
+.map-link:active,
+.home-photo:active,
+.album-overlay-photo:active,
+.music-toggle:active,
+.language-switcher button:active{
+    transform:scale(.975)!important;
+  }
+}
+
+/* Focus-visible should feel as intentional as hover. */
+.btn:focus-visible,
+.map-link:focus-visible,
+.home-photo:focus-visible,
+.album-overlay-photo:focus-visible,
+.music-toggle:focus-visible,
+.language-switcher button:focus-visible,
+.nav-links a:focus-visible{
+  outline:2px solid color-mix(in srgb,var(--accent) 62%,#fff);
+  outline-offset:4px;
+}
+
+/* Accessibility: all decorative movement collapses gracefully. */
+@media(prefers-reduced-motion:reduce){.event-card,
+.event-card h4,
+.event-card .event-index,
+.home-photo img,
+.album-overlay-photo img,
+.home-photo-copy,
+.rsvp-form input,
+.rsvp-form select,
+.rsvp-form textarea,
+.rsvp-form .radio,
+.music-dock,
+.music-disc,
+.music-state,
+.language-switcher button{
+    transition:none!important;
+    animation:none!important;
+    transform:none!important;
+    scale:1!important;
+  }
+}
+
+
+/* One geometry model across languages:
+   [ time ] [ rail ] [ content ] */
+
+
+/* Rail is measured from first real dot to last real dot.
+   This works even when EN/VI/JP produce different card heights. */
+
+
+/* Sticky, compact status that changes as the reading anchor reaches an event. */
+
+@keyframes scheduleStatusSwap{
+  0%{opacity:.25;transform:translateY(6px)}
+  100%{opacity:1;transform:translateY(0)}
+}
+
+/* Scroll states: upcoming is calm, current is clear, passed stays complete. */
+
+
+/* Desktop keeps generous content width. */
+
+
+/* Tablet/mobile day card becomes a clean vertical stack,
+   then each event keeps the three-column time/rail/content layout. */
+
+
+/* Mobile: move the time column away from the outer decorative edge. */
+@media(max-width:680px){
+
+  /* Give the final event breathing room above the floating music control. */
+
+}
+
+/* Status and rail should still be readable without motion. */
+
+
+/* Hero SCROLL cue: center by geometry, never by inherited transform.
+   It stays independent from hero-copy/parallax on Safari and mobile. */
+.hero{
+  position:relative;
+}.scroll-curiosity{
+  left:0!important;
+  right:0!important;
+  width:max-content!important;
+  margin-inline:auto!important;
+  transform:none!important;
+  bottom:clamp(24px,4.2vh,48px)!important;
+  translate:0 0;
+  will-change:opacity,translate;
+}.scroll-curiosity.is-hidden{
+  transform:none!important;
+  translate:0 12px;
+}.scroll-curiosity-track,
+.scroll-curiosity-label,
+.scroll-curiosity-arrow{
+  flex:0 0 auto;
+}@media(max-width:900px){.scroll-curiosity{
+    bottom:clamp(22px,3.7vh,36px)!important;
+  }
+}@media(max-width:680px){.scroll-curiosity{
+    bottom:26px!important;
+  }.scroll-curiosity-label{
+    font-size:.55rem!important;
+  }.scroll-curiosity-track{
+    width:19px!important;
+    height:32px!important;
+  }.scroll-curiosity-arrow{
+    margin-top:1px;
+  }
+}
+
+/* Day header spacing: family label gets clear breathing room before the divider. */
+
+
+/* Current event state should feel alive once, not pulse forever. */
+
+@keyframes scheduleCurrentEnter{
+  0%{
+    transform:translateX(-50%) scale(.82);
+    box-shadow:0 0 0 0 color-mix(in srgb,var(--day-accent) 0%,transparent);
+  }
+  58%{
+    transform:translateX(-50%) scale(1.26);
+    box-shadow:0 0 0 9px color-mix(in srgb,var(--day-accent) 13%,transparent);
+  }
+  100%{
+    transform:translateX(-50%) scale(1.18);
+    box-shadow:0 0 0 7px color-mix(in srgb,var(--day-accent) 13%,transparent);
+  }
+}
+
+/* Keep sticky status readable but less visually dominant. */
+
+
+/* Music dock communicates loading/error instead of pretending to be playing. */
+.music-dock.is-loading .music-disc{
+  animation:musicLoadingPulse 1.1s ease-in-out infinite!important;
+}.music-dock.is-loading .music-state{
+  opacity:.72;
+}.music-dock.has-playback-error{
+  border-color:rgba(188,109,101,.55)!important;
+}.music-dock.has-playback-error .music-state{
+  color:#F1C3BD!important;
+}
+@keyframes musicLoadingPulse{
+  0%,100%{transform:scale(.94);opacity:.72}
+  50%{transform:scale(1.06);opacity:1}
+}
+
+/* On coarse pointers, keep decorative scroll-linked motion restrained. */
+@media(pointer:coarse){.hero-copy{
+    transform:none!important;
+  }
+}@media(prefers-reduced-motion:reduce){.scroll-curiosity,
+.scroll-curiosity.is-hidden{
+    translate:0 0!important;
+    transition:opacity .2s ease!important;
+  }.music-dock.is-loading .music-disc{
+    animation:none!important;
+  }
+}
+
+
+/* Japanese body copy gets stable native metrics; editorial headings stay Mincho. */
+html:lang(ja) body{
+  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP",system-ui,sans-serif;
+}html:lang(ja) .section-heading h2,
+html:lang(ja) .rsvp-copy h2,
+html:lang(ja) .event-family h3,
+html:lang(ja) .event-card h4{
+  font-family:"Yu Mincho","Hiragino Mincho ProN","Noto Serif JP",serif!important;
+  line-break:strict!important;
+  word-break:normal!important;
+  overflow-wrap:normal!important;
+}html:lang(ja) p,
+html:lang(ja) .btn,
+html:lang(ja) .map-link{
+  line-break:strict;
+}
+
+/* Functional schedule badges follow the selected language and never collide with text. */
+
+
+/* Latin headings must wrap at words, never inside a Vietnamese/English word. */
+html:lang(vi) h1,
+html:lang(vi) h2,
+html:lang(vi) h3,
+html:lang(en) h1,
+html:lang(en) h2,
+html:lang(en) h3{
+  overflow-wrap:normal;
+  word-break:normal;
+  hyphens:none;
+}
+
+/* CTA / labels stay inside rounded cards on narrow phones. */
+.btn,
+.map-link{
+  max-width:100%;
+  box-sizing:border-box;
+}.gallery-cta .btn{
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+}
+
+/* The localized display is decorative, but each intended line stays intact. */
+@media(max-width:680px){.event-card,
+.rsvp-form{
+    min-width:0;
+  }html:lang(ja) .section-heading h2,
+html:lang(ja) .rsvp-copy h2{
+    line-height:1.18!important;
+    letter-spacing:-.02em!important;
+  }
+}
+
+/* Footer copy is localized, so give JP/VI room without forcing a single line. */
+.footer p,
+.footer-small{
+  overflow-wrap:normal;
+  word-break:normal;
+}html:lang(ja) .footer p{
+  line-break:strict;
+}
+
+
+/* Vietnamese editorial typography safety */
+html[lang="vi"] .gallery-editorial-head{
+  grid-template-columns:minmax(250px,.68fr) minmax(0,1.32fr);
+  gap:clamp(32px,5vw,72px);
+}html[lang="vi"] .gallery-display{
+  min-width:0;
+  font-size:clamp(3.65rem,6.4vw,6.7rem);
+  line-height:.86;
+  letter-spacing:-.05em;
+}html[lang="vi"] .gallery-editorial-head .section-heading{
+  min-width:0;
+  width:100%;
+  max-width:680px;
+}html[lang="vi"] .gallery-editorial-head .section-heading h2{
+  max-width:100%;
+  font-size:clamp(2.65rem,4.15vw,4.15rem);
+  line-height:1.03;
+  word-break:normal;
+  overflow-wrap:normal;
+  text-wrap:balance;
+}html[lang="vi"] .gallery-editorial-head .section-heading > p:last-child{
+  max-width:620px;
+  line-height:1.72;
+  word-break:normal;
+  overflow-wrap:normal;
+}@media(max-width:1000px){html[lang="vi"] .gallery-editorial-head{
+    grid-template-columns:1fr;
+  }html[lang="vi"] .gallery-display{
+    font-size:clamp(3.8rem,10vw,6.2rem);
+  }
+}@media(max-width:760px){html[lang="vi"] .gallery-display{
+    grid-template-columns:auto auto;
+    font-size:clamp(3rem,14vw,4.8rem);
+    line-height:.9;
+  }html[lang="vi"] .gallery-editorial-head .section-heading h2{
+    font-size:clamp(2.35rem,10.5vw,3.65rem);
+    text-wrap:pretty;
+  }
+}@media(max-width:430px){html[lang="vi"] .gallery-display{
+    font-size:clamp(2.65rem,13.5vw,3.65rem);
+  }
+}
+
+
+/* Personalized invitation */
+.personal-invite-private{
+  margin: 12px auto 0;
+  max-width: 560px;
+  padding: 0 20px;
+  text-align: center;
+  color: rgba(255,255,255,.72);
+  font-size: .76rem;
+  letter-spacing: .04em;
+}.invite-invalid .personal-invite-private{
+  display: none !important;
+}
+
+
+.invitation-intro{
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+}.personal-invite-private{
+  margin:14px auto 0!important;
+  max-width:620px!important;
+  color:#6f5a4d!important;
+  opacity:1!important;
+  font-weight:600!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.75)!important;
+}
+
+/* Hide decorative side note while cover is active; make it readable after opening. */
+body.invitation-locked .side-note,
+body.invitation-opening .side-note{
+  opacity:0!important;
+  visibility:hidden!important;
+}.side-note{
+  color:#4f3b31!important;
+  background:rgba(255,253,249,.86)!important;
+  border:1px solid rgba(92,68,54,.14)!important;
+  box-shadow:0 8px 22px rgba(55,42,34,.08)!important;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  padding:14px 7px!important;
+  border-radius:999px!important;
+  opacity:.92!important;
+}
+
+/* Post-open thank-you card */
+.invite-welcome{
+  position:fixed;
+  inset:0;
+  z-index:2200;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  pointer-events:none;
+  opacity:0;
+  visibility:hidden;
+  background:rgba(36,29,25,.16);
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
+  transition:opacity .42s ease,visibility .42s ease;
+}.invite-welcome.is-visible{
+  opacity:1;
+  visibility:visible;
+}.invite-welcome.is-leaving{
+  opacity:0;
+}.invite-welcome-card{
+  width:min(520px,calc(100vw - 40px));
+  padding:34px 30px 30px;
+  border-radius:28px;
+  text-align:center;
+  background:rgba(255,252,248,.96);
+  border:1px solid rgba(122,91,70,.16);
+  box-shadow:0 28px 80px rgba(42,31,25,.22);
+  transform:translateY(16px) scale(.98);
+  opacity:0;
+  transition:transform .48s cubic-bezier(.2,.8,.2,1),opacity .36s ease;
+}.invite-welcome.is-visible .invite-welcome-card{
+  transform:translateY(0) scale(1);
+  opacity:1;
+}.invite-welcome.is-leaving .invite-welcome-card{
+  transform:translateY(-10px) scale(.99);
+  opacity:0;
+}.invite-welcome-heart{
+  display:block;
+  margin-bottom:10px;
+  color:#9b6d55;
+  font:500 2rem/1 Georgia,serif;
+}.invite-welcome-card strong{
+  display:block;
+  color:#4e392f;
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-size:clamp(1.8rem,4vw,2.65rem);
+  line-height:1.05;
+  font-weight:600;
+  text-wrap:balance;
+}.invite-welcome-card p{
+  margin:14px auto 0;
+  max-width:420px;
+  color:#766257;
+  font-size:1rem;
+  line-height:1.65;
+}.invite-welcome-card small{
+  display:block;
+  margin-top:18px;
+  color:#9b6d55;
+  font-weight:800;
+  letter-spacing:.22em;
+}
+
+/* Mobile invitation cover */
+@media(max-width:760px){.side-note{display:none!important;}.personal-invite-private{
+    max-width:340px!important;
+    padding:0 12px!important;
+    font-size:.73rem!important;
+    line-height:1.45!important;
+  }.invite-welcome{
+    padding:18px;
+  }.invite-welcome-card{
+    padding:28px 22px 24px;
+    border-radius:24px;
+  }.invite-welcome-card strong{
+    font-size:clamp(1.65rem,8.4vw,2.25rem);
+  }.invite-welcome-card p{
+    font-size:.94rem;
+  }
+}@media(prefers-reduced-motion:reduce){.invite-welcome,
+.invite-welcome-card{
+    transition:none!important;
+  }
+}
+
+
+/* Keep the decorative envelope, but size and position it below the couple photo. */
+
+
+/* Couple name stays completely outside the envelope/photo layers. */
+
+
+/* Opening keeps the original envelope choreography but prevents content clipping. */
+
+
+/* Mobile: preserve all layers and keep the envelope clear of the photo and names. */
+
+
+/* Envelope top flap */
+
+
+/* Sparkles around the wax seal */
+
+
+/* Pre-click affordance */
+
+@keyframes envelopeBreathe{
+  0%,100%{filter:drop-shadow(0 12px 18px rgba(69,35,33,.18));}
+  50%{filter:drop-shadow(0 17px 24px rgba(101,54,42,.24));}
+}
+@keyframes sealPulse{
+  0%,100%{transform:translate(-50%,-50%) scale(1)}
+  50%{transform:translate(-50%,-50%) scale(1.06)}
+}
+@keyframes buttonShimmer{
+  0%,62%{transform:translateX(-140%);opacity:0}
+  72%{opacity:1}
+  88%,100%{transform:translateX(140%);opacity:0}
+}
+
+/* Click choreography: seal -> flap -> inner card -> portal transition */
+.invitation-intro.is-opening{
+  background:radial-gradient(circle at 50% 46%,rgba(120,74,58,.12),rgba(255,251,247,.96) 42%,rgba(248,241,238,1) 76%)!important;
+}.invitation-intro.is-opening .personal-invite-private,
+.invitation-intro.is-opening .intro-language{
+  opacity:0!important;
+  transition:opacity .26s ease!important;
+}
+
+/* 0.0-0.45: seal breaks + golden ring */
+
+@keyframes sealRing{
+  0%{opacity:0;border-color:rgba(224,181,116,0);box-shadow:0 0 0 rgba(226,181,116,0);transform:scale(.84)}
+  45%{opacity:1;border-color:rgba(224,181,116,.62);box-shadow:0 0 28px rgba(226,181,116,.28)}
+  100%{opacity:0;border-color:rgba(224,181,116,0);box-shadow:0 0 46px rgba(226,181,116,0);transform:scale(1.12)}
+}
+@keyframes sealBreak{
+  0%{transform:translate(-50%,-50%) scale(1) rotate(0);opacity:1}
+  45%{transform:translate(-50%,-50%) scale(1.12) rotate(-6deg);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(0) rotate(-18deg);opacity:0}
+}
+@keyframes sparkBurst{
+  0%{opacity:0;transform:translate(0,0) scale(.2)}
+  20%{opacity:1}
+  100%{opacity:0;transform:translate(var(--sx),var(--sy)) scale(1)}
+}
+
+/* 0.35-1.05: flap opens */
+
+@keyframes flapOpen{
+  0%{transform:rotateX(0deg)}
+  100%{transform:rotateX(-155deg) translateY(-2px);filter:brightness(1.08)}
+}
+@keyframes envelopeLeftOpen{
+  0%{transform:rotateY(0deg)}
+  100%{transform:rotateY(-9deg) translateX(-4px)}
+}
+@keyframes envelopeRightOpen{
+  0%{transform:rotateY(0deg)}
+  100%{transform:rotateY(9deg) translateX(4px)}
+}
+
+/* 0.8-1.7: inner invitation lifts out */
+
+@keyframes photoLift{
+  0%{transform:translateY(0) scale(1);filter:blur(0);box-shadow:0 18px 44px rgba(82,58,47,.16)}
+  55%{transform:translateY(-48px) scale(1.035);box-shadow:0 28px 60px rgba(82,58,47,.24)}
+  100%{transform:translateY(-70px) scale(1.06);filter:blur(0);box-shadow:0 34px 76px rgba(82,58,47,.26)}
+}
+@keyframes copyLift{
+  0%{transform:translateY(0);opacity:1}
+  100%{transform:translateY(-30px);opacity:1}
+}
+@keyframes upperCopyLift{
+  0%{transform:translateY(0);opacity:1}
+  100%{transform:translateY(-18px);opacity:1}
+}
+@keyframes paperGlow{
+  0%{opacity:0;transform:scale(.9)}
+  55%{opacity:1;transform:scale(1.06)}
+  100%{opacity:.65;transform:scale(1.14)}
+}
+
+/* 1.55-2.58: card becomes a portal and dissolves into the site */
+
+@keyframes cardPortal{
+  0%{transform:translateY(0) rotateX(0) scale(1);opacity:1;filter:blur(0)}
+  55%{transform:translateY(-12px) rotateX(0) scale(1.06);opacity:1;filter:blur(0)}
+  100%{transform:translateY(-24px) rotateX(0) scale(1.18);opacity:0;filter:blur(10px)}
+}
+@keyframes atmosphereBloom{
+  0%{opacity:1;transform:scale(1)}
+  100%{opacity:0;transform:scale(1.08)}
+}
+
+/* Desktop adds a touch more depth. */
+@media(min-width:900px) and (pointer:fine){
+  @keyframes stageDepth{
+    0%{transform:rotateX(0deg) translateZ(0)}
+    50%{transform:rotateX(2.2deg) translateZ(24px)}
+    100%{transform:rotateX(0deg) translateZ(42px)}
+  }
+}
+
+/* Mobile keeps the wow without heavy 3D. */
+@media(max-width:760px){
+  @keyframes photoLiftMobile{
+    0%{transform:translateY(0) scale(1);box-shadow:0 18px 44px rgba(82,58,47,.16)}
+    60%{transform:translateY(-28px) scale(1.025);box-shadow:0 24px 52px rgba(82,58,47,.22)}
+    100%{transform:translateY(-42px) scale(1.045);box-shadow:0 28px 60px rgba(82,58,47,.24)}
+  }
+  @keyframes cardPortalMobile{
+    0%{transform:translateY(0) scale(1);opacity:1;filter:blur(0)}
+    58%{transform:translateY(-8px) scale(1.035);opacity:1;filter:blur(0)}
+    100%{transform:translateY(-14px) scale(1.09);opacity:0;filter:blur(7px)}
+  }
+}
+
+/* Respect reduced motion. */
+
+
+/* Keep the cover content stable while opening. */
+
+
+/* The thing that comes out of the envelope is now a real inner invitation card. */
+
+
+/* Opening sequence: seal -> flap -> inner card -> cover dissolve. */
+
+@keyframes innerLetterReveal{
+  0%{
+    opacity:0;
+    transform:translateX(-50%) translateY(38px) scale(.88);
+    box-shadow:0 8px 18px rgba(73,43,35,.12);
+  }
+  24%{opacity:1}
+  72%{
+    opacity:1;
+    transform:translateX(-50%) translateY(-72px) scale(1.02);
+    box-shadow:0 24px 46px rgba(73,43,35,.22);
+  }
+  100%{
+    opacity:1;
+    transform:translateX(-50%) translateY(-88px) scale(1.08);
+    box-shadow:0 30px 58px rgba(73,43,35,.24);
+  }
+}
+
+/* Front envelope lowers a touch, making the emerging card obvious. */
+
+@keyframes envelopeFrontDrop{
+  0%{transform:translateY(0)}
+  100%{transform:translateY(8px)}
+}
+
+/* The whole cover stays still until the inner card is fully visible. */
+
+@keyframes coverDissolve{
+  0%{opacity:1;transform:none;filter:blur(0)}
+  45%{opacity:1;transform:scale(1.015);filter:blur(0)}
+  100%{opacity:0;transform:scale(1.045);filter:blur(6px)}
+}
+@keyframes coverAtmosphereFade{
+  from{opacity:1}
+  to{opacity:0}
+}
+
+/* Do not move the photo or typography during opening on any viewport. */
+@media(max-width:760px){
+  @keyframes innerLetterRevealMobile{
+    0%{opacity:0;transform:translateX(-50%) translateY(32px) scale(.9)}
+    25%{opacity:1}
+    75%{opacity:1;transform:translateX(-50%) translateY(-54px) scale(1)}
+    100%{opacity:1;transform:translateX(-50%) translateY(-64px) scale(1.04)}
+  }
+}
+
+/* Hero romantic falling layer */
+.hero-fall-layer{
+  position:absolute;
+  inset:0;
+  z-index:3;
+  overflow:hidden;
+  pointer-events:none;
+  mask-image:linear-gradient(to bottom,#000 0%,#000 72%,transparent 100%);
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 72%,transparent 100%);
+}.hero-fall-item{
+  position:absolute;
+  top:-12vh;
+  left:var(--fall-left);
+  font-size:var(--fall-size);
+  line-height:1;
+  opacity:var(--fall-opacity);
+  filter:drop-shadow(0 3px 7px rgba(71,47,38,.12));
+  animation:heroRomanticFall var(--fall-duration) linear var(--fall-delay) infinite;
+  will-change:transform,opacity;
+  user-select:none;
+}.hero-fall-item.petal{filter:drop-shadow(0 4px 8px rgba(141,87,95,.12))}.hero-fall-item.heart-red{opacity:calc(var(--fall-opacity) * .78)}.hero-fall-item.snow{filter:grayscale(.1) drop-shadow(0 3px 8px rgba(255,255,255,.18))}.hero-fall-layer.is-paused .hero-fall-item{
+  animation-play-state:paused;
+}
+@keyframes heroRomanticFall{
+  0%{
+    transform:translate3d(0,-8vh,0) rotate(0deg) scale(.92);
+    opacity:0;
+  }
+  8%{opacity:var(--fall-opacity)}
+  46%{
+    transform:translate3d(calc(var(--fall-drift) * .45),48vh,0) rotate(calc(var(--fall-rotate) * .52)) scale(1);
+  }
+  86%{opacity:var(--fall-opacity)}
+  100%{
+    transform:translate3d(var(--fall-drift),112vh,0) rotate(var(--fall-rotate)) scale(.96);
+    opacity:0;
+  }
+}
+
+/* Hero content must remain above the decorative fall. */
+.hero-content,
+.scroll-curiosity{
+  z-index:5!important;
+}.hero-overlay{
+  z-index:2!important;
+}
+
+/* Mobile: fewer items are created in JS, and motion is slightly softer. */
+@media(max-width:760px){.hero-fall-item{
+    filter:none;
+  }.hero-fall-layer{
+    opacity:.78;
+  }
+}
+
+/* Accessibility */
+@media(prefers-reduced-motion:reduce){.hero-fall-layer{
+    display:none!important;
+  }
+}
+
+
+.hero-fall-layer{
+  position:fixed!important;
+  inset:0!important;
+  width:100vw!important;
+  height:100vh!important;
+  z-index:60!important;
+  overflow:hidden!important;
+  pointer-events:none!important;
+  opacity:.82;
+  visibility:visible;
+  transition:opacity .55s ease,visibility .55s ease;
+  mask-image:none!important;
+  -webkit-mask-image:none!important;
+}
+
+/* Keep the invitation cover visually clean. Start falling only after it opens. */
+body.invitation-locked .hero-fall-layer,
+body.invitation-opening .hero-fall-layer{
+  opacity:0!important;
+  visibility:hidden!important;
+}.hero-fall-item{
+  position:absolute!important;
+  top:-14vh!important;
+}
+
+/* Keep controls, modals and navigation above the decoration. */
+.nav,
+.music-dock,
+.invite-welcome,
+.album-overlay,
+.photo-lightbox{
+  z-index:1000!important;
+}
+
+/* Dark sections need slightly stronger particles without becoming distracting. */
+.countdown-section ~ .hero-fall-layer,
+.forever-transition ~ .hero-fall-layer{
+  opacity:.82;
+}@media(max-width:760px){.hero-fall-layer{
+    opacity:.68;
+  }
+}@media(prefers-reduced-motion:reduce){.hero-fall-layer{
+    display:none!important;
+  }
+}
+
+
+.hero-fall-item.sparkle{
+  filter:drop-shadow(0 0 8px rgba(255,226,155,.35));
+  opacity:calc(var(--fall-opacity) * .92);
+}.hero-fall-item.heart-red{
+  opacity:calc(var(--fall-opacity) * .72);
+}.hero-fall-item.snow{
+  opacity:calc(var(--fall-opacity) * .78);
+}
