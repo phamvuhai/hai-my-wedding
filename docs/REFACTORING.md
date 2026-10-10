@@ -14,13 +14,21 @@ This project serves guests and administrators. A complete one-shot rewrite would
 - Add dependency-free JS syntax / asset / route / CSS-cascade checks and invitation interaction tests, executed by GitHub Actions.
 - Preserve Vercel no-store policies for new mutable assets.
 
-## Stage 2 — Follow-up cleanup (not yet changed)
+## Stage 2 — Cleanup completed on this branch
 
-- Remove old `invite-v2` / Canvas-specific CSS only after screenshot comparison on PC, tablet, Android and Safari iOS.
-- Archive or delete the unused older invitation implementation (`invitation-canvas.js`, `invitation-config.js`, `invitation-assets.js`, `invitation-simple.css`) once design-source references are migrated.
+- Removed obsolete invitation V3–V6 CSS overrides and five exactly repeated style rules. The active HTML/CSS Couture invitation remains untouched.
+- Deleted unused pre-Couture `invitation-canvas.js`, `invitation-config.js`, `invitation-assets.js` and `invitation-simple.css` (not loaded by the public HTML).
+- Removed redundant Gallery initialization calls in `motion.js`; existing data-init listener guards remain.
+- Introduced `admin/utils.js` for export CSV, normalizing guests, getting the latest RSVP per invitation, gallery metadata changes, and WebP optimization.
+- Updated Admin RSVP, Guests, Gallery and Image Editor to use shared helpers.
+- Added `tests/admin-utils.test.mjs` to GitHub Actions.
+
+## Stage 3 — Remaining work (requires browser, Supabase and visual regression testing)
+
+- Audit additional scattered legacy selectors only after browser screenshot comparison on PC, tablet, Android and Safari iOS.
 - Consolidate repeated responsive/important rules into maintainable design tokens and component styles.
 - Segment the remaining public app into independently testable gallery, RSVP and event-scroll modules without changing Supabase calls.
-- Extract reusable admin image/CSV helpers and add tests for guest dedupe, RSVP edits, gallery upload and auth redirects.
+- Add live integration tests for guest dedupe, RSVP edits, gallery upload and auth redirects; unit helpers are already covered.
 - Prefer content-driven layout and accessible transitions over fixed-pixel positioning.
 
 ## Required regression checks before production
@@ -42,7 +50,7 @@ The Vercel preview for the refactor branch reports `READY` but direct requests t
 
 ```bash
 node tools/check-site.mjs
-node --test tests/invitation.test.mjs
+node --test tests/invitation.test.mjs tests/admin-utils.test.mjs
 ```
 
 No npm dependencies are required for the refactor checks.
