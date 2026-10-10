@@ -66,7 +66,7 @@ test('image optimizer picks the first target candidate and releases canvas',asyn
   const render=size=>{
     const canvas={
       width:size,height:size/2,
-      toBlob:resolve=>resolve({size:output.length===0?700:400})
+      toBlob:resolve=>resolve({size:output.length===1?700:400})
     };
     output.push(canvas);
     return canvas;
