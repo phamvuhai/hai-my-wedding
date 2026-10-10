@@ -45,11 +45,18 @@ for(const entry of scenarios){
  }catch(e){errors.push('not ready: '+e.message.slice(0,100));}
  await page.screenshot({path:join(out,entry.name+'-cover.png')});
  if(ready) {
+  await page.evaluate(()=>{
+   window.__weddingOpeningComplete=false;
+   document.addEventListener('wedding:invitation-opened',()=>{
+     window.__weddingOpeningComplete=true;
+   },{once:true});
+  });
   await page.locator('#openInvitation').click();
   await page.waitForTimeout(3900);
   await page.screenshot({path:join(out,entry.name+'-paper.png')});
   try{
-   await page.waitForFunction(()=>document.getElementById('invitationIntro')?.classList.contains('is-opened'),{timeout:5500});
+   await page.waitForFunction(()=>window.__weddingOpeningComplete===true,{timeout:7500});
+   await page.waitForTimeout(380);
    opened=true;
   }catch(e){errors.push('not opened: '+e.message.slice(0,100));}
  }
@@ -62,7 +69,7 @@ for(const entry of scenarios){
   bodyClasses:document.body.className
  }));
  // The site supports smooth scrolling; force an instant jump for screenshot assertions.
- await page.addStyleTag({content:'html{overflow-x:visible!important;scroll-behavior:auto!important}body{scroll-behavior:auto!important}'});
+ await page.addStyleTag({content:'html,body{scroll-behavior:auto!important}'});
  const form=page.locator('#rsvpForm');
  const exists=await form.count()>0;
  let formVisible=false;
