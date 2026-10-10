@@ -37,36 +37,33 @@ for(const cfg of configs){
  await page.waitForFunction(()=>document.querySelector('#invitationIntro')?.classList.contains('is-ready'),{timeout:7000});
  await wait(350);
  await page.screenshot({path:join(out,cfg.name+'-closed.png')});
- const closed=await page.evaluate(()=>({
-  cover:!!document.querySelector('.atelier-invite'),
-  envelope:!!document.querySelector('.atelier-envelope-front'),
-  textNames:[...document.querySelectorAll('.atelier-names strong')].map(x=>x.textContent.trim()),
-  horizontalOverflow:document.documentElement.scrollWidth>innerWidth+2
- }));
- await page.evaluate(()=>document.addEventListener('wedding:invitation-opened',()=>window.__finished=true,{once:true}));
- await page.click('#openInvitation');
- await wait(3850);
- await page.screenshot({path:join(out,cfg.name+'-revealed.png')});
- const open=await page.evaluate(()=>{
-  const el=document.querySelector('.atelier-paper'),r=el.getBoundingClientRect();
-  const names=[...el.querySelectorAll('.atelier-names strong')].map(n=>({text:n.textContent.trim(),rect:n.getBoundingClientRect().toJSON()}));
+ const closed=await page.evaluate(()=>{
+  const button=document.querySelector('#openInvitation');
+  const r=button?.getBoundingClientRect();
   return {
-   coverOpening:document.querySelector('#invitationIntro').classList.contains('is-opening'),
-   cardRect:r.toJSON(),foil:!!el.querySelector('.atelier-paper-foil'),
-   cardVisible:getComputedStyle(el).opacity!=='0',
-   names,
-   namesFit:names.every(n=>n.rect.left>=r.left-3&&n.rect.right<=r.right+3&&n.rect.top>=r.top-3&&n.rect.bottom<=r.bottom+3),
-   cardInViewport:r.top>=-15&&r.bottom<=innerHeight+25
+   cover:!!document.querySelector('.invitation-intro.invite-minimal'),
+   names:[...document.querySelectorAll('.minimal-names span')].map(x=>x.textContent.trim()),
+   buttonVisible:!!r&&r.width>=120&&r.height>=44&&r.top>=0&&r.bottom<=innerHeight,
+   horizontalOverflow:document.documentElement.scrollWidth>innerWidth+2
   };
  });
+ await page.evaluate(()=>document.addEventListener('wedding:invitation-opened',()=>window.__finished=true,{once:true}));
+ await page.click('#openInvitation');
  await page.waitForFunction(()=>window.__finished===true,{timeout:6000});
- const finish=await page.evaluate(()=>({opened:document.querySelector('#invitationIntro').classList.contains('is-opened'),route:location.pathname,locked:document.body.classList.contains('invitation-locked')}));
+ const finish=await page.evaluate(()=>({
+  opened:document.querySelector('#invitationIntro').classList.contains('is-opened'),
+  route:location.pathname,
+  locked:document.body.classList.contains('invitation-locked'),
+  horizontalOverflow:document.documentElement.scrollWidth>innerWidth+2
+ }));
  await page.screenshot({path:join(out,cfg.name+'-homepage.png')});
  await page.close();
- const passed=closed.cover&&closed.envelope&&closed.textNames.length===2&&!closed.horizontalOverflow&&open.coverOpening&&open.cardVisible&&open.foil&&open.namesFit&&open.cardInViewport&&finish.opened&&!finish.locked&&errors.length===0;
- report.push({viewport:cfg.name,passed,closed,open,finish,errors});
- console.log(cfg.name+': '+(passed?'PASS':'FAIL')+' cardTop='+Math.round(open.cardRect.top)+' cardBottom='+Math.round(open.cardRect.bottom)+' namesFit='+open.namesFit+' errors='+errors.length);
+ const passed=closed.cover&&closed.names.length===2&&closed.buttonVisible&&
+  !closed.horizontalOverflow&&finish.opened&&!finish.locked&&!finish.horizontalOverflow&&errors.length===0;
+ report.push({viewport:cfg.name,passed,closed,finish,errors});
+ console.log(cfg.name+': '+(passed?'PASS':'FAIL')+' buttonVisible='+closed.buttonVisible+' errors='+errors.length);
 }
+
 const localized=await browser.newPage();
 await localized.goto(url+'/vi',{waitUntil:'domcontentloaded',timeout:30000});
 const bypass=await localized.evaluate(()=>document.querySelector('#invitationIntro')?.classList.contains('is-bypassed'));
