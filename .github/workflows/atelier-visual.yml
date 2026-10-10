@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - 'refactor/atelier-*'
+      - 'fix/atelier-*'
   pull_request:
   workflow_dispatch:
 jobs:
