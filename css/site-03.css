@@ -309,9 +309,6 @@ html:lang(ja) .rsvp-section{
   }.family-date{
     flex:0 0 auto;
     white-space:nowrap;
-  }.event-card,
-.rsvp-form{
-    overflow:visible;
   }.event-meta{
     font-size:.9rem;
     line-height:1.58;
