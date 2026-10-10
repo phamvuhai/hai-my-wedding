@@ -16,4 +16,4 @@ jobs:
       - name: Check source, assets and route wiring
         run: node tools/check-site.mjs
       - name: Verify invitation and Admin helpers
-        run: node --test tests/invitation.test.mjs tests/admin-utils.test.mjs
+        run: node --test tests/invitation.test.mjs tests/admin-utils.test.mjs tests/admin-auth.test.mjs
