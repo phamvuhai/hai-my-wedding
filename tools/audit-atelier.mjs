@@ -45,7 +45,9 @@ for(const cfg of configs){
  }));
  await page.evaluate(()=>document.addEventListener('wedding:invitation-opened',()=>window.__finished=true,{once:true}));
  await page.click('#openInvitation');
- await wait(3850);
+ await wait(2200);
+ await page.screenshot({path:join(out,cfg.name+'-mid-opening.png')});
+ await wait(1650);
  await page.screenshot({path:join(out,cfg.name+'-revealed.png')});
  const open=await page.evaluate(()=>{
   const el=document.querySelector('.atelier-paper'),r=el.getBoundingClientRect();
@@ -56,16 +58,20 @@ for(const cfg of configs){
    cardVisible:getComputedStyle(el).opacity!=='0',
    names,
    namesFit:names.every(n=>n.rect.left>=r.left-3&&n.rect.right<=r.right+3&&n.rect.top>=r.top-3&&n.rect.bottom<=r.bottom+3),
-   cardInViewport:r.top>=-15&&r.bottom<=innerHeight+25
+   cardInViewport:r.top>=-15&&r.bottom<=innerHeight+25,
+   paperZ:Number.parseInt(getComputedStyle(el).zIndex||'0',10),
+   pocketZ:Number.parseInt(getComputedStyle(document.querySelector('.atelier-envelope-front')).zIndex||'0',10),
+   pocketOpacity:Number.parseFloat(getComputedStyle(document.querySelector('.atelier-envelope-front')).opacity)
+
   };
  });
  await page.waitForFunction(()=>window.__finished===true,{timeout:6000});
  const finish=await page.evaluate(()=>({opened:document.querySelector('#invitationIntro').classList.contains('is-opened'),route:location.pathname,locked:document.body.classList.contains('invitation-locked')}));
  await page.screenshot({path:join(out,cfg.name+'-homepage.png')});
  await page.close();
- const passed=closed.cover&&closed.envelope&&closed.textNames.length===2&&!closed.horizontalOverflow&&open.coverOpening&&open.cardVisible&&open.foil&&open.namesFit&&open.cardInViewport&&finish.opened&&!finish.locked&&errors.length===0;
+ const passed=closed.cover&&closed.envelope&&closed.textNames.length===2&&!closed.horizontalOverflow&&open.coverOpening&&open.cardVisible&&open.foil&&open.namesFit&&open.cardInViewport&&open.paperZ>open.pocketZ&&open.pocketOpacity<.38&&finish.opened&&!finish.locked&&errors.length===0;
  report.push({viewport:cfg.name,passed,closed,open,finish,errors});
- console.log(cfg.name+': '+(passed?'PASS':'FAIL')+' cardTop='+Math.round(open.cardRect.top)+' cardBottom='+Math.round(open.cardRect.bottom)+' namesFit='+open.namesFit+' errors='+errors.length);
+ console.log(cfg.name+': '+(passed?'PASS':'FAIL')+' cardTop='+Math.round(open.cardRect.top)+' cardBottom='+Math.round(open.cardRect.bottom)+' namesFit='+open.namesFit+' paperZ='+open.paperZ+' pocketOpacity='+open.pocketOpacity+' errors='+errors.length);
 }
 const localized=await browser.newPage();
 await localized.goto(url+'/vi',{waitUntil:'domcontentloaded',timeout:30000});
