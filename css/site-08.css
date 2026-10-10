@@ -136,15 +136,9 @@
 
 /* OPENING MOTION — Figma-source Canvas stationery */
 
-@keyframes canvasControlsOut{
-  to{opacity:0;translate:0 8px}
-}
-@keyframes canvasHeadingOut{
-  to{opacity:.10;translate:0 -6px}
-}
-@keyframes canvasSceneExit{
-  to{opacity:0;filter:blur(3px);transform:scale(1.012)}
-}@media(max-width:760px){
+
+
+@media(max-width:760px){
 }@media(max-height:760px) and (max-width:760px){
 }@media(orientation:landscape) and (max-height:560px){
 }@media(prefers-reduced-motion:reduce){
