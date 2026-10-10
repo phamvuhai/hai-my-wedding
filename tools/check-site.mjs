@@ -36,6 +36,12 @@ for (const [index, file] of cssFiles.entries()) {
 }
 const actualLinks = [...source.matchAll(/href="\/(css\/site-\d+\.css)(?:\?[^"]*)?"/g)].map(match => match[1]);
 assert.deepEqual(actualLinks, cssFiles, 'CSS cascade order differs from manifest');
+for (const legacy of ['Physical Invitation V3','Invitation UX V4','Invitation Cover V5','Cover stability V6']) {
+  assert(!combined.includes(legacy), 'Dead invitation CSS was reintroduced: ' + legacy);
+}
+for (const unused of ['invitation-canvas.js','invitation-config.js','invitation-assets.js','invitation-simple.css']) {
+  assert(!existsSync(resolve(root,unused)), 'Unused invitation implementation still present: ' + unused);
+}
 
 function findJsFiles(directory = root) {
   return readdirSync(directory, { withFileTypes:true }).flatMap(entry => {
@@ -69,6 +75,16 @@ assert(source.includes('src="/invitation.js'), 'Opening controller missing');
 assert(source.includes('id="personalInvitePrivate"'), 'Personalized guest hook missing');
 assert(source.includes('id="openInvitation"'), 'Invitation open control missing');
 assert(source.includes('PHẠM VŨ HẢI') && source.includes('NGUYỄN THỊ MỸ'), 'Wedding names missing');
+const adminUtilsIndex = admin.indexOf('src="/admin/utils.js');
+const adminStateIndex = admin.indexOf('src="/admin/state.js');
+const adminEditorIndex = admin.indexOf('src="/admin/editor.js');
+const adminRsvpIndex = admin.indexOf('src="/admin/rsvp.js');
+const adminGuestsIndex = admin.indexOf('src="/admin/guests.js');
+const adminLibraryIndex = admin.indexOf('src="/admin/library.js');
+assert(adminStateIndex >= 0 && adminStateIndex < adminUtilsIndex, 'Admin state must load before shared utilities');
+for (const index of [adminEditorIndex,adminRsvpIndex,adminGuestsIndex,adminLibraryIndex]) {
+  assert(index > adminUtilsIndex, 'Admin shared utilities must load before dependent screens');
+}
 
 for (const route of ['/vi','/en','/jp','/admin','/admin/login']) {
   assert(vercel.rewrites.some(entry => entry.source === route), 'Missing rewrite ' + route);
