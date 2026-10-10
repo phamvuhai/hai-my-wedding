@@ -1,5 +1,5 @@
-/* Minimal wedding invitation cover: lightweight, readable and tap-friendly. */
-.invitation-intro.invite-minimal {
+/* Luxury Romantic Invitation — isolated entry cover. The full wedding website is untouched. */
+.invitation-intro.invite-minimal.invite-luxury {
   position: fixed !important;
   inset: 0 !important;
   z-index: 9999 !important;
@@ -11,140 +11,390 @@
   height: 100dvh !important;
   min-height: 0 !important;
   margin: 0 !important;
-  padding: max(72px, calc(env(safe-area-inset-top) + 62px)) 18px max(20px, calc(env(safe-area-inset-bottom) + 18px)) !important;
+  padding: 34px max(15px, env(safe-area-inset-right)) 34px max(15px, env(safe-area-inset-left)) !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
-  background: #f8f5ef !important;
-  color: #593a39 !important;
+  box-sizing: border-box;
   isolation: isolate;
-  transition: opacity .28s ease, visibility .28s ease !important;
+  color: #5b333a !important;
+  background:
+    radial-gradient(ellipse 58% 76% at 50% 47%, rgba(143,77,82,.75), transparent 82%),
+    radial-gradient(ellipse 38% 64% at 0% 78%, rgba(142,83,76,.45), transparent 95%),
+    radial-gradient(ellipse 36% 60% at 100% 15%, rgba(141,73,84,.4), transparent 95%),
+    linear-gradient(125deg, #260e1b 0%, #572736 44%, #2b101f 100%) !important;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .38s ease, visibility .38s ease !important;
+  -webkit-tap-highlight-color: transparent;
 }
-.invite-minimal::before,
-.invite-minimal::after { display: none !important; content: none !important; }
-.invite-minimal * { box-sizing: border-box; }
-.invite-minimal .minimal-language {
-  position: absolute !important;
-  z-index: 10 !important;
-  top: max(16px, env(safe-area-inset-top)) !important;
-  right: max(16px, env(safe-area-inset-right)) !important;
+.invite-luxury *, .invite-luxury *::before, .invite-luxury *::after { box-sizing: border-box; }
+.invite-luxury::before, .invite-luxury::after { content: none !important; display: none !important; }
+.invite-luxury .luxury-ambient {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 14% 18%, rgba(239,200,151,.23) 0 1px, transparent 2px),
+    radial-gradient(circle at 87% 67%, rgba(245,214,161,.25) 0 1px, transparent 2px),
+    radial-gradient(circle at 27% 82%, rgba(245,214,161,.20) 0 2px, transparent 3px),
+    radial-gradient(circle at 78% 21%, rgba(245,214,161,.20) 0 2px, transparent 3px);
+}
+.invite-luxury .luxury-floral {
+  position: fixed;
+  z-index: 1;
+  top: 50%;
+  width: min(32vw, 470px);
+  height: min(82dvh, 740px);
+  transform: translateY(-50%);
+  opacity: .62;
+  pointer-events: none;
+  filter: sepia(.45) saturate(.72) brightness(1.23);
+  transition: opacity .4s ease;
+}
+.invite-luxury .luxury-floral img { width: 100%; height: 100%; display: block; object-fit: contain; }
+.invite-luxury .luxury-floral-left { left: max(-95px, calc(50% - 730px)); }
+.invite-luxury .luxury-floral-right { right: max(-95px, calc(50% - 730px)); }
+.invite-luxury .luxury-stardust { position: fixed; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
+.invite-luxury .luxury-stardust i {
+  position: absolute;
+  display: block;
+  color: #ecd2ae;
+  font: normal 21px/1 Georgia, serif;
+  opacity: .55;
+  animation: luxurySparkle 8s ease-in-out infinite;
+}
+.invite-luxury .luxury-stardust i:nth-child(1){left:8%;top:20%;animation-delay:-3s}
+.invite-luxury .luxury-stardust i:nth-child(2){right:10%;top:30%;animation-delay:-5s;font-size:13px}
+.invite-luxury .luxury-stardust i:nth-child(3){left:22%;bottom:13%;animation-delay:-1s;font-size:14px}
+.invite-luxury .luxury-stardust i:nth-child(4){right:20%;bottom:11%;animation-delay:-6s;font-size:16px}
+.invite-luxury .luxury-stardust i:nth-child(5){right:5%;bottom:38%;animation-delay:-2s;font-size:12px}
+.invite-luxury .minimal-language {
+  position: fixed !important;
+  z-index: 20 !important;
+  top: max(19px, env(safe-area-inset-top)) !important;
+  right: max(21px, env(safe-area-inset-right)) !important;
+  padding: 4px !important;
+  gap: 2px;
+  border: 1px solid rgba(238,211,171,.34) !important;
+  border-radius: 999px !important;
+  background: rgba(34,12,22,.62) !important;
+  box-shadow: 0 9px 24px rgba(21,4,9,.16) !important;
+  backdrop-filter: blur(8px);
   transform: none !important;
-  border: 1px solid #e3d8cb !important;
-  background: rgba(255,255,255,.8) !important;
-  box-shadow: none !important;
 }
-.invite-minimal .minimal-language button { color: #69514d !important; }
-.invite-minimal .minimal-language button.active {
-  color: #fff !important;
-  background: #71474c !important;
+.invite-luxury .minimal-language button {
+  color: #f6dfc4 !important;
+  min-width: 33px;
+  min-height: 29px;
+  font-size: 10px !important;
 }
-.invite-minimal .minimal-content {
-  width: min(100%, 520px);
+.invite-luxury .minimal-language button.active { color:#4a2331 !important; background:#f8eada !important; }
+.invite-luxury .luxury-card {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 1 910px;
+  width: min(910px, 100%);
+  min-height: min(760px, calc(100dvh - 68px));
+  margin: auto;
+  padding: clamp(45px, 5dvh, 66px) clamp(42px, 6vw, 88px);
+  overflow: hidden;
+  border: 1px solid #d4b898;
+  background:
+    radial-gradient(ellipse at 14% 12%, rgba(245,216,202,.46), transparent 47%),
+    radial-gradient(ellipse at 91% 84%, rgba(230,203,195,.50), transparent 45%),
+    repeating-linear-gradient(85deg, rgba(134,94,80,.018) 0 1px, transparent 1px 5px),
+    linear-gradient(140deg, #fffaf1, #fbf5eb 52%, #f3e7db);
+  box-shadow:
+    0 36px 95px rgba(12,1,7,.52),
+    0 6px 21px rgba(20,3,10,.24),
+    inset 0 0 0 9px rgba(255,254,248,.43);
+  animation: luxuryCardArrive .82s cubic-bezier(.2,.75,.3,1) both;
+}
+.invite-luxury .luxury-card::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 15px;
+  border: 1px solid rgba(178,129,87,.55);
+  pointer-events: none;
+}
+.invite-luxury .luxury-card::after {
+  content: "";
+  position: absolute;
+  inset: 28px;
+  border: 1px solid rgba(193,159,123,.18);
+  pointer-events: none;
+}
+.invite-luxury .luxury-corner {
+  position: absolute;
+  z-index: 2;
+  width: 46px;
+  height: 46px;
+  pointer-events: none;
+  border-color: #c7a276;
+  border-style: solid;
+  border-width: 0;
+}
+.invite-luxury .luxury-corner-tl { top: 15px; left: 15px; border-top-width: 2px; border-left-width: 2px; }
+.invite-luxury .luxury-corner-tr { top: 15px; right: 15px; border-top-width: 2px; border-right-width: 2px; }
+.invite-luxury .luxury-corner-bl { bottom: 15px; left: 15px; border-bottom-width: 2px; border-left-width: 2px; }
+.invite-luxury .luxury-corner-br { bottom: 15px; right: 15px; border-bottom-width: 2px; border-right-width: 2px; }
+.invite-luxury .minimal-content {
+  position: relative;
+  z-index: 3;
+  width: min(100%, 600px);
+  max-width: 100%;
   margin: auto;
   text-align: center;
   font-family: "Lora", Georgia, serif;
 }
-.invite-minimal .minimal-monogram {
-  color: #865960;
-  font: 500 clamp(44px, 10vw, 67px)/1 "Cormorant Garamond", Georgia, serif;
-  letter-spacing: .08em;
+.invite-luxury .luxury-crest {
+  color: #ad8868;
+  font: 400 12px/1 "Cormorant Garamond", Georgia, serif;
+  letter-spacing: .3em;
+  opacity: .82;
 }
-.invite-minimal .minimal-monogram span {
-  color: #bc947e;
-  font-size: .72em;
-  font-style: italic;
+.invite-luxury .luxury-crest span { padding: 0 11px; font-size: 14px; letter-spacing: .2em; }
+.invite-luxury .luxury-overline {
+  margin: 17px 0 5px;
+  color: #a27d69;
+  font: 600 10px/1.5 "Lora", Georgia, serif;
+  letter-spacing: .29em;
 }
-.invite-minimal .minimal-kicker {
-  margin: 25px 0 0;
-  color: #997c6b;
-  font: 600 11px/1.65 "Lora", Georgia, serif;
-  letter-spacing: .21em;
+.invite-luxury .minimal-monogram {
+  color: #754352;
+  font: 500 clamp(57px, 5.8vw, 78px)/.94 "Cormorant Garamond", Georgia, serif;
+  letter-spacing: .1em;
+  text-shadow: 0 2px 0 rgba(255,255,255,.45);
 }
-.invite-minimal .minimal-rule {
+.invite-luxury .minimal-monogram span { color: #b7926f; font-style: italic; font-size: .72em; }
+.invite-luxury .minimal-kicker {
+  margin: 15px 0 0;
+  color: #916a57;
+  font: 600 clamp(11px, 1vw, 13px)/1.5 "Lora", Georgia, serif;
+  letter-spacing: .23em;
+}
+.invite-luxury .minimal-rule {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  width: 180px;
+  height: auto;
+  margin: 16px auto 17px;
+  background: none;
+  color: #bb9671;
+  font: 16px/1 Georgia, serif;
+}
+.invite-luxury .minimal-rule::before,
+.invite-luxury .minimal-rule::after {
+  content: "";
+  width: 65px;
   height: 1px;
-  width: 44px;
-  margin: 22px auto 24px;
-  background: #c5ae99;
+  background: linear-gradient(90deg, transparent, #c8a57d);
 }
-.invite-minimal .minimal-names {
+.invite-luxury .minimal-rule::after { transform: rotate(180deg); }
+.invite-luxury .minimal-names {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  align-items: center;
+  gap: 1px;
   margin: 0 !important;
-  color: #603d43;
-  font: 600 clamp(31px, 7.4vw, 43px)/1.13 "Cormorant Garamond", Georgia, serif !important;
-  letter-spacing: .04em;
+  color: #643441;
+  font: 600 clamp(43px, 4.35vw, 59px)/1.05 "Cormorant Garamond", Georgia, serif !important;
+  letter-spacing: .045em;
+  text-shadow: 0 1px 0 rgba(255,255,255,.6);
 }
-.invite-minimal .minimal-names span { white-space: nowrap; }
-.invite-minimal .minimal-names em {
-  color: #b5917f;
-  font: italic 400 28px/1 "Cormorant Garamond", Georgia, serif;
+.invite-luxury .minimal-names span { display:block; max-width:100%; white-space:nowrap; }
+.invite-luxury .minimal-names em { color: #b68a70; font: italic 400 30px/.9 "Cormorant Garamond", Georgia, serif; }
+.invite-luxury .luxury-lead {
+  max-width: 420px;
+  margin: 16px auto 12px;
+  color: #886b62;
+  font: 400 13px/1.55 "Lora", Georgia, serif;
 }
-.invite-minimal .minimal-date {
-  margin: 23px 0 29px;
-  color: #806b5d;
-  font: 500 clamp(13px, 3.5vw, 16px)/1.5 "Lora", Georgia, serif;
-  letter-spacing: .08em;
+.invite-luxury .luxury-date-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(13px, 2vw, 24px);
+  margin: 6px auto 24px;
+  color: #b58a6e;
 }
-.invite-minimal .minimal-open {
+.invite-luxury .luxury-date-ornament { font: 18px/1 Georgia, serif; opacity: .78; }
+.invite-luxury .minimal-date {
+  margin: 0;
+  color: #70454a;
+  font: 600 clamp(14px, 1.5vw, 18px)/1.4 "Cormorant Garamond", Georgia, serif;
+  letter-spacing: .16em;
+  white-space: normal;
+}
+.invite-luxury .minimal-open {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 198px;
-  min-height: 49px;
-  padding: 12px 26px;
-  border: 1px solid #71474c;
-  border-radius: 3px;
-  background: #71474c;
-  color: #fff;
-  font: 600 13px/1.3 "Lora", Georgia, serif;
-  letter-spacing: .12em;
+  gap: 23px;
+  min-width: 238px;
+  min-height: 56px;
+  padding: 14px 28px;
+  border: 1px solid #74444d;
+  border-radius: 2px;
+  background: linear-gradient(110deg,#713b48,#4d2535);
+  box-shadow: 0 12px 22px rgba(82,41,46,.21), inset 0 1px rgba(255,255,255,.16);
+  color: #fff7e8;
+  font: 600 13px/1.25 "Lora", Georgia, serif;
+  letter-spacing: .18em;
   cursor: pointer;
   touch-action: manipulation;
-  transition: background .2s ease, border-color .2s ease;
+  transition: transform .22s ease, box-shadow .22s ease, background .22s ease;
 }
-.invite-minimal .minimal-open:hover,
-.invite-minimal .minimal-open:focus-visible {
-  background: #543238;
-  border-color: #543238;
+.invite-luxury .minimal-open::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(242,217,188,.32);
+  pointer-events: none;
 }
-.invite-minimal .minimal-open:focus-visible { outline: 2px solid #ad847b; outline-offset: 4px; }
-.invite-minimal .minimal-open:disabled { cursor: default; opacity: .8; }
-.invite-minimal .minimal-personal { margin: 18px auto 0; max-width: 100%; }
-.invite-minimal .minimal-personal [hidden] { display: none !important; }
-.invite-minimal .minimal-personal .personal-invite-private {
-  color: #715954 !important;
-  text-shadow: none !important;
+.invite-luxury .minimal-open:hover, .invite-luxury .minimal-open:focus-visible {
+  background: linear-gradient(110deg,#864b56,#623445);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 26px rgba(82,41,46,.28), inset 0 1px rgba(255,255,255,.16);
+}
+.invite-luxury .minimal-open:focus-visible { outline: 2px solid #b98b6a; outline-offset: 4px; }
+.invite-luxury .minimal-open:disabled { opacity: .8; cursor: default; }
+.invite-luxury .luxury-button-arrow { font: 400 21px/1 Georgia,serif; letter-spacing:0; transition: transform .2s ease; }
+.invite-luxury .minimal-open:hover .luxury-button-arrow { transform: translate(2px,-2px); }
+.invite-luxury .luxury-closing {
+  margin: 15px auto 0;
+  color: #987669;
+  font: italic 400 12px/1.5 "Lora", Georgia, serif;
+}
+.invite-luxury .minimal-personal { margin: 14px auto 0; max-width: 100%; }
+.invite-luxury .minimal-personal [hidden] { display: none !important; }
+.invite-luxury .minimal-personal .personal-invite-private {
   margin: 0 auto !important;
+  padding: 0 8px !important;
   max-width: 100% !important;
-  font-size: 12px !important;
-  font-weight: 500 !important;
+  color: #754750 !important;
+  opacity: 1 !important;
+  font: 600 12px/1.5 "Lora", Georgia, serif !important;
+  text-shadow: none !important;
 }
-.invite-minimal .minimal-personal .personal-link-notice-cover {
-  width: min(100%, 500px) !important;
+.invite-luxury .minimal-personal .personal-link-notice-cover {
+  width: min(100%, 480px) !important;
   max-width: 100% !important;
-  border-color: #e5d9cf !important;
-  background: rgba(255,255,255,.72) !important;
+  margin: 8px auto 0 !important;
+  border: 1px solid rgba(137,93,80,.20) !important;
+  border-radius: 14px !important;
+  background: rgba(255,255,255,.50) !important;
+  color: #6d5147 !important;
 }
-.invite-minimal.is-opening .minimal-content { pointer-events: none; }
-.invite-minimal.is-exiting { opacity: 0 !important; pointer-events: none !important; }
-.invite-minimal.is-opened, .invite-minimal.is-bypassed {
+.invite-luxury.is-opening .minimal-content { pointer-events: none; }
+.invite-luxury.is-exiting { opacity: 0 !important; pointer-events: none !important; }
+.invite-luxury.is-opened, .invite-luxury.is-bypassed {
   display: none !important;
+  opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
 }
-@media (max-width: 480px) {
-  .invitation-intro.invite-minimal {
-    padding-inline: 18px !important;
-  }
-  .invite-minimal .minimal-language { top: max(10px, env(safe-area-inset-top)) !important; right: 10px !important; }
-  .invite-minimal .minimal-kicker { margin-top: 18px; font-size: 10px; }
-  .invite-minimal .minimal-rule { margin: 16px auto 19px; }
-  .invite-minimal .minimal-names { font-size: clamp(27px, 7.7vw, 36px) !important; }
-  .invite-minimal .minimal-date { margin: 18px 0 24px; font-size: 12px; }
-  .invite-minimal .minimal-open { min-height: 48px; }
-  .invite-minimal .minimal-personal { margin-top: 14px; }
+@keyframes luxuryCardArrive {
+  from { opacity: .4; transform: translateY(14px) scale(.986); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
-@media (prefers-reduced-motion: reduce) {
-  .invitation-intro.invite-minimal,
-  .invite-minimal .minimal-open { transition: none !important; }
+@keyframes luxurySparkle {
+  0%,100%{opacity:.25;transform:translateY(0) rotate(0deg)}
+  50%{opacity:.64;transform:translateY(-10px) rotate(8deg)}
+}
+@media (max-width: 1000px) {
+  .invite-luxury .luxury-floral-left { left: -165px; }
+  .invite-luxury .luxury-floral-right { right: -165px; }
+  .invite-luxury .luxury-floral { width: 350px; opacity:.42; }
+}
+@media (max-width: 680px) {
+  .invitation-intro.invite-minimal.invite-luxury {
+    padding: max(12px, env(safe-area-inset-top)) 11px max(12px, env(safe-area-inset-bottom)) !important;
+    background:
+      radial-gradient(ellipse at 52% 41%, #7b3b4d, transparent 95%),
+      linear-gradient(145deg,#2b0e1c,#4a1c2b 56%,#29101e) !important;
+  }
+  .invite-luxury .minimal-language {
+    top: max(12px,env(safe-area-inset-top)) !important;
+    right: max(12px,env(safe-area-inset-right)) !important;
+    padding: 2px !important;
+    transform: scale(.91) !important;
+    transform-origin: top right !important;
+  }
+  .invite-luxury .luxury-floral { width: 165px; height: 290px; top: 49%; opacity: .25; }
+  .invite-luxury .luxury-floral-left { left: -100px; }
+  .invite-luxury .luxury-floral-right { right: -100px; }
+  .invite-luxury .luxury-stardust i { font-size: 12px; }
+  .invite-luxury .luxury-card {
+    width: 100%;
+    flex: 0 0 auto;
+    min-height: min(650px, calc(100dvh - 24px));
+    padding: 48px 23px 32px;
+    box-shadow: 0 16px 45px rgba(10,0,5,.36), inset 0 0 0 7px rgba(255,254,248,.39);
+  }
+  .invite-luxury .luxury-card::before { inset: 11px; }
+  .invite-luxury .luxury-card::after { inset: 20px; }
+  .invite-luxury .luxury-corner { width:28px;height:28px; }
+  .invite-luxury .luxury-corner-tl { top:11px;left:11px; }
+  .invite-luxury .luxury-corner-tr { top:11px;right:11px; }
+  .invite-luxury .luxury-corner-bl { bottom:11px;left:11px; }
+  .invite-luxury .luxury-corner-br { bottom:11px;right:11px; }
+  .invite-luxury .luxury-overline { margin-top: 12px; font-size: 9px; letter-spacing: .2em; }
+  .invite-luxury .minimal-monogram { font-size: clamp(52px,14vw,65px); }
+  .invite-luxury .minimal-kicker { margin-top: 10px; font-size: 10px; letter-spacing: .13em; }
+  .invite-luxury .minimal-rule { margin: 12px auto 14px; width: 132px; gap: 9px; }
+  .invite-luxury .minimal-rule::before,.invite-luxury .minimal-rule::after {width:45px}
+  .invite-luxury .minimal-names { font-size: clamp(32px,9.2vw,45px) !important; letter-spacing:.01em; }
+  .invite-luxury .minimal-names em { font-size: 24px; }
+  .invite-luxury .luxury-lead { margin: 13px auto 12px; max-width: 270px; font-size: 11px; }
+  .invite-luxury .luxury-date-frame { gap: 11px; margin: 6px auto 18px; }
+  .invite-luxury .luxury-date-ornament { font-size: 13px; }
+  .invite-luxury .minimal-date { font-size: 15px; letter-spacing:.07em; }
+  .invite-luxury .minimal-open { min-width: 210px; min-height: 51px; font-size: 12px; }
+  .invite-luxury .luxury-closing { margin-top: 12px; font-size: 11px; }
+  .invite-luxury .minimal-personal { margin-top: 11px; }
+  .invite-luxury .minimal-personal .personal-invite-private { font-size: 10px !important; }
+  .invite-luxury .minimal-personal .personal-link-notice-cover { padding: 7px !important; }
+  .invite-luxury .minimal-personal .personal-link-notice-cover p { font-size: 10px !important; }
+}
+@media (max-height: 730px) and (max-width: 680px) {
+  .invite-luxury .luxury-card { padding-top: 34px; padding-bottom: 25px; }
+  .invite-luxury .luxury-crest { font-size: 10px; }
+  .invite-luxury .luxury-overline { margin-top: 8px; }
+  .invite-luxury .minimal-monogram { font-size: 48px; }
+  .invite-luxury .minimal-rule { margin: 9px auto 11px; }
+  .invite-luxury .minimal-names { font-size: clamp(30px,8.5vw,39px) !important; }
+  .invite-luxury .luxury-lead { margin: 10px auto; }
+  .invite-luxury .luxury-date-frame { margin-bottom: 14px; }
+  .invite-luxury .luxury-closing { margin-top: 10px; }
+}
+@media (orientation: landscape) and (max-height: 580px) {
+  .invitation-intro.invite-minimal.invite-luxury {padding:12px 16px!important;}
+  .invite-luxury .luxury-card { min-height: 0; width: min(100%, 780px); padding: 22px 35px; }
+  .invite-luxury .luxury-crest,.invite-luxury .luxury-overline {display:none;}
+  .invite-luxury .minimal-monogram {font-size:46px}
+  .invite-luxury .minimal-kicker {margin-top:5px}
+  .invite-luxury .minimal-rule {margin:5px auto}
+  .invite-luxury .minimal-names {font-size:32px!important}
+  .invite-luxury .minimal-names em {font-size:18px}
+  .invite-luxury .luxury-lead {margin:6px auto}
+  .invite-luxury .luxury-date-frame {margin:4px auto 9px}
+  .invite-luxury .minimal-open {min-height:45px}
+  .invite-luxury .luxury-closing {margin-top:6px}
+}
+@media (prefers-reduced-motion:reduce) {
+  .invite-luxury .luxury-card,
+  .invite-luxury .luxury-stardust i { animation: none !important; }
+  .invitation-intro.invite-minimal.invite-luxury,
+  .invite-luxury .minimal-open,
+  .invite-luxury .luxury-button-arrow { transition: none !important; }
 }
