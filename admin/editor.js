@@ -281,14 +281,6 @@
 
   const formatMb = bytes => (Number(bytes || 0) / MB).toFixed(2);
 
-  const canvasToWebp = (canvas, quality) =>
-    new Promise(ok => canvas.toBlob(ok, 'image/webp', quality));
-
-  function releaseCanvas(canvas) {
-    if (!canvas) return;
-    canvas.width = 1;
-    canvas.height = 1;
-  }
 
   async function optimizePublicBlob() {
     const plans = [
@@ -297,25 +289,10 @@
       [2000, .82], [2000, .76], [2000, .70],
       [1800, .80], [1800, .74], [1600, .76], [1600, .68]
     ];
-    let best = null;
-
-    for (const [maxSize, quality] of plans) {
-      const out = renderCanvas(null, maxSize);
-      const width = out.width;
-      const height = out.height;
-      const blob = await canvasToWebp(out, quality);
-      releaseCanvas(out);
-      if (!blob) continue;
-
-      const candidate = { blob, width, height, maxSize, quality };
-      if (!best || blob.size < best.blob.size) best = candidate;
-      if (blob.size <= PUBLIC_TARGET_BYTES) return candidate;
-    }
-
-    if (best && best.blob.size <= PUBLIC_LIMIT_BYTES) return best;
-    throw new Error(
-      `Ảnh public sau khi tối ưu vẫn quá lớn (${formatMb(best?.blob?.size)} MB). Giới hạn upload là 6 MB.`
-    );
+    return A.utils.optimizeWebp({
+      plans,render:size=>renderCanvas(null,size),
+      targetBytes:PUBLIC_TARGET_BYTES,limitBytes:PUBLIC_LIMIT_BYTES,label:'public'
+    });
   }
 
   function renderMasterCanvas(maxSize) {
@@ -335,25 +312,10 @@
       [2600, .84], [2600, .78],
       [2400, .82], [2200, .80], [2000, .78]
     ];
-    let best = null;
-
-    for (const [maxSize, quality] of plans) {
-      const out = renderMasterCanvas(maxSize);
-      const width = out.width;
-      const height = out.height;
-      const blob = await canvasToWebp(out, quality);
-      releaseCanvas(out);
-      if (!blob) continue;
-
-      const candidate = { blob, width, height, maxSize, quality };
-      if (!best || blob.size < best.blob.size) best = candidate;
-      if (blob.size <= MASTER_TARGET_BYTES) return candidate;
-    }
-
-    if (best && best.blob.size <= MASTER_LIMIT_BYTES) return best;
-    throw new Error(
-      `Ảnh master sau khi tối ưu vẫn quá lớn (${formatMb(best?.blob?.size)} MB). Giới hạn upload là 20 MB.`
-    );
+    return A.utils.optimizeWebp({
+      plans,render:renderMasterCanvas,
+      targetBytes:MASTER_TARGET_BYTES,limitBytes:MASTER_LIMIT_BYTES,label:'master'
+    });
   }
 
   function friendlyStorageError(error, label, limitMb) {

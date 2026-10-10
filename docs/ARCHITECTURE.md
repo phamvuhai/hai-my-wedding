@@ -12,6 +12,8 @@ The project is a static wedding website with Supabase as the backend and Vercel 
 - `invitation.js` controls the invitation opening sequence.
 - `app.js` handles RSVP submission, wedding-event scroll state, gallery loading and public interactions.
 - `particles.js` renders the fixed decorative particle layer after invitation opening.
+- `public/countdown.js` owns the countdown timer independently of `app.js`.
+- `motion/cursor.js` owns the pointer/cursor engine independently of `motion.js`.
 - `motion.js` contains shared visual motion only; old guide/travel/detailed-schedule motion has been removed.
 - `music.js` handles the wedding music dock.
 
@@ -71,3 +73,15 @@ GitHub `main` → Vercel production.
 - Replacing an image from Admin writes a new Storage object path instead of overwriting the previous public path.
 - When a page is restored from Safari/iOS BFCache, the frontend reloads once so the current deployed UI is used.
 - Album data cached in memory is invalidated after the page stays in the background for more than 60 seconds.
+
+## Stylesheet layering (refactor branch)
+
+The public page loads `css/site-01.css` through `css/site-08.css` in an explicitly preserved order, followed by `invitation-couture.css`. The original contiguous segments have now been cleaned of unused V3–V6 overrides and exact duplicate declarations; the current combined content is integrity-checked by `tools/check-site.mjs` using `css/manifest.json`.
+
+`styles.css` remains as a compatibility shim for older direct references. Vercel applies no-store headers to `/css/:path*`, `/motion/cursor.js` and `/public/countdown.js`, consistent with existing mutable frontend assets.
+
+The public site and CMS deliberately use separate CSS and JavaScript entry points; admin/auth/RLS behavior is unchanged in this refactor.
+
+## Shared Admin utilities
+
+The Admin page loads `admin/state.js` then `admin/utils.js` before Library, Editor, RSVP and Guest screens. The shared helpers provide CSV export, guest field normalization, latest RSVP-per-invitation lookup, WebP optimization and simple gallery metadata updates. Supabase auth, schema and the custom cover/hero image behaviors remain unchanged.

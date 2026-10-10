@@ -36,22 +36,13 @@
   cancelEditBtn?.addEventListener('click', resetForm);
   csvInput?.addEventListener('change', handleCsvFile);
 
-  function normalize(value='') {
-    return String(value).trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-  }
-
-  function normalizePhone(value='') {
-    return String(value).replace(/[^0-9+]/g,'').trim();
-  }
-
-  function eventLabel(v) {
-    return v === 'bride' ? 'Nhà gái' : v === 'groom' ? 'Nhà trai' : 'Cả hai';
-  }
-
+  const normalize=A.utils.normalizeText;
+  const normalizePhone=A.utils.normalizePhone;
+  const eventLabel=A.utils.eventLabel;
   function rsvpLabel(v) {
-    if (v === 'yes') return 'Có tham dự';
-    if (v === 'no') return 'Không tham dự';
-    if (v === 'maybe') return 'Chưa chắc';
+    if(v==='yes')return 'Có tham dự';
+    if(v==='no')return 'Không tham dự';
+    if(v==='maybe')return 'Chưa chắc';
     return 'Chưa phản hồi';
   }
 
@@ -60,14 +51,7 @@
     return `${location.origin}/${code}/invite/${row.token}`;
   }
 
-  function latestRsvpRows(rows=[]) {
-    const map = new Map();
-    [...rows]
-      .filter(r => r.invite_id)
-      .sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
-      .forEach(r => { if (!map.has(r.invite_id)) map.set(r.invite_id, r); });
-    return map;
-  }
+  const latestRsvpRows=A.utils.latestRsvpByInvite;
 
   async function load() {
     if (!db) return;
@@ -467,17 +451,7 @@
     A.setStatus(csvStatus,'');
   }
 
-  function csvCell(value) {
-    return '"' + String(value ?? '').replaceAll('"','""') + '"';
-  }
-
-  function downloadCsv(filename,headers,rows) {
-    const csv='\uFEFF' + [headers,...rows].map(r => r.map(csvCell).join(',')).join('\r\n');
-    const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
-    const a=document.createElement('a');
-    a.href=url; a.download=filename; a.click();
-    URL.revokeObjectURL(url);
-  }
+  const downloadCsv=A.utils.downloadCsv;
 
   function downloadTemplate() {
     downloadCsv(

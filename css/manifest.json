@@ -1,0 +1,25 @@
+{
+  "description": "Eight active CSS modules after runtime-confirmed removal of an empty legacy placeholder stylesheet.",
+  "order": [
+    "css/site-01.css",
+    "css/site-02.css",
+    "css/site-03.css",
+    "css/site-04.css",
+    "css/site-05.css",
+    "css/site-06.css",
+    "css/site-07.css",
+    "css/site-08.css"
+  ],
+  "originalLength": 229745,
+  "fnv1a32": "f1f4fcb4",
+  "lengths": [
+    31884,
+    31558,
+    32039,
+    31733,
+    27171,
+    30459,
+    27233,
+    17668
+  ]
+}

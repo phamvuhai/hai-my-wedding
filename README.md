@@ -23,15 +23,24 @@ Production: https://hai-my-wedding-gamma.vercel.app
 ## Architecture
 
 - `index.html` — public wedding site
-- `app.js` — RSVP, gallery and public page behavior
+- `app.js` — RSVP, gallery and public page behavior (countdown moved to `public/countdown.js`)
 - `personalized.js` — personalized invite loading, prefill, welcome and open tracking
 - `invitation.js` — invitation-cover opening flow
 - `particles.js` — global wedding particle system
-- `motion.js` — page motion effects
+- `motion.js` — page motion effects; cursor lifecycle is in `motion/cursor.js`
 - `music.js` — wedding music controls
 - `admin/` — authenticated wedding CMS
 - `supabase.sql` — reference schema/policies/functions
 - `docs/` — technical documentation and project memo
+
+## Refactoring and verification
+
+- Global styles are loaded as eight ordered `css/site-01.css` … `css/site-08.css` modules. `styles.css` is a compatibility import entry point.
+- CSS module order and content are integrity-checked against `css/manifest.json`; change the manifest deliberately when redesigning.
+- `motion/cursor.js` and `public/countdown.js` are standalone browser modules loaded before their dependents.
+- Admin CSV, guest/RSVP, gallery image and WebP helpers are shared via `admin/utils.js` (loaded after `admin/state.js`).
+- Run `node tools/check-site.mjs` and `node --test tests/invitation.test.mjs tests/admin-utils.test.mjs` before merging. GitHub Actions runs both on pull requests.
+- Refactoring should be merged in reviewed, incremental changes because the site includes personalized invitations, RSVP and admin features.
 
 ## RSVP model
 
@@ -62,6 +71,7 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md)
+- [Refactoring roadmap](docs/REFACTORING.md)
 - [Admin](docs/ADMIN.md)
 - [Animations](docs/ANIMATIONS.md)
 - [Deployment](docs/DEPLOYMENT.md)
