@@ -1,0 +1,27 @@
+{
+  "description": "Byte-for-byte CSS cascade preserved in nine sequential files. No declaration or selector changes.",
+  "order": [
+    "css/site-01.css",
+    "css/site-02.css",
+    "css/site-03.css",
+    "css/site-04.css",
+    "css/site-05.css",
+    "css/site-06.css",
+    "css/site-07.css",
+    "css/site-08.css",
+    "css/site-09.css"
+  ],
+  "originalLength": 269340,
+  "fnv1a32": "b26601bc",
+  "lengths": [
+    31884,
+    32044,
+    32089,
+    31932,
+    31564,
+    30743,
+    32179,
+    33042,
+    13863
+  ]
+}
