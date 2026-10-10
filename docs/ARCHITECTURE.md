@@ -76,7 +76,7 @@ GitHub `main` → Vercel production.
 
 ## Stylesheet layering (refactor branch)
 
-The public page loads `css/site-01.css` through `css/site-09.css` in an explicitly preserved order, followed by `invitation-couture.css`. The original contiguous segments have now been cleaned of unused V3–V6 overrides and exact duplicate declarations; the current combined content is integrity-checked by `tools/check-site.mjs` using `css/manifest.json`.
+The public page loads `css/site-01.css` through `css/site-08.css` in an explicitly preserved order, followed by `invitation-couture.css`. The original contiguous segments have now been cleaned of unused V3–V6 overrides and exact duplicate declarations; the current combined content is integrity-checked by `tools/check-site.mjs` using `css/manifest.json`.
 
 `styles.css` remains as a compatibility shim for older direct references. Vercel applies no-store headers to `/css/:path*`, `/motion/cursor.js` and `/public/countdown.js`, consistent with existing mutable frontend assets.
 
