@@ -1,5 +1,5 @@
 {
-  "description": "Ordered CSS modules with obsolete invite-v2/Canvas and V3-V6 selectors removed.",
+  "description": "Ordered CSS modules after removing V3-V6 overrides, invite-v2/Canvas selectors and unreferenced keyframes.",
   "order": [
     "css/site-01.css",
     "css/site-02.css",
@@ -11,17 +11,17 @@
     "css/site-08.css",
     "css/site-09.css"
   ],
-  "originalLength": 235628,
-  "fnv1a32": "d3558bae",
+  "originalLength": 229816,
+  "fnv1a32": "fffc0089",
   "lengths": [
     31884,
-    31984,
+    31558,
     32039,
     31733,
-    31515,
-    30743,
-    27760,
-    17881,
+    27171,
+    30459,
+    27215,
+    17668,
     89
   ]
 }
