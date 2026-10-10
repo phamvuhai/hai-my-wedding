@@ -1,0 +1,33 @@
+name: Atelier invitation visual QA
+on:
+  push:
+    branches:
+      - 'refactor/atelier-*'
+  pull_request:
+  workflow_dispatch:
+jobs:
+  screenshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: browser-actions/setup-chrome@v1
+        id: chrome
+        with:
+          chrome-version: stable
+      - name: Install headless browser
+        run: npm install --no-save --package-lock=false puppeteer-core@24.25.0
+      - name: Run four-viewport invitation check
+        run: node tools/audit-atelier.mjs
+        env:
+          CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
+      - name: Save screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: atelier-invitation-screenshots
+          path: atelier-qa/
+          retention-days: 14
