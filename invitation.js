@@ -1,7 +1,7 @@
 (() => {
   const intro = document.getElementById('invitationIntro');
   const openButton = document.getElementById('openInvitation');
-  const stage = intro?.querySelector('.invite-v2-stage');
+  const stage = intro?.querySelector('.couture-stage');
   const hero = document.getElementById('home');
 
   const validAnchors = new Set([
