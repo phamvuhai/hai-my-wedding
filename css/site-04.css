@@ -43,11 +43,7 @@ html[data-motion="minimal"] .motion-marquee .marquee-track.marquee-ready{
 
 /* One horizontal viewport only. overflow:clip avoids creating a scroll container,
    which is important for sticky content on Safari. */
-html,
-body{
-  max-width:100%;
-  overflow-x:clip;
-}
+
 
 /* Decorative sections may crop artwork, but must not become scroll containers. */
 .editorial-story,
@@ -422,12 +418,7 @@ html[data-motion="wow"] .hero:hover .hero-couple-names .hero-amp{
   }.hero-couple-names::before{
     height:132px;
   }
-}@media(prefers-reduced-motion:reduce){.hero-couple-names .hero-name,
-.hero-couple-names .hero-amp{
-    animation:none!important;
-    opacity:1!important;
-    transform:none!important;
-  }
+}@media(prefers-reduced-motion:reduce){
 }
 
 
