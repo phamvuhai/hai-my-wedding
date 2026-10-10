@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'refactor/atelier-*'
+      - 'fix/atelier-*'
   workflow_dispatch:
 jobs:
   webkit:
