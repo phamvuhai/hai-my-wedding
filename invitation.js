@@ -147,15 +147,17 @@
 
     // One controlled opening timeline: seal, flap, card rise, pause, handoff.
     // The fallback timer guarantees that the guest can always enter the site.
+    // Paper rises out of the pocket, then becomes a fully readable card.
+    // Leave enough time to read both names before entering the website.
     setTimeout(() => {
       if (opening) intro.classList.add('is-letter-front');
-    }, 2320);
+    }, 1700);
     setTimeout(() => {
       if (opening) intro.classList.add('is-exiting');
-    }, 5300);
+    }, 6150);
     setTimeout(() => {
       if (opening) finishOpening();
-    }, 5820);
+    }, 6700);
 
   }
 
