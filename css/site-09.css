@@ -1,0 +1,455 @@
+
+
+/* Phone — touch-first. Large hit target, short hint, no visual crowding. */
+@media(max-width:599px){
+  .invitation-intro.invite-v2{
+    --invite-bottom-safe:max(14px,calc(env(safe-area-inset-bottom) + 10px));
+  }
+  .invitation-intro.invite-v2 .invite-v2-heading{
+    top:max(12px,calc(env(safe-area-inset-top) + 8px))!important;
+    width:min(78vw,330px)!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-title{
+    font-size:.64rem!important;
+    letter-spacing:.29em!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-tap{
+    margin-top:5px!important;
+    font-size:.49rem!important;
+    letter-spacing:.07em!important;
+  }
+  .invite-open-cue{
+    top:auto;
+    bottom:calc(var(--invite-bottom-safe) + 64px);
+    width:min(88vw,330px);
+    gap:5px;
+  }
+  .invite-open-cue-mouse{display:none}
+  .invite-open-cue-touch{display:block}
+  .invite-open-cue-gesture{
+    width:31px;
+    height:31px;
+  }
+  .invite-open-cue-touch{
+    width:25px;
+    height:28px;
+  }
+  .invite-open-cue-gesture::before{
+    display:none;
+  }
+  .invite-open-cue-copy{
+    max-width:290px;
+    font-size:.58rem;
+    line-height:1.42;
+  }
+  .invitation-intro.invite-v2 .invite-v2-open-btn{
+    min-width:172px!important;
+    min-height:50px!important;
+    padding-inline:23px!important;
+    font-size:.63rem!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-personal-meta{
+    bottom:calc(var(--invite-bottom-safe) + 118px)!important;
+    width:min(91vw,430px)!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-private{
+    font-size:.66rem!important;
+    line-height:1.35!important;
+  }
+}
+
+/* Short phones: prioritize card + primary action; copy becomes compact. */
+@media(max-width:599px) and (max-height:700px){
+  .invitation-intro.invite-v2 .invite-v2-heading{
+    top:max(8px,env(safe-area-inset-top))!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-title{
+    font-size:.59rem!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-tap{
+    display:none!important;
+  }
+  .invite-open-cue{
+    bottom:calc(var(--invite-bottom-safe) + 58px);
+  }
+  .invite-open-cue-copy{
+    font-size:.54rem;
+  }
+  .invitation-intro.invite-v2 .invite-v2-open-btn{
+    min-height:46px!important;
+  }
+}
+
+/* Landscape phones/tablets: instructions sit beside the action instead of covering stationery. */
+@media(orientation:landscape) and (max-height:560px){
+  .invite-open-cue{
+    left:auto;
+    right:max(18px,env(safe-area-inset-right));
+    top:50%;
+    bottom:auto;
+    width:min(31vw,270px);
+    transform:translateY(-50%);
+  }
+  .invitation-intro.is-ready.is-awaiting-open .invite-open-cue{
+    transform:translateY(-50%);
+  }
+  .invite-open-cue-gesture::before{display:none}
+  .invite-open-cue-copy{
+    font-size:.56rem;
+  }
+  .invitation-intro.invite-v2 .invite-v2-open-btn{
+    left:max(18px,env(safe-area-inset-left))!important;
+    right:auto!important;
+    bottom:max(14px,env(safe-area-inset-bottom))!important;
+    transform:none!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-open-btn:hover{
+    transform:translateY(-2px)!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-personal-meta{
+    display:none!important;
+  }
+}
+
+@media(pointer:coarse){
+  .invite-open-cue-mouse{display:none}
+  .invite-open-cue-touch{display:block}
+}
+@media(prefers-reduced-motion:reduce){
+  .invite-open-cue-gesture::before,
+  .invite-open-cue-pulse,
+  .invite-v2-open-btn::before,
+  .invite-open-cue-copy{
+    animation:none!important;
+  }
+}
+
+
+/* =========================================
+   Invitation Cover V5 — clean luxury composition
+   ========================================= */
+
+/* The website cursor system belongs to the website, not to the physical cover. */
+body.invitation-locked .motion-cursor,
+body.invitation-locked .motion-silk-canvas{
+  display:none!important;
+}
+body.invitation-locked .invitation-intro,
+body.invitation-locked .invite-v2-stage{
+  cursor:pointer!important;
+}
+
+/* Kill any accidental visual/background inherited by transparent interaction layers. */
+.invitation-intro.invite-v2 .invite-v2-stage,
+.invitation-intro.invite-v2 .invite-v2-personal-meta{
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.invitation-intro.invite-v2 .invite-v2-personal-meta:empty{
+  display:none!important;
+}
+
+/* One clear reading order: title → stationery → hint → primary action. */
+.invitation-intro.invite-v2 .invite-v2-heading{
+  top:max(24px,calc(env(safe-area-inset-top) + 16px))!important;
+}
+.invitation-intro.invite-v2 .invite-v2-title{
+  font-size:clamp(.72rem,.86vw,.86rem)!important;
+  letter-spacing:.42em!important;
+}
+.invitation-intro.invite-v2 .invite-v2-tap{
+  margin-top:8px!important;
+  color:rgba(246,227,199,.54)!important;
+  font-size:clamp(.51rem,.6vw,.58rem)!important;
+  letter-spacing:.08em!important;
+}
+
+/* Simplify V4 cue: no floating mouse diagram, no lines crossing the envelope. */
+.invite-open-cue{
+  top:auto!important;
+  bottom:max(82px,calc(env(safe-area-inset-bottom) + 70px))!important;
+  width:min(90vw,520px)!important;
+  gap:7px!important;
+  transform:translate(-50%,5px)!important;
+}
+.invitation-intro.is-ready.is-awaiting-open .invite-open-cue{
+  transform:translate(-50%,0)!important;
+}
+.invite-open-cue-gesture{
+  width:28px!important;
+  height:28px!important;
+}
+.invite-open-cue-gesture::before{
+  display:none!important;
+}
+.invite-open-cue-mouse,
+.invite-open-cue-touch{
+  width:22px!important;
+  height:25px!important;
+  stroke:rgba(244,219,181,.65)!important;
+}
+.invite-open-cue-pulse{
+  width:30px!important;
+  height:30px!important;
+  border-color:rgba(223,179,110,.30)!important;
+}
+.invite-open-cue-copy{
+  max-width:440px!important;
+  color:rgba(247,229,202,.72)!important;
+  font-size:.61rem!important;
+  line-height:1.45!important;
+  letter-spacing:.035em!important;
+}
+
+/* Primary action sits close to the hint, never at a disconnected screen edge. */
+.invitation-intro.invite-v2 .invite-v2-open-btn{
+  bottom:max(24px,calc(env(safe-area-inset-bottom) + 16px))!important;
+  min-width:190px!important;
+  min-height:48px!important;
+  padding:0 30px!important;
+  border-color:rgba(226,191,137,.38)!important;
+  color:#f5e5cd!important;
+  background:
+    linear-gradient(180deg,rgba(88,29,39,.74),rgba(48,13,20,.88))!important;
+  box-shadow:
+    0 14px 38px rgba(0,0,0,.30),
+    inset 0 1px 0 rgba(255,244,224,.08)!important;
+}
+
+/* Keep personalized messaging out of the stationery itself. */
+.invitation-intro.invite-v2 .invite-v2-personal-meta{
+  left:max(20px,env(safe-area-inset-left))!important;
+  right:auto!important;
+  bottom:max(22px,calc(env(safe-area-inset-bottom) + 14px))!important;
+  transform:none!important;
+  width:min(34vw,420px)!important;
+}
+.invitation-intro.invite-v2 .invite-v2-private{
+  text-align:left!important;
+  font-size:.66rem!important;
+  color:rgba(247,229,202,.58)!important;
+}
+
+/* Desktop: stationery is the hero, not a tiny object in a huge empty field. */
+@media(min-width:1200px){
+  .invitation-intro.invite-v2 .invite-v2-heading{
+    top:max(26px,calc(env(safe-area-inset-top) + 18px))!important;
+  }
+  .invite-open-cue{
+    bottom:max(84px,calc(env(safe-area-inset-bottom) + 72px))!important;
+  }
+}
+
+/* Tablet */
+@media(min-width:600px) and (max-width:1199px){
+  .invitation-intro.invite-v2 .invite-v2-heading{
+    top:max(18px,calc(env(safe-area-inset-top) + 12px))!important;
+  }
+  .invite-open-cue{
+    bottom:max(80px,calc(env(safe-area-inset-bottom) + 68px))!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-personal-meta{
+    width:min(40vw,360px)!important;
+  }
+}
+
+/* Mobile: a single compact instruction immediately above the button. */
+@media(max-width:599px){
+  .invitation-intro.invite-v2 .invite-v2-heading{
+    top:max(10px,calc(env(safe-area-inset-top) + 7px))!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-title{
+    font-size:.63rem!important;
+    letter-spacing:.31em!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-tap{
+    margin-top:4px!important;
+    font-size:.48rem!important;
+  }
+  .invite-open-cue{
+    bottom:max(71px,calc(env(safe-area-inset-bottom) + 61px))!important;
+    width:min(88vw,330px)!important;
+    gap:3px!important;
+  }
+  .invite-open-cue-copy{
+    font-size:.56rem!important;
+    max-width:310px!important;
+  }
+  .invite-open-cue-gesture{
+    width:24px!important;
+    height:24px!important;
+  }
+  .invite-open-cue-pulse{
+    width:26px!important;
+    height:26px!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-open-btn{
+    bottom:max(12px,calc(env(safe-area-inset-bottom) + 8px))!important;
+    width:min(78vw,250px)!important;
+    min-width:0!important;
+    min-height:49px!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-personal-meta{
+    display:none!important;
+  }
+}
+
+/* Short mobile: hide the secondary line before shrinking the stationery. */
+@media(max-width:599px) and (max-height:680px){
+  .invitation-intro.invite-v2 .invite-v2-tap{
+    display:none!important;
+  }
+  .invite-open-cue-copy{
+    font-size:.53rem!important;
+  }
+  .invite-open-cue{
+    bottom:max(66px,calc(env(safe-area-inset-bottom) + 56px))!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-open-btn{
+    min-height:45px!important;
+  }
+}
+
+/* Landscape: center the stationery and keep a compact action at bottom center. */
+@media(orientation:landscape) and (max-height:560px){
+  .invite-open-cue{
+    left:50%!important;
+    right:auto!important;
+    top:auto!important;
+    bottom:max(54px,calc(env(safe-area-inset-bottom) + 46px))!important;
+    width:min(48vw,380px)!important;
+    transform:translateX(-50%)!important;
+  }
+  .invitation-intro.is-ready.is-awaiting-open .invite-open-cue{
+    transform:translateX(-50%)!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-open-btn{
+    left:50%!important;
+    right:auto!important;
+    bottom:max(8px,env(safe-area-inset-bottom))!important;
+    transform:translateX(-50%)!important;
+    min-height:42px!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-open-btn:hover{
+    transform:translateX(-50%) translateY(-2px)!important;
+  }
+}
+
+
+/* =========================================
+   Cover stability V6 — Safari canvas compositor + mobile legibility
+   ========================================= */
+
+/* Removing filter animation prevents an oversized canvas from becoming
+   a partially invalidated GPU tile in iOS Safari and Chromium. */
+.invitation-intro.invite-v2 .invite-canvas-fx,
+.invitation-intro.invite-v2.canvas-opening-ready .invite-canvas-fx,
+.invitation-intro.invite-v2.is-pressed .invite-canvas-fx,
+.invitation-intro.invite-v2.is-opening .invite-canvas-fx{
+  animation:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  transition:none!important;
+  opacity:1!important;
+}
+.invitation-intro.invite-v2.is-exiting .invite-canvas-fx{
+  animation:inviteSafeExitV6 .32s ease-out both!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+}
+@keyframes inviteSafeExitV6{
+  from{opacity:1}
+  to{opacity:0}
+}
+
+/* Remove obsolete crosshatch overlay from the old paper-cover implementation. */
+.invitation-intro.invite-v2::after{
+  content:none!important;
+  display:none!important;
+}
+
+/* Readable typographic hierarchy over a dark backdrop. */
+.invitation-intro.invite-v2 .invite-v2-heading{
+  opacity:1!important;
+  visibility:visible!important;
+  text-shadow:0 2px 14px rgba(0,0,0,.52)!important;
+}
+.invitation-intro.invite-v2 .invite-v2-title{
+  color:#F3D8B3!important;
+  font-size:clamp(.92rem,1.2vw,1.08rem)!important;
+  font-weight:600!important;
+  letter-spacing:.30em!important;
+  line-height:1.25!important;
+}
+.invitation-intro.invite-v2 .invite-v2-tap{
+  color:rgba(254,233,204,.85)!important;
+  font-size:clamp(.68rem,.82vw,.76rem)!important;
+  font-weight:400!important;
+  line-height:1.5!important;
+  letter-spacing:.04em!important;
+}
+.invitation-intro.invite-v2 .invite-open-cue-copy{
+  color:#F4DDC4!important;
+  font-size:.76rem!important;
+  font-weight:500!important;
+  text-shadow:0 2px 14px rgba(0,0,0,.58)!important;
+}
+.invitation-intro.invite-v2.is-ready.is-awaiting-open .invite-open-cue{
+  opacity:1;
+  visibility:visible;
+}
+.invitation-intro.invite-v2 .invite-v2-open-btn{
+  box-shadow:0 12px 30px rgba(0,0,0,.28)!important;
+  font-size:.76rem!important;
+  font-weight:600!important;
+  letter-spacing:.15em!important;
+}
+@media(max-width:599px){
+  .invitation-intro.invite-v2 .invite-v2-heading{
+    top:max(20px,calc(env(safe-area-inset-top) + 12px))!important;
+    width:min(88vw,350px)!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-title{
+    font-size:.82rem!important;
+    letter-spacing:.25em!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-tap{
+    display:block!important;
+    margin-top:5px!important;
+    font-size:.64rem!important;
+  }
+  .invitation-intro.invite-v2 .invite-open-cue{
+    bottom:max(80px,calc(env(safe-area-inset-bottom) + 70px))!important;
+    width:min(86vw,320px)!important;
+  }
+  .invitation-intro.invite-v2 .invite-open-cue-copy{
+    font-size:.70rem!important;
+    line-height:1.4!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-open-btn{
+    bottom:max(18px,calc(env(safe-area-inset-bottom) + 12px))!important;
+    width:min(78vw,262px)!important;
+    min-height:52px!important;
+    font-size:.75rem!important;
+  }
+}
+/* Protect space for controls in landscape and short phones. */
+@media(max-width:599px) and (max-height:650px){
+  .invitation-intro.invite-v2 .invite-v2-heading{
+    top:max(8px,env(safe-area-inset-top))!important;
+  }
+  .invitation-intro.invite-v2 .invite-v2-tap{
+    font-size:.56rem!important;
+  }
+  .invitation-intro.invite-v2 .invite-open-cue{
+    bottom:max(70px,calc(env(safe-area-inset-bottom) + 60px))!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .invitation-intro.invite-v2 .invite-canvas-fx,
+  .invitation-intro.invite-v2 .invite-open-cue{
+    animation:none!important;
+  }
+}
