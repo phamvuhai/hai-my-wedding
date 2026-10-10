@@ -390,9 +390,6 @@
   display:flex;
   flex-direction:column;
   gap:58px;
-}.event-family{
-  width:min(86%,930px);
-  overflow:visible;
 }.event-family.bride-side{align-self:flex-start}.event-family.groom-side{align-self:flex-end}.event-family::after{
   content:"";
   position:absolute;
