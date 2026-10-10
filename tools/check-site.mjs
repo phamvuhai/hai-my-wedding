@@ -26,7 +26,7 @@ function checksum(source) {
 }
 
 const cssFiles = manifest.order;
-assert.equal(cssFiles.length, 9, 'Expected the original nine cascade segments');
+assert.equal(cssFiles.length, 8, 'Expected the eight active CSS modules');
 const combined = cssFiles.map(load).join('');
 assert.equal(combined.length, manifest.originalLength, 'CSS content length changed');
 assert.equal(checksum(combined), manifest.fnv1a32, 'CSS cascade changed; intentionally update manifest after review');
@@ -38,6 +38,9 @@ const actualLinks = [...source.matchAll(/href="\/(css\/site-\d+\.css)(?:\?[^"]*)
 assert.deepEqual(actualLinks, cssFiles, 'CSS cascade order differs from manifest');
 assert(!/\.invite-v2[\w-]*\b|\.invite-canvas-fx\b/.test(combined), 'Obsolete invitation-v2 / canvas selectors reintroduced');
 assert(source.includes('class="couture-stage"'), 'Active invitation stage is missing');
+for(const obsolete of ['WeddingInvitationCanvas','is-cue-reminder','is-awaiting-open','is-envelope-hover','is-pressed']) {
+  assert(!load('invitation.js').includes(obsolete), 'Dead invitation state was reintroduced: ' + obsolete);
+}
 assert(load('invitation.js').includes("querySelector('.couture-stage')"), 'Invitation controller references an obsolete stage');
 
 for (const legacy of ['Physical Invitation V3','Invitation UX V4','Invitation Cover V5','Cover stability V6']) {
