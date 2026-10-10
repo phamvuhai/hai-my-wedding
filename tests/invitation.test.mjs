@@ -29,7 +29,7 @@ function element() {
 async function runScenario({ pathname='/', reduced=false, keyboard=false }) {
   const intro=element(),button=element(),stage=element(),hero=element(),body=element();
   const elements={invitationIntro:intro,openInvitation:button,home:hero};
-  intro.querySelector = selector => selector === '.invite-v2-stage' ? stage : null;
+  intro.querySelector = selector => selector === '.couture-stage' ? stage : null;
   const events=[];
   const document={
     body,readyState:'complete',fonts:{ready:Promise.resolve()},
