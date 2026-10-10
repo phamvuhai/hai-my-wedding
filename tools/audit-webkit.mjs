@@ -53,7 +53,7 @@ for(const entry of scenarios){
   });
   await page.locator('#openInvitation').click();
   await page.waitForTimeout(3900);
-  await page.screenshot({path:join(out,entry.name+'-paper.png')});
+  await page.screenshot({path:join(out,entry.name+'-homepage.png')});
   try{
    await page.waitForFunction(()=>window.__weddingOpeningComplete===true,{timeout:7500});
    await page.waitForTimeout(380);
@@ -98,7 +98,7 @@ for(const entry of scenarios){
   htmlOverflow:getComputedStyle(document.documentElement).overflowY,
   bodyOverflow:getComputedStyle(document.body).overflowY,
   bodyClasses:document.body.className,
-  coupleNames:[...document.querySelectorAll('.atelier-names strong')].map(el=>el.textContent.trim())
+  coupleNames:[...document.querySelectorAll('.minimal-names span')].map(el=>el.textContent.trim())
  }));
  report.scenarios.push({name:entry.name,ready,opened,formVisible,scrollBefore,metrics,errors});
  report.errors.push(...errors.map(e=>entry.name+': '+e));
