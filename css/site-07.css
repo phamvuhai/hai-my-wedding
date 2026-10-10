@@ -892,7 +892,7 @@ svg{height:auto}@media(hover:hover){
 .event-card{width:100%;max-width:100%}.family-header{gap:10px;align-items:flex-start}.family-header>div{min-width:0}.family-date{flex:0 0 auto;font-size:.68rem}.event-date,
 .event-dayline{flex-wrap:wrap}.event-actions{flex-wrap:wrap}.map-link{max-width:100%;white-space:normal}.forever-transition,
 .forever-sticky{height:52svh!important;min-height:360px}.forever-copy{padding-inline:14px}.forever-copy strong{font-size:clamp(3.3rem,19vw,6rem)!important;line-height:.85}.gallery-display{font-size:clamp(3rem,17vw,5.6rem);line-height:.82}.gallery-editorial-head{min-width:0}.gallery-editorial-head .section-heading{min-width:0}.rsvp-wrap{width:calc(100% - 28px)}.rsvp-display{font-size:clamp(3rem,18vw,5.4rem)}.rsvp-form label,
-.rsvp-form input,
+.rsvp-form input:not([type=radio]),
 .rsvp-form select,
 .rsvp-form textarea{min-width:0;width:100%}
 }
