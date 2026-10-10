@@ -77,6 +77,8 @@ for(const cfg of cases){
  if(button)await button.click();
  await wait(1450);
  await screenshot('opening');
+ await wait(2500);
+ await screenshot('paper-revealed');
  let opened=false;
  try{
   await page.waitForFunction(()=>document.querySelector('#invitationIntro')?.classList.contains('is-opened'),{timeout:9500});
@@ -97,6 +99,14 @@ for(const cfg of cases){
   seenSections.push({id,...geom});
   if(['story','homeGallery','rsvp'].includes(id))await screenshot(id);
  }
+ const form=await page.$('#rsvpForm');
+ let formVisible=false;
+ if(form){
+  await form.evaluate(el=>el.scrollIntoView({behavior:'instant',block:'center'}));
+  await wait(800);
+  formVisible=await form.evaluate(el=>el.getBoundingClientRect().height>0);
+  await screenshot('rsvp-form');
+ }
  const after=await page.evaluate(()=>({
   horizontalOverflow:document.documentElement.scrollWidth>innerWidth+2,
   scrollWidth:document.documentElement.scrollWidth,
@@ -111,7 +121,7 @@ for(const cfg of cases){
   data.ranges.push(...item.ranges);
   coverage.set(file,data);
  }
- report.scenarios.push({name:cfg.name,viewport:[cfg.width,cfg.height],before,opened,after,sections:seenSections,errors,screens});
+ report.scenarios.push({name:cfg.name,viewport:[cfg.width,cfg.height],before,opened,formVisible,after,sections:seenSections,errors,screens});
  report.errors.push(...errors.map(e=>cfg.name+': '+e));
  console.log('SCENARIO '+cfg.name+' opened='+opened+' overflow='+after.horizontalOverflow+' errors='+errors.length);
  await page.close();
@@ -162,4 +172,4 @@ await new Promise(done=>server.close(done));
 console.log('CSS_COVERAGE '+JSON.stringify(report.css));
 console.log('UNUSED_CANDIDATES '+JSON.stringify(report.unusedCandidates.slice(0,45)));
 console.log('RUNTIME_ERRORS '+JSON.stringify(report.errors.slice(0,20)));
-if(report.scenarios.some(s=>!s.opened||s.after.horizontalOverflow||!s.before.cover||!s.after.hasRsvp))process.exitCode=1;
+if(report.scenarios.some(s=>!s.opened||!s.formVisible||s.after.horizontalOverflow||!s.before.cover||!s.after.hasRsvp))process.exitCode=1;
