@@ -13,8 +13,8 @@ body.invitation-locked .motion-cursor,body.invitation-locked .motion-silk-canvas
 .couture-invite .couture-divider::before,.couture-invite .couture-divider::after{content:"";width:54px;height:1px;background:linear-gradient(90deg,transparent,rgba(221,174,126,.8))}
 .couture-invite .couture-divider::after{transform:rotate(180deg)}
 .couture-invite .couture-subtitle{font:400 clamp(12px,1.3vw,16px)/1.5 'Lora',Georgia,serif;margin:0;color:rgba(255,237,212,.82)}
-.couture-invite .invite-v2-stage{position:absolute!important;inset:0!important;z-index:5!important;width:100%!important;height:100%!important;min-height:0!important;display:block!important;pointer-events:auto!important;cursor:pointer!important;perspective:none!important;transform:none!important;border:0!important;outline:none!important}
-.couture-invite .invite-v2-stage:focus-visible{outline:2px solid #efc88e!important;outline-offset:-8px!important}
+.couture-invite .couture-stage{position:absolute!important;inset:0!important;z-index:5!important;width:100%!important;height:100%!important;min-height:0!important;display:block!important;pointer-events:auto!important;cursor:pointer!important;perspective:none!important;transform:none!important;border:0!important;outline:none!important}
+.couture-invite .couture-stage:focus-visible{outline:2px solid #efc88e!important;outline-offset:-8px!important}
 .couture-invite .couture-scene{position:absolute;left:50%;top:54%;width:min(83vw,610px,calc(66svh * 1.6));aspect-ratio:1.65;transform:translate(-50%,-50%);pointer-events:none;filter:none;isolation:isolate}
 .couture-invite .couture-contact{position:absolute;left:8%;width:84%;bottom:-8%;height:20%;border-radius:50%;background:radial-gradient(ellipse,rgba(5,0,3,.48),transparent 67%);filter:blur(9px);z-index:0}
 .couture-invite .couture-envelope-back{position:absolute;inset:0;z-index:1;border:1px solid rgba(240,192,148,.29);border-radius:4px;background:linear-gradient(133deg,#99394b 0%,#7d273a 35%,#581728 75%,#410f1c 100%);box-shadow:0 19px 55px rgba(9,0,4,.39),inset 0 1px rgba(255,233,208,.23);overflow:hidden}
