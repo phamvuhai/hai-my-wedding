@@ -1,0 +1,1067 @@
+
+@keyframes marqueePixelRight{
+  from{transform:translate3d(var(--marquee-distance-negative),0,0)}
+  to{transform:translate3d(0,0,0)}
+}
+
+/* Direction map stays intentionally alternating. */
+.hero-marquee .marquee-track.marquee-ready,
+.forever-rail-top .marquee-track.marquee-ready{
+  animation-name:marqueePixelLeft!important;
+}.forever-rail-bottom .marquee-track.marquee-ready{
+  animation-name:marqueePixelRight!important;
+}
+
+/* No interaction is allowed to pause or restart the continuous bands. */
+.motion-marquee .marquee-track.marquee-ready,
+.forever-rail .marquee-track.marquee-ready,
+html[data-motion] .motion-marquee .marquee-track.marquee-ready,
+html[data-motion] .forever-rail .marquee-track.marquee-ready,
+html[data-motion="wow"] .motion-marquee:hover .marquee-track.marquee-ready,
+html[data-motion="minimal"] .motion-marquee .marquee-track.marquee-ready{
+  animation-play-state:running!important;
+}
+
+/* Touch devices keep only the CSS compositor animation; scroll never writes
+   to the child track transform. */
+@media(pointer:coarse){.motion-marquee .marquee-track.marquee-ready,
+.forever-rail .marquee-track.marquee-ready{
+    transform-style:flat;
+    -webkit-transform-style:flat;
+  }
+}
+
+/* Reduced motion remains authoritative. */
+@media(prefers-reduced-motion:reduce){.motion-marquee .marquee-track,
+.forever-rail .marquee-track{
+    visibility:visible!important;
+    animation:none!important;
+    transform:translate3d(0,0,0)!important;
+  }
+}
+
+
+/* One horizontal viewport only. overflow:clip avoids creating a scroll container,
+   which is important for sticky content on Safari. */
+html,
+body{
+  max-width:100%;
+  overflow-x:clip;
+}
+
+/* Decorative sections may crop artwork, but must not become scroll containers. */
+.editorial-story,
+.countdown-section,
+.events,
+.gallery-section,
+.rsvp-section{
+  overflow:clip;
+}
+
+/* Story -> marquee -> countdown must remain three independent blocks in normal flow. */
+.countdown-section{
+  position:relative;
+  z-index:1;
+  isolation:isolate;
+  margin-top:0!important;
+  padding-top:clamp(112px,9vw,148px)!important;
+  padding-bottom:clamp(112px,9vw,148px);
+  border-radius:0!important;
+}.countdown-section::before{
+  content:"";
+  position:absolute;
+  z-index:-2;
+  inset:0;
+  pointer-events:none;
+}.countdown-layout{
+  position:relative;
+  z-index:3!important;
+  min-width:0;
+  overflow:visible;
+}.countdown-heading{
+  position:relative;
+  z-index:4;
+  min-width:0;
+  overflow:visible;
+}.countdown-heading .eyebrow,
+.countdown-heading h2{
+  position:relative;
+  z-index:4;
+  overflow:visible;
+}.countdown-heading h2{
+  margin-top:14px;
+  line-height:1.04;
+  text-wrap:balance;
+}.countdown{
+  position:relative;
+  z-index:3;
+  min-width:0;
+  overflow:visible;
+}.countdown > div{
+  min-width:0;
+  overflow:visible;
+}
+
+/* FOREVER is decoration only and can never cover real countdown content. */
+
+
+/* Keep reveal clipping from shaving Vietnamese accents. */
+.motion-line{
+  padding-top:.14em;
+  padding-bottom:.12em;
+  margin-top:-.14em;
+  margin-bottom:-.12em;
+}
+
+/* Content layers: decorative text stays behind, readable content stays above. */
+.editorial-story .floating-word,
+.event-bg-date{
+  z-index:0;
+  pointer-events:none;
+}.story-grid,
+.events > .container,
+.gallery-section > .container,
+.rsvp-section > .container{
+  position:relative;
+  z-index:2;
+}
+
+/* Long content must always remain readable and must never force horizontal scrolling. */
+.story-copy,
+.story-copy > *,
+.countdown-heading,
+.countdown-heading > *,
+.event-card,
+.event-card > *,
+.rsvp-form,
+.rsvp-form > *{
+  min-width:0;
+  max-width:100%;
+}.event-meta,
+.rsvp-copy p,
+.form-status{
+  overflow-wrap:anywhere;
+  word-break:normal;
+}
+
+/* Fixed UI respects physical display edges. */
+.nav{
+  padding-left:env(safe-area-inset-left);
+  padding-right:env(safe-area-inset-right);
+}.music-dock{
+  right:max(12px,env(safe-area-inset-right))!important;
+  bottom:calc(12px + env(safe-area-inset-bottom))!important;
+}
+
+/* Keep lower-page actions clear of the compact music control. */
+.rsvp-section{
+  padding-bottom:max(124px,calc(92px + env(safe-area-inset-bottom)))!important;
+}.footer{
+  padding-bottom:max(92px,calc(76px + env(safe-area-inset-bottom)));
+}
+
+/* Tablet portrait / landscape: never let decorative layers crowd primary copy. */
+@media(min-width:681px) and (max-width:1024px){.countdown-section{
+    padding-top:clamp(100px,12vw,126px)!important;
+    padding-bottom:118px;
+  }.countdown-layout{
+    gap:42px;
+  }.countdown-heading h2{
+    max-width:560px;
+    font-size:clamp(2.8rem,6vw,4rem);
+  }
+}
+
+/* Mobile: clean 2x2 countdown with intentional breathing room after the marquee. */
+@media(max-width:680px){.editorial-story{
+    overflow:clip;
+  }.countdown-section{
+    margin-top:0!important;
+    padding-top:clamp(78px,19vw,96px)!important;
+    padding-bottom:calc(104px + env(safe-area-inset-bottom))!important;
+  }.countdown-layout{
+    grid-template-columns:1fr!important;
+    gap:clamp(42px,12vw,58px)!important;
+    align-items:start;
+  }.countdown-heading{
+    text-align:center;
+    padding-inline:8px;
+  }.countdown-heading .eyebrow{
+    margin-bottom:16px;
+  }.countdown-heading h2{
+    width:min(100%,360px);
+    max-width:360px;
+    margin:0 auto;
+    font-size:clamp(2.35rem,10vw,3.2rem)!important;
+    line-height:1.03;
+  }.countdown{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    width:100%;
+    max-width:100%;
+    margin:0;
+  }.countdown > div{
+    min-height:164px;
+    padding:24px 18px 20px!important;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    border:1px solid rgba(255,255,255,.15)!important;
+  }.countdown > div:nth-child(3),
+.countdown > div:nth-child(4){
+    border-top:0!important;
+  }.countdown > div:nth-child(even){
+    border-left:0!important;
+  }.countdown strong{
+    font-size:clamp(4rem,20vw,5.7rem)!important;
+    line-height:.82;
+  }.countdown span{
+    margin-top:18px;
+  }
+
+  /* Story copy should breathe before the transition band. */
+  .editorial-story{
+    padding-bottom:clamp(88px,22vw,116px)!important;
+  }.story-copy > p{
+    line-height:1.82;
+  }
+
+  /* Full-text safety in sections frequently affected by long VI/EN/JP strings. */
+  .event-card,
+.rsvp-form{
+    overflow:visible;
+  }
+
+  /* Fixed music button remains reachable without covering final actions. */
+  .rsvp-form{
+    padding-bottom:78px;
+  }.footer-names{
+    max-width:calc(100vw - 32px);
+    margin-inline:auto;
+  }
+}
+
+/* Very narrow phones: preserve information before decoration. */
+@media(max-width:390px){.countdown-section{
+    padding-top:76px!important;
+  }.countdown-heading h2{
+    max-width:330px;
+    font-size:clamp(2.15rem,10vw,2.75rem)!important;
+  }.countdown > div{
+    min-height:148px;
+    padding:20px 14px 18px!important;
+  }.countdown strong{
+    font-size:clamp(3.55rem,19vw,5rem)!important;
+  }
+}
+
+/* Short landscape phones: prioritize readable content over large decoration. */
+@media(max-height:500px) and (orientation:landscape){.countdown-section{
+    padding-top:64px!important;
+    padding-bottom:78px!important;
+  }.countdown-layout{
+    gap:28px!important;
+  }.countdown-heading h2{
+    font-size:clamp(2rem,6vw,2.8rem)!important;
+  }.forever-transition{
+    min-height:560px;
+  }
+}
+
+/* Reduced motion must never leave readable content clipped or transparent. */
+@media(prefers-reduced-motion:reduce){.countdown-layout,
+.countdown-heading,
+.countdown{
+    opacity:1!important;
+    transform:none!important;
+  }
+}
+
+
+/* ---------- V16: Couple names become the hero focal point ---------- */
+.hero-couple-names{
+  position:relative;
+  isolation:isolate;
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  justify-items:center;
+  align-items:center!important;
+  width:min(100%,980px)!important;
+  max-width:980px!important;
+  margin:10px auto 0!important;
+  gap:0!important;
+  font-family:"Cormorant Garamond","Iowan Old Style","Baskerville",Georgia,serif!important;
+  font-size:clamp(4rem,7vw,6.8rem)!important;
+  font-weight:600;
+  line-height:.82!important;
+  letter-spacing:-.035em;
+  text-align:center;
+}.hero-couple-names::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:50%;
+  top:50%;
+  width:min(84vw,720px);
+  height:clamp(130px,18vw,230px);
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(232,201,181,.10),rgba(232,201,181,.035) 42%,transparent 72%);
+  pointer-events:none;
+}.hero-couple-names .hero-name{
+  display:block!important;
+  min-width:0;
+  max-width:100%;
+  color:#FFF9F4;
+  font-family:inherit;
+  font-weight:600;
+  font-style:normal;
+  line-height:.82;
+  white-space:nowrap;
+  text-shadow:0 3px 24px rgba(20,12,9,.18);
+}.hero-couple-names .hero-amp{
+  display:block!important;
+  margin:.03em 0 .01em;
+  color:#E8C9B5;
+  font-family:inherit;
+  font-size:.62em;
+  font-weight:500;
+  font-style:italic;
+  line-height:.72;
+  letter-spacing:-.04em;
+  text-shadow:0 4px 24px rgba(232,201,181,.14);
+}.hero-date{
+  position:relative;
+  margin-top:clamp(24px,3vw,34px)!important;
+}.hero-date::before{
+  content:"";
+  display:block;
+  width:clamp(82px,9vw,118px);
+  height:1px;
+  margin:0 auto 16px;
+  background:linear-gradient(90deg,transparent,#E8C9B5,transparent);
+  opacity:.84;
+}
+
+/* Replace horizontal fly-in with a calmer wedding-editorial entrance. */
+.motion-ready .hero-entered .hero-couple-names .hero-name-left{
+  animation:heroNameRise .92s cubic-bezier(.16,.84,.24,1) .34s both!important;
+}.motion-ready .hero-entered .hero-couple-names .hero-amp{
+  animation:heroAmpBloom .82s cubic-bezier(.17,.86,.25,1) .46s both!important;
+}.motion-ready .hero-entered .hero-couple-names .hero-name-right{
+  animation:heroNameRise .98s cubic-bezier(.16,.84,.24,1) .56s both!important;
+}
+@keyframes heroNameRise{
+  from{opacity:0;transform:translate3d(0,22px,0);letter-spacing:.015em}
+  to{opacity:1;transform:translate3d(0,0,0);letter-spacing:-.035em}
+}
+@keyframes heroAmpBloom{
+  from{opacity:0;transform:scale(.72) rotate(-8deg)}
+  68%{opacity:1;transform:scale(1.06) rotate(1deg)}
+  to{opacity:1;transform:none}
+}html[data-motion="wow"] .hero:hover .hero-couple-names .hero-name,
+html[data-motion="wow"] .hero:hover .hero-couple-names .hero-amp{
+  transform:none!important;
+}
+
+/* Keep the same signature typeface across invitation and footer. */
+.footer-names{
+  font-family:"Cormorant Garamond","Iowan Old Style","Baskerville",Georgia,serif;
+  font-weight:600;
+}.footer-names span{
+  color:var(--accent);
+  font-style:italic;
+  font-weight:500;
+}
+
+/* Shorter, intentional side rail instead of text that looks accidentally cropped. */
+.side-note{
+  left:14px!important;
+  top:50%;
+  transform:translateY(-50%) rotate(180deg)!important;
+  transform-origin:center!important;
+  writing-mode:vertical-rl;
+  color:rgba(47,42,39,.28)!important;
+  font-size:.54rem!important;
+  letter-spacing:.22em!important;
+  line-height:1;
+}
+
+/* Tablet: keep the names grand without consuming the whole first screen. */
+@media(max-width:1024px){.hero-couple-names{
+    width:min(100%,760px)!important;
+    font-size:clamp(3.65rem,8vw,5.6rem)!important;
+  }.hero-couple-names::before{
+    width:min(88vw,620px);
+    height:180px;
+  }
+}
+
+/* Phones deliberately keep three lines instead of shrinking the couple names into one line. */
+@media(max-width:680px){.hero-couple-names{
+    width:100%!important;
+    margin-top:8px!important;
+    font-size:clamp(3.15rem,14vw,4.45rem)!important;
+    line-height:.84!important;
+  }.hero-couple-names .hero-name{
+    white-space:nowrap!important;
+    line-height:.84;
+  }.hero-couple-names .hero-amp{
+    margin:.06em 0 .02em;
+    font-size:.58em;
+  }.hero-couple-names::before{
+    width:94vw;
+    height:150px;
+    opacity:.8;
+  }.hero-date{
+    margin-top:22px!important;
+  }.side-note{
+    display:none!important;
+  }
+}@media(max-width:390px){.hero-couple-names{
+    font-size:clamp(2.9rem,13.3vw,3.75rem)!important;
+  }.hero-couple-names::before{
+    height:132px;
+  }
+}@media(prefers-reduced-motion:reduce){.hero-couple-names .hero-name,
+.hero-couple-names .hero-amp{
+    animation:none!important;
+    opacity:1!important;
+    transform:none!important;
+  }
+}
+
+
+/* V15 confirmed-time presentation in Wedding Events */
+.event-date{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  gap:6px 9px;
+}.event-date strong{
+  color:var(--accent-dark);
+  font-size:1.02rem;
+  font-weight:800;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:.02em;
+}.event-date span{
+  color:inherit;
+}.groom-side .event-date strong{
+  color:#66705F;
+}@media(max-width:680px){.event-date{
+    gap:4px 7px;
+  }.event-date strong{
+    flex:0 0 auto;
+    font-size:.96rem;
+  }
+}
+
+
+/* Hero: larger, more ceremonial typography on desktop. */
+.hero-couple-names{
+  width:min(100%,1100px)!important;
+  max-width:1100px!important;
+  margin-top:14px!important;
+  font-size:clamp(5.2rem,7.4vw,8.4rem)!important;
+  line-height:.78!important;
+  letter-spacing:-.04em;
+}.hero-couple-names .hero-name{
+  line-height:.78!important;
+  font-weight:600;
+}.hero-couple-names .hero-amp{
+  margin:.015em 0 -.015em!important;
+  font-family:"Great Vibes","Snell Roundhand","Apple Chancery",cursive!important;
+  font-size:.48em!important;
+  font-weight:400!important;
+  font-style:normal!important;
+  line-height:.82!important;
+  letter-spacing:0!important;
+  color:#E9C6B0!important;
+}.hero-couple-names::before{
+  width:min(86vw,860px)!important;
+  height:clamp(180px,20vw,290px)!important;
+  background:
+    radial-gradient(ellipse,rgba(232,201,181,.115),rgba(232,201,181,.045) 44%,transparent 74%)!important;
+}.hero-date{
+  margin-top:clamp(28px,3vw,42px)!important;
+  color:rgba(255,249,244,.92);
+  font-size:clamp(1.08rem,1.35vw,1.5rem)!important;
+  font-weight:650;
+  letter-spacing:.18em!important;
+  line-height:1.3;
+}.hero-date::before{
+  width:clamp(110px,10vw,154px)!important;
+  margin-bottom:18px!important;
+}.hero-note{
+  max-width:760px;
+  margin-top:clamp(26px,2.4vw,34px)!important;
+  font-size:clamp(1.02rem,1.15vw,1.25rem)!important;
+  line-height:1.75;
+}.hero-copy .btn{
+  margin-top:clamp(22px,2vw,30px);
+}.hero-copy>.eyebrow{
+  margin-bottom:10px;
+  letter-spacing:.24em;
+}
+
+/* Stronger separation from the photo while remaining transparent/editorial. */
+.hero-copy{
+  position:relative;
+  z-index:3;
+  width:min(100%,1120px);
+  margin-inline:auto;
+  padding:clamp(12px,1.5vw,20px) clamp(10px,2vw,24px);
+}.hero-copy::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:4% 8% -2%;
+  border-radius:34px;
+  background:linear-gradient(180deg,rgba(40,27,21,.08),rgba(40,27,21,.16));
+  backdrop-filter:blur(1px);
+  -webkit-backdrop-filter:blur(1px);
+  pointer-events:none;
+}
+
+/* Tablet: preserve hierarchy without overwhelming the photo. */
+@media(min-width:681px) and (max-width:1024px){.hero-couple-names{
+    font-size:clamp(4.4rem,8.7vw,6.4rem)!important;
+    line-height:.80!important;
+  }.hero-couple-names::before{
+    width:min(90vw,700px)!important;
+    height:210px!important;
+  }.hero-date{
+    font-size:clamp(1rem,2vw,1.25rem)!important;
+  }.hero-note{
+    font-size:clamp(.98rem,1.8vw,1.12rem)!important;
+  }
+}
+
+/* Mobile remains intentional and readable. */
+@media(max-width:680px){.hero-copy{
+    width:100%;
+    padding-inline:4px;
+  }.hero-copy::before{
+    inset:2% 1% -2%;
+    border-radius:26px;
+    background:linear-gradient(180deg,rgba(40,27,21,.05),rgba(40,27,21,.11));
+  }.hero-couple-names{
+    font-size:clamp(3.25rem,15vw,4.65rem)!important;
+    line-height:.82!important;
+  }.hero-couple-names .hero-name{
+    line-height:.82!important;
+  }.hero-couple-names .hero-amp{
+    font-size:.50em!important;
+  }.hero-date{
+    margin-top:22px!important;
+    font-size:clamp(.78rem,3.7vw,.96rem)!important;
+    letter-spacing:.12em!important;
+  }.hero-note{
+    margin-top:20px!important;
+    font-size:clamp(.9rem,3.8vw,1rem)!important;
+  }
+}@media(max-width:390px){.hero-couple-names{
+    font-size:clamp(3rem,14.1vw,4rem)!important;
+  }.hero-date{
+    font-size:.76rem!important;
+  }
+}@media(prefers-reduced-motion:reduce){.hero-copy::before{
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+}
+
+
+.hero-copy,
+.hero-couple-names,
+.hero-couple-names .hero-name,
+.hero-couple-names .hero-amp{
+  overflow:visible!important;
+}.hero-couple-names{
+  width:min(100%,1180px)!important;
+  max-width:1180px!important;
+  margin:6px auto 0!important;
+  padding:.16em .34em .22em!important;
+  gap:0!important;
+  font-family:"Great Vibes","Snell Roundhand","Apple Chancery","Brush Script MT",cursive!important;
+  font-size:clamp(6.8rem,8.8vw,10.8rem)!important;
+  font-weight:400!important;
+  font-style:normal!important;
+  line-height:.70!important;
+  letter-spacing:0!important;
+  text-rendering:geometricPrecision;
+  -webkit-font-smoothing:antialiased;
+}.hero-couple-names .hero-name{
+  width:max-content;
+  max-width:100%;
+  padding:.10em .18em .14em;
+  font-family:inherit!important;
+  font-weight:400!important;
+  font-style:normal!important;
+  line-height:.70!important;
+  letter-spacing:0!important;
+  white-space:nowrap!important;
+  text-shadow:0 5px 28px rgba(18,10,8,.24);
+}.hero-couple-names .hero-amp{
+  margin:-.04em 0 -.02em!important;
+  padding:.02em .2em .06em;
+  font-family:inherit!important;
+  font-size:.38em!important;
+  font-weight:400!important;
+  font-style:normal!important;
+  line-height:.72!important;
+  letter-spacing:0!important;
+  color:#E8C5AE!important;
+  text-shadow:0 4px 22px rgba(18,10,8,.18);
+}.hero-couple-names::before{
+  width:min(84vw,900px)!important;
+  height:clamp(170px,19vw,280px)!important;
+  background:radial-gradient(ellipse,rgba(33,20,16,.12),rgba(33,20,16,.035) 46%,transparent 76%)!important;
+}.hero-copy::before{
+  inset:7% 11% 0!important;
+  border-radius:32px!important;
+  background:linear-gradient(180deg,rgba(35,22,18,.045),rgba(35,22,18,.105))!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}.motion-ready .hero-entered .hero-couple-names .hero-name-left{
+  animation:heroCalligraphyRise .95s cubic-bezier(.16,.84,.24,1) .34s both!important;
+}.motion-ready .hero-entered .hero-couple-names .hero-amp{
+  animation:heroCalligraphyAmp .82s cubic-bezier(.17,.86,.25,1) .47s both!important;
+}.motion-ready .hero-entered .hero-couple-names .hero-name-right{
+  animation:heroCalligraphyRise 1s cubic-bezier(.16,.84,.24,1) .58s both!important;
+}
+@keyframes heroCalligraphyRise{
+  from{opacity:0;transform:translate3d(0,20px,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
+}
+@keyframes heroCalligraphyAmp{
+  from{opacity:0;transform:translate3d(0,8px,0) scale(.88)}
+  to{opacity:1;transform:translate3d(0,0,0) scale(1)}
+}.hero-date{
+  margin-top:clamp(30px,3.2vw,44px)!important;
+}@media(min-width:1400px){.hero-couple-names{
+    font-size:clamp(8.4rem,8.6vw,11rem)!important;
+  }.hero-date{
+    font-size:clamp(1.2rem,1.3vw,1.55rem)!important;
+  }
+}@media(min-width:681px) and (max-width:1024px){.hero-couple-names{
+    width:min(100%,860px)!important;
+    padding-inline:.28em!important;
+    font-size:clamp(5.2rem,10vw,7.4rem)!important;
+    line-height:.72!important;
+  }.hero-couple-names .hero-name{
+    line-height:.72!important;
+  }.hero-couple-names .hero-amp{
+    font-size:.40em!important;
+  }
+}@media(max-width:680px){.hero-couple-names{
+    width:100%!important;
+    padding:.14em .20em .20em!important;
+    font-size:clamp(4.15rem,18vw,5.8rem)!important;
+    line-height:.73!important;
+  }.hero-couple-names .hero-name{
+    padding:.10em .11em .13em!important;
+    line-height:.73!important;
+  }.hero-couple-names .hero-amp{
+    margin:-.02em 0 0!important;
+    font-size:.42em!important;
+  }.hero-couple-names::before{
+    width:98vw!important;
+    height:145px!important;
+  }.hero-copy::before{
+    inset:5% 1% -1%!important;
+  }
+}@media(max-width:390px){.hero-couple-names{
+    font-size:clamp(3.75rem,17vw,4.9rem)!important;
+  }
+}@media(prefers-reduced-motion:reduce){.hero-couple-names .hero-name,
+.hero-couple-names .hero-amp{
+    animation:none!important;
+    opacity:1!important;
+    transform:none!important;
+  }
+}
+
+
+.hero-couple-names{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:auto auto auto!important;
+  justify-items:center!important;
+  align-items:center!important;
+  row-gap:.055em!important;
+  width:min(100%,1240px)!important;
+  max-width:1240px!important;
+  padding:.22em .46em .30em!important;
+  font-family:"UTM Beautiful Caps","Great Vibes","Snell Roundhand","Apple Chancery",cursive!important;
+  font-size:clamp(6.4rem,8.7vw,10.6rem)!important;
+  font-weight:400!important;
+  font-style:normal!important;
+  line-height:.90!important;
+  letter-spacing:0!important;
+  overflow:visible!important;
+}.hero-couple-names .hero-name{
+  position:relative;
+  z-index:1;
+  display:block!important;
+  width:max-content;
+  max-width:100%;
+  padding:.10em .24em .16em!important;
+  margin:0!important;
+  font-family:"UTM Beautiful Caps","Great Vibes","Snell Roundhand","Apple Chancery",cursive!important;
+  font-weight:400!important;
+  font-style:normal!important;
+  line-height:.90!important;
+  letter-spacing:0!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-shadow:0 5px 28px rgba(18,10,8,.25);
+}.hero-couple-names .hero-name-left{
+  margin-bottom:.035em!important;
+}.hero-couple-names .hero-name-right{
+  margin-top:.035em!important;
+}
+
+/* Ampersand gets its own protected row so long swashes can never sit on top of it. */
+.hero-couple-names .hero-amp{
+  position:relative;
+  z-index:3;
+  display:flex!important;
+  align-items:center;
+  justify-content:center;
+  min-width:1.65em;
+  min-height:1.15em;
+  margin:.10em 0 .12em!important;
+  padding:.10em .42em .16em!important;
+  font-family:"UTM Beautiful Caps","Great Vibes","Snell Roundhand","Apple Chancery",cursive!important;
+  font-size:.36em!important;
+  font-weight:400!important;
+  font-style:normal!important;
+  line-height:1!important;
+  letter-spacing:0!important;
+  color:#E8C5AE!important;
+  overflow:visible!important;
+  text-shadow:0 4px 22px rgba(18,10,8,.18);
+}.hero-couple-names .hero-amp::before,
+.hero-couple-names .hero-amp::after{
+  content:"";
+  flex:0 0 clamp(24px,3vw,54px);
+  height:1px;
+  margin:0 .34em;
+  background:linear-gradient(90deg,transparent,rgba(232,197,174,.62),transparent);
+}
+
+/* The actual UTM font has larger swashes than the fallback, so preserve extra air. */
+.hero-copy{
+  overflow:visible!important;
+}.hero-couple-names::before{
+  width:min(88vw,940px)!important;
+  height:clamp(230px,25vw,370px)!important;
+}.hero-date{
+  margin-top:clamp(22px,2.5vw,34px)!important;
+}
+
+/* Desktop: bold cover typography while preserving the central composition. */
+@media(min-width:1400px){.hero-couple-names{
+    font-size:clamp(8rem,8.4vw,10.9rem)!important;
+    row-gap:.06em!important;
+  }.hero-couple-names .hero-amp{
+    margin:.11em 0 .13em!important;
+    font-size:.35em!important;
+  }
+}
+
+/* Tablet: enough vertical separation to protect the ampersand. */
+@media(min-width:681px) and (max-width:1024px){.hero-couple-names{
+    width:min(100%,900px)!important;
+    padding:.20em .38em .28em!important;
+    font-size:clamp(5.1rem,10.4vw,7.5rem)!important;
+    line-height:.92!important;
+    row-gap:.06em!important;
+  }.hero-couple-names .hero-name{
+    line-height:.92!important;
+    padding-inline:.20em!important;
+  }.hero-couple-names .hero-amp{
+    margin:.12em 0 .14em!important;
+    font-size:.38em!important;
+    min-height:1.2em;
+  }
+}
+
+/* Mobile: smaller swashes, but still keep the ampersand on a completely separate row. */
+@media(max-width:680px){.hero-couple-names{
+    width:100%!important;
+    padding:.18em .24em .28em!important;
+    font-size:clamp(3.9rem,17.2vw,5.5rem)!important;
+    line-height:.94!important;
+    row-gap:.045em!important;
+  }.hero-couple-names .hero-name{
+    max-width:96vw;
+    padding:.10em .13em .15em!important;
+    line-height:.94!important;
+  }.hero-couple-names .hero-amp{
+    min-width:1.55em;
+    min-height:1.18em;
+    margin:.11em 0 .13em!important;
+    padding:.08em .34em .13em!important;
+    font-size:.40em!important;
+  }.hero-couple-names .hero-amp::before,
+.hero-couple-names .hero-amp::after{
+    flex-basis:24px;
+    margin-inline:.22em;
+  }.hero-couple-names::before{
+    width:99vw!important;
+    height:180px!important;
+  }
+}@media(max-width:390px){.hero-couple-names{
+    font-size:clamp(3.55rem,16.4vw,4.75rem)!important;
+  }.hero-couple-names .hero-amp{
+    margin:.10em 0 .12em!important;
+  }
+}
+
+/* Font-load fallback remains stable and readable. */
+@supports (font-family:"UTM Beautiful Caps"){.hero-couple-names,
+.hero-couple-names .hero-name,
+.hero-couple-names .hero-amp{
+    font-synthesis:none;
+  }
+}
+
+
+/* Only the outer hero clips horizontal overflow; internal swashes stay visible. */
+.hero{
+  overflow-x:clip;
+}.hero-copy,
+.hero-couple-names,
+.hero-couple-names .hero-name,
+.hero-couple-names .hero-name-fit-text,
+.hero-couple-names .hero-amp,
+.hero-couple-names .hero-amp-text{
+  overflow:visible!important;
+}.hero-couple-names{
+  width:min(100%,var(--hero-fit-safe-width,1100px))!important;
+  max-width:var(--hero-fit-safe-width,1100px)!important;
+  padding:.16em .18em .22em!important;
+  row-gap:0!important;
+  line-height:1!important;
+}
+
+/* Name rows are layout-safe wrappers. Entrance animation stays on these wrappers. */
+.hero-couple-names .hero-name{
+  display:flex!important;
+  align-items:center;
+  justify-content:center;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  padding:0!important;
+  margin:0!important;
+  line-height:1!important;
+}
+
+/* Inner text owns the actual fitted font size. It never participates in entrance transforms. */
+.hero-couple-names .hero-name-fit-text{
+  display:inline-block;
+  width:max-content;
+  max-width:none;
+  padding:.12em .18em .18em;
+  margin:0;
+  font-family:"UTM Beautiful Caps","Great Vibes","Snell Roundhand","Apple Chancery",cursive!important;
+  font-size:var(--hero-fit-size,var(--hero-fit-base-size,150px))!important;
+  font-weight:400!important;
+  font-style:normal!important;
+  line-height:.92!important;
+  letter-spacing:0!important;
+  white-space:nowrap!important;
+  text-align:center;
+  transform:none!important;
+  transform-origin:center center;
+  text-shadow:0 5px 28px rgba(18,10,8,.25);
+}
+
+/* Protect the ampersand as its own independent row.
+   It is never scaled by the name-fit engine. */
+.hero-couple-names .hero-amp{
+  display:flex!important;
+  align-items:center;
+  justify-content:center;
+  width:100%!important;
+  min-width:0!important;
+  min-height:clamp(52px,4.6vw,76px)!important;
+  margin:clamp(12px,1.3vw,20px) 0!important;
+  padding:0!important;
+  line-height:1!important;
+  z-index:5!important;
+}.hero-couple-names .hero-amp-text{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:1.35em;
+  padding:.10em .32em .16em;
+  font-family:"UTM Beautiful Caps","Great Vibes","Snell Roundhand","Apple Chancery",cursive!important;
+  font-size:clamp(2.8rem,3.8vw,4.5rem)!important;
+  font-weight:400!important;
+  font-style:normal!important;
+  line-height:1!important;
+  color:#E8C5AE!important;
+  white-space:nowrap;
+  text-shadow:0 4px 22px rgba(18,10,8,.18);
+}.hero-couple-names .hero-amp::before,
+.hero-couple-names .hero-amp::after{
+  flex:0 0 clamp(24px,3vw,52px)!important;
+}
+
+/* Remove margins from older calligraphy versions; protected spacing lives on amp row now. */
+.hero-couple-names .hero-name-left,
+.hero-couple-names .hero-name-right{
+  margin:0!important;
+}
+
+/* Date sizing remains independent from fitted names. */
+.hero-date{
+  max-width:min(94vw,760px);
+  margin-top:clamp(22px,2vw,32px)!important;
+  margin-inline:auto;
+  white-space:normal;
+}
+
+/* Keep calligraphy hidden only for the micro measurement window.
+   The invitation cover normally masks this initial state. */
+.hero-couple-names:not(.hero-fit-ready) .hero-name-fit-text{
+  opacity:0;
+}.hero-couple-names.hero-fit-ready .hero-name-fit-text{
+  opacity:1;
+  transition:opacity .18s ease;
+}
+
+/* Desktop / large monitors */
+@media(min-width:1367px){.hero-couple-names{
+    padding-inline:.22em!important;
+  }.hero-couple-names .hero-amp{
+    min-height:68px!important;
+    margin:16px 0 18px!important;
+  }.hero-couple-names .hero-amp-text{
+    font-size:clamp(3.2rem,3.6vw,4.5rem)!important;
+  }.hero-date{
+    font-size:clamp(1.12rem,1.2vw,1.42rem)!important;
+  }
+}
+
+/* Laptop / tablet landscape */
+@media(min-width:1025px) and (max-width:1366px){.hero-couple-names .hero-amp{
+    min-height:58px!important;
+    margin:14px 0 16px!important;
+  }.hero-couple-names .hero-amp-text{
+    font-size:clamp(2.8rem,3.5vw,3.8rem)!important;
+  }.hero-date{
+    font-size:clamp(.96rem,1.45vw,1.16rem)!important;
+  }
+}
+
+/* Tablet portrait + smaller tablet landscape */
+@media(min-width:681px) and (max-width:1024px){.hero-couple-names{
+    padding-inline:.16em!important;
+  }.hero-couple-names .hero-amp{
+    min-height:50px!important;
+    margin:12px 0 14px!important;
+  }.hero-couple-names .hero-amp-text{
+    font-size:clamp(2.5rem,5vw,3.4rem)!important;
+  }.hero-date{
+    font-size:clamp(.88rem,1.9vw,1.06rem)!important;
+    letter-spacing:.13em!important;
+  }
+}
+
+/* Phones */
+@media(max-width:680px){.hero-couple-names{
+    width:min(100%,var(--hero-fit-safe-width,92vw))!important;
+    max-width:var(--hero-fit-safe-width,92vw)!important;
+    padding:.12em .08em .18em!important;
+  }.hero-couple-names .hero-name-fit-text{
+    padding:.13em .10em .18em!important;
+    line-height:.96!important;
+  }.hero-couple-names .hero-amp{
+    min-height:42px!important;
+    margin:10px 0 12px!important;
+  }.hero-couple-names .hero-amp-text{
+    font-size:clamp(2rem,8vw,2.8rem)!important;
+    padding:.06em .26em .12em;
+  }.hero-couple-names .hero-amp::before,
+.hero-couple-names .hero-amp::after{
+    flex-basis:20px!important;
+  }.hero-date{
+    margin-top:18px!important;
+    font-size:clamp(.72rem,3.4vw,.9rem)!important;
+    letter-spacing:.10em!important;
+  }
+}
+
+/* Narrow phones */
+@media(max-width:390px){.hero-couple-names .hero-amp{
+    min-height:38px!important;
+    margin:9px 0 10px!important;
+  }.hero-couple-names .hero-amp-text{
+    font-size:clamp(1.85rem,7.8vw,2.45rem)!important;
+  }.hero-date{
+    font-size:.70rem!important;
+    letter-spacing:.08em!important;
+  }
+}
+
+/* Landscape phones: compact vertical rhythm while preserving separate rows. */
+@media(max-height:500px) and (orientation:landscape){.hero-copy{
+    padding-top:4px!important;
+    padding-bottom:4px!important;
+  }.hero-copy>.eyebrow{
+    margin-bottom:4px!important;
+    font-size:.58rem!important;
+  }.hero-couple-names{
+    padding-top:.04em!important;
+    padding-bottom:.08em!important;
+  }.hero-couple-names .hero-name-fit-text{
+    padding-top:.06em!important;
+    padding-bottom:.10em!important;
+    line-height:.90!important;
+  }.hero-couple-names .hero-amp{
+    min-height:28px!important;
+    margin:4px 0 6px!important;
+  }.hero-couple-names .hero-amp-text{
+    font-size:1.7rem!important;
+    padding:.02em .20em .06em!important;
+  }.hero-couple-names .hero-amp::before,
+.hero-couple-names .hero-amp::after{
+    flex-basis:16px!important;
+  }.hero-date{
+    margin-top:8px!important;
+    font-size:.66rem!important;
+    letter-spacing:.08em!important;
+  }.hero-date::before{
+    margin-bottom:8px!important;
+  }.hero-note{
+    margin-top:8px!important;
+    font-size:.76rem!important;
+    line-height:1.35!important;
+  }.hero-copy .btn{
+    margin-top:8px!important;
+    min-height:34px!important;
+    padding:7px 16px!important;
+    font-size:.72rem!important;
+  }
+}
+
+/* Reduced motion still keeps the fitted layout. */
+@media(prefers-reduced-motion:reduce){.hero-couple-names .hero-name-fit-text,
+.hero-couple-names .hero-amp-text{
+    opacity:1!important;
+    transform:none!important;
+    transition:none!important;
+  }
+}
+
+
+.countdown-heading{
+  width:min(100%,620px)!important;
+  max-width:620px!important;
+  min-width:0!important;
+  overflow:visible!important;
+}
