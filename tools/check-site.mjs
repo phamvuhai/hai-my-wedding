@@ -36,8 +36,15 @@ for (const [index, file] of cssFiles.entries()) {
 }
 const actualLinks = [...source.matchAll(/href="\/(css\/site-\d+\.css)(?:\?[^"]*)?"/g)].map(match => match[1]);
 assert.deepEqual(actualLinks, cssFiles, 'CSS cascade order differs from manifest');
+assert(!/\\.invite-v2[\\w-]*\\b|\\.invite-canvas-fx\\b/.test(combined), 'Obsolete invitation-v2 / canvas selectors reintroduced');
+assert(source.includes('class="couture-stage"'), 'Active invitation stage is missing');
+assert(load('invitation.js').includes("querySelector('.couture-stage')"), 'Invitation controller references an obsolete stage');
+
 for (const legacy of ['Physical Invitation V3','Invitation UX V4','Invitation Cover V5','Cover stability V6']) {
   assert(!combined.includes(legacy), 'Dead invitation CSS was reintroduced: ' + legacy);
+}
+for (const animation of ["introFadeUp","introCardIn","introBotanicalLeft","introBotanicalRight","introSealHint","introPhotoHint","introArrowHint","introOpenCardV20","scheduleStatusSwap","scheduleCurrentEnter","envelopeBreathe","sealPulse","buttonShimmer","sealRing","sealBreak","sparkBurst","flapOpen","envelopeLeftOpen","envelopeRightOpen","copyLift","upperCopyLift","paperGlow","atmosphereBloom","stageDepth","photoLiftMobile","cardPortalMobile","envelopeFrontDrop","innerLetterRevealMobile","innerLetterRevealCompact","coverDissolveV39","coverAtmosphereFadeV39","innerLetterRevealV39Mobile","canvasControlsOut","canvasHeadingOut","canvasSceneExit"]) {
+  assert(!new RegExp('@keyframes\\s+' + animation + '\\b').test(combined), 'Unused keyframe reintroduced: ' + animation);
 }
 for (const unused of ['invitation-canvas.js','invitation-config.js','invitation-assets.js','invitation-simple.css']) {
   assert(!existsSync(resolve(root,unused)), 'Unused invitation implementation still present: ' + unused);
