@@ -40,9 +40,19 @@ for(const cfg of configs){
  const closed=await page.evaluate(()=>{
   const button=document.querySelector('#openInvitation');
   const r=button?.getBoundingClientRect();
+  const card=document.querySelector('.luxury-card');
+  const cardRect=card?.getBoundingClientRect();
+  const names=[...document.querySelectorAll('.minimal-names span')];
+  const namesFit=!!cardRect&&names.every(n=>{
+    const b=n.getBoundingClientRect();
+    return b.width>0&&b.left>=cardRect.left+14&&b.right<=cardRect.right-14;
+  });
   return {
-   cover:!!document.querySelector('.invitation-intro.invite-minimal'),
-   names:[...document.querySelectorAll('.minimal-names span')].map(x=>x.textContent.trim()),
+   cover:!!document.querySelector('.invitation-intro.invite-luxury'),
+   cardVisible:!!cardRect&&cardRect.width>300&&cardRect.top>=-4&&cardRect.left>=0&&cardRect.right<=innerWidth+2,
+   floralAssets:document.querySelectorAll('.luxury-floral img').length===2,
+   names:names.map(x=>x.textContent.trim()),
+   namesFit,
    buttonVisible:!!r&&r.width>=120&&r.height>=44&&r.top>=0&&r.bottom<=innerHeight,
    horizontalOverflow:document.documentElement.scrollWidth>innerWidth+2
   };
@@ -58,7 +68,7 @@ for(const cfg of configs){
  }));
  await page.screenshot({path:join(out,cfg.name+'-homepage.png')});
  await page.close();
- const passed=closed.cover&&closed.names.length===2&&closed.buttonVisible&&
+ const passed=closed.cover&&closed.cardVisible&&closed.floralAssets&&closed.namesFit&&closed.names.length===2&&closed.buttonVisible&&
   !closed.horizontalOverflow&&finish.opened&&!finish.locked&&!finish.horizontalOverflow&&errors.length===0;
  report.push({viewport:cfg.name,passed,closed,finish,errors});
  console.log(cfg.name+': '+(passed?'PASS':'FAIL')+' buttonVisible='+closed.buttonVisible+' errors='+errors.length);
@@ -69,7 +79,26 @@ await localized.goto(url+'/vi',{waitUntil:'domcontentloaded',timeout:30000});
 const bypass=await localized.evaluate(()=>document.querySelector('#invitationIntro')?.classList.contains('is-bypassed'));
 console.log('localized route bypass='+bypass);
 await localized.close();
+
+// Language switch must stay on the entry cover until its Open button is clicked.
+const languagePage=await browser.newPage();
+await languagePage.goto(url+'/',{waitUntil:'domcontentloaded',timeout:30000});
+await languagePage.waitForSelector('#openInvitation');
+await languagePage.click('.minimal-language [data-lang="en"]');
+const languageBeforeOpen=await languagePage.evaluate(()=>({
+ lang:window.WeddingI18n?.language,
+ route:location.pathname,
+ button:document.querySelector('#openInvitation [data-i18n="intro.open"]')?.textContent.trim()
+}));
+await languagePage.evaluate(()=>document.addEventListener('wedding:invitation-opened',()=>window.__langDone=true,{once:true}));
+await languagePage.click('#openInvitation');
+await languagePage.waitForFunction(()=>window.__langDone===true,{timeout:7000});
+const languageAfterOpen=await languagePage.evaluate(()=>({route:location.pathname,locked:document.body.classList.contains('invitation-locked')}));
+const languagePassed=languageBeforeOpen.lang==='en'&&languageBeforeOpen.route==='/'&&
+ languageBeforeOpen.button.length>0&&languageAfterOpen.route==='/en'&&!languageAfterOpen.locked;
+console.log('language switch and open='+languagePassed);
+await languagePage.close();
 await browser.close();
 await new Promise(done=>serve.close(done));
-writeFileSync(join(out,'report.json'),JSON.stringify({report,localizedRouteBypassed:bypass},null,2));
-if(!bypass||report.some(x=>!x.passed))process.exitCode=1;
+writeFileSync(join(out,'report.json'),JSON.stringify({report,localizedRouteBypassed:bypass,languagePassed,languageBeforeOpen,languageAfterOpen},null,2));
+if(!bypass||!languagePassed||report.some(x=>!x.passed))process.exitCode=1;

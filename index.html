@@ -11,39 +11,64 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Lora:wght@400;500;600&display=swap" rel="stylesheet" />
   <link href="https://fonts.cdnfonts.com/css/utm-beautiful-caps" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css?v=cover-stable-v6" />
-  <link rel="stylesheet" href="/invitation-simple.css?v=minimal-1" />
+  <link rel="stylesheet" href="/invitation-simple.css?v=luxury-2" />
 </head>
 <body class="invitation-locked hero-image-loading">
 
 
-  <!-- Minimal invitation cover: one message and one clear action. -->
-  <section class="invitation-intro invite-minimal" id="invitationIntro" aria-label="Wedding invitation opening">
+  <!-- Luxury Romantic Invitation | Accessible, localized and personalized -->
+  <section class="invitation-intro invite-minimal invite-luxury" id="invitationIntro" aria-label="Wedding invitation opening">
+    <div class="luxury-ambient" aria-hidden="true"></div>
+    <div class="luxury-floral luxury-floral-left" aria-hidden="true">
+      <img src="/images/invitation/figma/figma-floral-left.svg" alt="" decoding="async" />
+    </div>
+    <div class="luxury-floral luxury-floral-right" aria-hidden="true">
+      <img src="/images/invitation/figma/figma-floral-right.svg" alt="" decoding="async" />
+    </div>
+    <div class="luxury-stardust" aria-hidden="true">
+      <i>✧</i><i>✦</i><i>✧</i><i>✧</i><i>✦</i>
+    </div>
     <div class="intro-language language-switcher minimal-language" aria-label="Language">
       <button type="button" data-lang="vi">VI</button>
       <button type="button" data-lang="en">EN</button>
       <button type="button" data-lang="ja">日本語</button>
     </div>
 
-    <div class="minimal-content">
-      <div class="minimal-monogram" aria-hidden="true">H <span>&amp;</span> M</div>
-      <p class="minimal-kicker" data-i18n="intro.invite">TRÂN TRỌNG KÍNH MỜI</p>
-      <div class="minimal-rule" aria-hidden="true"></div>
-      <h2 class="minimal-names">
-        <span>PHẠM VŨ HẢI</span>
-        <em>&amp;</em>
-        <span>NGUYỄN THỊ MỸ</span>
-      </h2>
-      <p class="minimal-date" data-i18n="intro.eventDate">18 — 20 · 12 · 2026</p>
-      <button class="minimal-open" id="openInvitation" type="button">
-        <span data-i18n="intro.open">MỞ THIỆP</span>
-      </button>
-      <div class="minimal-personal">
-        <p class="personal-invite-private" id="personalInvitePrivate" hidden></p>
-        <aside class="personal-link-notice personal-link-notice-cover" id="personalLinkNotice" hidden>
-          <span class="personal-link-note-icon" aria-hidden="true">🔒</span>
-          <p id="personalLinkNoticeText"></p>
-          <button class="personal-share-btn" id="personalSharePublic" type="button"></button>
-        </aside>
+    <div class="luxury-card">
+      <span class="luxury-corner luxury-corner-tl" aria-hidden="true"></span>
+      <span class="luxury-corner luxury-corner-tr" aria-hidden="true"></span>
+      <span class="luxury-corner luxury-corner-bl" aria-hidden="true"></span>
+      <span class="luxury-corner luxury-corner-br" aria-hidden="true"></span>
+      <div class="luxury-card-inner minimal-content">
+        <div class="luxury-crest" aria-hidden="true">✦ <span>H &amp; M</span> ✦</div>
+        <p class="luxury-overline">THE WEDDING CELEBRATION</p>
+        <div class="minimal-monogram" aria-hidden="true">H <span>&amp;</span> M</div>
+        <p class="minimal-kicker" data-i18n="intro.invite">TRÂN TRỌNG KÍNH MỜI</p>
+        <div class="minimal-rule" aria-hidden="true"><span>✧</span></div>
+        <h2 class="minimal-names">
+          <span>PHẠM VŨ HẢI</span>
+          <em>&amp;</em>
+          <span>NGUYỄN THỊ MỸ</span>
+        </h2>
+        <p class="luxury-lead" data-i18n="intro.formalLead">Đến chung vui cùng chúng tôi trong ngày hạnh phúc</p>
+        <div class="luxury-date-frame">
+          <span class="luxury-date-ornament" aria-hidden="true">❦</span>
+          <p class="minimal-date" data-i18n="intro.eventDate">18 — 20 · 12 · 2026</p>
+          <span class="luxury-date-ornament" aria-hidden="true">❦</span>
+        </div>
+        <button class="minimal-open" id="openInvitation" type="button">
+          <span data-i18n="intro.open">MỞ THIỆP</span>
+          <span class="luxury-button-arrow" aria-hidden="true">↗</span>
+        </button>
+        <p class="luxury-closing" data-i18n="intro.closing">Sự hiện diện của bạn là niềm vui của chúng tôi.</p>
+        <div class="minimal-personal">
+          <p class="personal-invite-private" id="personalInvitePrivate" hidden></p>
+          <aside class="personal-link-notice personal-link-notice-cover" id="personalLinkNotice" hidden>
+            <span class="personal-link-note-icon" aria-hidden="true">🔒</span>
+            <p id="personalLinkNoticeText"></p>
+            <button class="personal-share-btn" id="personalSharePublic" type="button"></button>
+          </aside>
+        </div>
       </div>
     </div>
     <p class="sr-only" id="invitationCanvasStatus" aria-live="polite"></p>
