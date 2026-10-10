@@ -65,10 +65,6 @@
     render();
   }
 
-  function csvCell(value) {
-    const s = String(value ?? '').replaceAll('"','""');
-    return '"' + s + '"';
-  }
 
   function exportCsv() {
     const headers = ['Tên','Nguồn','Điện thoại','Trạng thái','Số người','Sự kiện','Lời nhắn','Ngày tạo','Cập nhật'];
@@ -83,13 +79,7 @@
       new Date(r.created_at).toLocaleString('vi-VN'),
       r.updated_at ? new Date(r.updated_at).toLocaleString('vi-VN') : ''
     ]);
-    const csv = '\uFEFF' + [headers, ...rows].map(row => row.map(csvCell).join(',')).join('\n');
-    const url = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'hai-my-wedding-rsvp.csv';
-    a.click();
-    URL.revokeObjectURL(url);
+    A.utils.downloadCsv('hai-my-wedding-rsvp.csv',headers,rows,'\n');
   }
 
   function render() {
