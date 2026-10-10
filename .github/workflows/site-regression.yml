@@ -1,0 +1,19 @@
+name: Site static regression
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'refactor/**'
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check source, assets and route wiring
+        run: node tools/check-site.mjs
+      - name: Verify invitation interactions
+        run: node --test tests/invitation.test.mjs
