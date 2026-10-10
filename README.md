@@ -8,7 +8,7 @@ Production: https://hai-my-wedding-gamma.vercel.app
 
 - Multilingual public site: Vietnamese / English / Japanese
 - Personalized invitation links: `/{lang}/invite/{token}`
-- Animated invitation cover with envelope opening + inner card reveal
+- Minimal invitation cover with a single open button and quick fade
 - Personalized welcome message after opening
 - Site-wide wedding particles: 🌸 ✨ ❤️ ❄️
 - RSVP form with public and invite-based response flows
