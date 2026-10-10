@@ -15,5 +15,5 @@ jobs:
           node-version: '22'
       - name: Check source, assets and route wiring
         run: node tools/check-site.mjs
-      - name: Verify invitation interactions
-        run: node --test tests/invitation.test.mjs
+      - name: Verify invitation and Admin helpers
+        run: node --test tests/invitation.test.mjs tests/admin-utils.test.mjs
