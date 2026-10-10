@@ -12,10 +12,10 @@ Last major update: 2026-10-05
 
 ## Current invitation behavior
 
-- Personalized invite cover is enabled for invite routes.
-- Mobile cover has a compact layout for <= 480px.
-- Couple photo must stay fixed during opening.
-- Envelope opens and reveals `.intro-inner-letter`.
+- The root route and personalized invite routes display a minimal, responsive invitation cover.
+- Cover shows H & M, couple names, event dates, language picker and one Open Invitation button.
+- Opening uses a short 280ms fade instead of the legacy envelope/card timeline.
+- Personalized guest name and private-link notice remain visible on personalized covers.
 - Welcome message can be dismissed by touch/click/swipe/scroll.
 - Falling particles run from homepage to footer after opening.
 
