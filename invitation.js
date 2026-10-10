@@ -1,7 +1,6 @@
 (() => {
   const intro = document.getElementById('invitationIntro');
   const openButton = document.getElementById('openInvitation');
-  const stage = intro?.querySelector('.atelier-stage');
   const hero = document.getElementById('home');
 
   const validAnchors = new Set([
@@ -125,60 +124,33 @@
   }
 
   function openInvitation() {
-    if (!isEntryRoute || opening || !intro || !intro.classList.contains('is-ready')) return;
+    if (!isEntryRoute || opening || invitationOpened || !intro) return;
     opening = true;
 
     if (openButton) openButton.disabled = true;
     intro.classList.add('is-opening');
     document.body.classList.add('invitation-opening');
-
     canonicalizeAfterOpen();
 
-    // Start audio inside the user gesture before the visual timeline begins.
+    // Music still starts from the user's click, as required by mobile browsers.
     const lang = window.WeddingI18n?.language || 'vi';
     window.WeddingMusic?.start?.(lang);
 
-    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) {
-      setTimeout(() => intro.classList.add('is-exiting'), 260);
-      setTimeout(finishOpening, 560);
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      finishOpening();
       return;
     }
 
-    // One controlled opening timeline: seal, flap, card rise, pause, handoff.
-    // The fallback timer guarantees that the guest can always enter the site.
-    // Paper rises out of the pocket, then becomes a fully readable card.
-    // Leave enough time to read both names before entering the website.
-    setTimeout(() => {
-      if (opening) intro.classList.add('is-letter-front');
-    }, 1700);
-    setTimeout(() => {
-      if (opening) intro.classList.add('is-exiting');
-    }, 6150);
-    setTimeout(() => {
-      if (opening) finishOpening();
-    }, 6700);
-
+    // A single short fade replaces the old multi-stage envelope animation.
+    intro.classList.add('is-exiting');
+    setTimeout(finishOpening, 280);
   }
 
   function bindEntryInteractions() {
     openButton?.addEventListener('click', event => {
       event.preventDefault();
-      event.stopPropagation();
       openInvitation();
     });
-
-    stage?.addEventListener('click', event => {
-      if (event.defaultPrevented || event.target.closest('button,a,input,select,textarea')) return;
-      openInvitation();
-    });
-
-    stage?.addEventListener('keydown', event => {
-      if (event.key !== 'Enter' && event.key !== ' ') return;
-      event.preventDefault();
-      openInvitation();
-    });
-
   }
 
   function bindRouteListeners() {
@@ -237,29 +209,6 @@
   }, {once:true});
 
 
-  const revealReadyState = async () => {
-    if (!intro || intro.classList.contains('is-ready')) return;
-
-
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        intro.classList.add('is-ready');
-      });
-    });
-  };
-
-  if (window.WeddingHeroReady || document.body.classList.contains('hero-image-ready') || document.body.classList.contains('hero-image-fallback')) {
-    revealReadyState();
-  } else {
-    document.addEventListener('wedding:hero-ready', revealReadyState, {once:true});
-    // Never trap the guest if the remote image service is unavailable.
-    setTimeout(() => {
-      if (!window.WeddingHeroReady) {
-        document.body.classList.remove('hero-image-loading');
-        document.body.classList.add('hero-image-fallback');
-        window.WeddingHeroReady = true;
-      }
-      revealReadyState();
-    }, 2200);
-  }
+  // Entry cover is always interactive, regardless of hero image loading.
+  intro.classList.add('is-ready');
 })();
