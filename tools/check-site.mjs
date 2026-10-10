@@ -36,7 +36,7 @@ for (const [index, file] of cssFiles.entries()) {
 }
 const actualLinks = [...source.matchAll(/href="\/(css\/site-\d+\.css)(?:\?[^"]*)?"/g)].map(match => match[1]);
 assert.deepEqual(actualLinks, cssFiles, 'CSS cascade order differs from manifest');
-assert(!/\\.invite-v2[\\w-]*\\b|\\.invite-canvas-fx\\b/.test(combined), 'Obsolete invitation-v2 / canvas selectors reintroduced');
+assert(!/\.invite-v2[\w-]*\b|\.invite-canvas-fx\b/.test(combined), 'Obsolete invitation-v2 / canvas selectors reintroduced');
 assert(source.includes('class="couture-stage"'), 'Active invitation stage is missing');
 assert(load('invitation.js').includes("querySelector('.couture-stage')"), 'Invitation controller references an obsolete stage');
 
