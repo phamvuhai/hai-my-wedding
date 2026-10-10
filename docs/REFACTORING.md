@@ -17,6 +17,7 @@ This project serves guests and administrators. A complete one-shot rewrite would
 ## Stage 2 — Cleanup completed on this branch
 
 - Removed obsolete invitation V3–V6 CSS overrides and five exactly repeated style rules. The active HTML/CSS Couture invitation remains untouched.
+- Further removed 71 unused `invite-v2`/Canvas CSS rules and 35 keyframes no longer referenced in the active CSS or JavaScript. Renamed the active stage class to `.couture-stage` to avoid legacy style collisions.
 - Deleted unused pre-Couture `invitation-canvas.js`, `invitation-config.js`, `invitation-assets.js` and `invitation-simple.css` (not loaded by the public HTML).
 - Removed redundant Gallery initialization calls in `motion.js`; existing data-init listener guards remain.
 - Introduced `admin/utils.js` for export CSV, normalizing guests, getting the latest RSVP per invitation, gallery metadata changes, and WebP optimization.
@@ -54,3 +55,9 @@ node --test tests/invitation.test.mjs tests/admin-utils.test.mjs
 ```
 
 No npm dependencies are required for the refactor checks.
+
+## Latest measured reduction
+
+Relative to `main`, the refactor branch has **2,263 fewer net CSS/JS lines** (+8,290 added, -10,553 deleted) and **1,794 fewer net lines in all changed files** (including tests and docs), as measured on 2026-10-10. Check the comparison again after additional commits.
+
+Do not remove remaining generic `.invitation-intro` CSS just because it predates Couture: the active cover still uses that class. Any further cleanup needs a runtime selector audit and screenshots on iPhone, tablet and PC.
