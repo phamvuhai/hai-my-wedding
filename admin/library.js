@@ -15,11 +15,16 @@
   async function action(type,id){
     const img=A.images.find(x=>x.id===id);if(!img)return;
     if(type==='edit'){document.dispatchEvent(new CustomEvent('admin:edit',{detail:img}));return;}
-    if(type==='publish'){const {error}=await db.from('gallery_images').update({is_published:!img.is_published,updated_at:new Date().toISOString()}).eq('id',id);if(error)return alert(error.message);await A.loadData();}
-    if(type==='cover'){await db.from('gallery_images').update({is_cover:false}).eq('album_id',img.album_id);const {error}=await db.from('gallery_images').update({is_cover:true}).eq('id',id);if(error)return alert(error.message);await A.loadData();}
-    if(type==='home'){const {error}=await db.from('gallery_images').update({show_on_homepage:!img.show_on_homepage,updated_at:new Date().toISOString()}).eq('id',id);if(error)return alert(error.message);await A.loadData();}
-    if(type==='featured'){const {error}=await db.from('gallery_images').update({is_featured:!img.is_featured,updated_at:new Date().toISOString()}).eq('id',id);if(error)return alert(error.message);await A.loadData();}
-    if(type==='hero'){await db.from('gallery_images').update({is_hero:false}).neq('id',id);const {error}=await db.from('gallery_images').update({is_hero:true,show_on_homepage:true,is_published:true,updated_at:new Date().toISOString()}).eq('id',id);if(error)return alert(error.message);await A.loadData();}
+    const field={publish:'is_published',home:'show_on_homepage',featured:'is_featured'}[type];
+    if(field){
+      await A.utils.patchGalleryImage(id,{[field]:!img[field],updated_at:new Date().toISOString()});
+      return;
+    }
+    
+    if(type==='cover'){await db.from('gallery_images').update({is_cover:false}).eq('album_id',img.album_id);await A.utils.patchGalleryImage(id,{is_cover:true});}
+    
+    
+    if(type==='hero'){await db.from('gallery_images').update({is_hero:false}).neq('id',id);await A.utils.patchGalleryImage(id,{is_hero:true,show_on_homepage:true,is_published:true,updated_at:new Date().toISOString()});}
     if(type==='delete'){if(!confirm('Xóa ảnh này khỏi album?'))return;await Promise.all([db.storage.from('wedding-gallery').remove([img.image_path]),db.storage.from('wedding-originals').remove([img.original_path])]);const {error}=await db.from('gallery_images').delete().eq('id',id);if(error)return alert(error.message);await A.loadData();}
   }
 })();
