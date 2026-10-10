@@ -35,7 +35,7 @@ Production: https://hai-my-wedding-gamma.vercel.app
 
 ## Refactoring and verification
 
-- Global styles are loaded as nine ordered `css/site-01.css` … `css/site-09.css` modules. `styles.css` is a compatibility import entry point.
+- Global styles are loaded as eight ordered `css/site-01.css` … `css/site-08.css` modules. `styles.css` is a compatibility import entry point.
 - CSS module order and content are integrity-checked against `css/manifest.json`; change the manifest deliberately when redesigning.
 - `motion/cursor.js` and `public/countdown.js` are standalone browser modules loaded before their dependents.
 - Admin CSV, guest/RSVP, gallery image and WebP helpers are shared via `admin/utils.js` (loaded after `admin/state.js`).
