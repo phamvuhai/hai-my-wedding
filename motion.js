@@ -31,7 +31,6 @@
     initMagnetic();
     initEventTimeline();
     initEventTilt();
-    initGalleryCuriosity();
     initRipple();
     initRsvpSuccess();
     initSignature();
@@ -840,8 +839,8 @@
   const galleryRoot = qs('#homeGallery');
   if (galleryRoot) {
     new MutationObserver(() => {
+      // initReveal already applies gallery curiosity hooks.
       initReveal();
-      initGalleryCuriosity();
       initContextCursor();
     }).observe(galleryRoot,{childList:true,subtree:true});
   }
