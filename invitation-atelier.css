@@ -182,7 +182,28 @@
 .atelier-invite.is-opening .atelier-wax{animation:atelierSealBreak .6s cubic-bezier(.3,.3,.6,1) forwards}
 .atelier-invite.is-opening .atelier-envelope-flap{animation:atelierFlapOpen 1.18s cubic-bezier(.25,.63,.3,1) .18s forwards}
 .atelier-invite.is-opening .atelier-paper{animation:atelierLetterReveal 2.75s cubic-bezier(.19,.71,.23,1) .9s forwards}
-.atelier-invite.is-letter-front .atelier-paper{z-index:9}
+/* After the card clears the envelope opening, it must read as one complete letter.
+   The envelope gently retires instead of masking the bride's name. */
+.atelier-invite.is-letter-front .atelier-paper{
+ z-index:12;
+ box-shadow:0 24px 56px rgba(12,0,9,.40),0 1px 0 rgba(255,255,255,.85) inset;
+}
+.atelier-invite .atelier-envelope-front,
+.atelier-invite .atelier-envelope-back,
+.atelier-invite .atelier-fold-lines{
+ transition:transform 1s cubic-bezier(.22,.72,.25,1),opacity .7s ease;
+ transform-origin:50% 100%;
+}
+.atelier-invite.is-letter-front .atelier-envelope-front,
+.atelier-invite.is-letter-front .atelier-fold-lines{
+ transform:translateY(39%) scale(.94);
+ opacity:.22;
+}
+.atelier-invite.is-letter-front .atelier-envelope-back{
+ transform:translateY(27%) scale(.95);
+ opacity:.30;
+}
+.atelier-invite.is-letter-front .atelier-floral{opacity:.33;transition:opacity .7s ease}
 .atelier-invite.is-exiting{opacity:0!important;transition:opacity .48s ease!important;pointer-events:none!important}
 .atelier-invite.is-opened,.atelier-invite.is-bypassed{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
 @keyframes atelierWaxGlow{0%,100%{box-shadow:0 5px 13px rgba(14,0,6,.57),inset 0 3px 4px rgba(255,210,191,.3)}50%{box-shadow:0 5px 16px rgba(14,0,6,.57),0 0 0 7px rgba(233,181,137,.045),inset 0 3px 4px rgba(255,210,191,.3)}}
