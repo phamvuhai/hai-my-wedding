@@ -53,6 +53,14 @@ for(const entry of scenarios){
    opened=true;
   }catch(e){errors.push('not opened: '+e.message.slice(0,100));}
  }
+ const scrollBefore=await page.evaluate(()=>({
+  scrollY:scrollY,
+  docHeight:document.documentElement.scrollHeight,
+  bodyHeight:document.body.scrollHeight,
+  documentOverflow:getComputedStyle(document.documentElement).overflowY,
+  bodyOverflow:getComputedStyle(document.body).overflowY,
+  bodyClasses:document.body.className
+ }));
  const form=page.locator('#rsvpForm');
  const exists=await form.count()>0;
  let formVisible=false;
@@ -76,9 +84,14 @@ for(const entry of scenarios){
   scrollY:window.scrollY,
   rsvpTop:Math.round(document.getElementById('rsvpForm')?.getBoundingClientRect().top||0),
   rsvpHeight:Math.round(document.getElementById('rsvpForm')?.getBoundingClientRect().height||0),
+  docHeight:document.documentElement.scrollHeight,
+  bodyHeight:document.body.scrollHeight,
+  htmlOverflow:getComputedStyle(document.documentElement).overflowY,
+  bodyOverflow:getComputedStyle(document.body).overflowY,
+  bodyClasses:document.body.className,
   coupleNames:[...document.querySelectorAll('.couture-couple strong')].map(el=>el.textContent.trim())
  }));
- report.scenarios.push({name:entry.name,ready,opened,formVisible,metrics,errors});
+ report.scenarios.push({name:entry.name,ready,opened,formVisible,scrollBefore,metrics,errors});
  report.errors.push(...errors.map(e=>entry.name+': '+e));
  await context.close();
  console.log(entry.name+' ready='+ready+' opened='+opened+' form='+formVisible+' overflow='+(metrics.scrollWidth>metrics.width+2)+' pageErrors='+errors.length);
