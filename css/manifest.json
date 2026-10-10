@@ -1,5 +1,5 @@
 {
-  "description": "Ordered CSS modules after removing V3-V6 overrides, invite-v2/Canvas selectors and unreferenced keyframes.",
+  "description": "Eight active CSS modules after runtime-confirmed removal of an empty legacy placeholder stylesheet.",
   "order": [
     "css/site-01.css",
     "css/site-02.css",
@@ -8,11 +8,10 @@
     "css/site-05.css",
     "css/site-06.css",
     "css/site-07.css",
-    "css/site-08.css",
-    "css/site-09.css"
+    "css/site-08.css"
   ],
-  "originalLength": 229816,
-  "fnv1a32": "fffc0089",
+  "originalLength": 229727,
+  "fnv1a32": "3c7352d6",
   "lengths": [
     31884,
     31558,
@@ -21,7 +20,6 @@
     27171,
     30459,
     27215,
-    17668,
-    89
+    17668
   ]
 }
