@@ -68,6 +68,8 @@ function initEventScrollStory() {
   const portal = document.createElement('div');
   portal.className = 'events-unified event-status-portal';
   document.body.appendChild(portal);
+  // Mount once. Reparenting while scrolling can trigger Safari scroll anchoring.
+  portal.appendChild(status);
 
   let frame = 0;
   let activeIndex = -1;
@@ -125,13 +127,7 @@ function initEventScrollStory() {
     const sectionRect = section.getBoundingClientRect();
     const floatVisible = sectionRect.top <= floatTop &&
       sectionRect.bottom > floatTop + height + 16;
-    if (floatVisible) {
-      if (status.parentElement !== portal) portal.appendChild(status);
-      status.classList.add('is-floating');
-    } else {
-      if (status.parentElement !== slot) slot.appendChild(status);
-      status.classList.remove('is-floating');
-    }
+    status.classList.toggle('is-floating', floatVisible);
 
     days.forEach(day => {
       const timeline = day.querySelector('.event-timeline');
