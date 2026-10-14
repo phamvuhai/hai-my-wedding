@@ -116,9 +116,8 @@ function initEventScrollStory() {
     const height = status.offsetHeight;
     slot.style.minHeight = `${height}px`;
     status.style.setProperty('--event-status-fixed-top', `${floatTop}px`);
-    const slotRect = slot.getBoundingClientRect();
     const sectionRect = section.getBoundingClientRect();
-    const floatVisible = slotRect.top <= floatTop &&
+    const floatVisible = sectionRect.top <= floatTop &&
       sectionRect.bottom > floatTop + height + 16;
     status.classList.toggle('is-floating', floatVisible);
 
