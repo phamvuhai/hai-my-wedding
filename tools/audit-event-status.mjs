@@ -47,6 +47,8 @@ for(const [name,device] of [
       const rect=item.getBoundingClientRect();
       window.scrollTo({top:Math.max(0,window.scrollY+rect.top+rect.height/2-window.innerHeight*.48),behavior:'instant'});
     },index);
+    // Allow rAF and Safari layout/scroll-anchor adjustments to settle first.
+    await page.waitForTimeout(160);
     try {
       await page.waitForFunction(value=>document.getElementById('eventScrollStatus')?.dataset.activeEvent===String(value),
         index+1,{timeout:2400});
@@ -69,7 +71,10 @@ for(const [name,device] of [
         hasTwoLines:status.querySelector('.event-status-copy').getBoundingClientRect().height>31,
         visible:box.top>=-5&&box.top<innerHeight*.55,
         top:Math.round(box.top),
+        left:Math.round(box.left),
+        right:Math.round(box.right),
         fixed:getComputedStyle(status).position==='fixed',
+        floating:status.classList.contains('is-floating'),
         sectionTop:Math.round(document.getElementById('events').getBoundingClientRect().top),
         sectionBottom:Math.round(document.getElementById('events').getBoundingClientRect().bottom),
         slotTop:Math.round(document.getElementById('eventScrollStatusSlot').getBoundingClientRect().top),
