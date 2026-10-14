@@ -9146,3 +9146,93 @@ body.invitation-locked .invite-v2-stage{
     font-size: min(var(--hero-fit-size, 34px), 35px) !important;
   }
 }
+
+/* Mobile typography refinement: decorative names fill the card, never the viewport edges.
+   The fitting engine measures the intrinsic width and writes --hero-fit-size. */
+@media (max-width: 760px) {
+  .hero-couple-names .hero-name-fit-text {
+    width: max-content !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    padding: .12em .10em .16em !important;
+    font-size: var(--hero-fit-size, 62px) !important;
+    line-height: 1.02 !important;
+    white-space: nowrap !important;
+    text-shadow: 0 2px 17px rgba(15, 9, 8, .32) !important;
+  }
+  .hero-couple-names {
+    row-gap: 0 !important;
+    padding-top: 10px !important;
+    padding-bottom: 14px !important;
+  }
+  .hero-couple-names .hero-amp { margin: 0 auto 2px !important; }
+  .hero-couple-names .hero-amp-text { font-size: clamp(28px, 7vw, 38px) !important; }
+  .hero-copy .hero-date { margin-top: 18px !important; }
+}
+@media (max-width: 390px) {
+  .hero-couple-names .hero-name-fit-text {
+    max-width: none !important;
+    font-size: var(--hero-fit-size, 58px) !important;
+  }
+}
+
+/* Wedding schedule: clearly legible on phones without disrupting the timeline.
+   De-emphasis belongs in the progress marker, not on the information guests need. */
+@media (max-width: 760px) {
+  .events-unified .event-day-panel .event-card,
+  .events-unified .event-day-panel .event-card.is-current,
+  .events-unified .event-day-panel .event-card.is-past {
+    opacity: 1 !important;
+  }
+  .events-unified .event-day-panel .event-type {
+    color: #866451 !important;
+    font-size: 11px !important;
+    letter-spacing: .09em !important;
+    line-height: 1.4 !important;
+  }
+  .events-unified .event-day-panel .event-card h4 {
+    color: #45352e !important;
+    font-size: clamp(23px, 6vw, 28px) !important;
+    font-weight: 500;
+    line-height: 1.18 !important;
+    margin: 5px 0 8px !important;
+  }
+  .events-unified .event-day-panel .event-date strong {
+    color: #9a6b55 !important;
+    font-size: clamp(27px, 7vw, 33px) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    line-height: 1.06 !important;
+  }
+  .events-unified .event-day-panel .event-dayline,
+  .events-unified .event-day-panel .event-date span {
+    color: #77645c !important;
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+  }
+  .events-unified .event-day-panel .event-meta {
+    color: #66574f !important;
+    font-size: 13px !important;
+    line-height: 1.65 !important;
+    overflow-wrap: anywhere;
+  }
+  .events-unified .event-day-panel .event-actions {
+    margin-top: 11px !important;
+    padding: 0 !important;
+  }
+  .events-unified .event-day-panel .map-link {
+    color: #694b40 !important;
+    min-height: 42px !important;
+    padding: 10px 3px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    line-height: 1.3 !important;
+    text-underline-offset: 5px !important;
+  }
+  .events-unified .event-day-panel .event-card + .event-card {
+    border-color: rgba(103, 74, 59, .2) !important;
+  }
+  .events-unified .event-day-panel .family-date {
+    color: #7e6459 !important;
+  }
+}
