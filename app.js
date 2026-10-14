@@ -50,27 +50,66 @@ function tr(key, fallback = '') {
 
 function initEventScrollStory() {
   const section = document.getElementById('events');
-  const items = [...document.querySelectorAll('[data-event-item]')];
-  const days = [...document.querySelectorAll('[data-event-day]')];
+  const items = [...document.querySelectorAll('#events [data-event-item]')];
+  const days = [...document.querySelectorAll('#events [data-event-day]')];
   const status = document.getElementById('eventScrollStatus');
+  const slot = document.getElementById('eventScrollStatusSlot');
   const statusText = document.getElementById('eventScrollStatusText');
+  const statusDetail = document.getElementById('eventScrollDetail');
+  const statusCount = document.getElementById('eventScrollCount');
   const progress = document.getElementById('eventScrollProgress');
-  if (!section || !items.length || !days.length || !status || !statusText || !progress) return;
+  const steps = [...progress?.querySelectorAll('[data-progress-step]') || []];
+
+  if (!section || !items.length || !days.length || !status || !slot || !statusText ||
+      !statusDetail || !statusCount || !progress || steps.length !== items.length) return;
+
+  // Floating UI lives at document root so decorative section clipping and
+  // transformed ancestors cannot shift its fixed viewport coordinates in Safari.
+  const portal = document.createElement('div');
+  portal.className = 'events-unified event-status-portal';
+  document.body.appendChild(portal);
+  // Mount once. Reparenting while scrolling can trigger Safari scroll anchoring.
+  portal.appendChild(status);
 
   let frame = 0;
   let activeIndex = -1;
   let statusSwapTimer = 0;
-
   const clamp = value => Math.max(0, Math.min(1, value));
 
-  function swapStatus(text) {
-    if (!text || statusText.textContent === text) return;
-    clearTimeout(statusSwapTimer);
-    statusText.classList.add('is-changing');
-    statusSwapTimer = setTimeout(() => {
-      statusText.textContent = text;
-      statusText.classList.remove('is-changing');
-    }, 90);
+  function renderStatus(index, force = false) {
+    const event = items[index];
+    const day = event.closest('[data-event-day]');
+    // Read already-translated elements: language changes need no duplicate labels.
+    const date = day?.querySelector('.family-date')?.textContent?.trim().replace(/\.2026$/, '') || '';
+    const family = day?.querySelector('.family-title-row h3')?.textContent?.trim() || '';
+    const time = event.querySelector('.event-date strong')?.textContent?.trim() || '';
+    const title = event.querySelector('h4')?.textContent?.trim() || '';
+    const main = [date, family].filter(Boolean).join(' · ');
+    const detail = [time, title].filter(Boolean).join(' · ');
+    const count = `${index + 1} / ${items.length}`;
+
+    if (force || index !== activeIndex || statusText.textContent !== main || statusDetail.textContent !== detail) {
+      clearTimeout(statusSwapTimer);
+      statusText.textContent = main;
+      statusDetail.textContent = detail;
+      statusCount.textContent = count;
+      status.classList.remove('is-status-changing');
+      // Re-trigger only for a changed event, never on every scroll frame.
+      if (index !== activeIndex && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        void status.offsetWidth;
+        status.classList.add('is-status-changing');
+        statusSwapTimer = setTimeout(() => status.classList.remove('is-status-changing'), 240);
+      }
+    }
+
+    steps.forEach((step, stepIndex) => {
+      step.classList.toggle('is-complete', stepIndex <= index);
+      step.classList.toggle('is-current', stepIndex === index);
+    });
+    progress.setAttribute('aria-valuenow', String(index + 1));
+    progress.setAttribute('aria-valuetext', count);
+    status.dataset.activeEvent = String(index + 1);
+    activeIndex = index;
   }
 
   const update = () => {
@@ -78,13 +117,17 @@ function initEventScrollStory() {
     const viewportH = Math.max(1, innerHeight);
     const focusY = viewportH * .48;
 
-    const firstRect = items[0].getBoundingClientRect();
-    const lastRect = items[items.length - 1].getBoundingClientRect();
-    const firstCenter = firstRect.top + firstRect.height / 2;
-    const lastCenter = lastRect.top + lastRect.height / 2;
-    const overallProgress = clamp((focusY - firstCenter) / Math.max(1, lastCenter - firstCenter));
-    progress.style.transform = `scaleX(${overallProgress.toFixed(4)})`;
-    section.style.setProperty('--event-scroll-progress', overallProgress.toFixed(4));
+    // Safari can fail position:sticky when an ancestor clips decorative art.
+    // Keep an in-flow placeholder and float only within Wedding Events bounds.
+    const headerBottom = Math.max(0, document.querySelector('.nav')?.getBoundingClientRect().bottom || 0);
+    const floatTop = headerBottom + 7;
+    const height = status.offsetHeight;
+    slot.style.minHeight = `${height}px`;
+    status.style.setProperty('--event-status-fixed-top', `${floatTop}px`);
+    const sectionRect = section.getBoundingClientRect();
+    const floatVisible = sectionRect.top <= floatTop &&
+      sectionRect.bottom > floatTop + height + 16;
+    status.classList.toggle('is-floating', floatVisible);
 
     days.forEach(day => {
       const timeline = day.querySelector('.event-timeline');
@@ -96,7 +139,6 @@ function initEventScrollStory() {
 
     let nearestIndex = 0;
     let nearestDistance = Infinity;
-
     items.forEach((item, index) => {
       const rect = item.getBoundingClientRect();
       const itemCenter = rect.top + rect.height / 2;
@@ -118,17 +160,7 @@ function initEventScrollStory() {
 
     items.forEach((item, index) => item.classList.toggle('is-current', index === nearestIndex));
     days.forEach(day => day.classList.toggle('is-current-day', day.contains(items[nearestIndex])));
-
-    if (nearestIndex !== activeIndex) {
-      activeIndex = nearestIndex;
-      const active = items[activeIndex];
-      const day = active.closest('[data-event-day]');
-      const date = day?.querySelector('.family-date')?.textContent?.trim() || '';
-      const family = day?.querySelector('.family-title-row h3')?.textContent?.trim() || '';
-      const time = active.querySelector('.event-date strong')?.textContent?.trim() || '';
-      const title = active.querySelector('h4')?.textContent?.trim() || '';
-      swapStatus([date.replace('.2026',''), family, time, title].filter(Boolean).join(' · '));
-    }
+    renderStatus(nearestIndex);
   };
 
   const requestUpdate = () => {
@@ -138,10 +170,21 @@ function initEventScrollStory() {
 
   addEventListener('scroll', requestUpdate, {passive:true});
   addEventListener('resize', requestUpdate, {passive:true});
+  // A backup for Safari's programmatic jumps and scroll restoration, which
+  // occasionally skip a scroll event as a section leaves the visible viewport.
+  if ('IntersectionObserver' in window) {
+    const sectionVisibility = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) status.classList.remove('is-floating');
+      else requestUpdate();
+    }, {threshold:0});
+    sectionVisibility.observe(section);
+  }
   document.addEventListener('wedding:language', () => {
-    activeIndex = -1;
+    // i18n has already updated the DOM at this point.
+    renderStatus(Math.max(0, activeIndex), true);
     requestUpdate();
   });
+  document.addEventListener('wedding:content-loaded', requestUpdate);
   requestUpdate();
 }
 

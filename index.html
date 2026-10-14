@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Lora:wght@400;500;600&display=swap" rel="stylesheet" />
   <link href="https://fonts.cdnfonts.com/css/utm-beautiful-caps" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css?v=event-cards-mobile-4" />
+  <link rel="stylesheet" href="/styles.css?v=four-step-status-1" />
   <link rel="stylesheet" href="/invitation-simple.css?v=luxury-2" />
   <link rel="stylesheet" href="/touch-effects.css?v=romantic-touch-1" />
 </head>
@@ -197,10 +197,28 @@
           <p data-i18n="events.subtitle">Hai ngày cưới, đầy đủ thời gian, địa điểm và chỉ đường.</p>
         </div>
 
-        <div class="event-scroll-status reveal" id="eventScrollStatus" aria-live="polite">
-          <span class="event-status-dot" aria-hidden="true"></span>
-          <span class="event-status-copy"><small data-i18n="events.status.label">Đang xem</small><strong id="eventScrollStatusText">18.12 · Nhà gái</strong></span>
-          <span class="event-status-progress" aria-hidden="true"><i id="eventScrollProgress"></i></span>
+        <div class="event-scroll-status-slot" id="eventScrollStatusSlot">
+        <div class="event-scroll-status reveal" id="eventScrollStatus" aria-live="polite" data-i18n-aria="events.status.aria" aria-label="Tiến trình lịch cưới">
+          <div class="event-status-top">
+            <span class="event-status-top-label">
+              <span class="event-status-dot" aria-hidden="true"></span>
+              <small data-i18n="events.status.label">Đang xem</small>
+            </span>
+            <strong class="event-status-count" id="eventScrollCount">1 / 4</strong>
+          </div>
+          <div class="event-status-copy">
+            <strong id="eventScrollStatusText">18.12 · Nhà gái</strong>
+            <span id="eventScrollDetail">09:00 · Lễ Vu Quy</span>
+          </div>
+          <div class="event-status-progress" id="eventScrollProgress" role="progressbar"
+               aria-label="Tiến trình các sự kiện" data-i18n-aria="events.status.progress"
+               aria-valuemin="1" aria-valuemax="4" aria-valuenow="1">
+            <span data-progress-step="1" class="is-current"></span>
+            <span data-progress-step="2"></span>
+            <span data-progress-step="3"></span>
+            <span data-progress-step="4"></span>
+          </div>
+        </div>
         </div>
 
         <div class="event-families event-day-panels">
@@ -461,9 +479,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/config.js"></script>
-  <script src="/i18n.js?v=rsvp-placeholders-1"></script>
+  <script src="/i18n.js?v=four-step-status-1"></script>
   <script src="/personalized.js?v=guest-highlight-1"></script>
-  <script src="/app.js?v=touch-events-1"></script>
+  <script src="/app.js?v=four-step-status-1"></script>
   <script src="/motion.js?v=touch-compatible-1"></script>
   <script src="/music.js"></script>
   <script src="/particles.js"></script>
