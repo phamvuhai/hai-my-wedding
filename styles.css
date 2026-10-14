@@ -9628,7 +9628,21 @@ body.invitation-locked .invite-v2-stage{
   background: transparent !important;
   box-shadow: none !important;
 }
+.events-unified.event-status-portal #eventScrollStatus {
+  position: fixed !important;
+  top: var(--event-status-fixed-top, 72px) !important;
+  left: 50vw !important;
+  width: min(650px, calc(100vw - 28px)) !important;
+  max-width: calc(100vw - 28px) !important;
+  transform: translateX(-50%) !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: 1350 !important;
+}
 .events-unified.event-status-portal #eventScrollStatus.is-floating {
+  visibility: visible !important;
+  opacity: 1 !important;
   position: fixed !important;
   top: var(--event-status-fixed-top, 72px) !important;
   left: 50vw !important;
