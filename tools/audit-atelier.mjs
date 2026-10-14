@@ -131,7 +131,7 @@ const cursorScroll=await scrollPage.evaluate(()=>({
  section:document.querySelector('.motion-cursor')?.dataset.section,
  pulseSeen:window.__cursorScrollPulseSeen,
  scrollY:window.scrollY,
- pointerFixed:document.querySelector('.motion-cursor-core')?.style.transform.includes('720px,510px')
+ pointerFixed:document.querySelector('.motion-cursor-core')?.style.transform.replace(/\s+/g,'').includes('720px,510px')
 }));
 const cursorScrollPassed=cursorScroll.section==='story'&&cursorScroll.pulseSeen&&cursorScroll.pointerFixed&&scrollErrors.length===0;
 console.log('Japanese wedding schedule='+japanesePassed);
