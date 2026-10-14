@@ -8873,3 +8873,22 @@ body.invitation-locked .invite-v2-stage{
     animation:none!important;
   }
 }
+
+/* Cinematic cursor: scroll-wheel / trackpad response at a fixed pointer position.
+   Section styles still determine color and action; no fabricated mouse movement. */
+.motion-cursor-cinematic.is-scroll-active .motion-cursor-aura {
+  opacity: 1;
+}
+.motion-cursor-cinematic.is-scroll-active .motion-cursor-ring {
+  border-color: color-mix(in srgb,var(--cursor-accent) 94%,transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb,var(--cursor-accent) 17%,transparent),
+    0 0 37px color-mix(in srgb,var(--cursor-accent) 25%,transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .motion-cursor-cinematic.is-scroll-active .motion-cursor-ring,
+  .motion-cursor-cinematic.is-scroll-active .motion-cursor-aura {
+    animation: none !important;
+    transition: none !important;
+  }
+}

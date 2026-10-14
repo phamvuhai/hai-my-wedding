@@ -98,7 +98,46 @@ const languagePassed=languageBeforeOpen.lang==='en'&&languageBeforeOpen.route===
  languageBeforeOpen.button.length>0&&languageAfterOpen.route==='/en'&&!languageAfterOpen.locked;
 console.log('language switch and open='+languagePassed);
 await languagePage.close();
+
+// On Japanese route, scroll without moving the mouse: cursor halo must react
+// and switch to the section newly underneath its fixed screen coordinates.
+const scrollPage=await browser.newPage();
+await scrollPage.setViewport({width:1440,height:900,deviceScaleFactor:1,isMobile:false});
+const scrollErrors=[];
+scrollPage.on('pageerror',e=>scrollErrors.push(e.message));
+await scrollPage.goto(url+'/jp',{waitUntil:'domcontentloaded',timeout:30000});
+await scrollPage.waitForFunction(()=>!!document.querySelector('.motion-cursor'),{timeout:12000});
+const japanese=await scrollPage.evaluate(()=>({
+ nav:document.querySelector('[data-i18n="nav.events"]')?.textContent.trim(),
+ hero:document.querySelector('[data-i18n="hero.cta"]')?.textContent.trim(),
+ events:document.querySelector('[data-i18n="events.title"]')?.textContent.trim()
+}));
+const japanesePassed=japanese.nav==='結婚式の日程'&&
+ japanese.hero==='結婚式の日程を見る'&&japanese.events==='結婚式の日程';
+await scrollPage.mouse.move(720,510);
+await scrollPage.waitForFunction(()=>document.querySelector('.motion-cursor')?.classList.contains('is-active'),{timeout:5000});
+await scrollPage.evaluate(()=>{
+ const cursor=document.querySelector('.motion-cursor');
+ window.__cursorScrollPulseSeen=false;
+ new MutationObserver(()=>{
+   if(cursor.classList.contains('is-scroll-active')) window.__cursorScrollPulseSeen=true;
+ }).observe(cursor,{attributes:true,attributeFilter:['class']});
+ const story=document.getElementById('story');
+ const top=story.getBoundingClientRect().top+window.scrollY-180;
+ window.scrollTo({top,behavior:'instant'});
+});
+await scrollPage.waitForFunction(()=>document.querySelector('.motion-cursor')?.dataset.section==='story',{timeout:6000});
+const cursorScroll=await scrollPage.evaluate(()=>({
+ section:document.querySelector('.motion-cursor')?.dataset.section,
+ pulseSeen:window.__cursorScrollPulseSeen,
+ scrollY:window.scrollY,
+ pointerFixed:document.querySelector('.motion-cursor-core')?.style.transform.replace(/\s+/g,'').includes('720px,510px')
+}));
+const cursorScrollPassed=cursorScroll.section==='story'&&cursorScroll.pulseSeen&&cursorScroll.pointerFixed&&scrollErrors.length===0;
+console.log('Japanese wedding schedule='+japanesePassed);
+console.log('stationary pointer scroll reaction='+cursorScrollPassed+' '+JSON.stringify(cursorScroll));
+await scrollPage.close();
 await browser.close();
 await new Promise(done=>serve.close(done));
-writeFileSync(join(out,'report.json'),JSON.stringify({report,localizedRouteBypassed:bypass,languagePassed,languageBeforeOpen,languageAfterOpen},null,2));
-if(!bypass||!languagePassed||report.some(x=>!x.passed))process.exitCode=1;
+writeFileSync(join(out,'report.json'),JSON.stringify({report,localizedRouteBypassed:bypass,languagePassed,languageBeforeOpen,languageAfterOpen,japanese,japanesePassed,cursorScroll,cursorScrollPassed,scrollErrors},null,2));
+if(!bypass||!languagePassed||!japanesePassed||!cursorScrollPassed||report.some(x=>!x.passed))process.exitCode=1;
