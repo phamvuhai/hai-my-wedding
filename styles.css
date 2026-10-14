@@ -8892,3 +8892,94 @@ body.invitation-locked .invite-v2-stage{
     transition: none !important;
   }
 }
+
+/* RSVP mobile radio fix (2026-10-15):
+   General mobile input and label rules previously made radio controls 100% wide.
+   Keep the control and its localized text together as one accessible tap target. */
+.rsvp-form .radio-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+.rsvp-form .radio-row > label.radio {
+  display: flex !important;
+  grid-template-columns: none !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  gap: 12px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 54px;
+  margin: 0;
+  padding: 13px 15px;
+  border: 1px solid rgba(116, 76, 66, .22);
+  border-radius: 10px;
+  background: rgba(255, 253, 249, .9);
+  color: var(--ink);
+  cursor: pointer;
+  box-sizing: border-box;
+  text-align: left;
+  font-weight: 500 !important;
+}
+.rsvp-form .radio-row > label.radio > input[type="radio"] {
+  -webkit-appearance: radio !important;
+  appearance: auto !important;
+  box-sizing: border-box !important;
+  display: block !important;
+  flex: 0 0 20px !important;
+  width: 20px !important;
+  min-width: 20px !important;
+  max-width: 20px !important;
+  height: 20px !important;
+  min-height: 20px !important;
+  max-height: 20px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  box-shadow: none !important;
+  transform: none !important;
+  accent-color: #774b51;
+  background: transparent !important;
+  cursor: pointer;
+}
+.rsvp-form .radio-row > label.radio > span {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto !important;
+  margin: 0;
+  line-height: 1.5;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+.rsvp-form .radio-row > label.radio:has(input[type="radio"]:checked) {
+  border-color: #946972;
+  background: #f9f0eb;
+  box-shadow: 0 0 0 1px rgba(148,105,114,.12);
+}
+.rsvp-form .radio-row > label.radio:focus-within {
+  outline: 2px solid #a7817a;
+  outline-offset: 2px;
+}
+@media (max-width: 760px) {
+  .rsvp-form .radio-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  .rsvp-form .radio-row > label.radio {
+    min-height: 52px;
+    padding: 12px 14px;
+    font-size: 15px !important;
+  }
+  .rsvp-form input[type="text"],
+  .rsvp-form input[type="tel"],
+  .rsvp-form select,
+  .rsvp-form textarea {
+    font-size: 16px;
+  }
+}
