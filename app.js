@@ -53,13 +53,14 @@ function initEventScrollStory() {
   const items = [...document.querySelectorAll('#events [data-event-item]')];
   const days = [...document.querySelectorAll('#events [data-event-day]')];
   const status = document.getElementById('eventScrollStatus');
+  const slot = document.getElementById('eventScrollStatusSlot');
   const statusText = document.getElementById('eventScrollStatusText');
   const statusDetail = document.getElementById('eventScrollDetail');
   const statusCount = document.getElementById('eventScrollCount');
   const progress = document.getElementById('eventScrollProgress');
   const steps = [...progress?.querySelectorAll('[data-progress-step]') || []];
 
-  if (!section || !items.length || !days.length || !status || !statusText ||
+  if (!section || !items.length || !days.length || !status || !slot || !statusText ||
       !statusDetail || !statusCount || !progress || steps.length !== items.length) return;
 
   let frame = 0;
@@ -107,6 +108,19 @@ function initEventScrollStory() {
     frame = 0;
     const viewportH = Math.max(1, innerHeight);
     const focusY = viewportH * .48;
+
+    // Safari can fail position:sticky when an ancestor clips decorative art.
+    // Keep an in-flow placeholder and float only within Wedding Events bounds.
+    const headerBottom = Math.max(0, document.querySelector('.nav')?.getBoundingClientRect().bottom || 0);
+    const floatTop = headerBottom + 7;
+    const height = status.offsetHeight;
+    slot.style.minHeight = `${height}px`;
+    status.style.setProperty('--event-status-fixed-top', `${floatTop}px`);
+    const slotRect = slot.getBoundingClientRect();
+    const sectionRect = section.getBoundingClientRect();
+    const floatVisible = slotRect.top <= floatTop &&
+      sectionRect.bottom > floatTop + height + 16;
+    status.classList.toggle('is-floating', floatVisible);
 
     days.forEach(day => {
       const timeline = day.querySelector('.event-timeline');
