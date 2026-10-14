@@ -817,6 +817,10 @@
     let lastMoveAt = performance.now();
     let frame = 0;
     let dpr = 1;
+    let hasPointerPosition = false;
+    let lastScrollY = window.scrollY;
+    let scrollEnergy = 0;
+    let scrollContextFrame = 0;
 
     const trail = [];
     const particles = [];
@@ -1154,9 +1158,17 @@
       labelX+=(targetX-labelX)*.20;
       labelY+=(targetY-labelY)*.20;
 
+      // Wheel/trackpad scrolling briefly expands the cursor's aura without
+      // moving the real pointer. The effect eases naturally back to rest.
+      scrollEnergy *= .89;
+      if (scrollEnergy < .008) scrollEnergy = 0;
+      cursor.classList.toggle('is-scroll-active', scrollEnergy > .04);
+      const ringScale = (1 + scrollEnergy * .25).toFixed(3);
+      const auraScale = (1 + scrollEnergy * .36).toFixed(3);
+
       core.style.transform=`translate3d(${targetX}px,${targetY}px,0) translate(-50%,-50%)`;
-      ring.style.transform=`translate3d(${ringX}px,${ringY}px,0) translate(-50%,-50%)`;
-      aura.style.transform=`translate3d(${auraX}px,${auraY}px,0) translate(-50%,-50%)`;
+      ring.style.transform=`translate3d(${ringX}px,${ringY}px,0) translate(-50%,-50%) scale(${ringScale})`;
+      aura.style.transform=`translate3d(${auraX}px,${auraY}px,0) translate(-50%,-50%) scale(${auraScale})`;
       label.style.transform=`translate3d(${labelX}px,${labelY}px,0) translate(-50%,-50%)`;
 
       drawSilk();
@@ -1174,6 +1186,7 @@
       lastX=targetX;
       lastY=targetY;
       lastMoveAt=now;
+      hasPointerPosition=true;
 
       cursor.classList.add('is-active');
       cursor.style.setProperty('--cursor-speed',Math.min(30,speed).toFixed(2));
@@ -1182,14 +1195,47 @@
       spawnSpark(targetX,targetY,speed);
     };
 
+    const onScrollCursor = () => {
+      const nextY = window.scrollY;
+      const travel = Math.abs(nextY - lastScrollY);
+      lastScrollY = nextY;
+
+      // Do not synthesize a cursor on touch or before a real mouse position exists.
+      if (!hasPointerPosition || !cursor.classList.contains('is-active')) return;
+      if (travel > 0) scrollEnergy = Math.min(1, Math.max(scrollEnergy, .16 + travel / 155));
+
+      // Re-evaluate what is underneath a STATIONARY mouse after layout scrolls.
+      // Coalesce trackpad/wheel events so we only measure once per animation frame.
+      if (scrollContextFrame) return;
+      scrollContextFrame = requestAnimationFrame(() => {
+        scrollContextFrame = 0;
+        const element = document.elementFromPoint(targetX, targetY);
+        if (element) updateContext(element, targetX, targetY);
+      });
+    };
+
     const onLeave=()=>{
-      cursor.classList.remove('is-active');
+      cursor.classList.remove('is-active','is-scroll-active');
+      scrollEnergy=0;
       activeGalleryPhoto?.classList.remove('cursor-photo-active');
     };
-    const onEnter=()=>cursor.classList.add('is-active');
-    const onBlur=()=>cursor.classList.remove('is-active');
+    const onEnter=e=>{
+      cursor.classList.add('is-active');
+      if (!hasPointerPosition && Number.isFinite(e.clientX) && Number.isFinite(e.clientY)) {
+        targetX=lastX=e.clientX;
+        targetY=lastY=e.clientY;
+        hasPointerPosition=true;
+        const element=document.elementFromPoint(targetX,targetY);
+        if(element) updateContext(element,targetX,targetY);
+      }
+    };
+    const onBlur=()=>{
+      cursor.classList.remove('is-active','is-scroll-active');
+      scrollEnergy=0;
+    };
 
     addEventListener('pointermove',onPointerMove,{passive:true});
+    addEventListener('scroll',onScrollCursor,{passive:true});
     addEventListener('resize',resizeSilk,{passive:true});
     document.documentElement.addEventListener('mouseleave',onLeave);
     document.documentElement.addEventListener('mouseenter',onEnter);
@@ -1198,7 +1244,9 @@
     frame=requestAnimationFrame(renderCursor);
     cursor._motionCleanup=()=>{
       cancelAnimationFrame(frame);
+      cancelAnimationFrame(scrollContextFrame);
       removeEventListener('pointermove',onPointerMove);
+      removeEventListener('scroll',onScrollCursor);
       removeEventListener('resize',resizeSilk);
       removeEventListener('blur',onBlur);
       document.documentElement.removeEventListener('mouseleave',onLeave);
