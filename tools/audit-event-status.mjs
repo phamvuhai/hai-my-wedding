@@ -38,7 +38,7 @@ for(const [name,device] of [
   });
   await page.goto(base+'/jp',{waitUntil:'domcontentloaded',timeout:30000});
   await page.addStyleTag({content:'html,body{scroll-behavior:auto!important}'});
-  await page.waitForSelector('#eventScrollStatus [data-progress-step]');
+  await page.waitForSelector('#eventScrollStatus [data-progress-step]',{state:'attached'});
   await page.waitForLoadState('load');
   // invitation.js intentionally restores localized entry routes to page top
   // after fonts/layout settle; don't race that one-time restoration.
