@@ -39,6 +39,12 @@ for(const [name,device] of [
   await page.goto(base+'/jp',{waitUntil:'domcontentloaded',timeout:30000});
   await page.addStyleTag({content:'html,body{scroll-behavior:auto!important}'});
   await page.waitForSelector('#eventScrollStatus [data-progress-step]');
+  await page.waitForLoadState('load');
+  // invitation.js intentionally restores localized entry routes to page top
+  // after fonts/layout settle; don't race that one-time restoration.
+  await page.waitForFunction(()=>document.getElementById('invitationIntro')?.classList.contains('is-bypassed'),
+    undefined,{timeout:5000});
+  await page.waitForTimeout(1700);
 
   const observed=[];
   async function checkStep(index){
@@ -136,6 +142,7 @@ for(const [name,device] of [
     vi.aria==='Tiến trình các sự kiện'&&!outside.statusVisible&&
     !outside.eventsVisible&&errors.length===0;
   report.scenarios.push({name,passed,observed,en,vi,outside,errors});
+  if(!passed)console.log('EVENT_STATUS_REPORT '+name+': '+JSON.stringify({en,vi,outside,errors,failures:observed.filter(x=>!x.passed)}));
   console.log(name+' event status scroll/reverse/language/exit: '+(passed?'PASS':'FAIL'));
   await ctx.close();
 }
