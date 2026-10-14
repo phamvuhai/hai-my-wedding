@@ -101,22 +101,24 @@
     };
 
     const fitLine = (textEl, baseSize, safeWidth) => {
-      textEl.style.fontSize = `${baseSize.toFixed(2)}px`;
-      textEl.style.setProperty('--hero-fit-size', `${baseSize.toFixed(2)}px`);
+      // The real decorative font contains wide letter flourishes. Measure the
+      // *intrinsic* line, not a CSS max-width box (which previously hid overflow).
+      // CSS uses --hero-fit-size; an inline font-size cannot override !important.
+      const isPhone = viewportWidth() <= 760;
+      const usableWidth = safeWidth * (isPhone ? .965 : .92);
+      let fontSize = baseSize;
 
-      // UTM Beautiful Caps has long swashes outside the visual body.
-      // Reserve extra breathing room so the decorative strokes never touch the viewport.
-      const usableWidth = safeWidth * .92;
-
-      for (let i = 0; i < 3; i++) {
-        const measured = textEl.getBoundingClientRect().width;
-        if (!measured || measured <= usableWidth) break;
-        const next = Math.max(42, parseFloat(textEl.style.fontSize) * (usableWidth / measured));
-        textEl.style.fontSize = `${next.toFixed(2)}px`;
-        textEl.style.setProperty('--hero-fit-size', `${next.toFixed(2)}px`);
+      for (let i = 0; i < 6; i++) {
+        textEl.style.setProperty('--hero-fit-size', `${fontSize.toFixed(2)}px`);
+        const measured = Math.max(textEl.scrollWidth, textEl.getBoundingClientRect().width);
+        if (!measured || measured <= usableWidth + .5) break;
+        fontSize = Math.max(28, fontSize * (usableWidth / measured) * .996);
       }
 
-      textEl.dataset.fitWidth = textEl.getBoundingClientRect().width.toFixed(2);
+      textEl.dataset.fitWidth = Math.max(
+        textEl.scrollWidth, textEl.getBoundingClientRect().width
+      ).toFixed(2);
+      textEl.dataset.fitFontSize = fontSize.toFixed(2);
     };
 
     const fit = async () => {
