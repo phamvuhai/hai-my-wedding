@@ -144,6 +144,8 @@ for(const [name,device] of [
     window.scrollTo({top:window.scrollY+rect.bottom+Math.max(140,innerHeight*.2),behavior:'instant'});
   });
   await page.waitForTimeout(180);
+  await page.waitForFunction(()=>!document.getElementById('eventScrollStatus').classList.contains('is-floating'),
+    undefined,{timeout:3500});
   const outside=await page.evaluate(()=>{
     const status=document.getElementById('eventScrollStatus').getBoundingClientRect();
     const section=document.getElementById('events').getBoundingClientRect();
