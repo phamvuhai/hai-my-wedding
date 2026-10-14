@@ -55,11 +55,24 @@ for(const [name,device] of [
     },index);
     // Allow rAF and Safari layout/scroll-anchor adjustments to settle first.
     await page.waitForTimeout(160);
-    try {
-      await page.waitForFunction(value=>document.getElementById('eventScrollStatus')?.dataset.activeEvent===String(value),
-        index+1,{timeout:2400});
-    } catch(error) {
-      console.log('STEP_WAIT_DIAGNOSTIC '+name+' expected '+(index+1));
+    for(let attempt=0;attempt<2;attempt++) {
+      try {
+        await page.waitForFunction(value=>document.getElementById('eventScrollStatus')?.dataset.activeEvent===String(value),
+          index+1,{timeout:1400});
+        break;
+      } catch(error) {
+        console.log('STEP_WAIT_DIAGNOSTIC '+name+' expected '+(index+1)+' retry='+attempt);
+        if(attempt===0) {
+          // Safari's automated instant-scroll can occasionally restore to 0;
+          // a second frame-aligned jump reproduces the next user scroll.
+          await page.evaluate(i=>{
+            const item=document.querySelectorAll('#events [data-event-item]')[i];
+            const rect=item.getBoundingClientRect();
+            window.scrollTo({top:Math.max(0,window.scrollY+rect.top+rect.height/2-innerHeight*.48),behavior:'instant'});
+          },index);
+          await page.waitForTimeout(180);
+        }
+      }
     }
     const data=await page.evaluate(()=>{
       const status=document.getElementById('eventScrollStatus');
@@ -134,7 +147,10 @@ for(const [name,device] of [
   const outside=await page.evaluate(()=>{
     const status=document.getElementById('eventScrollStatus').getBoundingClientRect();
     const section=document.getElementById('events').getBoundingClientRect();
-    return {statusVisible:status.bottom>0&&status.top<innerHeight,
+    const element=document.getElementById('eventScrollStatus');
+    const css=getComputedStyle(element);
+    return {statusVisible:element.classList.contains('is-floating')&&css.visibility==='visible'&&
+      Number(css.opacity)>.1&&status.bottom>0&&status.top<innerHeight,
       eventsVisible:section.bottom>0&&section.top<innerHeight};
   });
   const passed=observed.every(x=>x.passed)&&en.count==='3 / 4'&&en.lang==='en'&&
