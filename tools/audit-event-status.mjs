@@ -47,8 +47,12 @@ for(const [name,device] of [
       const rect=item.getBoundingClientRect();
       window.scrollTo({top:Math.max(0,window.scrollY+rect.top+rect.height/2-window.innerHeight*.48),behavior:'instant'});
     },index);
-    await page.waitForFunction(value=>document.getElementById('eventScrollStatus')?.dataset.activeEvent===String(value),
-      index+1,{timeout:7000});
+    try {
+      await page.waitForFunction(value=>document.getElementById('eventScrollStatus')?.dataset.activeEvent===String(value),
+        index+1,{timeout:2400});
+    } catch(error) {
+      console.log('STEP_WAIT_DIAGNOSTIC '+name+' expected '+(index+1));
+    }
     const data=await page.evaluate(()=>{
       const status=document.getElementById('eventScrollStatus');
       const active=Number(status.dataset.activeEvent);
@@ -64,6 +68,13 @@ for(const [name,device] of [
         withinViewport:box.left>=-2&&box.right<=innerWidth+2,
         hasTwoLines:status.querySelector('.event-status-copy').getBoundingClientRect().height>31,
         visible:box.top>=-5&&box.top<innerHeight*.55,
+        top:Math.round(box.top),
+        fixed:getComputedStyle(status).position==='fixed',
+        sectionTop:Math.round(document.getElementById('events').getBoundingClientRect().top),
+        sectionBottom:Math.round(document.getElementById('events').getBoundingClientRect().bottom),
+        slotTop:Math.round(document.getElementById('eventScrollStatusSlot').getBoundingClientRect().top),
+        navBottom:Math.round(document.querySelector('.nav').getBoundingClientRect().bottom),
+        scrollY:Math.round(scrollY),
         noOverflow:document.documentElement.scrollWidth<=innerWidth+2
       };
     });
