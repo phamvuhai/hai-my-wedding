@@ -9562,6 +9562,7 @@ body.invitation-locked .invite-v2-stage{
 /* Sticky fallback: the decorative section clips overflow on Safari, so use an
    in-flow slot and fixed positioning only while the Events chapter is onscreen. */
 .events-unified .event-scroll-status-slot {
+  overflow-anchor: none;
   width: min(650px, 100%);
   max-width: 100%;
   min-height: 0;
