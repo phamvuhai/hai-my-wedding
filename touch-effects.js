@@ -14,7 +14,7 @@
   let lastBurst = 0;
   let activeParticles = 0;
   const MAX_PARTICLES = 28;
-  const controlSelector = '.hero .btn, .gallery-cta .btn, .map-link, .home-photo, .album-overlay-photo, .photo-lightbox-nav, .music-toggle, .language-switcher button, .rsvp-form .radio, .rsvp-form button[type="submit"]';
+  const controlSelector = '#openInvitation, .hero .btn, .gallery-cta .btn, .map-link, .home-photo, .album-overlay-photo, .photo-lightbox-nav, .music-toggle, .language-switcher button, .rsvp-form .radio, .rsvp-form button[type="submit"]';
 
   const enabled = () => !reduceMotion.matches && document.documentElement.dataset.motion !== 'minimal';
   const mode = () => document.documentElement.dataset.motion || 'elegant';
@@ -84,7 +84,7 @@
     cleanPress();
     const travel = Math.hypot(event.clientX - data.x, event.clientY - data.y);
     if (travel > 14 || performance.now() - data.start > 650) return; // A swipe is never a tap.
-    if (document.body.classList.contains('invitation-locked')) return;
+    if (document.body.classList.contains('invitation-locked') && !data.control?.matches('#openInvitation')) return;
     if (data.control) {
       const kind = data.control.matches('.home-photo, .album-overlay-photo') ? 'photo' : 'control';
       burst(event.clientX, event.clientY, kind, true);
