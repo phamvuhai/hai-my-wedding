@@ -9154,6 +9154,8 @@ body.invitation-locked .invite-v2-stage{
     width: max-content !important;
     max-width: none !important;
     min-width: 0 !important;
+    flex: 0 0 auto !important;
+    flex-shrink: 0 !important;
     padding: .12em .10em .16em !important;
     font-size: var(--hero-fit-size, 62px) !important;
     line-height: 1.02 !important;
