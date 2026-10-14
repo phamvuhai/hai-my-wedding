@@ -143,7 +143,9 @@ for(const entry of scenarios){
     const names=[...document.querySelectorAll('.hero-name-fit-text')].map(el=>({
       text:el.textContent.trim(),left:Math.round(rect(el)?.left||0),
       right:Math.round(rect(el)?.right||0),
-      width:Math.round(rect(el)?.width||0)
+      width:Math.round(rect(el)?.width||0),
+      fontPx:Math.round(parseFloat(getComputedStyle(el).fontSize)),
+      intrinsicWidth:Math.round(el.scrollWidth)
     }));
     const gallery=[...document.querySelectorAll('.gallery-display span')].map(el=>({
       text:el.textContent.trim(),left:Math.round(rect(el)?.left||0),
@@ -162,19 +164,29 @@ for(const entry of scenarios){
         secondHeight:Math.round(rect(second)?.height||0)
       };
     });
-    const nameFits=names.length===2&&names.every(x=>x.left>=1&&x.right<=viewport-1&&x.width>20);
+    const eventReadability=[...document.querySelectorAll('.event-day-panel .event-card')].map(card=>({
+      opacity:Number(getComputedStyle(card).opacity),
+      headingPx:parseFloat(getComputedStyle(card.querySelector('h4')).fontSize),
+      addressPx:parseFloat(getComputedStyle(card.querySelector('.event-meta')).fontSize)
+    }));
+    const largeNames=names.length===2&&names.every(x=>x.fontPx >= (viewport>=390?40:37));
+    const readableEvents=eventReadability.length===4&&eventReadability.every(x=>
+      x.opacity>=.99&&x.headingPx>=22&&x.addressPx>=12.5);
+    const nameFits=names.length===2&&names.every(x=>x.left>=1&&x.right<=viewport-1&&x.width>20&&x.intrinsicWidth<=viewport-20);
     const galleryFits=gallery.length===2&&gallery.every(x=>x.left>=1&&x.right<=viewport-1);
     const eventsFit=families.length===2&&families.every(x=>x.headerToFirst>=-2&&x.firstToSecond>=-3&&
       x.actionWithinFirst&&x.firstHeight>90&&x.firstHeight<500&&x.secondHeight>90&&x.secondHeight<500);
-    return {viewport,names,gallery,families,nameFits,galleryFits,eventsFit};
+    return {viewport,names,gallery,families,eventReadability,largeNames,readableEvents,nameFits,galleryFits,eventsFit};
   });
   if(lang==='jp'){
+    await page.locator('.hero-copy').scrollIntoViewIfNeeded();
+    await page.screenshot({path:join(out,entry.name+'-japanese-hero-font.png')});
     await page.locator('.gallery-display').scrollIntoViewIfNeeded();
     await page.screenshot({path:join(out,entry.name+'-gallery-layout.png')});
     await page.locator('.event-day-panel').first().scrollIntoViewIfNeeded();
     await page.screenshot({path:join(out,entry.name+'-schedule-layout.png')});
   }
-  if(!mobileLayout.nameFits||!mobileLayout.galleryFits||!mobileLayout.eventsFit){
+  if(!mobileLayout.nameFits||!mobileLayout.galleryFits||!mobileLayout.eventsFit||!mobileLayout.largeNames||!mobileLayout.readableEvents){
     errors.push(lang+' mobile visual layout failed: '+JSON.stringify(mobileLayout));
   }
   const first=page.locator('#rsvpForm .radio-row label.radio').first();
