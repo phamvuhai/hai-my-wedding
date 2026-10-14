@@ -137,6 +137,13 @@ for(const entry of scenarios){
   // Visual regressions: calligraphy clipping, oversized gallery header and
   // overlapping event entries, at iPhone SE and iPhone 13 widths in each locale.
   await page.evaluate(async()=>{ try { await Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1400))]); }catch{} });
+  // Wait for the asynchronously loaded calligraphy font AND its width fitter.
+  // Measuring during the hidden fallback state produces false iPhone SE failures.
+  await page.waitForFunction(()=>
+    document.querySelector('.hero-couple-names')?.classList.contains('hero-fit-ready') &&
+    [...document.querySelectorAll('.hero-name-fit-text')].every(el=>Number(el.dataset.fitFontSize)>0),
+    {timeout:6500}
+  );
   const mobileLayout=await page.evaluate(()=>{
     const viewport=document.documentElement.clientWidth;
     const rect=el=>el?.getBoundingClientRect();
