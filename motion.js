@@ -1328,7 +1328,8 @@
       form.classList.remove('rsvp-celebrate');
       void form.offsetWidth;
       form.classList.add('rsvp-celebrate');
-      if (mode === 'wow') heartBurst(status);
+      // The touch engine handles mobile celebration; don't stack two particle systems.
+      if (mode === 'wow' && !coarse) heartBurst(status);
     }).observe(status,{attributes:true,childList:true,subtree:true});
   }
 

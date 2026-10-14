@@ -36,6 +36,8 @@
         lead: 'Đến chung vui cùng chúng tôi trong ngày hạnh phúc',
         note: 'Sự hiện diện của bạn là niềm vui của chúng tôi.',
         private: 'Thiệp mời này được dành riêng cho',
+        guestHeading: 'THÂN MỜI',
+        heroGuestHeading: 'Dành riêng cho',
         open: 'MỞ THIỆP CƯỚI',
         welcomeTitle: display
           ? `Cảm ơn ${display} đã ghé xem thiệp cưới của chúng mình ♡`
@@ -53,6 +55,8 @@
         lead: 'Join us in celebrating our special day',
         note: 'Your presence would mean so much to us.',
         private: 'This invitation is specially prepared for',
+        guestHeading: 'SPECIALLY INVITED',
+        heroGuestHeading: 'Celebrating with',
         open: 'OPEN INVITATION',
         welcomeTitle: display
           ? `Thank you, ${display}, for opening our wedding invitation ♡`
@@ -70,6 +74,8 @@
         lead: '私たちの大切な日に、ぜひご一緒にお祝いください',
         note: 'お越しいただけることを、心より楽しみにしております。',
         private: 'この招待状は',
+        guestHeading: 'ご招待のお客様',
+        heroGuestHeading: 'ご招待',
         privateSuffix: 'のためにご用意しました',
         open: '招待状を見る',
         welcomeTitle: display
@@ -90,19 +96,28 @@
   function renderInvite(invite) {
     const c = copyFor(lang(), invite);
     const privateEl = document.getElementById('personalInvitePrivate');
+    const feature = document.getElementById('personalGuestFeature');
+    const featureLabel = document.getElementById('personalGuestLabel');
+    const featureName = document.getElementById('personalGuestName');
+    const heroGreeting = document.getElementById('heroGuestGreeting');
+    const heroLabel = document.getElementById('heroGuestLabel');
+    const heroName = document.getElementById('heroGuestName');
     const openLabel = document.querySelector('#openInvitation [data-i18n="intro.open"]');
 
+    // Only show a recipient after get_wedding_invite resolves a valid token.
+    // Never trust a display name supplied directly by the query string.
+    const honoredName = c.display ? c.display + (lang() === 'ja' ? ' 様' : '') : '';
+    if (feature) feature.hidden = !c.display;
+    if (heroGreeting) heroGreeting.hidden = !c.display;
+    if (featureLabel) featureLabel.textContent = c.display ? c.guestHeading : '';
+    if (featureName) featureName.textContent = honoredName;
+    if (heroLabel) heroLabel.textContent = c.display ? c.heroGuestHeading : '';
+    if (heroName) heroName.textContent = honoredName;
+
+    // The dedicated guest feature replaces the old, duplicated text below CTA.
     if (privateEl) {
-      if (!c.display) {
-        privateEl.textContent = '';
-        privateEl.hidden = true;
-      } else if (lang() === 'ja') {
-        privateEl.textContent = `${c.private} ${c.display} 様 ${c.privateSuffix}`;
-        privateEl.hidden = false;
-      } else {
-        privateEl.textContent = `${c.private} ${c.display}`;
-        privateEl.hidden = false;
-      }
+      privateEl.textContent = '';
+      privateEl.hidden = true;
     }
 
     if (openLabel) openLabel.textContent = c.open;
