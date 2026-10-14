@@ -297,6 +297,9 @@ form.addEventListener('submit', async (event) => {
         : tr('rsvp.success', 'Cảm ơn bạn! Hải Phạm và Mỹ Nguyễn đã nhận được xác nhận ❤️'),
       'success'
     );
+    document.dispatchEvent(new CustomEvent('wedding:rsvp-success', {
+      detail: {personalized: Boolean(form.dataset.inviteId)}
+    }));
     if (rsvpSubmitButton) {
       rsvpSubmitButton.disabled = true;
       rsvpSubmitButton.classList.remove('is-sending');
@@ -569,6 +572,9 @@ function renderLightbox() {
   title.textContent = loc.title;
   caption.textContent = loc.caption;
   counter.textContent = `${galleryState.activeIndex + 1} / ${galleryState.activeImages.length}`;
+  document.dispatchEvent(new CustomEvent('wedding:gallery-photo-change', {
+    detail: {index: galleryState.activeIndex, total: galleryState.activeImages.length}
+  }));
 }
 
 function photoRoute(id) {
