@@ -8983,3 +8983,166 @@ body.invitation-locked .invite-v2-stage{
     font-size: 16px;
   }
 }
+
+/* Mobile visual QA — 2026-10-15.
+   Protect calligraphic glyphs, fit gallery heading and stop event-card overlaps. */
+@media (max-width: 760px) {
+  /* Swashy UTM Beautiful Caps must not extend outside the device width. */
+  .hero-layout-full .hero-content,
+  .hero-layout-framed .hero-content,
+  .hero-layout-split .hero-content,
+  .hero-layout-minimal .hero-content {
+    max-width: calc(100% - 24px) !important;
+    margin-inline: auto !important;
+  }
+  .hero-copy {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding-inline: 0 !important;
+  }
+  .hero-couple-names {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 12px 8px 16px !important;
+    justify-items: center !important;
+  }
+  .hero-couple-names .hero-name {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    justify-content: center !important;
+  }
+  .hero-couple-names .hero-name-fit-text {
+    box-sizing: border-box !important;
+    /* Mobile fallback cap while the fitting script measures the final font. */
+    font-size: min(var(--hero-fit-size, 38px), clamp(29px, 9vw, 41px)) !important;
+    max-width: calc(100vw - 52px) !important;
+    padding: .16em .08em .20em !important;
+    letter-spacing: 0 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+  }
+  .hero-couple-names .hero-amp {
+    min-height: 35px !important;
+    margin: 2px auto 4px !important;
+  }
+  .hero-couple-names .hero-amp-text {
+    font-size: clamp(26px, 7vw, 35px) !important;
+  }
+  .hero-date {
+    max-width: 100% !important;
+    padding-inline: 4px !important;
+    overflow-wrap: normal !important;
+  }
+
+  /* Editorial gallery heading: two actual rows, not two oversized columns. */
+  .gallery-section .gallery-editorial-head {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 20px !important;
+  }
+  .gallery-section .gallery-display {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    justify-items: start !important;
+    gap: 3px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: clamp(44px, 12vw, 67px) !important;
+    line-height: .88 !important;
+    letter-spacing: -.055em !important;
+  }
+  .gallery-section .gallery-display span,
+  .gallery-section .gallery-display span:last-child {
+    display: block !important;
+    min-width: 0;
+    max-width: 100%;
+    padding: 0 !important;
+    white-space: nowrap;
+    font-size: inherit !important;
+  }
+  .gallery-editorial-head .section-heading {
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Schedule reads as chronological entries, not overlapping paper layers. */
+  .events-unified .event-day-panel {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+  .events-unified .event-day-panel .family-header {
+    position: relative !important;
+    z-index: 2 !important;
+    width: 100%;
+    min-height: 0 !important;
+    padding: 18px 17px 15px !important;
+    border-bottom: 1px solid rgba(124, 84, 66, .12);
+  }
+  .events-unified .event-day-panel .family-events.event-timeline {
+    display: block !important;
+    box-sizing: border-box !important;
+    margin: 8px 0 0 !important;
+    padding: 0 18px 18px 43px !important;
+    min-height: 0 !important;
+    height: auto !important;
+  }
+  .events-unified .event-day-panel .event-card {
+    display: block !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 18px 0 20px !important;
+  }
+  .events-unified .event-day-panel .event-card + .event-card {
+    border-top: 1px solid rgba(124, 84, 66, .13) !important;
+    border-left: 0 !important;
+  }
+  .events-unified .event-day-panel .event-topline,
+  .events-unified .event-day-panel .event-card h4,
+  .events-unified .event-day-panel .event-date,
+  .events-unified .event-day-panel .event-meta,
+  .events-unified .event-day-panel .event-actions {
+    position: static !important;
+    width: auto !important;
+    max-width: 100% !important;
+  }
+  .events-unified .event-day-panel .event-actions {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    min-height: 0 !important;
+    margin: 12px 0 0 !important;
+    padding: 0 !important;
+  }
+  .events-unified .event-day-panel .event-card::before {
+    left: -29px !important;
+    top: 24px !important;
+  }
+  .events-unified .event-day-panel .event-timeline::before,
+  .events-unified .event-day-panel .event-timeline::after {
+    left: 15px !important;
+  }
+  .events-unified .event-day-panel .event-date,
+  .events-unified .event-day-panel .event-meta {
+    line-height: 1.55 !important;
+  }
+}
+@media (max-width: 390px) {
+  .gallery-section .gallery-display { font-size: clamp(40px, 11.6vw, 49px) !important; }
+  .hero-couple-names .hero-name-fit-text {
+    font-size: min(var(--hero-fit-size, 34px), 35px) !important;
+  }
+}
