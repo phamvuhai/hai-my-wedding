@@ -126,7 +126,9 @@ for(const [name,device] of [
 
   await page.screenshot({path:join(out,name+'-events-progress.png')});
   await page.evaluate(()=>{
-    document.getElementById('forever').scrollIntoView({behavior:'instant',block:'start'});
+    // Navigate beyond the *whole* Events chapter, not just to the next anchor.
+    const rect=document.getElementById('events').getBoundingClientRect();
+    window.scrollTo({top:window.scrollY+rect.bottom+Math.max(140,innerHeight*.2),behavior:'instant'});
   });
   await page.waitForTimeout(180);
   const outside=await page.evaluate(()=>{
