@@ -100,7 +100,60 @@ for(const entry of scenarios){
   bodyClasses:document.body.className,
   coupleNames:[...document.querySelectorAll('.minimal-names span')].map(el=>el.textContent.trim())
  }));
- report.scenarios.push({name:entry.name,ready,opened,formVisible,scrollBefore,metrics,errors});
+ // Regression: Japanese RSVP on iPhone previously stretched each radio input
+ // to full width, pushing option text to the far right and wrapping it badly.
+ const localizedRsvp=[];
+ for(const [lang,expectedText,expectedPlaceholder] of [
+  ['jp','はい、出席します','新郎新婦へのメッセージをご記入ください...'],
+  ['en',"Yes, I'll be there",'Write a message to the couple...'],
+  ['vi','Có, tôi sẽ đến','Gửi một lời chúc đến cô dâu chú rể...']
+ ]){
+  await page.goto(base+'/'+lang,{waitUntil:'domcontentloaded',timeout:25000});
+  await page.waitForFunction(expected=>document.querySelector('.radio-row .radio span')?.textContent.trim()===expected,expectedText,{timeout:7000});
+  const checks=await page.evaluate(()=>{
+   const labels=[...document.querySelectorAll('#rsvpForm .radio-row label.radio')];
+   return {
+    options:labels.map(label=>{
+     const radio=label.querySelector('input[type="radio"]');
+     const text=label.querySelector('span');
+     const a=label.getBoundingClientRect(),b=radio.getBoundingClientRect(),c=text.getBoundingClientRect();
+     return {
+      controlWidth:b.width,
+      controlHeight:b.height,
+      labelWidth:a.width,
+      textWidth:c.width,
+      gap:c.left-b.right,
+      aligned:Math.abs((b.top+b.height/2)-(c.top+c.height/2))<18,
+      textFits:c.right<=a.right-8,
+      controlFits:b.left>=a.left-1&&b.right<a.right,
+      radioNotStretched:b.width<=24&&b.height<=24,
+      textReadable:c.width>=120
+     };
+    }),
+    textareaPlaceholder:document.querySelector('#rsvpForm textarea[name="message"]')?.placeholder,
+    horizontalOverflow:document.documentElement.scrollWidth>innerWidth+2
+   };
+  });
+  const first=page.locator('#rsvpForm .radio-row label.radio').first();
+  const second=page.locator('#rsvpForm .radio-row label.radio').nth(1);
+  await first.click();
+  const selectedYes=await page.locator('#rsvpForm input[name="attending"][value="yes"]').isChecked();
+  await second.click();
+  const selectedNo=await page.locator('#rsvpForm input[name="attending"][value="no"]').isChecked();
+  const layoutPassed=checks.options.length===2&&!checks.horizontalOverflow&&
+   checks.options.every(o=>o.radioNotStretched&&o.textFits&&o.controlFits&&o.aligned&&
+    o.textReadable&&o.gap>=4&&o.gap<=22);
+  const passed=layoutPassed&&selectedYes&&selectedNo&&checks.textareaPlaceholder===expectedPlaceholder;
+  if(lang==='jp'){
+   await page.locator('#rsvpForm').scrollIntoViewIfNeeded();
+   await page.screenshot({path:join(out,entry.name+'-japanese-rsvp-fixed.png')});
+  }
+  localizedRsvp.push({lang,passed,layoutPassed,selectedYes,selectedNo,checks});
+  console.log(entry.name+' '+lang+' RSVP alignment='+passed+
+   ' widths='+checks.options.map(o=>Math.round(o.controlWidth)).join(','));
+ }
+ if(localizedRsvp.some(x=>!x.passed))errors.push('localized RSVP layout/selection/placeholder failed');
+ report.scenarios.push({name:entry.name,ready,opened,formVisible,scrollBefore,metrics,errors,localizedRsvp});
  report.errors.push(...errors.map(e=>entry.name+': '+e));
  await context.close();
  console.log(entry.name+' ready='+ready+' opened='+opened+' form='+formVisible+' overflow='+(metrics.scrollWidth>metrics.width+2)+' pageErrors='+errors.length);
