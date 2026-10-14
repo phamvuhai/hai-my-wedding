@@ -134,6 +134,49 @@ for(const entry of scenarios){
     horizontalOverflow:document.documentElement.scrollWidth>innerWidth+2
    };
   });
+  // Visual regressions: calligraphy clipping, oversized gallery header and
+  // overlapping event entries, at iPhone SE and iPhone 13 widths in each locale.
+  await page.evaluate(async()=>{ try { await Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1400))]); }catch{} });
+  const mobileLayout=await page.evaluate(()=>{
+    const viewport=document.documentElement.clientWidth;
+    const rect=el=>el?.getBoundingClientRect();
+    const names=[...document.querySelectorAll('.hero-name-fit-text')].map(el=>({
+      text:el.textContent.trim(),left:Math.round(rect(el)?.left||0),
+      right:Math.round(rect(el)?.right||0),
+      width:Math.round(rect(el)?.width||0)
+    }));
+    const gallery=[...document.querySelectorAll('.gallery-display span')].map(el=>({
+      text:el.textContent.trim(),left:Math.round(rect(el)?.left||0),
+      right:Math.round(rect(el)?.right||0)
+    }));
+    const families=[...document.querySelectorAll('.event-day-panel')].map(panel=>{
+      const first=panel.querySelector('.event-card');
+      const second=first?.nextElementSibling;
+      const head=panel.querySelector('.family-header');
+      const action=first?.querySelector('.event-actions');
+      return {
+        headerToFirst:Math.round((rect(first)?.top||0)-(rect(head)?.bottom||0)),
+        firstToSecond:Math.round((rect(second)?.top||0)-(rect(first)?.bottom||0)),
+        actionWithinFirst:(rect(action)?.bottom||0)<=(rect(first)?.bottom||0)+3,
+        firstHeight:Math.round(rect(first)?.height||0),
+        secondHeight:Math.round(rect(second)?.height||0)
+      };
+    });
+    const nameFits=names.length===2&&names.every(x=>x.left>=1&&x.right<=viewport-1&&x.width>20);
+    const galleryFits=gallery.length===2&&gallery.every(x=>x.left>=1&&x.right<=viewport-1);
+    const eventsFit=families.length===2&&families.every(x=>x.headerToFirst>=-2&&x.firstToSecond>=-3&&
+      x.actionWithinFirst&&x.firstHeight>90&&x.firstHeight<500&&x.secondHeight>90&&x.secondHeight<500);
+    return {viewport,names,gallery,families,nameFits,galleryFits,eventsFit};
+  });
+  if(lang==='jp'){
+    await page.locator('.gallery-display').scrollIntoViewIfNeeded();
+    await page.screenshot({path:join(out,entry.name+'-gallery-layout.png')});
+    await page.locator('.event-day-panel').first().scrollIntoViewIfNeeded();
+    await page.screenshot({path:join(out,entry.name+'-schedule-layout.png')});
+  }
+  if(!mobileLayout.nameFits||!mobileLayout.galleryFits||!mobileLayout.eventsFit){
+    errors.push(lang+' mobile visual layout failed: '+JSON.stringify(mobileLayout));
+  }
   const first=page.locator('#rsvpForm .radio-row label.radio').first();
   const second=page.locator('#rsvpForm .radio-row label.radio').nth(1);
   await first.click();
@@ -148,7 +191,7 @@ for(const entry of scenarios){
    await page.locator('#rsvpForm').scrollIntoViewIfNeeded();
    await page.screenshot({path:join(out,entry.name+'-japanese-rsvp-fixed.png')});
   }
-  localizedRsvp.push({lang,passed,layoutPassed,selectedYes,selectedNo,checks});
+  localizedRsvp.push({lang,passed,layoutPassed,selectedYes,selectedNo,checks,mobileLayout});
   console.log(entry.name+' '+lang+' RSVP alignment='+passed+
    ' widths='+checks.options.map(o=>Math.round(o.controlWidth)).join(','));
  }
