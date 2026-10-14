@@ -170,6 +170,15 @@ function initEventScrollStory() {
 
   addEventListener('scroll', requestUpdate, {passive:true});
   addEventListener('resize', requestUpdate, {passive:true});
+  // A backup for Safari's programmatic jumps and scroll restoration, which
+  // occasionally skip a scroll event as a section leaves the visible viewport.
+  if ('IntersectionObserver' in window) {
+    const sectionVisibility = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) status.classList.remove('is-floating');
+      else requestUpdate();
+    }, {threshold:0});
+    sectionVisibility.observe(section);
+  }
   document.addEventListener('wedding:language', () => {
     // i18n has already updated the DOM at this point.
     renderStatus(Math.max(0, activeIndex), true);
