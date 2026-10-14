@@ -12,6 +12,7 @@
   <link href="https://fonts.cdnfonts.com/css/utm-beautiful-caps" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css?v=mobile-name-contrast-3" />
   <link rel="stylesheet" href="/invitation-simple.css?v=luxury-2" />
+  <link rel="stylesheet" href="/touch-effects.css?v=romantic-touch-1" />
 </head>
 <body class="invitation-locked hero-image-loading">
 
@@ -55,6 +56,10 @@
           <span class="luxury-date-ornament" aria-hidden="true">❦</span>
           <p class="minimal-date" data-i18n="intro.eventDate">18 — 20 · 12 · 2026</p>
           <span class="luxury-date-ornament" aria-hidden="true">❦</span>
+        </div>
+        <div class="personal-guest-feature" id="personalGuestFeature" hidden aria-live="polite">
+          <span class="guest-label" id="personalGuestLabel"></span>
+          <strong class="guest-name" id="personalGuestName"></strong>
         </div>
         <button class="minimal-open" id="openInvitation" type="button">
           <span data-i18n="intro.open">MỞ THIỆP</span>
@@ -114,6 +119,10 @@
         <h1 class="kinetic-names hero-couple-names"><span class="hero-name hero-name-left"><span class="hero-name-fit-text" data-i18n="name.groom">Hải Phạm</span></span><span class="hero-amp"><span class="hero-amp-text">&</span></span><span class="hero-name hero-name-right"><span class="hero-name-fit-text" data-i18n="name.bride">Mỹ Nguyễn</span></span></h1>
         <p class="hero-date">18 · 12 · 2026 — 20 · 12 · 2026</p>
         <p class="hero-note" data-i18n="hero.note">Trân trọng kính mời bạn đến chung vui trong ngày hạnh phúc của chúng tôi.</p>
+        <p class="hero-guest-greeting" id="heroGuestGreeting" hidden>
+          <span id="heroGuestLabel"></span>
+          <strong id="heroGuestName"></strong>
+        </p>
         <a class="btn btn-primary" href="#events" data-i18n="hero.cta">Xem lịch cưới</a>
       </div>
 
@@ -453,11 +462,12 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/config.js"></script>
   <script src="/i18n.js?v=rsvp-placeholders-1"></script>
-  <script src="/personalized.js"></script>
-  <script src="/app.js"></script>
-  <script src="/motion.js?v=hero-name-fit-2"></script>
+  <script src="/personalized.js?v=guest-highlight-1"></script>
+  <script src="/app.js?v=touch-events-1"></script>
+  <script src="/motion.js?v=touch-compatible-1"></script>
   <script src="/music.js"></script>
   <script src="/particles.js"></script>
   <script src="/invitation.js?v=minimal-1"></script>
+  <script src="/touch-effects.js?v=romantic-touch-1"></script>
 </body>
 </html>
