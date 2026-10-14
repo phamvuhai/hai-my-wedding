@@ -187,6 +187,7 @@ for(const entry of scenarios){
     await page.screenshot({path:join(out,entry.name+'-schedule-layout.png')});
   }
   if(!mobileLayout.nameFits||!mobileLayout.galleryFits||!mobileLayout.eventsFit||!mobileLayout.largeNames||!mobileLayout.readableEvents){
+    console.log('MOBILE_LAYOUT_FAILURE '+entry.name+' '+lang+': '+JSON.stringify(mobileLayout));
     errors.push(lang+' mobile visual layout failed: '+JSON.stringify(mobileLayout));
   }
   const first=page.locator('#rsvpForm .radio-row label.radio').first();
