@@ -45,13 +45,13 @@
       "album.prewedding":"Pre-Wedding","album.bride":"Bride's Family","album.groom":"Groom's Family"
     },
     ja: {
-      "nav.story":"ふたりのストーリー","nav.events":"結婚式の予定","nav.rsvp":"出欠確認",
+      "nav.story":"ふたりのストーリー","nav.events":"結婚式の日程","nav.rsvp":"出欠確認",
       "name.groom":"Hai Pham","name.bride":"My Nguyen",
-      "hero.note":"私たちの大切な日に、ぜひ一緒にお祝いください。","hero.cta":"結婚式の予定を見る",
+      "hero.note":"私たちの大切な日に、ぜひ一緒にお祝いください。","hero.cta":"結婚式の日程を見る",
       "intro.open":"招待状を開く","intro.tap":"あなたへの招待状","intro.hint":"封筒または下のボタンを押して開く","intro.invite":"心よりご招待申し上げます","intro.date":"2026 · 12 · 18 — 2026 · 12 · 20","intro.formalLead":"私たちの大切な日に、ぜひご一緒にお祝いください","intro.eventDate":"2026 · 12 · 18 — 2026 · 12 · 20","intro.eventPlace":"ホーチミン市 · ラックザー","intro.closing":"お越しいただけることを、心より楽しみにしております。",
       "story.title":"ひとつの旅、ひとつの約束","story.text":"人生の道のりを変える出会いがあります。共に歩んできた日々を経て、私たちはこれからも家族として寄り添い続けることを約束し、新しい一歩を踏み出します。",
       "countdown.title":"幸せの日まで\nあと","countdown.short":"幸せの日まで","countdown.month":"12月","countdown.days":"日","countdown.hours":"時間","countdown.minutes":"分","countdown.seconds":"秒",
-      "events.title":"結婚式の予定","events.subtitle":"2日間の時間・会場・アクセスをまとめてご案内します。","events.status.label":"表示中",
+      "events.title":"結婚式の日程","events.subtitle":"2日間の時間・会場・アクセスをまとめてご案内します。","events.status.label":"表示中",
       "family.bride":"新婦側","family.groom":"新郎側","event.home":"ご自宅","event.reception":"披露宴",
       "event.vuquy":"婚礼の儀","event.thanhhon":"結婚式","event.reception.title":"披露宴","event.friday":"金曜日 · 18.12.2026","event.sunday":"日曜日 · 20.12.2026","event.friday.short":"金曜日","event.sunday.short":"日曜日",
       "map.open":"地図を開く","map.directions":"ルート案内",
