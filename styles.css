@@ -9412,3 +9412,149 @@ body.invitation-locked .invite-v2-stage{
   .events-unified .event-day-panel .event-card,
   .events-unified .event-day-panel .map-link { transition: none !important; }
 }
+
+/* Four-stop wedding schedule status: compact sticky guidance inside #events only. */
+.events-unified #eventScrollStatus {
+  position: sticky !important;
+  top: calc(var(--header-h, 64px) + env(safe-area-inset-top) + 6px) !important;
+  z-index: 35;
+  box-sizing: border-box;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 9px !important;
+  width: min(650px, 100%) !important;
+  max-width: 100%;
+  min-height: 0 !important;
+  margin: 0 auto 18px !important;
+  padding: 12px 17px 13px !important;
+  border: 1px solid rgba(133, 95, 75, .20) !important;
+  border-radius: 16px !important;
+  background: rgba(252, 247, 241, .96) !important;
+  box-shadow: 0 10px 30px rgba(74, 45, 34, .09) !important;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+.events-unified #eventScrollStatus .event-status-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+.events-unified #eventScrollStatus .event-status-top-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+.events-unified #eventScrollStatus .event-status-dot {
+  display: block;
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  background: #ae7b64;
+  box-shadow: 0 0 0 4px rgba(174, 123, 100, .11);
+}
+.events-unified #eventScrollStatus .event-status-top-label small {
+  color: #85685a !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1.3;
+  letter-spacing: .055em !important;
+}
+.events-unified #eventScrollStatus .event-status-count {
+  flex: 0 0 auto;
+  color: #916950;
+  font: 700 12px/1.2 "Lora", Georgia, serif;
+  letter-spacing: .025em;
+  font-variant-numeric: tabular-nums;
+}
+.events-unified #eventScrollStatus .event-status-copy {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 3px !important;
+  width: 100%;
+  min-width: 0;
+  overflow: visible !important;
+  white-space: normal !important;
+}
+.events-unified #eventScrollStatus .event-status-copy strong {
+  display: block !important;
+  overflow: visible !important;
+  white-space: normal !important;
+  text-overflow: clip !important;
+  color: #47362e !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+}
+.events-unified #eventScrollStatus #eventScrollDetail {
+  display: block;
+  max-width: 100%;
+  color: #735d52;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.events-unified #eventScrollStatus .event-status-progress {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 5px !important;
+  width: 100% !important;
+  min-width: 0;
+  height: 5px !important;
+  margin: 2px 0 0 !important;
+  overflow: visible !important;
+  border: 0;
+  border-radius: 0;
+  background: none !important;
+}
+.events-unified #eventScrollStatus .event-status-progress [data-progress-step] {
+  display: block;
+  width: 100%;
+  height: 5px;
+  border-radius: 999px;
+  background: #e7dad0;
+  transform: none !important;
+  transition: background .18s ease, box-shadow .18s ease;
+}
+.events-unified #eventScrollStatus .event-status-progress [data-progress-step].is-complete {
+  background: #b3846b;
+}
+.events-unified #eventScrollStatus .event-status-progress [data-progress-step].is-current {
+  background: #956247;
+  box-shadow: 0 0 0 1px rgba(149, 98, 71, .12);
+}
+.events-unified #eventScrollStatus.is-status-changing .event-status-copy {
+  animation: eventStatusArrive .22s ease-out both;
+}
+@keyframes eventStatusArrive {
+  from { opacity: .68; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 760px) {
+  .events-unified #eventScrollStatus {
+    top: calc(var(--header-h, 58px) + env(safe-area-inset-top) + 5px) !important;
+    gap: 7px !important;
+    margin-bottom: 14px !important;
+    padding: 11px 13px 12px !important;
+    border-radius: 15px !important;
+  }
+  .events-unified #eventScrollStatus .event-status-copy strong {
+    font-size: 14px !important;
+  }
+  .events-unified #eventScrollStatus #eventScrollDetail {
+    font-size: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .events-unified #eventScrollStatus.is-status-changing .event-status-copy {
+    animation: none !important;
+  }
+  .events-unified #eventScrollStatus .event-status-progress [data-progress-step] {
+    transition: none !important;
+  }
+}
