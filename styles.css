@@ -9612,3 +9612,28 @@ body.invitation-locked .invite-v2-stage{
     display: none !important;
   }
 }
+
+/* Portal lives in body, not inside the section's artwork-clipping context. */
+.events-unified.event-status-portal {
+  position: static !important;
+  display: block !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.events-unified.event-status-portal #eventScrollStatus.is-floating {
+  position: fixed !important;
+  top: var(--event-status-fixed-top, 72px) !important;
+  left: 50vw !important;
+  width: min(650px, calc(100vw - 28px)) !important;
+  max-width: calc(100vw - 28px) !important;
+  transform: translateX(-50%) !important;
+  z-index: 1350 !important;
+  pointer-events: none;
+}
