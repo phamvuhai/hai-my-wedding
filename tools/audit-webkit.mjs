@@ -142,7 +142,7 @@ for(const entry of scenarios){
   await page.waitForFunction(()=>
     document.querySelector('.hero-couple-names')?.classList.contains('hero-fit-ready') &&
     [...document.querySelectorAll('.hero-name-fit-text')].every(el=>Number(el.dataset.fitFontSize)>0),
-    {timeout:6500}
+    undefined,{timeout:6500}
   );
   const mobileLayout=await page.evaluate(()=>{
     const viewport=document.documentElement.clientWidth;
