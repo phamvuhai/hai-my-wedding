@@ -9558,3 +9558,57 @@ body.invitation-locked .invite-v2-stage{
     transition: none !important;
   }
 }
+
+/* Sticky fallback: the decorative section clips overflow on Safari, so use an
+   in-flow slot and fixed positioning only while the Events chapter is onscreen. */
+.events-unified .event-scroll-status-slot {
+  width: min(650px, 100%);
+  max-width: 100%;
+  min-height: 0;
+  margin: 0 auto 18px;
+}
+.events-unified #eventScrollStatus {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+.events-unified #eventScrollStatus.is-floating {
+  position: fixed !important;
+  top: var(--event-status-fixed-top, 72px) !important;
+  left: 50% !important;
+  width: min(650px, calc(100% - 28px)) !important;
+  max-width: calc(100% - 28px) !important;
+  transform: translateX(-50%) !important;
+  box-shadow: 0 13px 34px rgba(74, 45, 34, .13) !important;
+}
+@media (min-width: 761px) and (max-width: 1024px) {
+  /* On portrait iPad the two columns otherwise share scroll coordinates,
+     making four chronological steps impossible to track accurately. */
+  .events-unified .event-day-panels {
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: min(720px, 100%);
+    margin-inline: auto;
+  }
+  .events-unified .event-day-panel .family-events.event-timeline {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 7px 23px 16px !important;
+  }
+  .events-unified .event-day-panel .event-card {
+    display: block !important;
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 16px 8px !important;
+  }
+  .events-unified .event-day-panel .event-card + .event-card {
+    border-left: 0 !important;
+    border-top: 1px solid rgba(132, 96, 75, .16) !important;
+  }
+  .events-unified .event-day-panel .event-timeline::before,
+  .events-unified .event-day-panel .event-timeline::after,
+  .events-unified .event-day-panel .event-card::before {
+    display: none !important;
+  }
+}
