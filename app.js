@@ -63,6 +63,12 @@ function initEventScrollStory() {
   if (!section || !items.length || !days.length || !status || !slot || !statusText ||
       !statusDetail || !statusCount || !progress || steps.length !== items.length) return;
 
+  // Floating UI lives at document root so decorative section clipping and
+  // transformed ancestors cannot shift its fixed viewport coordinates in Safari.
+  const portal = document.createElement('div');
+  portal.className = 'events-unified event-status-portal';
+  document.body.appendChild(portal);
+
   let frame = 0;
   let activeIndex = -1;
   let statusSwapTimer = 0;
@@ -119,7 +125,13 @@ function initEventScrollStory() {
     const sectionRect = section.getBoundingClientRect();
     const floatVisible = sectionRect.top <= floatTop &&
       sectionRect.bottom > floatTop + height + 16;
-    status.classList.toggle('is-floating', floatVisible);
+    if (floatVisible) {
+      if (status.parentElement !== portal) portal.appendChild(status);
+      status.classList.add('is-floating');
+    } else {
+      if (status.parentElement !== slot) slot.appendChild(status);
+      status.classList.remove('is-floating');
+    }
 
     days.forEach(day => {
       const timeline = day.querySelector('.event-timeline');
