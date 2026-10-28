@@ -76,3 +76,11 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 - Admin supports Polaroid, film-frame, full-width, caption in VI/EN/JA, hide/show, reorder (drag or buttons), edit, remove and explicit Publish.
 - Album uploads, storage, guest invites and RSVP behavior remain unchanged. Only already-published gallery images render publicly.
 - To intentionally hide all collage photos, remove the entries and Publish an empty list. To add new photos, upload and Publish them in Admin → Album first.
+
+## Wedding Editorial V3 (2026-10-28)
+
+- Hero: one to three published photos with 7-second crossfade, pause and manual controls; reduced-motion support. Uses existing Hero as fallback.
+- Wedding Schedule: shared couple photo above two compact columns (Bride left, Groom right), with preserved four event times, addresses, and map links; mobile toggle honors personalized invite priority.
+- Photo storytelling: multilingual Split / Letter / Filmstrip / Quote blocks across five existing invitation interludes, with an optional farewell image.
+- Admin → **Thiết kế V3**: edit Hero choices, autoplay, schedule / farewell photos and ordered multilingual story blocks; one Publish stores JSON in existing `site_content` key `v3_design`. No schema migration or guest/RSVP changes.
+- Gallery images must already be published in Album. Missing or unpublished photos never render publicly. Legacy Collage V2 configuration remains stored and unchanged but V3 rendering supersedes it.

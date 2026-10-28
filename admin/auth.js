@@ -46,7 +46,8 @@
     document.getElementById('guestsTab').classList.toggle('hidden', tab !== 'guests');
     document.getElementById('albumTab').classList.toggle('hidden', tab !== 'album');
     document.getElementById('collageTab').classList.toggle('hidden', tab !== 'collage');
-    const titles = {overview:'Tổng quan',content:'Nội dung website',rsvp:'RSVP',guests:'Khách mời',album:'Album',collage:'Collage thiệp'};
+    document.getElementById('v3Tab').classList.toggle('hidden', tab !== 'v3');
+    const titles = {overview:'Tổng quan',content:'Nội dung website',rsvp:'RSVP',guests:'Khách mời',album:'Album',collage:'Collage thiệp (V2)',v3:'Thiết kế V3'};
     document.getElementById('pageTitle').textContent = titles[tab] || 'Admin';
 
     if (tab === 'overview') document.dispatchEvent(new Event('admin:overview'));
@@ -54,6 +55,7 @@
     if (tab === 'rsvp') document.dispatchEvent(new Event('admin:rsvp'));
     if (tab === 'guests') document.dispatchEvent(new Event('admin:guests'));
     if (tab === 'collage') document.dispatchEvent(new Event('admin:collage'));
+    if (tab === 'v3') document.dispatchEvent(new Event('admin:v3'));
   }
 
   document.querySelectorAll('.nav-item').forEach((btn) => {
