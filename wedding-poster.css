@@ -167,3 +167,10 @@
   .hero.hero-poster .hero-full-photo .v3-backdrop-slide,
   .hero.hero-poster .hero-feature-photo .v3-slide{transition:none!important}
 }
+
+/* Original first slides have IDs and therefore require an ID-specific active rule.
+   Without it, the legacy image-ready handoff can out-rank the slideshow opacity. */
+.hero.hero-poster .hero-full-photo #heroFullImage.v3-backdrop-slide.is-current,
+.hero.hero-poster .hero-feature-photo #heroImage.v3-slide.is-current{
+  opacity:1!important;
+}
