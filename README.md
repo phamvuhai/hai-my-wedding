@@ -97,3 +97,10 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 - Hero restores original UTM Beautiful Caps calligraphic names and reuses the name-fitting script, now refitting when the poster grid mounts.
 - Up to three DISTINCT published images appear simultaneously in an animated overlapping triptych; the prominent center photo and background rotate together every seven seconds. One photo centers; two form a centered pair, with no blank frames. Pause and manual dots remain functional.
 - No database schema changes; images continue to be selected in Admin → Thiết kế V3. Mobile has an independent focus crop and compact photo stack.
+
+## Wedding V4 — Our Forever Story
+
+- Seven interlude chapters (five image compositions and two quotes) tell the wedding story in VI/EN/JA. Saved V3 Admin blocks take precedence if published.
+- Background auto-crossfades, remains non-interactive and no public-facing photo picker/lightbox is shown. Blur defaults to 6px, tint to 40%. Published image URLs remain technically accessible; hiding the UI is not access control.
+- Scroll reveal slides in from alternating sides; map links pulse subtly to invite a click; reduced-motion mode is respected.
+- Full Hero, Story, Countdown, Event, Gallery, RSVP and Thank You copy updated across languages, with matching legacy site_content overrides to be synchronized.

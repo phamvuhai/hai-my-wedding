@@ -1,6 +1,6 @@
 /* Cinematic Wedding Poster — accessible, photo-led Hero for desktop and phones. */
 .hero.hero-v3.hero-poster{
-  --poster-blur:14px;--poster-shade:.55;--poster-focus-desktop:50% 50%;--poster-focus-mobile:50% 50%;
+  --poster-blur:6px;--poster-shade:.40;--poster-focus-desktop:50% 50%;--poster-focus-mobile:50% 50%;
   position:relative!important;isolation:isolate;background:#453039!important;color:#fff!important;
   min-height:min(880px,100svh)!important;overflow:hidden;
 }

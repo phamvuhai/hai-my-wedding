@@ -25,13 +25,16 @@
   const valid=img=>img&&img.is_published&&img.image_path;
   const choose=id=>valid(state.byId.get(id))?state.byId.get(id):null;
   function fallbackBlocks(){
-    const a=state.photos.filter(i=>i.show_on_homepage);
-    const p=a.length?a:state.photos;
+    const all=state.photos.filter(i=>i.show_on_homepage);
+    const p=all.length?all:state.photos;
     return [
-      {id:'default-story',slot:'story',style:'split',imageId:p[0]?.id||'',visible:true,text:{}},
-      {id:'default-promise',slot:'promise',style:'letter',imageId:p[1]?.id||p[0]?.id||'',visible:true,text:{}},
-      {id:'default-moments',slot:'moments',style:'film',imageId:p[2]?.id||p[0]?.id||'',visible:true,text:{}},
-      {id:'default-rsvp',slot:'rsvp',style:'quote',imageId:'',visible:true,text:{}}
+      {id:'v4-chapter-1',slot:'story',style:'split',imageId:p[1]?.id||'',visible:true,text:{"vi":"Hạnh phúc không phải lúc nào cũng là điều lớn lao. Đôi khi, đó chỉ là được kể cho nhau nghe một ngày đã qua, cùng cười vì những chuyện rất nhỏ và biết rằng luôn có một người ở đó để lắng nghe.","en":"Happiness is not always something grand. Sometimes it is sharing an ordinary day, laughing at little things, and knowing there is always someone who will listen.","ja":"幸せは、特別な出来事だけではありません。今日あったことを話し、小さなことで笑い合い、耳を傾けてくれる人がそばにいる。それが私たちの宝物です。"}},
+      {id:'v4-chapter-2',slot:'story',style:'letter',imageId:p[2]?.id||'',visible:true,text:{"vi":"Có những ngày rực rỡ, cũng có những ngày thật bình thường. Nhưng khi cùng nhìn về một hướng, chúng mình hiểu rằng điều quý giá nhất không phải đi được bao xa, mà là vẫn muốn bước tiếp cùng nhau.","en":"Some days shine while others are beautifully ordinary. We have learned that what matters most is not how far we go, but choosing to keep walking together.","ja":"輝く日もあれば、何気ない日もあります。大切なのはどこまで行けるかよりも、これからも一緒に歩みたいと思えることだと感じています。"}},
+      {id:'v4-chapter-3',slot:'promise',style:'quote',imageId:'',visible:true,text:{"vi":"“Chẳng cần ngày nào cũng rực rỡ, chỉ mong những ngày bình thường luôn có nhau.”","en":"“Every day need not be extraordinary. May we always share the ordinary ones.”","ja":"「毎日が特別でなくてもいい。何気ない日々を、これからも一緒に。」"}},
+      {id:'v4-chapter-4',slot:'promise',style:'split',imageId:p[3]?.id||'',visible:true,text:{"vi":"Và rồi, từ lời hẹn luôn ở bên nhau, chúng mình chọn một lời hứa lớn hơn: trở thành gia đình, cùng chăm sóc một mái ấm và đón chờ những điều tốt đẹp phía trước.","en":"A simple promise to stay by each other's side grew into something more: a family, a home, and the hope of welcoming all the beautiful days ahead.","ja":"そして、いつもそばにいるという約束は、家族になり、ふたりで家庭を築くという大切な決意になりました。"}},
+      {id:'v4-chapter-5',slot:'events',style:'letter',imageId:p[4]?.id||'',visible:true,text:{"vi":"Hai ngày vui, hai gia đình và thật nhiều yêu thương. Từ những nghi lễ ấm áp bên người thân đến buổi tiệc quây quần cùng bạn bè, chúng mình mong được cùng mọi người lưu giữ thật nhiều kỷ niệm đẹp.","en":"Two celebrations, two families and so much love. From intimate family traditions to joyful gatherings with friends, we hope to share beautiful memories with everyone.","ja":"ふたつの家族が迎える、愛に満ちた二日間。温かな儀式から楽しい披露宴まで、皆さまと素敵な思い出を重ねられたら幸いです。"}},
+      {id:'v4-chapter-6',slot:'moments',style:'film',imageId:p[5]?.id||'',visible:true,text:{"vi":"Mỗi bức ảnh là một lời nhắc rằng hạnh phúc được dệt nên từ những điều nhỏ bé. Chúng mình sẽ giữ những khoảnh khắc này, để một ngày nhìn lại vẫn thấy nguyên vẹn sự dịu dàng của hôm nay.","en":"Every photograph reminds us that a beautiful life is woven from little things. We will keep these moments so we can remember how this chapter felt.","ja":"一枚一枚の写真は、小さな幸せの積み重ね。いつか見返したときにも、今の優しい気持ちを思い出せるよう大切に残していきます。"}},
+      {id:'v4-chapter-7',slot:'rsvp',style:'quote',imageId:'',visible:true,text:{"vi":"“Ngày vui sẽ trọn vẹn hơn khi có bạn ở đây. Cảm ơn vì đã cùng chúng mình viết nên một kỷ niệm đáng nhớ.”","en":"“Our celebration will be lovelier with you here. Thank you for being part of a memory we will always cherish.”","ja":"「皆さまと過ごすひとときが、私たちの宝物になります。心から、ありがとうございます。」"}}
     ];
   }
   function blocks(){
@@ -93,8 +96,8 @@
   function stop(){clearInterval(state.heroTimer);state.heroTimer=0;}
   function posterSettings(hero){
     const data=state.config||{};
-    const blur=[8,14,20].includes(Number(data.posterBlur))?Number(data.posterBlur):14;
-    const shade=[40,55,70].includes(Number(data.posterShade))?Number(data.posterShade):55;
+    const blur=[4,6,10].includes(Number(data.posterBlur))?Number(data.posterBlur):6;
+    const shade=[30,40,55].includes(Number(data.posterShade))?Number(data.posterShade):40;
     const desktopX=posterNumber(data.posterDesktopX,50),desktopY=posterNumber(data.posterDesktopY,50);
     const mobileX=posterNumber(data.posterMobileX,50),mobileY=posterNumber(data.posterMobileY,50);
     hero.style.setProperty('--poster-blur',blur+'px');
@@ -136,7 +139,7 @@
   }
   function tick(){
     stop();
-    const autoAllowed=state.config?.heroAutoplay!==false&&!state.heroPaused&&!reduced.matches&&!document.hidden&&!document.body.classList.contains('invitation-locked');
+    const autoAllowed=!reduced.matches&&!document.hidden&&!document.body.classList.contains('invitation-locked');
     if(state.heroUrls.length>1&&autoAllowed){
       state.heroTimer=setInterval(()=>show(state.heroIndex+1),7000);
     }

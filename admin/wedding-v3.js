@@ -5,7 +5,7 @@
   const $=id=>document.getElementById(id);
   const slots=[['story','Sau Our Story'],['promise','Sau Countdown'],['events','Sau lịch cưới'],['moments','Sau Album'],['rsvp','Sau RSVP']];
   const styles=['split','letter','film','quote'];
-  const blank={version:3,heroIds:[],heroAutoplay:true,schedulePhotoId:'',farewellPhotoId:'',blocks:[],posterBlur:14,posterShade:55,posterForeground:true,posterDesktopX:50,posterDesktopY:50,posterMobileX:50,posterMobileY:50};
+  const blank={version:3,heroIds:[],heroAutoplay:true,schedulePhotoId:'',farewellPhotoId:'',blocks:[],posterBlur:6,posterShade:40,posterForeground:true,posterDesktopX:50,posterDesktopY:50,posterMobileX:50,posterMobileY:50};
   let cfg={...blank},loaded=false,changed=false,busy=false,editing=-1;
   const published=()=>A.images.filter(i=>i.is_published&&i.image_path);
   const uuid=()=>window.crypto?.randomUUID?.()||String(Date.now())+Math.random().toString(36).slice(2);
@@ -14,20 +14,23 @@
   function defaults(){
     const p=published().slice().sort((a,b)=>Number(b.is_hero)-Number(a.is_hero)||Number(b.is_featured)-Number(a.is_featured)||Number(a.sort_order||0)-Number(b.sort_order||0));
     const block=(slot,style,id,vi,en,ja)=>({id:uuid(),slot,style,imageId:id||'',visible:true,text:{vi,en,ja}});
-    return {version:3,heroIds:p.slice(0,3).map(i=>i.id),heroAutoplay:true,posterBlur:14,posterShade:55,posterForeground:true,posterDesktopX:50,posterDesktopY:50,posterMobileX:50,posterMobileY:50,schedulePhotoId:p[0]?.id||'',farewellPhotoId:p[3]?.id||p[1]?.id||'',blocks:[
-      block('story','split',p[0]?.id,'Từ cuộc gặp gỡ đầu tiên, chúng mình đã chọn cùng nhau đi tiếp.','From our very first hello to a lifetime of togetherness.','出会いから今日まで、ふたりで歩んできました。'),
-      block('promise','letter',p[1]?.id||p[0]?.id,'Từ hôm nay, mỗi chặng đường đều có chúng mình.','From this day forward, every road is ours to share.','これからも、ずっと一緒に。'),
-      block('moments','film',p[2]?.id||p[0]?.id,'Những khoảnh khắc nhỏ tạo nên một tình yêu thật lớn.','A thousand little moments, one beautiful love story.','小さな幸せが、かけがえのない思い出に。'),
-      block('rsvp','quote','', 'Cảm ơn bạn đã là một phần trong câu chuyện của Hải & Mỹ.','Thank you for being part of our story.','私たちの物語に寄り添っていただき、ありがとうございます。')
+    return {version:3,heroIds:p.slice(0,3).map(i=>i.id),heroAutoplay:true,posterBlur:6,posterShade:40,posterForeground:true,posterDesktopX:50,posterDesktopY:50,posterMobileX:50,posterMobileY:50,schedulePhotoId:p[0]?.id||'',farewellPhotoId:p[6]?.id||p[1]?.id||'',blocks:[
+      block('story','split',p[1]?.id,"Có nhau trong những điều bình dị.","We find joy in everyday moments.","何気ない日々に幸せがあります。"),
+      block('story','letter',p[2]?.id,"Điều quý giá nhất là vẫn muốn bước tiếp cùng nhau.","What matters most is choosing to walk together.","一緒に歩むことが何より大切です。"),
+      block('promise','quote','',"Chẳng cần ngày nào cũng rực rỡ, chỉ mong những ngày bình thường luôn có nhau.","May we always share the ordinary days.","何気ない日々を、これからも一緒に。"),
+      block('promise','split',p[3]?.id,"Từ lời hẹn luôn bên nhau, chúng mình chọn cùng xây dựng một mái ấm.","A promise to stay together became a dream of building a home.","これからはふたりで家庭を築いていきます。"),
+      block('events','letter',p[4]?.id,"Hai ngày vui của hai gia đình sẽ đẹp hơn nhờ sự có mặt của bạn.","Two celebrations become more meaningful with you there.","皆さまと喜びを分かち合える日を楽しみにしています。"),
+      block('moments','film',p[5]?.id,"Những tấm ảnh nhắc chúng mình về mọi khoảnh khắc đáng yêu đã qua.","These photographs hold the moments we love.","思い出の写真を、これからも大切にします。"),
+      block('rsvp','quote','',"Cảm ơn bạn đã cùng chúng mình viết nên một kỷ niệm đáng nhớ.","Thank you for sharing a memory we will cherish.","一緒に素敵な思い出をつくってくださり、ありがとうございます。")
     ]};
   }
   function clampFocus(value){const n=Number(value);return Number.isFinite(n)?Math.max(0,Math.min(100,n)):50;}
   function normalize(raw){
     if(!raw||typeof raw!=='object')return defaults();
     return {version:3,heroIds:Array.isArray(raw.heroIds)?raw.heroIds.filter(v=>typeof v==='string').slice(0,3):[],
-      heroAutoplay:raw.heroAutoplay!==false,
-      posterBlur:[8,14,20].includes(Number(raw.posterBlur))?Number(raw.posterBlur):14,
-      posterShade:[40,55,70].includes(Number(raw.posterShade))?Number(raw.posterShade):55,
+      heroAutoplay:true,
+      posterBlur:[4,6,10].includes(Number(raw.posterBlur))?Number(raw.posterBlur):6,
+      posterShade:[30,40,55].includes(Number(raw.posterShade))?Number(raw.posterShade):40,
       posterForeground:raw.posterForeground!==false,
       posterDesktopX:clampFocus(raw.posterDesktopX),posterDesktopY:clampFocus(raw.posterDesktopY),
       posterMobileX:clampFocus(raw.posterMobileX),posterMobileY:clampFocus(raw.posterMobileY),
@@ -44,7 +47,7 @@
   function fill(){
     cfg.heroIds.slice(0,3).forEach((id,i)=>{$('v3Hero'+i).value=id;});
     for(let i=cfg.heroIds.length;i<3;i++)$('v3Hero'+i).value='';
-    $('v3Autoplay').checked=cfg.heroAutoplay;
+    $('v3Autoplay').checked=true;
     $('v3PosterBlur').value=cfg.posterBlur;
     $('v3PosterShade').value=cfg.posterShade;
     $('v3PosterForeground').checked=cfg.posterForeground!==false;
@@ -58,8 +61,8 @@
     const photo=published().find(i=>i.id===$('v3Hero0').value)||published().find(i=>i.is_hero)||published()[0];
     const desktopX=clampFocus($('v3PosterDesktopX').value),desktopY=clampFocus($('v3PosterDesktopY').value);
     const mobileX=clampFocus($('v3PosterMobileX').value),mobileY=clampFocus($('v3PosterMobileY').value);
-    const blur=[8,14,20].includes(Number($('v3PosterBlur').value))?Number($('v3PosterBlur').value):14;
-    const shade=[40,55,70].includes(Number($('v3PosterShade').value))?Number($('v3PosterShade').value):55;
+    const blur=[4,6,10].includes(Number($('v3PosterBlur').value))?Number($('v3PosterBlur').value):6;
+    const shade=[30,40,55].includes(Number($('v3PosterShade').value))?Number($('v3PosterShade').value):40;
     const showPhoto=$('v3PosterForeground').checked;
     ['DesktopX','DesktopY','MobileX','MobileY'].forEach(k=>{
       const out=$('v3'+k+'Value');if(out)out.textContent=$('v3Poster'+k).value+'%';
@@ -141,7 +144,7 @@
     if(new Set(heroIds).size!==heroIds.length){status('Ba ảnh Hero cần khác nhau.','error');return;}
     const ids=[...heroIds,$('v3ScheduleImage').value,$('v3FarewellImageSelect').value,...cfg.blocks.filter(b=>b.style!=='quote').map(b=>b.imageId)].filter(Boolean);
     if(ids.some(id=>!published().some(i=>i.id===id))){status('Có ảnh chưa Publish hoặc đã bị xóa. Kiểm tra lại Album.','error');return;}
-    cfg.heroIds=heroIds;cfg.heroAutoplay=$('v3Autoplay').checked;
+    cfg.heroIds=heroIds;cfg.heroAutoplay=true;
     cfg.posterBlur=Number($('v3PosterBlur').value);cfg.posterShade=Number($('v3PosterShade').value);
     cfg.posterForeground=$('v3PosterForeground').checked;
     ['DesktopX','DesktopY','MobileX','MobileY'].forEach(k=>{cfg['poster'+k]=clampFocus($('v3Poster'+k).value);});
