@@ -113,3 +113,8 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 - The background automatically crossfades between available photos every 7 seconds; there are no picker, lightbox, or clickable image controls. Original published photo URLs are still public, which is independent of the visible UI.
 - All ten localized narrative content keys and the four original wedding-event map destinations are retained. Two new VI/EN/JA photo chapters were added after the schedule and near the memories section; Admin default Story Builder is synchronized.
 - Desktop editorial sections use wider landscape photographs, increased spacing, and a roomier two-column schedule. Mobile keeps its separate layout and event-day selector.
+
+### V5.1 Hero: one photograph per slide
+
+- Each active full-screen Hero layer uses exactly one published photo, repeated in up to four cropped desktop columns. Previously the four columns could show different photos simultaneously. The entire strip crossfades to the next photograph at the existing seven-second interval.
+- Tablet still shows 2–3 copies of that same photo; mobile displays one full-height photo. Text, invitation link, language handling, reduced-motion preference and guest RSVP remain unchanged.

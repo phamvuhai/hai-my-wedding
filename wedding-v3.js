@@ -135,9 +135,9 @@
     tile.src=url(img);tile.alt='';tile.setAttribute('aria-hidden','true');
     tile.draggable=false;tile.decoding='async';
     tile.loading=count===0?'eager':'lazy';
-    // When just one photo exists, slight crop variation gives the horizontal
-    // desktop strip a composed editorial feeling rather than an empty panel.
-    if(state.heroUrls.length===1)tile.style.setProperty('--tile-focus',['26% 50%','45% 50%','65% 50%','82% 50%'][column]);
+    // Repeat this slide's SINGLE photograph across desktop columns.
+    // Vary only the crop; never mix images from different slides in one frame.
+    tile.style.setProperty('--tile-focus',['26% 50%','45% 50%','65% 50%','82% 50%'][column]);
     return tile;
   }
   function createSlides(){
@@ -167,8 +167,7 @@
         const layer=document.createElement('div');layer.className='v5-gallery-layer';
         layer.dataset.slide=String(i);
         for(let column=0;column<4;column++){
-          const source=chosen[(i+column)%chosen.length];
-          layer.appendChild(buildTile(source,column,i));
+          layer.appendChild(buildTile(photo,column,i));
         }
         gallery.appendChild(layer);
       });
