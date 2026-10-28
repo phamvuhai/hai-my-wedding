@@ -104,3 +104,12 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 - Background auto-crossfades, remains non-interactive and no public-facing photo picker/lightbox is shown. Blur defaults to 6px, tint to 40%. Published image URLs remain technically accessible; hiding the UI is not access control.
 - Scroll reveal slides in from alternating sides; map links pulse subtly to invite a click; reduced-motion mode is respected.
 - Full Hero, Story, Countdown, Event, Gallery, RSVP and Thank You copy updated across languages, with matching legacy site_content overrides to be synchronized.
+
+
+## Wedding V5 — Full-bleed desktop and mobile hero
+
+- Removes the boxed/overlapping Hero triptych entirely. The existing legacy `#heroImage` is retained hidden for older loading logic.
+- Desktop uses 3–4 full-height edge-to-edge photographic columns behind centered wedding typography. If the admin chooses only one image, its crops repeat across 4 columns; 2 images alternate. Tablet uses 2–3 columns. Mobile uses one full-screen image, never repeated.
+- The background automatically crossfades between available photos every 7 seconds; there are no picker, lightbox, or clickable image controls. Original published photo URLs are still public, which is independent of the visible UI.
+- All ten localized narrative content keys and the four original wedding-event map destinations are retained. Two new VI/EN/JA photo chapters were added after the schedule and near the memories section; Admin default Story Builder is synchronized.
+- Desktop editorial sections use wider landscape photographs, increased spacing, and a roomier two-column schedule. Mobile keeps its separate layout and event-day selector.

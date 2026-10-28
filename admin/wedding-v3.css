@@ -39,3 +39,9 @@
 .v3-poster-preview-mobile>.v3-preview-copy{width:100%;min-height:0;height:45%;align-items:center;text-align:center;justify-content:flex-end;padding:10px 7px}
 .v3-poster-preview-mobile>.v3-preview-front{left:13%;right:13%;top:48%;width:74%;height:44%;border-radius:10px}
 @media(max-width:560px){.v3-poster-options{padding:14px}.v3-poster-focus{grid-template-columns:1fr}.v3-poster-previews{grid-template-columns:1fr 1fr}.v3-poster-preview{min-height:125px}.v3-poster-preview-mobile{min-height:155px}.v3-poster-preview>.v3-preview-copy{padding:6px}.v3-preview-copy span{font-size:7px}}
+
+/* V5: preview the background-only design; foreground photo was removed. */
+.v3-poster-preview>.v3-preview-front{display:none!important}
+.v3-poster-preview>.v3-preview-copy{width:100%!important;text-align:center!important;align-items:center!important;padding:14px!important}
+.v3-poster-preview-mobile>.v3-preview-copy{justify-content:center!important;min-height:180px!important;height:100%!important}
+.v3-poster-preview-desktop>.v3-preview-bg{object-position:center!important}

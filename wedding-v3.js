@@ -34,6 +34,8 @@
       {id:'v4-chapter-4',slot:'promise',style:'split',imageId:p[3]?.id||'',visible:true,text:{"vi":"Và rồi, từ lời hẹn luôn ở bên nhau, chúng mình chọn một lời hứa lớn hơn: trở thành gia đình, cùng chăm sóc một mái ấm và đón chờ những điều tốt đẹp phía trước.","en":"A simple promise to stay by each other's side grew into something more: a family, a home, and the hope of welcoming all the beautiful days ahead.","ja":"そして、いつもそばにいるという約束は、家族になり、ふたりで家庭を築くという大切な決意になりました。"}},
       {id:'v4-chapter-5',slot:'events',style:'letter',imageId:p[4]?.id||'',visible:true,text:{"vi":"Hai ngày vui, hai gia đình và thật nhiều yêu thương. Từ những nghi lễ ấm áp bên người thân đến buổi tiệc quây quần cùng bạn bè, chúng mình mong được cùng mọi người lưu giữ thật nhiều kỷ niệm đẹp.","en":"Two celebrations, two families and so much love. From intimate family traditions to joyful gatherings with friends, we hope to share beautiful memories with everyone.","ja":"ふたつの家族が迎える、愛に満ちた二日間。温かな儀式から楽しい披露宴まで、皆さまと素敵な思い出を重ねられたら幸いです。"}},
       {id:'v4-chapter-6',slot:'moments',style:'film',imageId:p[5]?.id||'',visible:true,text:{"vi":"Mỗi bức ảnh là một lời nhắc rằng hạnh phúc được dệt nên từ những điều nhỏ bé. Chúng mình sẽ giữ những khoảnh khắc này, để một ngày nhìn lại vẫn thấy nguyên vẹn sự dịu dàng của hôm nay.","en":"Every photograph reminds us that a beautiful life is woven from little things. We will keep these moments so we can remember how this chapter felt.","ja":"一枚一枚の写真は、小さな幸せの積み重ね。いつか見返したときにも、今の優しい気持ちを思い出せるよう大切に残していきます。"}},
+      {id:'v5-chapter-8',slot:'events',style:'split',imageId:p[6]?.id||p[0]?.id||'',visible:true,text:{"vi":"Hôm nay, chúng mình không chỉ đánh dấu một ngày đặc biệt, mà còn mở ra những ngày tháng mới: cùng học cách quan tâm, cùng sẻ chia và luôn dành cho nhau một nơi để trở về.","en":"Today is not only a celebration. It is the beginning of a new chapter: caring for each other, sharing the little things, and always having a place to call home.","ja":"この日は、ひとつの節目であると同時に、新しい毎日の始まりです。互いを思いやり、喜びを分かち合い、いつでも帰れる場所をふたりでつくっていきます。"}},
+      {id:'v5-chapter-9',slot:'moments',style:'split',imageId:p[7]?.id||p[1]?.id||'',visible:true,text:{"vi":"Mai này khi nhìn lại, điều chúng mình muốn nhớ nhất không chỉ là những tấm hình thật đẹp, mà còn là cảm giác được yêu thương, được lớn lên và được cùng nhau đi qua những ngày bình dị.","en":"When we look back one day, we hope to remember more than lovely photographs: the feeling of being loved, growing together, and sharing the beauty of ordinary days.","ja":"いつか振り返ったとき、美しい写真だけではなく、愛されている安心感や、ともに成長し、何気ない日々を分かち合った温かさを思い出したいと思います。"}},
       {id:'v4-chapter-7',slot:'rsvp',style:'quote',imageId:'',visible:true,text:{"vi":"“Ngày vui sẽ trọn vẹn hơn khi có bạn ở đây. Cảm ơn vì đã cùng chúng mình viết nên một kỷ niệm đáng nhớ.”","en":"“Our celebration will be lovelier with you here. Thank you for being part of a memory we will always cherish.”","ja":"「皆さまと過ごすひとときが、私たちの宝物になります。心から、ありがとうございます。」"}}
     ];
   }
@@ -107,131 +109,75 @@
     hero.classList.toggle('poster-no-portrait',data.posterForeground===false);
   }
 
-  /* Triptych carousel: show one, two, or three actual published photos, without placeholders. */
-  function show(index){
-    const hero=document.getElementById('home');
-    const cards=[...(hero?.querySelectorAll('.v3-photo-card')||[])];
-    const backgrounds=[...(hero?.querySelectorAll('.hero-full-photo .v3-backdrop-slide')||[])];
-    const n=cards.length;if(!n)return;
-    state.heroIndex=(index+n)%n;
-    const frame=hero.querySelector('.hero-feature-photo');
-    frame.dataset.photoCount=String(n);
-    cards.forEach((card,i)=>{
-      card.classList.remove('is-center','is-left','is-right','is-hidden');
-      let role='is-hidden';
-      if(n===1){role='is-center';}
-      else if(n===2){role=i===state.heroIndex?'is-left':'is-right';}
-      else if(i===state.heroIndex){role='is-center';}
-      else if(i===(state.heroIndex+1)%n){role='is-right';}
-      else{role='is-left';}
-      card.classList.add(role);
-      card.setAttribute('aria-hidden',String(role==='is-hidden'));
-      const img=card.querySelector('img');
-      if(img)img.setAttribute('aria-hidden','false');
-    });
-    // The blurred background follows the prominent photo, not a separate timer.
-    backgrounds.forEach((el,i)=>el.classList.toggle('is-current',i===state.heroIndex));
-    hero.querySelectorAll('.v3-hero-dot').forEach((el,i)=>{
-      const active=i===state.heroIndex;
-      el.classList.toggle('is-active',active);
-      el.setAttribute('aria-pressed',String(active));
-    });
+  /* Wedding V5 full-bleed poster: gallery-only background, no foreground cards or viewer. */
+  const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const slides=()=>[...document.querySelectorAll('#home .v5-gallery-layer')];
+  function setBackdrop(index){
+    const nodes=slides();
+    if(!nodes.length)return;
+    state.heroIndex=(index+nodes.length)%nodes.length;
+    nodes.forEach((layer,i)=>layer.classList.toggle('is-current',i===state.heroIndex));
   }
   function tick(){
     stop();
-    const autoAllowed=!reduced.matches&&!document.hidden&&!document.body.classList.contains('invitation-locked');
-    if(state.heroUrls.length>1&&autoAllowed){
-      state.heroTimer=setInterval(()=>show(state.heroIndex+1),7000);
-    }
-    const pause=document.getElementById('v3HeroPause');
-    if(pause){
-      pause.hidden=reduced.matches||state.config?.heroAutoplay===false;
-      const playing=Boolean(state.heroTimer);
-      pause.textContent=playing?'Ⅱ':'▶';
-      pause.setAttribute('aria-label',copy[language()][playing?'pause':'play']);
-      pause.setAttribute('aria-pressed',String(!playing));
-    }
+    if(state.heroUrls.length<2||reducedMotion.matches||document.hidden||document.body.classList.contains('invitation-locked'))return;
+    state.heroTimer=setInterval(()=>setBackdrop(state.heroIndex+1),7000);
+  }
+  function heroPhotos(){
+    const configured=(Array.isArray(state.config?.heroIds)?state.config.heroIds:[])
+      .map(choose).filter(Boolean);
+    const fallback=[...state.photos.filter(i=>i.is_hero),...state.photos.filter(i=>i.show_on_homepage),...state.photos];
+    return [...new Map((configured.length?configured:fallback).map(img=>[img.id,img])).values()].slice(0,8);
+  }
+  function buildTile(img,column,count){
+    const tile=document.createElement('img');
+    tile.className='v5-hero-tile';
+    tile.src=url(img);tile.alt='';tile.setAttribute('aria-hidden','true');
+    tile.draggable=false;tile.decoding='async';
+    tile.loading=count===0?'eager':'lazy';
+    // When just one photo exists, slight crop variation gives the horizontal
+    // desktop strip a composed editorial feeling rather than an empty panel.
+    if(state.heroUrls.length===1)tile.style.setProperty('--tile-focus',['26% 50%','45% 50%','65% 50%','82% 50%'][column]);
+    return tile;
   }
   function createSlides(){
     if(!state.heroReady||!state.photos.length)return;
     const hero=document.getElementById('home');
-    const frame=hero?.querySelector('.hero-feature-photo');
     const background=hero?.querySelector('.hero-full-photo');
-    const original=document.getElementById('heroImage');
-    const backOriginal=document.getElementById('heroFullImage');
-    if(!hero||!frame||!background||!original||!backOriginal)return;
-    let selected=(Array.isArray(state.config?.heroIds)?state.config.heroIds:[]).map(choose).filter(Boolean);
-    if(!selected.length){
-      selected=[state.photos.find(i=>i.is_hero),...state.photos.filter(i=>i.show_on_homepage)].filter(Boolean);
-    }
-    if(!selected.length)selected=state.photos.slice(0,3);
-    selected=[...new Map(selected.map(i=>[i.id,i])).values()].slice(0,3);
-    if(!selected.length)return;
-    const previousId=state.heroUrls[state.heroIndex];
-    const stack=frame.querySelector('.v3-photo-stack');
-    const unchanged=selected.map(i=>i.id).join('|')===state.heroUrls.join('|')&&
-      stack?.querySelectorAll('.v3-photo-card').length===selected.length&&
-      background.querySelectorAll('.v3-backdrop-slide').length===selected.length;
+    if(!hero||!background)return;
+    const chosen=heroPhotos();if(!chosen.length)return;
+    const ids=chosen.map(i=>i.id);
+    const oldIds=state.heroUrls;
+    const unchanged=ids.length===oldIds.length&&ids.every((id,i)=>id===oldIds[i])&&slides().length===ids.length;
+    const originalIndex=unchanged?state.heroIndex:0;
     stop();
-    const firstPoster=!hero.classList.contains('hero-poster-triptych');
-    hero.classList.remove('hero-layout-full','hero-layout-split','hero-layout-minimal');
-    hero.classList.add('hero-layout-framed','hero-v3','hero-poster','hero-poster-triptych');
+    hero.classList.remove('hero-layout-full','hero-layout-split','hero-layout-minimal','hero-poster-triptych');
+    hero.classList.add('hero-layout-framed','hero-v3','hero-poster','hero-v5');
     posterSettings(hero);
-    if(firstPoster)document.dispatchEvent(new Event('hero:layout-changed'));
-    if(unchanged){
-      stack.querySelectorAll('.v3-photo-card img').forEach((im,i)=>{
-        const source=url(selected[i]);
-        if(im.src!==source)im.src=source; // app.js may reassign the legacy Hero on language change
-        im.alt=alt(selected[i]);
+    document.getElementById('v3HeroControls')?.remove();
+    const obsolete=background.querySelectorAll('.v3-backdrop-slide:not(#heroFullImage)');
+    obsolete.forEach(img=>img.remove());
+    if(!unchanged){
+      background.querySelector('.v5-gallery')?.remove();
+      const gallery=document.createElement('div');
+      gallery.className='v5-gallery';
+      gallery.setAttribute('aria-hidden','true');
+      state.heroUrls=ids;
+      chosen.forEach((photo,i)=>{
+        const layer=document.createElement('div');layer.className='v5-gallery-layer';
+        layer.dataset.slide=String(i);
+        for(let column=0;column<4;column++){
+          const source=chosen[(i+column)%chosen.length];
+          layer.appendChild(buildTile(source,column,i));
+        }
+        gallery.appendChild(layer);
       });
-      hero.querySelectorAll('.v3-hero-dot').forEach((button,i)=>button.setAttribute('aria-label',copy[language()].photo+' '+(i+1)));
-      show(Math.max(0,selected.findIndex(i=>i.id===previousId)));
-      tick();return;
+      background.appendChild(gallery);
     }
-    state.heroPaused=false;state.heroIndex=0;
-    // Keep #heroImage in the DOM for the original cover handoff / preload contract.
-    let gallery=stack;
-    if(!gallery){gallery=document.createElement('div');gallery.className='v3-photo-stack';frame.appendChild(gallery);}
-    gallery.replaceChildren();
-    background.querySelectorAll('.v3-backdrop-slide:not(#heroFullImage)').forEach(el=>el.remove());
-    selected.forEach((img,index)=>{
-      const source=url(img);
-      const card=document.createElement('figure');
-      card.className='v3-photo-card';card.dataset.photoIndex=String(index);
-      const foreground=index===0?original:document.createElement('img');
-      foreground.className='v3-triptych-image';
-      foreground.src=source;foreground.alt=alt(img);
-      foreground.decoding='async';foreground.loading=index===0?'eager':'lazy';
-      foreground.setAttribute('aria-hidden','false');
-      card.appendChild(foreground);gallery.appendChild(card);
-      const backdrop=index===0?backOriginal:document.createElement('img');
-      backdrop.className='v3-backdrop-slide'+(index===0?' is-current':'');
-      backdrop.src=source;backdrop.alt='';backdrop.setAttribute('aria-hidden','true');
-      backdrop.decoding='async';backdrop.loading=index===0?'eager':'lazy';
-      if(index>0)background.appendChild(backdrop);
-    });
-    state.heroUrls=selected.map(i=>i.id);
-    let controls=document.getElementById('v3HeroControls');
-    if(!controls){
-      controls=document.createElement('div');controls.id='v3HeroControls';controls.className='v3-hero-controls';
-      hero.querySelector('.hero-content')?.appendChild(controls);
-    }
-    controls.replaceChildren();
-    if(selected.length>1){
-      const dots=document.createElement('div');dots.className='v3-hero-dots';
-      selected.forEach((_,i)=>{
-        const b=document.createElement('button');b.type='button';
-        b.className='v3-hero-dot';b.textContent=String(i+1).padStart(2,'0');
-        b.setAttribute('aria-label',copy[language()].photo+' '+(i+1));
-        b.onclick=()=>{show(i);tick();};dots.appendChild(b);
-      });
-      controls.appendChild(dots);
-      const pause=document.createElement('button');pause.type='button';
-      pause.id='v3HeroPause';pause.className='v3-hero-pause';
-      pause.onclick=()=>{state.heroPaused=!state.heroPaused;tick();};
-      controls.appendChild(pause);
-    }
-    show(0);tick();
+    hero.classList.add('v5-gallery-ready');
+    setBackdrop(originalIndex);
+    if(!unchanged)document.dispatchEvent(new Event('hero:layout-changed'));
+    tick();
   }
   let initialLoaded=false;
   async function load(){

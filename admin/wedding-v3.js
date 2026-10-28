@@ -12,17 +12,25 @@
   const name=id=>A.images.find(i=>i.id===id)?.title||id?.slice(0,8)||'Không có ảnh';
   const status=(txt,type='')=>A.setStatus($('v3Status'),txt,type);
   function defaults(){
-    const p=published().slice().sort((a,b)=>Number(b.is_hero)-Number(a.is_hero)||Number(b.is_featured)-Number(a.is_featured)||Number(a.sort_order||0)-Number(b.sort_order||0));
-    const block=(slot,style,id,vi,en,ja)=>({id:uuid(),slot,style,imageId:id||'',visible:true,text:{vi,en,ja}});
-    return {version:3,heroIds:p.slice(0,3).map(i=>i.id),heroAutoplay:true,posterBlur:6,posterShade:40,posterForeground:true,posterDesktopX:50,posterDesktopY:50,posterMobileX:50,posterMobileY:50,schedulePhotoId:p[0]?.id||'',farewellPhotoId:p[6]?.id||p[1]?.id||'',blocks:[
-      block('story','split',p[1]?.id,"Có nhau trong những điều bình dị.","We find joy in everyday moments.","何気ない日々に幸せがあります。"),
-      block('story','letter',p[2]?.id,"Điều quý giá nhất là vẫn muốn bước tiếp cùng nhau.","What matters most is choosing to walk together.","一緒に歩むことが何より大切です。"),
-      block('promise','quote','',"Chẳng cần ngày nào cũng rực rỡ, chỉ mong những ngày bình thường luôn có nhau.","May we always share the ordinary days.","何気ない日々を、これからも一緒に。"),
-      block('promise','split',p[3]?.id,"Từ lời hẹn luôn bên nhau, chúng mình chọn cùng xây dựng một mái ấm.","A promise to stay together became a dream of building a home.","これからはふたりで家庭を築いていきます。"),
-      block('events','letter',p[4]?.id,"Hai ngày vui của hai gia đình sẽ đẹp hơn nhờ sự có mặt của bạn.","Two celebrations become more meaningful with you there.","皆さまと喜びを分かち合える日を楽しみにしています。"),
-      block('moments','film',p[5]?.id,"Những tấm ảnh nhắc chúng mình về mọi khoảnh khắc đáng yêu đã qua.","These photographs hold the moments we love.","思い出の写真を、これからも大切にします。"),
-      block('rsvp','quote','',"Cảm ơn bạn đã cùng chúng mình viết nên một kỷ niệm đáng nhớ.","Thank you for sharing a memory we will cherish.","一緒に素敵な思い出をつくってくださり、ありがとうございます。")
-    ]};
+    const all=published().slice().sort((x,y)=>Number(x.sort_order||0)-Number(y.sort_order||0));
+    const p=all.length?all:published();
+    const blocks=(()=>{
+    
+    return [
+      {id:'v4-chapter-1',slot:'story',style:'split',imageId:p[1]?.id||'',visible:true,text:{"vi":"Hạnh phúc không phải lúc nào cũng là điều lớn lao. Đôi khi, đó chỉ là được kể cho nhau nghe một ngày đã qua, cùng cười vì những chuyện rất nhỏ và biết rằng luôn có một người ở đó để lắng nghe.","en":"Happiness is not always something grand. Sometimes it is sharing an ordinary day, laughing at little things, and knowing there is always someone who will listen.","ja":"幸せは、特別な出来事だけではありません。今日あったことを話し、小さなことで笑い合い、耳を傾けてくれる人がそばにいる。それが私たちの宝物です。"}},
+      {id:'v4-chapter-2',slot:'story',style:'letter',imageId:p[2]?.id||'',visible:true,text:{"vi":"Có những ngày rực rỡ, cũng có những ngày thật bình thường. Nhưng khi cùng nhìn về một hướng, chúng mình hiểu rằng điều quý giá nhất không phải đi được bao xa, mà là vẫn muốn bước tiếp cùng nhau.","en":"Some days shine while others are beautifully ordinary. We have learned that what matters most is not how far we go, but choosing to keep walking together.","ja":"輝く日もあれば、何気ない日もあります。大切なのはどこまで行けるかよりも、これからも一緒に歩みたいと思えることだと感じています。"}},
+      {id:'v4-chapter-3',slot:'promise',style:'quote',imageId:'',visible:true,text:{"vi":"“Chẳng cần ngày nào cũng rực rỡ, chỉ mong những ngày bình thường luôn có nhau.”","en":"“Every day need not be extraordinary. May we always share the ordinary ones.”","ja":"「毎日が特別でなくてもいい。何気ない日々を、これからも一緒に。」"}},
+      {id:'v4-chapter-4',slot:'promise',style:'split',imageId:p[3]?.id||'',visible:true,text:{"vi":"Và rồi, từ lời hẹn luôn ở bên nhau, chúng mình chọn một lời hứa lớn hơn: trở thành gia đình, cùng chăm sóc một mái ấm và đón chờ những điều tốt đẹp phía trước.","en":"A simple promise to stay by each other's side grew into something more: a family, a home, and the hope of welcoming all the beautiful days ahead.","ja":"そして、いつもそばにいるという約束は、家族になり、ふたりで家庭を築くという大切な決意になりました。"}},
+      {id:'v4-chapter-5',slot:'events',style:'letter',imageId:p[4]?.id||'',visible:true,text:{"vi":"Hai ngày vui, hai gia đình và thật nhiều yêu thương. Từ những nghi lễ ấm áp bên người thân đến buổi tiệc quây quần cùng bạn bè, chúng mình mong được cùng mọi người lưu giữ thật nhiều kỷ niệm đẹp.","en":"Two celebrations, two families and so much love. From intimate family traditions to joyful gatherings with friends, we hope to share beautiful memories with everyone.","ja":"ふたつの家族が迎える、愛に満ちた二日間。温かな儀式から楽しい披露宴まで、皆さまと素敵な思い出を重ねられたら幸いです。"}},
+      {id:'v4-chapter-6',slot:'moments',style:'film',imageId:p[5]?.id||'',visible:true,text:{"vi":"Mỗi bức ảnh là một lời nhắc rằng hạnh phúc được dệt nên từ những điều nhỏ bé. Chúng mình sẽ giữ những khoảnh khắc này, để một ngày nhìn lại vẫn thấy nguyên vẹn sự dịu dàng của hôm nay.","en":"Every photograph reminds us that a beautiful life is woven from little things. We will keep these moments so we can remember how this chapter felt.","ja":"一枚一枚の写真は、小さな幸せの積み重ね。いつか見返したときにも、今の優しい気持ちを思い出せるよう大切に残していきます。"}},
+      {id:'v5-chapter-8',slot:'events',style:'split',imageId:p[6]?.id||p[0]?.id||'',visible:true,text:{"vi":"Hôm nay, chúng mình không chỉ đánh dấu một ngày đặc biệt, mà còn mở ra những ngày tháng mới: cùng học cách quan tâm, cùng sẻ chia và luôn dành cho nhau một nơi để trở về.","en":"Today is not only a celebration. It is the beginning of a new chapter: caring for each other, sharing the little things, and always having a place to call home.","ja":"この日は、ひとつの節目であると同時に、新しい毎日の始まりです。互いを思いやり、喜びを分かち合い、いつでも帰れる場所をふたりでつくっていきます。"}},
+      {id:'v5-chapter-9',slot:'moments',style:'split',imageId:p[7]?.id||p[1]?.id||'',visible:true,text:{"vi":"Mai này khi nhìn lại, điều chúng mình muốn nhớ nhất không chỉ là những tấm hình thật đẹp, mà còn là cảm giác được yêu thương, được lớn lên và được cùng nhau đi qua những ngày bình dị.","en":"When we look back one day, we hope to remember more than lovely photographs: the feeling of being loved, growing together, and sharing the beauty of ordinary days.","ja":"いつか振り返ったとき、美しい写真だけではなく、愛されている安心感や、ともに成長し、何気ない日々を分かち合った温かさを思い出したいと思います。"}},
+      {id:'v4-chapter-7',slot:'rsvp',style:'quote',imageId:'',visible:true,text:{"vi":"“Ngày vui sẽ trọn vẹn hơn khi có bạn ở đây. Cảm ơn vì đã cùng chúng mình viết nên một kỷ niệm đáng nhớ.”","en":"“Our celebration will be lovelier with you here. Thank you for being part of a memory we will always cherish.”","ja":"「皆さまと過ごすひとときが、私たちの宝物になります。心から、ありがとうございます。」"}}
+    ];
+  })();
+    return {version:3,heroIds:[],heroAutoplay:true,posterBlur:6,posterShade:40,
+      posterForeground:false,posterDesktopX:50,posterDesktopY:50,posterMobileX:50,posterMobileY:50,
+      schedulePhotoId:p[0]?.id||'',farewellPhotoId:p[6]?.id||p[1]?.id||'',blocks};
   }
   function clampFocus(value){const n=Number(value);return Number.isFinite(n)?Math.max(0,Math.min(100,n)):50;}
   function normalize(raw){
@@ -63,7 +71,7 @@
     const mobileX=clampFocus($('v3PosterMobileX').value),mobileY=clampFocus($('v3PosterMobileY').value);
     const blur=[4,6,10].includes(Number($('v3PosterBlur').value))?Number($('v3PosterBlur').value):6;
     const shade=[30,40,55].includes(Number($('v3PosterShade').value))?Number($('v3PosterShade').value):40;
-    const showPhoto=$('v3PosterForeground').checked;
+    const showPhoto=false;
     ['DesktopX','DesktopY','MobileX','MobileY'].forEach(k=>{
       const out=$('v3'+k+'Value');if(out)out.textContent=$('v3Poster'+k).value+'%';
     });
@@ -146,7 +154,7 @@
     if(ids.some(id=>!published().some(i=>i.id===id))){status('Có ảnh chưa Publish hoặc đã bị xóa. Kiểm tra lại Album.','error');return;}
     cfg.heroIds=heroIds;cfg.heroAutoplay=true;
     cfg.posterBlur=Number($('v3PosterBlur').value);cfg.posterShade=Number($('v3PosterShade').value);
-    cfg.posterForeground=$('v3PosterForeground').checked;
+    cfg.posterForeground=false;
     ['DesktopX','DesktopY','MobileX','MobileY'].forEach(k=>{cfg['poster'+k]=clampFocus($('v3Poster'+k).value);});
     cfg.schedulePhotoId=$('v3ScheduleImage').value;cfg.farewellPhotoId=$('v3FarewellImageSelect').value;
     busy=true;$('v3Publish').disabled=true;status('Đang lưu thiết kế...');
