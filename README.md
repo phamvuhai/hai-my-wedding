@@ -67,3 +67,12 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 - [Deployment](docs/DEPLOYMENT.md)
 - [Personalized invitations](docs/PERSONALIZED_INVITES.md)
 - [Technical memo](docs/MEMO.md)
+
+## Romantic Collage invitation
+
+- The interior invitation includes five optional photo interludes after Story, Countdown, Events, Gallery and RSVP.
+- By default, up to seven already-published homepage photos appear in a curated Romantic Collage arrangement; the layout remains empty if no images exist.
+- Admin → **Collage thiệp** uses published Album images and saves the ordered layout as JSON to `site_content` with key `collage_layout` (no database migration).
+- Admin supports Polaroid, film-frame, full-width, caption in VI/EN/JA, hide/show, reorder (drag or buttons), edit, remove and explicit Publish.
+- Album uploads, storage, guest invites and RSVP behavior remain unchanged. Only already-published gallery images render publicly.
+- To intentionally hide all collage photos, remove the entries and Publish an empty list. To add new photos, upload and Publish them in Admin → Album first.
