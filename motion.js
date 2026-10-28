@@ -193,6 +193,7 @@
 
     // Names change between VI and EN/JP, so re-measure their real glyph widths.
     document.addEventListener('wedding:language', () => scheduleFit(40));
+    document.addEventListener('hero:layout-changed', () => scheduleFit(40));
 
     if (document.fonts?.addEventListener) {
       document.fonts.addEventListener('loadingdone', () => scheduleFit(40));

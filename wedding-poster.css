@@ -174,3 +174,134 @@
 .hero.hero-poster .hero-feature-photo #heroImage.v3-slide.is-current{
   opacity:1!important;
 }
+
+
+/* V3.2 · original hand-drawn wedding typography + three-photo cinematic triptych.
+   Keep font fitting from motion.js: never replace --hero-fit-size with a fixed clamp. */
+.hero.hero-poster .hero-couple-names,
+.hero.hero-poster .hero-couple-names .hero-name,
+.hero.hero-poster .hero-couple-names .hero-name-fit-text,
+.hero.hero-poster .hero-couple-names .hero-amp,
+.hero.hero-poster .hero-couple-names .hero-amp-text{
+  font-family:"UTM Beautiful Caps","Great Vibes","Snell Roundhand","Apple Chancery",cursive!important;
+  font-style:normal!important;font-weight:400!important;letter-spacing:0!important;
+}
+.hero.hero-poster .hero-couple-names{padding:10px 0 17px!important;row-gap:0!important;overflow:visible!important}
+.hero.hero-poster .hero-couple-names .hero-name{width:100%!important;max-width:100%!important;line-height:1.1!important;overflow:visible!important}
+.hero.hero-poster .hero-couple-names .hero-name-fit-text{
+  font-size:var(--hero-fit-size,clamp(52px,6vw,96px))!important;
+  line-height:1.04!important;padding:.12em .14em .19em!important;
+  width:max-content!important;max-width:none!important;white-space:nowrap!important;
+  text-shadow:0 5px 22px rgba(31,13,24,.42)!important;
+}
+.hero.hero-poster .hero-couple-names .hero-amp{margin:5px 0 7px 13%!important;min-height:46px!important;line-height:1!important}
+.hero.hero-poster .hero-couple-names .hero-amp-text{font-size:clamp(38px,4.3vw,60px)!important;color:#f0d1c9!important}
+
+/* The gallery has no opaque background or global crop: individual photo cards own frames. */
+.hero.hero-poster-triptych .hero-feature-photo{
+  display:block!important;position:relative!important;isolation:isolate!important;
+  grid-area:photo!important;
+  width:100%!important;max-width:100%!important;min-height:0!important;
+  aspect-ratio:1/1.04!important;max-height:none!important;
+  margin:0!important;padding:0!important;
+  overflow:visible!important;
+  border:0!important;border-radius:0!important;background:transparent!important;
+  box-shadow:none!important;
+}
+.hero.hero-poster-triptych .v3-photo-stack{position:absolute;inset:0;isolation:isolate}
+.hero.hero-poster-triptych .v3-photo-card{
+  position:absolute!important;display:block!important;box-sizing:border-box!important;
+  overflow:hidden!important;z-index:1!important;
+  top:18%;left:50%;width:47%;height:67%;
+  margin:0!important;padding:0!important;
+  background:#937b7b!important;border:5px solid rgba(255,246,239,.93)!important;
+  border-radius:95px 95px 12px 12px!important;
+  box-shadow:0 22px 56px rgba(25,11,21,.32)!important;
+  transform:translateX(-50%) scale(.82);
+  opacity:0!important;visibility:hidden;
+  transition:top .95s cubic-bezier(.2,.68,.23,1),left .95s cubic-bezier(.2,.68,.23,1),
+    width .95s cubic-bezier(.2,.68,.23,1),height .95s cubic-bezier(.2,.68,.23,1),
+    transform .95s cubic-bezier(.2,.68,.23,1),opacity .7s ease,visibility 0s linear .7s!important;
+  pointer-events:none;
+}
+.hero.hero-poster-triptych .v3-photo-card.is-center{
+  top:8%;left:50%;width:57%;height:84%;z-index:4!important;
+  opacity:1!important;visibility:visible;
+  transform:translateX(-50%) rotate(0deg) scale(1);
+  transition-delay:0s!important;
+}
+.hero.hero-poster-triptych .v3-photo-card.is-left{
+  top:18%;left:23%;width:48%;height:70%;z-index:2!important;
+  opacity:1!important;visibility:visible;
+  transform:translateX(-50%) rotate(-8deg);
+  transition-delay:0s!important;
+}
+.hero.hero-poster-triptych .v3-photo-card.is-right{
+  top:18%;left:77%;width:48%;height:70%;z-index:3!important;
+  opacity:1!important;visibility:visible;
+  transform:translateX(-50%) rotate(8deg);
+  transition-delay:0s!important;
+}
+.hero.hero-poster-triptych .v3-photo-card img.v3-triptych-image,
+.hero.hero-poster-triptych .v3-photo-card #heroImage{
+  display:block!important;position:relative!important;inset:auto!important;
+  width:100%!important;height:100%!important;max-width:none!important;
+  object-fit:cover!important;object-position:var(--poster-focus-desktop)!important;
+  opacity:1!important;filter:none!important;-webkit-filter:none!important;
+  transform:none!important;animation:none!important;
+  transition:object-position .3s ease!important;
+}
+/* One photo: exactly centered. Two photos: centered as a pair, no empty third placeholder. */
+.hero.hero-poster-triptych .hero-feature-photo[data-photo-count="1"] .v3-photo-card.is-center{
+  width:73%;height:87%;left:50%;top:6%;transform:translateX(-50%) rotate(0deg);
+}
+.hero.hero-poster-triptych .hero-feature-photo[data-photo-count="2"] .v3-photo-card.is-left{
+  width:58%;height:77%;left:33%;top:12%;transform:translateX(-50%) rotate(-5deg);
+}
+.hero.hero-poster-triptych .hero-feature-photo[data-photo-count="2"] .v3-photo-card.is-right{
+  width:58%;height:77%;left:67%;top:12%;transform:translateX(-50%) rotate(5deg);
+}
+.hero.hero-poster-triptych .v3-hero-controls{margin-top:12px!important}
+.hero.hero-poster-triptych .hero-copy{min-width:0!important}
+@media(max-width:900px){
+  .hero.hero-poster .hero-couple-names .hero-name-fit-text{
+    font-size:var(--hero-fit-size,58px)!important;
+  }
+}
+@media(max-width:760px){
+  .hero.hero-poster .hero-couple-names{justify-items:center!important;text-align:center!important;padding:8px 0 10px!important}
+  .hero.hero-poster .hero-couple-names .hero-amp{margin:1px auto 2px!important;min-height:38px!important}
+  .hero.hero-poster .hero-couple-names .hero-amp-text{font-size:37px!important}
+  .hero.hero-poster .hero-couple-names .hero-name-fit-text{
+    font-size:var(--hero-fit-size,58px)!important;
+    line-height:1.04!important;padding:.11em .11em .17em!important;
+  }
+  .hero.hero-poster-triptych .hero-feature-photo{
+    display:block!important;width:min(100%,440px)!important;
+    aspect-ratio:1/.86!important;max-height:none!important;
+    margin:3px auto 0!important;padding:0!important;
+    overflow:visible!important;border:0!important;border-radius:0!important;box-shadow:none!important;
+  }
+  .hero.hero-poster-triptych .v3-photo-card{
+    border-width:3px!important;border-radius:56px 56px 8px 8px!important;
+    box-shadow:0 13px 30px rgba(26,12,23,.30)!important;
+  }
+  .hero.hero-poster-triptych .v3-photo-card.is-center{top:5%;width:57%;height:89%}
+  .hero.hero-poster-triptych .v3-photo-card.is-left{top:15%;left:24%;width:49%;height:71%;transform:translateX(-50%) rotate(-6deg)}
+  .hero.hero-poster-triptych .v3-photo-card.is-right{top:15%;left:76%;width:49%;height:71%;transform:translateX(-50%) rotate(6deg)}
+  .hero.hero-poster-triptych .hero-feature-photo[data-photo-count="1"] .v3-photo-card.is-center{
+    width:72%;height:90%;top:4%
+  }
+  .hero.hero-poster-triptych .hero-feature-photo[data-photo-count="2"] .v3-photo-card.is-left,
+  .hero.hero-poster-triptych .hero-feature-photo[data-photo-count="2"] .v3-photo-card.is-right{
+    width:59%;height:80%;top:10%
+  }
+  .hero.hero-poster-triptych .hero-feature-photo .v3-photo-card img{object-position:var(--poster-focus-mobile)!important}
+}
+@media(max-width:390px){
+  .hero.hero-poster .hero-couple-names .hero-name-fit-text{font-size:var(--hero-fit-size,54px)!important}
+  .hero.hero-poster-triptych .hero-feature-photo{width:min(100%,350px)!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero.hero-poster-triptych .v3-photo-card{transition:none!important}
+}

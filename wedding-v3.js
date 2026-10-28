@@ -103,19 +103,32 @@
     hero.style.setProperty('--poster-focus-mobile',mobileX+'% '+mobileY+'%');
     hero.classList.toggle('poster-no-portrait',data.posterForeground===false);
   }
+
+  /* Triptych carousel: show one, two, or three actual published photos, without placeholders. */
   function show(index){
     const hero=document.getElementById('home');
-    const slides=[...(hero?.querySelectorAll('.hero-feature-photo .v3-slide')||[])];
+    const cards=[...(hero?.querySelectorAll('.v3-photo-card')||[])];
     const backgrounds=[...(hero?.querySelectorAll('.hero-full-photo .v3-backdrop-slide')||[])];
-    if(!slides.length)return;
-    state.heroIndex=(index+slides.length)%slides.length;
-    slides.forEach((el,i)=>{
-      const active=i===state.heroIndex;
-      el.classList.toggle('is-current',active);
-      el.setAttribute('aria-hidden',String(!active));
+    const n=cards.length;if(!n)return;
+    state.heroIndex=(index+n)%n;
+    const frame=hero.querySelector('.hero-feature-photo');
+    frame.dataset.photoCount=String(n);
+    cards.forEach((card,i)=>{
+      card.classList.remove('is-center','is-left','is-right','is-hidden');
+      let role='is-hidden';
+      if(n===1){role='is-center';}
+      else if(n===2){role=i===state.heroIndex?'is-left':'is-right';}
+      else if(i===state.heroIndex){role='is-center';}
+      else if(i===(state.heroIndex+1)%n){role='is-right';}
+      else{role='is-left';}
+      card.classList.add(role);
+      card.setAttribute('aria-hidden',String(role==='is-hidden'));
+      const img=card.querySelector('img');
+      if(img)img.setAttribute('aria-hidden','false');
     });
+    // The blurred background follows the prominent photo, not a separate timer.
     backgrounds.forEach((el,i)=>el.classList.toggle('is-current',i===state.heroIndex));
-    document.querySelectorAll('.v3-hero-dot').forEach((el,i)=>{
+    hero.querySelectorAll('.v3-hero-dot').forEach((el,i)=>{
       const active=i===state.heroIndex;
       el.classList.toggle('is-active',active);
       el.setAttribute('aria-pressed',String(active));
@@ -151,58 +164,63 @@
     if(!selected.length)selected=state.photos.slice(0,3);
     selected=[...new Map(selected.map(i=>[i.id,i])).values()].slice(0,3);
     if(!selected.length)return;
-    // Two synchronized layers. Blur is applied ONLY to background images, never their shared parent.
     const previousId=state.heroUrls[state.heroIndex];
-    const unchanged=selected.map(i=>i.id).join('|')===state.heroUrls.join('|') &&
-      frame.querySelectorAll('.v3-slide').length===selected.length &&
+    const stack=frame.querySelector('.v3-photo-stack');
+    const unchanged=selected.map(i=>i.id).join('|')===state.heroUrls.join('|')&&
+      stack?.querySelectorAll('.v3-photo-card').length===selected.length&&
       background.querySelectorAll('.v3-backdrop-slide').length===selected.length;
     stop();
+    const firstPoster=!hero.classList.contains('hero-poster-triptych');
     hero.classList.remove('hero-layout-full','hero-layout-split','hero-layout-minimal');
-    hero.classList.add('hero-layout-framed','hero-v3','hero-poster');
+    hero.classList.add('hero-layout-framed','hero-v3','hero-poster','hero-poster-triptych');
     posterSettings(hero);
+    if(firstPoster)document.dispatchEvent(new Event('hero:layout-changed'));
     if(unchanged){
-      const l=language();
-      frame.querySelectorAll('.v3-slide').forEach((el,i)=>el.alt=alt(selected[i]));
-      document.querySelectorAll('.v3-hero-dot').forEach((button,i)=>button.setAttribute('aria-label',copy[l].photo+' '+(i+1)));
+      stack.querySelectorAll('.v3-photo-card img').forEach((im,i)=>{
+        const source=url(selected[i]);
+        if(im.src!==source)im.src=source; // app.js may reassign the legacy Hero on language change
+        im.alt=alt(selected[i]);
+      });
+      hero.querySelectorAll('.v3-hero-dot').forEach((button,i)=>button.setAttribute('aria-label',copy[language()].photo+' '+(i+1)));
       show(Math.max(0,selected.findIndex(i=>i.id===previousId)));
       tick();return;
     }
     state.heroPaused=false;state.heroIndex=0;
-    frame.querySelectorAll('.v3-slide:not(#heroImage)').forEach(el=>el.remove());
+    // Keep #heroImage in the DOM for the original cover handoff / preload contract.
+    let gallery=stack;
+    if(!gallery){gallery=document.createElement('div');gallery.className='v3-photo-stack';frame.appendChild(gallery);}
+    gallery.replaceChildren();
     background.querySelectorAll('.v3-backdrop-slide:not(#heroFullImage)').forEach(el=>el.remove());
-    const make=(img,index)=>{
+    selected.forEach((img,index)=>{
       const source=url(img);
+      const card=document.createElement('figure');
+      card.className='v3-photo-card';card.dataset.photoIndex=String(index);
       const foreground=index===0?original:document.createElement('img');
-      const backdrop=index===0?backOriginal:document.createElement('img');
-      foreground.className='v3-slide'+(index===0?' is-current':'');
+      foreground.className='v3-triptych-image';
       foreground.src=source;foreground.alt=alt(img);
-      foreground.decoding='async';
-      foreground.loading=index===0?'eager':'lazy';
-      foreground.setAttribute('aria-hidden',String(index!==0));
+      foreground.decoding='async';foreground.loading=index===0?'eager':'lazy';
+      foreground.setAttribute('aria-hidden','false');
+      card.appendChild(foreground);gallery.appendChild(card);
+      const backdrop=index===0?backOriginal:document.createElement('img');
       backdrop.className='v3-backdrop-slide'+(index===0?' is-current':'');
       backdrop.src=source;backdrop.alt='';backdrop.setAttribute('aria-hidden','true');
       backdrop.decoding='async';backdrop.loading=index===0?'eager':'lazy';
-      const desktop=hero.style.getPropertyValue('--poster-focus-desktop')||'50% 50%';
-      foreground.style.objectPosition=desktop;
-      backdrop.style.objectPosition=desktop;
-      if(index>0){frame.appendChild(foreground);background.appendChild(backdrop);}
-    };
-    selected.forEach(make);
+      if(index>0)background.appendChild(backdrop);
+    });
     state.heroUrls=selected.map(i=>i.id);
     let controls=document.getElementById('v3HeroControls');
     if(!controls){
       controls=document.createElement('div');controls.id='v3HeroControls';controls.className='v3-hero-controls';
       hero.querySelector('.hero-content')?.appendChild(controls);
     }
-    controls.innerHTML='';
+    controls.replaceChildren();
     if(selected.length>1){
       const dots=document.createElement('div');dots.className='v3-hero-dots';
       selected.forEach((_,i)=>{
         const b=document.createElement('button');b.type='button';
         b.className='v3-hero-dot';b.textContent=String(i+1).padStart(2,'0');
         b.setAttribute('aria-label',copy[language()].photo+' '+(i+1));
-        b.onclick=()=>{show(i);tick();};
-        dots.appendChild(b);
+        b.onclick=()=>{show(i);tick();};dots.appendChild(b);
       });
       controls.appendChild(dots);
       const pause=document.createElement('button');pause.type='button';

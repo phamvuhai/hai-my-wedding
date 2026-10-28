@@ -91,3 +91,9 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 - Desktop: left-aligned type with right portrait; phones: centered type, portrait and an accessible schedule button. Focus crop is independently editable for desktop and mobile.
 - Admin → Thiết kế V3 now includes blur (8/14/20px), backdrop tint (40/55/70%), sharp-photo toggle, desktop/mobile focus sliders and live previews. Existing v3_design JSON values are backwards-compatible.
 - Reduced-motion users and hidden tabs never auto-cycle; slideshow pauses while the invitation cover is locked. RSVP, personalized guests and event mappings are not modified.
+
+### Wedding Cinematic Triptych (V3.2)
+
+- Hero restores original UTM Beautiful Caps calligraphic names and reuses the name-fitting script, now refitting when the poster grid mounts.
+- Up to three DISTINCT published images appear simultaneously in an animated overlapping triptych; the prominent center photo and background rotate together every seven seconds. One photo centers; two form a centered pair, with no blank frames. Pause and manual dots remain functional.
+- No database schema changes; images continue to be selected in Admin → Thiết kế V3. Mobile has an independent focus crop and compact photo stack.
