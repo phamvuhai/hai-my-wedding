@@ -124,3 +124,10 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 - All images in one active Hero slide use the **same** published photograph. On desktop the center column takes just over half the width and uses `object-fit: contain` to show the full photo without cropping. The two side columns repeat the same photograph with cover crop and a mild blur.
 - A blurred copy behind the center image fills any letterbox area; mobile hides the side repeats and shows a single complete central image with a blurred fill. Crossfade remains seven seconds per image and stops for reduced motion and the closed invitation.
 - No foreground triptych, visitor photo buttons, gallery lightbox, personalized guest, schedule, map, or RSVP logic is changed.
+
+## Our Promise editorial section (2026-10-29)
+
+- Replaces the previous dark 100svh `forever-transition` marquee with an ivory editorial portrait and a heartfelt, fully localized VI/EN/JA vow. The previous scroll-scale/marquee effects are inactive; the section participates in the existing gentle scroll entrances.
+- Responsive: desktop 52/48 image and text columns; tablet 46/54; mobile image above the copy. Photo uses a published Album image and a graceful monogram fallback on failure.
+- Admin → Thiết kế V3 offers a dedicated `promisePhotoId`; default picks a published non-hero photo without a schema change. The six Promise copy keys live in `site_content` and are editable under Admin → Nội dung, with dictionary fallbacks.
+- Adds localized event family tags, the December 2026 label, schedule photo caption and selection accessibility label; makes several Japanese RSVP labels more natural. Does not modify any event times, map destinations, RSVP or guest records.

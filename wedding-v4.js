@@ -2,7 +2,7 @@
 (() => {
  'use strict';
  document.body.classList.add('v4-motion-ready');
- const targets=['.story-paper-stack','.countdown-heading','.v3-section-heading','.v3-schedule-photo','.v3-event-panel','.gallery-editorial-head','.rsvp-copy','.v3-farewell','.v3-story-block'];
+ const targets=['.story-paper-stack','.countdown-heading','.v3-section-heading','.v3-schedule-photo','.v3-event-panel','.gallery-editorial-head','.rsvp-copy','.v3-farewell','.v3-story-block','.our-promise-visual','.our-promise-letter'];
  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
  const observer=('IntersectionObserver'in window)&&!reduced.matches?new IntersectionObserver(entries=>{
    for(const entry of entries)if(entry.isIntersecting){

@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="/wedding-v4.css?v=1" />
   <link rel="stylesheet" href="/wedding-v5.css?v=1" />
   <link rel="stylesheet" href="/wedding-v6.css?v=1" />
+  <link rel="stylesheet" href="/wedding-promise.css?v=1" />
 </head>
 <body class="invitation-locked hero-image-loading">
 
@@ -207,22 +208,22 @@
         </div>
         <figure class="v3-schedule-photo" id="v3SchedulePhotoWrap" hidden>
           <img id="v3SchedulePhoto" alt="Hải Phạm & Mỹ Nguyễn" loading="lazy" decoding="async">
-          <figcaption><span>HẢI ♡ MỸ</span><strong>Two families, one forever.</strong></figcaption>
+          <figcaption><span>HẢI ♡ MỸ</span><strong data-i18n="events.photoCaption">Hai gia đình, một niềm hạnh phúc.</strong></figcaption>
         </figure>
         <div class="v3-schedule-intro">
           <span>✧</span><p data-v3-schedule-tagline>Hai gia đình, một niềm hạnh phúc</p><span>✧</span>
         </div>
-        <div class="v3-event-switch" role="group" aria-label="Chọn lịch cưới">
+        <div class="v3-event-switch" role="group" data-i18n-aria="events.selectDay" aria-label="Chọn lịch cưới nhà gái hoặc nhà trai">
           <button type="button" class="is-active" data-v3-day-button="bride" aria-pressed="true"><span data-i18n="family.bride">Nhà gái</span> <small>18/12</small></button>
           <button type="button" data-v3-day-button="groom" aria-pressed="false"><span data-i18n="family.groom">Nhà trai</span> <small>20/12</small></button>
         </div>
         <div class="v3-event-grid">
           <section class="v3-event-panel bride-side is-active" data-event-day="bride">
             <div class="v3-day-head">
-              <p>BRIDE'S FAMILY</p>
+              <p data-i18n="events.brideTag">GIA ĐÌNH NHÀ GÁI</p>
               <h3 data-i18n="family.bride">Nhà gái</h3>
               <small class="event-invite-badge" data-invite-badge="bride" hidden></small>
-              <div class="v3-date"><strong>18</strong><span>THÁNG 12 · 2026<small data-i18n="event.friday.short">Thứ Sáu</small></span></div>
+              <div class="v3-date"><strong>18</strong><span><b data-i18n="events.monthYear">THÁNG 12 · 2026</b><small data-i18n="event.friday.short">Thứ Sáu</small></span></div>
               <p class="v3-city">TP. Hồ Chí Minh</p>
             </div>
             <div class="v3-day-items">
@@ -247,10 +248,10 @@
           <div class="v3-event-divider" aria-hidden="true"><span>H ♡ M</span></div>
           <section class="v3-event-panel groom-side" data-event-day="groom">
             <div class="v3-day-head">
-              <p>GROOM'S FAMILY</p>
+              <p data-i18n="events.groomTag">GIA ĐÌNH NHÀ TRAI</p>
               <h3 data-i18n="family.groom">Nhà trai</h3>
               <small class="event-invite-badge" data-invite-badge="groom" hidden></small>
-              <div class="v3-date"><strong>20</strong><span>THÁNG 12 · 2026<small data-i18n="event.sunday.short">Chủ Nhật</small></span></div>
+              <div class="v3-date"><strong>20</strong><span><b data-i18n="events.monthYear">THÁNG 12 · 2026</b><small data-i18n="event.sunday.short">Chủ Nhật</small></span></div>
               <p class="v3-city">Rạch Giá, An Giang</p>
             </div>
             <div class="v3-day-items">
@@ -279,22 +280,22 @@
 
         <div class="romance-collage-slot" data-collage-slot="events" hidden></div>
 
-    <section class="forever-transition chapter-member" id="forever" aria-label="Forever">
-      <div class="forever-sticky">
-        <div class="forever-rail forever-rail-top" aria-hidden="true">
-          <div class="marquee-track">
-            <span>AND THEN</span><i>•</i><span>AND THEN</span><i>•</i><span>AND THEN</span><i>•</i>
+    <section class="our-promise chapter-member" id="forever" aria-labelledby="promiseTitle">
+      <div class="container our-promise-layout">
+        <figure class="our-promise-visual">
+          <div class="our-promise-photo-shell">
+            <img id="ourPromisePhoto" class="our-promise-photo" alt="" loading="lazy" decoding="async" hidden>
+            <div class="our-promise-fallback" aria-hidden="true"><span>H</span><span>♡</span><span>M</span></div>
           </div>
-        </div>
-        <div class="forever-copy">
-          <span class="forever-small">WE CHOSE</span>
-          <strong>FOREVER</strong>
-          <em>H ♥ M</em>
-        </div>
-        <div class="forever-rail forever-rail-bottom marquee-reverse" aria-hidden="true">
-          <div class="marquee-track">
-            <span>LOVE</span><i>•</i><span>FAMILY</span><i>•</i><span>TOGETHER</span><i>•</i><span>FOREVER</span><i>•</i>
-          </div>
+          <figcaption data-i18n="promise.caption">MỘT LỜI HẸN · MỘT MÁI NHÀ</figcaption>
+        </figure>
+        <div class="our-promise-letter">
+          <p class="our-promise-kicker" data-i18n="promise.kicker">LỜI HẸN CỦA CHÚNG MÌNH</p>
+          <h2 id="promiseTitle" data-i18n="promise.title">Và rồi, chúng mình chọn nhau.</h2>
+          <span class="our-promise-divider" aria-hidden="true">✦</span>
+          <p data-i18n="promise.body1">Chúng mình không hứa rằng chặng đường phía trước sẽ luôn dễ dàng. Nhưng qua từng ngày, chúng mình càng tin rằng điều đáng quý nhất là có một người để lắng nghe, sẻ chia và cùng bước tiếp.</p>
+          <p data-i18n="promise.body2">Vì thế, Hải và Mỹ chọn nắm tay nhau, cùng xây dựng một mái nhà, gìn giữ những điều bình dị và đón chờ những chặng đường phía trước — bằng tình yêu, sự kiên nhẫn và một lời hẹn luôn có nhau.</p>
+          <p class="our-promise-signature" data-i18n="promise.signature">Hải ♡ Mỹ</p>
         </div>
       </div>
     </section>
@@ -447,7 +448,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/config.js"></script>
-  <script src="/i18n.js?v=wedding-v4-copy"></script>
+  <script src="/i18n.js?v=wedding-v6-promise"></script>
   <script src="/personalized.js?v=guest-highlight-1"></script>
   <script src="/app.js?v=touch-events-1"></script>
   <script src="/motion.js?v=poster-font-fit-1"></script>
@@ -455,7 +456,7 @@
   <script src="/particles.js"></script>
   <script src="/invitation.js?v=minimal-1"></script>
   <script src="/touch-effects.js?v=romantic-touch-1"></script>
-  <script src="/wedding-v3.js?v=8"></script>
-  <script src="/wedding-v4.js?v=1"></script>
+  <script src="/wedding-v3.js?v=9"></script>
+  <script src="/wedding-v4.js?v=2"></script>
 </body>
 </html>

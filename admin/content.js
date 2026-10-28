@@ -7,6 +7,12 @@
 
   const labels = {
     'hero.note':'Hero · Lời mời',
+    'promise.kicker':'Our Promise · Nhãn chương',
+    'promise.title':'Our Promise · Tiêu đề',
+    'promise.body1':'Our Promise · Đoạn 1',
+    'promise.body2':'Our Promise · Đoạn 2',
+    'promise.signature':'Our Promise · Chữ ký',
+    'promise.caption':'Our Promise · Chú thích ảnh',
     'story.title':'Câu chuyện · Tiêu đề',
     'story.text':'Câu chuyện · Nội dung',
     'guide.subtitle':'Hướng dẫn · Mô tả',

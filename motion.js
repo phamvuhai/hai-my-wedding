@@ -520,7 +520,7 @@
       ['#story','light'],
       ['.countdown-section','dark'],
       ['#events','light'],
-      ['#forever','dark'],
+      ['#forever','light'],
       ['.gallery-section','light'],
       ['#rsvp','light'],
       ['.footer','dark']

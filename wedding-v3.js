@@ -67,6 +67,24 @@
     const l=language();
     document.querySelector('[data-v3-schedule-tagline]')?.replaceChildren(document.createTextNode(copy[l].event));
   }
+  function renderPromisePhoto(){
+    const image=document.getElementById('ourPromisePhoto');
+    if(!image)return;
+    const fallback=image.parentElement?.querySelector('.our-promise-fallback');
+    const pool=state.photos.filter(photo=>photo.show_on_homepage);
+    const choices=pool.length?pool:state.photos;
+    const excluded=new Set([state.config?.schedulePhotoId,state.config?.farewellPhotoId]);
+    const preferred=choices.filter(photo=>!excluded.has(photo.id)&&!photo.is_hero);
+    const chosen=choose(state.config?.promisePhotoId)||preferred[Math.min(3,preferred.length-1)]||choices[0];
+    if(!chosen){image.hidden=true;if(fallback)fallback.hidden=false;return;}
+    const next=url(chosen);
+    image.alt=alt(chosen);
+    image.style.objectPosition=Math.max(0,Math.min(100,Number(chosen.focus_x??50)))+'% '+Math.max(0,Math.min(100,Number(chosen.focus_y??50)))+'%';
+    image.onload=()=>{image.hidden=false;if(fallback)fallback.hidden=true;};
+    image.onerror=()=>{image.hidden=true;if(fallback)fallback.hidden=false;};
+    if(image.getAttribute('src')!==next)image.src=next;
+    else if(image.complete&&image.naturalWidth){image.hidden=false;if(fallback)fallback.hidden=true;}
+  }
   function renderSchedule(){
     const img=choose(state.config?.schedulePhotoId)||state.photos.find(i=>i.is_hero)||state.photos[0];
     const wrap=document.getElementById('v3SchedulePhotoWrap'),target=document.getElementById('v3SchedulePhoto');
@@ -193,11 +211,11 @@
       state.byId=new Map(state.photos.map(i=>[i.id,i]));
       try{state.config=config.error?null:(config.data?.value_vi?JSON.parse(config.data.value_vi):null);}catch{state.config=null;}
       initialLoaded=true;
-      renderStories();renderSchedule();createSlides();
+      renderStories();renderSchedule();renderPromisePhoto();createSlides();
     }catch(error){console.error('Wedding V3 loading error',error);}
   }
   document.addEventListener('wedding:hero-ready',()=>{state.heroReady=true;if(initialLoaded)createSlides();});
-  document.addEventListener('wedding:language',()=>{renderStories();renderSchedule();});
+  document.addEventListener('wedding:language',()=>{renderStories();renderSchedule();renderPromisePhoto();});
   document.addEventListener('wedding:invitation-opened',tick);
   document.addEventListener('visibilitychange',tick);
   reduced.addEventListener?.('change',tick);

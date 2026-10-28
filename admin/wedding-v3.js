@@ -5,7 +5,7 @@
   const $=id=>document.getElementById(id);
   const slots=[['story','Sau Our Story'],['promise','Sau Countdown'],['events','Sau lịch cưới'],['moments','Sau Album'],['rsvp','Sau RSVP']];
   const styles=['split','letter','film','quote'];
-  const blank={version:3,heroIds:[],heroAutoplay:true,schedulePhotoId:'',farewellPhotoId:'',blocks:[],posterBlur:6,posterShade:40,posterForeground:true,posterDesktopX:50,posterDesktopY:50,posterMobileX:50,posterMobileY:50};
+  const blank={version:3,heroIds:[],heroAutoplay:true,schedulePhotoId:'',farewellPhotoId:'',promisePhotoId:'',blocks:[],posterBlur:6,posterShade:40,posterForeground:true,posterDesktopX:50,posterDesktopY:50,posterMobileX:50,posterMobileY:50};
   let cfg={...blank},loaded=false,changed=false,busy=false,editing=-1;
   const published=()=>A.images.filter(i=>i.is_published&&i.image_path);
   const uuid=()=>window.crypto?.randomUUID?.()||String(Date.now())+Math.random().toString(36).slice(2);
@@ -30,7 +30,7 @@
   })();
     return {version:3,heroIds:[],heroAutoplay:true,posterBlur:6,posterShade:40,
       posterForeground:false,posterDesktopX:50,posterDesktopY:50,posterMobileX:50,posterMobileY:50,
-      schedulePhotoId:p[0]?.id||'',farewellPhotoId:p[6]?.id||p[1]?.id||'',blocks};
+      schedulePhotoId:p[0]?.id||'',farewellPhotoId:p[6]?.id||p[1]?.id||'',promisePhotoId:'',blocks};
   }
   function clampFocus(value){const n=Number(value);return Number.isFinite(n)?Math.max(0,Math.min(100,n)):50;}
   function normalize(raw){
@@ -42,7 +42,7 @@
       posterForeground:raw.posterForeground!==false,
       posterDesktopX:clampFocus(raw.posterDesktopX),posterDesktopY:clampFocus(raw.posterDesktopY),
       posterMobileX:clampFocus(raw.posterMobileX),posterMobileY:clampFocus(raw.posterMobileY),
-      schedulePhotoId:String(raw.schedulePhotoId||''),farewellPhotoId:String(raw.farewellPhotoId||''),
+      schedulePhotoId:String(raw.schedulePhotoId||''),farewellPhotoId:String(raw.farewellPhotoId||''),promisePhotoId:String(raw.promisePhotoId||''),
       blocks:Array.isArray(raw.blocks)?raw.blocks.slice(0,25).filter(b=>b&&slots.some(x=>x[0]===b.slot)&&styles.includes(b.style)).map(b=>({
         id:String(b.id||uuid()),slot:b.slot,style:b.style,imageId:String(b.imageId||''),visible:b.visible!==false,
         text:{vi:String(b.text?.vi||'').slice(0,420),en:String(b.text?.en||'').slice(0,420),ja:String(b.text?.ja||'').slice(0,420)}
@@ -50,7 +50,7 @@
   }
   function pickers(){
     const options='<option value="">Tự động / Không chọn</option>'+published().map(i=>'<option value="'+A.esc(i.id)+'">'+A.esc(i.title||'Ảnh cưới')+' · '+i.id.slice(0,8)+'</option>').join('');
-    ['v3Hero0','v3Hero1','v3Hero2','v3ScheduleImage','v3FarewellImageSelect','v3BlockImage'].forEach(id=>{const el=$(id),v=el.value;el.innerHTML=options;if(published().some(i=>i.id===v))el.value=v;});
+    ['v3Hero0','v3Hero1','v3Hero2','v3ScheduleImage','v3PromiseImage','v3FarewellImageSelect','v3BlockImage'].forEach(id=>{const el=$(id),v=el.value;el.innerHTML=options;if(published().some(i=>i.id===v))el.value=v;});
   }
   function fill(){
     cfg.heroIds.slice(0,3).forEach((id,i)=>{$('v3Hero'+i).value=id;});
@@ -62,6 +62,7 @@
     ['DesktopX','DesktopY','MobileX','MobileY'].forEach(k=>{$('v3Poster'+k).value=cfg['poster'+k];});
     renderPosterPreview();
     $('v3ScheduleImage').value=cfg.schedulePhotoId;
+    $('v3PromiseImage').value=cfg.promisePhotoId;
     $('v3FarewellImageSelect').value=cfg.farewellPhotoId;
     renderList();
   }
@@ -129,7 +130,7 @@
     if(action==='down'&&i<cfg.blocks.length-1)[cfg.blocks[i+1],cfg.blocks[i]]=[cfg.blocks[i],cfg.blocks[i+1]];
     dirty();renderList();
   });
-  ['v3Hero0','v3Hero1','v3Hero2','v3ScheduleImage','v3FarewellImageSelect','v3Autoplay','v3PosterBlur','v3PosterShade','v3PosterForeground','v3PosterDesktopX','v3PosterDesktopY','v3PosterMobileX','v3PosterMobileY'].forEach(id=>{
+  ['v3Hero0','v3Hero1','v3Hero2','v3ScheduleImage','v3PromiseImage','v3FarewellImageSelect','v3Autoplay','v3PosterBlur','v3PosterShade','v3PosterForeground','v3PosterDesktopX','v3PosterDesktopY','v3PosterMobileX','v3PosterMobileY'].forEach(id=>{
     $(id)?.addEventListener('change',()=>{dirty();renderPosterPreview();});
     if(id.startsWith('v3Poster'))$(id)?.addEventListener('input',renderPosterPreview);
   });
@@ -150,13 +151,13 @@
     if(!loaded||busy)return;
     const heroIds=['v3Hero0','v3Hero1','v3Hero2'].map(id=>$(id).value).filter(Boolean);
     if(new Set(heroIds).size!==heroIds.length){status('Ba ảnh Hero cần khác nhau.','error');return;}
-    const ids=[...heroIds,$('v3ScheduleImage').value,$('v3FarewellImageSelect').value,...cfg.blocks.filter(b=>b.style!=='quote').map(b=>b.imageId)].filter(Boolean);
+    const ids=[...heroIds,$('v3ScheduleImage').value,$('v3PromiseImage').value,$('v3FarewellImageSelect').value,...cfg.blocks.filter(b=>b.style!=='quote').map(b=>b.imageId)].filter(Boolean);
     if(ids.some(id=>!published().some(i=>i.id===id))){status('Có ảnh chưa Publish hoặc đã bị xóa. Kiểm tra lại Album.','error');return;}
     cfg.heroIds=heroIds;cfg.heroAutoplay=true;
     cfg.posterBlur=Number($('v3PosterBlur').value);cfg.posterShade=Number($('v3PosterShade').value);
     cfg.posterForeground=false;
     ['DesktopX','DesktopY','MobileX','MobileY'].forEach(k=>{cfg['poster'+k]=clampFocus($('v3Poster'+k).value);});
-    cfg.schedulePhotoId=$('v3ScheduleImage').value;cfg.farewellPhotoId=$('v3FarewellImageSelect').value;
+    cfg.schedulePhotoId=$('v3ScheduleImage').value;cfg.promisePhotoId=$('v3PromiseImage').value;cfg.farewellPhotoId=$('v3FarewellImageSelect').value;
     busy=true;$('v3Publish').disabled=true;status('Đang lưu thiết kế...');
     try{
       const {error}=await db.from('site_content').upsert({key:'v3_design',value_vi:JSON.stringify(cfg),value_en:null,value_ja:null,updated_at:new Date().toISOString()},{onConflict:'key'});
