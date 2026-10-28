@@ -131,3 +131,10 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 - Responsive: desktop 52/48 image and text columns; tablet 46/54; mobile image above the copy. Photo uses a published Album image and a graceful monogram fallback on failure.
 - Admin → Thiết kế V3 offers a dedicated `promisePhotoId`; default picks a published non-hero photo without a schema change. The six Promise copy keys live in `site_content` and are editable under Admin → Nội dung, with dictionary fallbacks.
 - Adds localized event family tags, the December 2026 label, schedule photo caption and selection accessibility label; makes several Japanese RSVP labels more natural. Does not modify any event times, map destinations, RSVP or guest records.
+
+## Wedding Schedule V7: responsive event cards
+
+- Wedding events redesigned as two aligned editorial cards on wide desktops and landscape tablets (>=900px); portrait tablets and phones use accessible bride/groom tabs showing one card at a time.
+- Header now groups family, date and localized city, minimizing vertical space. Times are in a narrow column; ceremony name, official Vietnamese address and compact Google Maps button are in the wider column.
+- Japanese headings use a compact Mincho font at 18–23px on mobile instead of inheriting the much larger Latin display heading. Bride-side ceremony is simply `婚礼の儀` within the already-labeled bride card. Month/year, city, and family tags follow VI/EN/JA.
+- Schedule portrait adapts to wide / 16:9 tablet / compact 16:10 mobile, with safe wrapping and reduced-motion support. Event times, venue addresses, existing map URLs, personal invitation and RSVP are unchanged.

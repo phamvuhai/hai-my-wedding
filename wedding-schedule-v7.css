@@ -1,0 +1,292 @@
+/* Wedding Schedule V7 — compact editorial event cards.
+   Designed for Japanese as well as Vietnamese/English. Source times and maps unchanged. */
+.v3-events{
+  --schedule-wine:#714457;
+  --schedule-ink:#3e3034;
+  --schedule-muted:#877579;
+  --schedule-line:#eadfdc;
+  background:linear-gradient(160deg,#f9f3ee 0%,#f8f1eb 55%,#f5eee8 100%)!important;
+  padding:clamp(48px,6vw,92px) 0 clamp(58px,7vw,98px)!important;
+}
+.v3-events .container{
+  width:min(1240px,calc(100% - 64px))!important;max-width:1240px!important;
+}
+.v3-events .v3-section-heading{max-width:680px;margin:0 auto 26px!important}
+.v3-events .v3-section-heading h2{margin-bottom:10px!important}
+.v3-events .v3-section-heading p{line-height:1.8!important}
+.v3-events .v3-schedule-photo{
+  width:100%;max-width:1140px!important;
+  aspect-ratio:2.45/1!important;margin:0 auto 24px!important;
+  border-radius:20px!important;
+  box-shadow:0 18px 42px rgba(87,57,63,.10)!important;
+}
+.v3-events .v3-schedule-photo img{width:100%;height:100%;object-fit:cover}
+.v3-events .v3-schedule-intro{
+  margin:7px auto 24px!important;
+  font:italic 500 clamp(17px,2vw,24px)/1.4 "Cormorant Garamond",Georgia,serif!important;
+  gap:10px!important;max-width:100%;
+}
+.v3-events .v3-schedule-intro p{min-width:0;overflow-wrap:anywhere}
+.v3-events .v3-event-grid{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:clamp(14px,2.2vw,28px)!important;
+  align-items:stretch!important;
+}
+.v3-events .v3-event-divider{display:none!important}
+.v3-events .v3-event-panel{
+  min-width:0!important;min-height:0!important;
+  background:#fffdfb!important;
+  border:1px solid #e7d8d5!important;
+  border-top:4px solid #b78391!important;
+  border-radius:22px!important;
+  box-shadow:0 17px 48px rgba(94,63,70,.065)!important;
+  overflow:hidden!important;
+  display:flex!important;flex-direction:column!important;
+}
+.v3-events .v3-event-panel.groom-side{border-top-color:#9b9885!important}
+.v3-events .v3-day-head{
+  display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-areas:"eyebrow date" "title date" "city date" "badge date"!important;
+  align-content:center!important;align-items:center!important;
+  gap:3px 13px!important;
+  min-height:0!important;
+  padding:clamp(20px,2.5vw,30px)!important;
+  background:linear-gradient(135deg,#fdfaf7 0%,#f9eee9 100%)!important;
+  text-align:left!important;
+  border-bottom:1px solid var(--schedule-line)!important;
+}
+.v3-events .groom-side .v3-day-head{background:linear-gradient(135deg,#fdfbf8,#f3f1ea)!important}
+.v3-events .v3-day-head>p:first-child{
+  grid-area:eyebrow!important;min-width:0;
+  color:#ac7889!important;font:700 10px/1.4 system-ui,sans-serif!important;
+  letter-spacing:.10em!important;margin:0 0 5px!important;
+}
+.v3-events .v3-day-head h3{
+  grid-area:title!important;min-width:0;
+  font:italic 500 clamp(28px,2.65vw,40px)/1.15 "Cormorant Garamond",Georgia,serif!important;
+  letter-spacing:0!important;color:#713f53!important;margin:0!important;
+  overflow-wrap:anywhere!important;
+}
+.v3-events .v3-day-head .v3-city{
+  grid-area:city!important;min-width:0;display:flex;align-items:center;gap:7px;
+  text-align:left!important;
+  font:500 12px/1.6 system-ui,sans-serif!important;
+  color:#927c7a!important;margin:8px 0 0!important;overflow-wrap:anywhere;
+}
+.v3-events .v3-day-head .v3-city::before{
+  content:"⌖";font-size:19px;line-height:1;color:#a77c83;flex:none;
+}
+.v3-events .v3-day-head .event-invite-badge:not([hidden]){
+  grid-area:badge!important;justify-self:start;margin:6px 0 0!important;
+}
+.v3-events .v3-date{
+  grid-area:date!important;display:flex!important;flex-wrap:nowrap!important;
+  justify-content:flex-end!important;align-items:center!important;gap:9px!important;
+  padding:10px 12px!important;min-width:0;white-space:nowrap;
+  background:rgba(255,255,255,.7)!important;
+  border:1px solid #eadad5!important;border-radius:14px!important;
+}
+.v3-events .v3-date>strong{
+  font:600 clamp(44px,4vw,60px)/1 "Cormorant Garamond",Georgia,serif!important;
+  color:#784657!important;
+}
+.v3-events .v3-date span{
+  display:flex!important;flex-direction:column!important;min-width:0;
+  color:#8d7779!important;text-align:left!important;
+  letter-spacing:0!important;
+}
+.v3-events .v3-date span b{
+  display:block!important;
+  font:700 10px/1.45 system-ui,sans-serif!important;
+  white-space:nowrap;letter-spacing:0!important;
+}
+.v3-events .v3-date span small{
+  display:block!important;font:500 12px/1.4 system-ui,sans-serif!important;
+  margin:4px 0 0!important;letter-spacing:0!important;
+}
+.v3-events .v3-day-items{
+  display:flex!important;flex-direction:column!important;
+  padding:6px clamp(17px,2.4vw,30px) 12px!important;
+  flex:1;
+}
+.v3-events .v3-event-item{
+  display:grid!important;grid-template-columns:80px minmax(0,1fr)!important;
+  column-gap:clamp(11px,1.5vw,22px)!important;
+  align-items:start!important;
+  padding:clamp(17px,2vw,25px) 0!important;
+  min-width:0!important;
+  border-bottom:1px solid var(--schedule-line)!important;
+}
+.v3-events .v3-event-item:last-child{border-bottom:0!important}
+.v3-events .v3-event-time{
+  width:auto!important;min-width:0!important;flex-basis:auto!important;
+  padding-top:2px!important;gap:6px!important;
+  display:flex!important;flex-direction:column!important;
+}
+.v3-events .v3-event-time strong{
+  font:700 clamp(23px,2.2vw,29px)/1.05 "Cormorant Garamond",Georgia,serif!important;
+  color:#7e465b!important;white-space:nowrap!important;
+}
+.v3-events .v3-event-time small{
+  font:700 10px/1.45 system-ui,sans-serif!important;
+  letter-spacing:.03em!important;color:#a18488!important;overflow-wrap:anywhere;
+}
+.v3-events .v3-event-detail{min-width:0!important}
+.v3-events .v3-event-detail h4{
+  font:600 clamp(22px,2.2vw,27px)/1.27 "Cormorant Garamond",Georgia,serif!important;
+  color:var(--schedule-ink)!important;
+  letter-spacing:0!important;margin:0 0 9px!important;
+  overflow-wrap:anywhere!important;word-break:normal!important;
+}
+.v3-events .v3-event-detail p{
+  margin:0 0 13px!important;
+  font:400 13.5px/1.7 system-ui,sans-serif!important;
+  color:#766c6a!important;overflow-wrap:anywhere!important;
+  word-break:normal!important;
+}
+.v3-events .v3-event-map{
+  display:inline-flex!important;align-items:center!important;
+  justify-content:center!important;gap:12px!important;
+  width:max-content!important;max-width:100%!important;min-width:0!important;
+  min-height:45px!important;padding:10px 18px!important;
+  border:1px solid #d9b9c2!important;border-radius:999px!important;
+  background:#7e465a!important;color:#fff!important;
+  box-shadow:0 5px 15px rgba(113,65,83,.12)!important;
+  font:700 13px/1.3 system-ui,sans-serif!important;
+  text-align:center!important;text-decoration:none!important;
+}
+.v3-events .v3-event-map:hover,.v3-events .v3-event-map:focus-visible{
+  background:#633748!important;outline:2px solid #aa8a98;outline-offset:3px!important;
+}
+.v3-events .v3-event-map .v4-map-arrow{font-size:16px}
+.v3-events .v3-arrival-note{
+  display:flex!important;align-items:flex-start!important;justify-content:center;
+  gap:10px!important;max-width:750px!important;
+  width:fit-content;min-width:0!important;
+  margin:24px auto 0!important;padding:13px 20px!important;
+  background:rgba(255,253,250,.75)!important;border:1px solid #ecdcd8!important;
+  border-radius:15px!important;color:#786b6b!important;
+  font:400 13px/1.65 system-ui,sans-serif!important;
+  text-align:left!important;
+}
+.v3-events .v3-arrival-note>span:first-child{flex:none;color:#8d5467;font-size:18px;line-height:1.2}
+.v3-events .v3-event-switch{display:none!important}
+/* For CJK, keep a Japanese-specific Mincho fallback at a compact, measured size. */
+html[lang="ja"] .v3-events .v3-day-head h3{
+  font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif!important;
+  font-size:clamp(24px,2.4vw,30px)!important;line-height:1.35!important;
+  font-style:normal!important;font-weight:600!important;
+}
+html[lang="ja"] .v3-events .v3-event-detail h4{
+  font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif!important;
+  font-size:clamp(19px,1.8vw,23px)!important;line-height:1.5!important;
+  font-style:normal!important;font-weight:600!important;
+}
+/* Tablet portrait: one spacious family card selected by tabs.
+   Tablet landscape and desktop: both family cards appear side-by-side. */
+@media(max-width:899px){
+  .v3-events{padding:48px 0 62px!important}
+  .v3-events .container{width:min(740px,calc(100% - 38px))!important}
+  .v3-events .v3-section-heading{margin-bottom:21px!important}
+  .v3-events .v3-schedule-photo{
+    max-width:100%!important;aspect-ratio:16/9!important;
+    margin-bottom:20px!important;border-radius:18px!important;
+  }
+  .v3-events .v3-event-switch{
+    display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;margin:0 auto 16px!important;
+  }
+  .v3-events .v3-event-switch button{
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    gap:8px!important;
+    min-width:0!important;min-height:52px!important;padding:9px 12px!important;
+    border-radius:13px!important;border:1px solid #e6d6d2!important;
+    background:rgba(255,253,250,.9)!important;color:#73505d!important;
+    box-shadow:none!important;white-space:nowrap!important;
+    font:700 15px/1.35 system-ui,sans-serif!important;
+    transition:background .25s ease,color .25s ease,box-shadow .25s ease;
+  }
+  .v3-events .v3-event-switch button small{
+    font:500 12px/1.25 system-ui,sans-serif!important;margin:0!important;
+    color:inherit!important;opacity:.7!important;
+  }
+  .v3-events .v3-event-switch button.is-active{
+    background:#774457!important;border-color:#774457!important;color:#fff!important;
+    box-shadow:0 7px 17px rgba(109,59,78,.14)!important;
+  }
+  .v3-events .v3-event-switch button:focus-visible{outline:2px solid #a57788!important;outline-offset:3px}
+  .v3-events .v3-event-grid{display:block!important}
+  .v3-events .v3-event-panel{display:none!important}
+  .v3-events .v3-event-panel.is-active{display:flex!important}
+  .v3-events .v3-day-head{padding:23px 24px!important}
+  .v3-events .v3-date>strong{font-size:56px!important}
+  .v3-events .v3-day-items{padding:4px 24px 13px!important}
+  .v3-events .v3-event-item{grid-template-columns:88px minmax(0,1fr)!important}
+}
+@media(max-width:540px){
+  .v3-events{padding:38px 0 54px!important}
+  .v3-events .container{width:calc(100% - 26px)!important;max-width:470px!important}
+  .v3-events .v3-section-heading{margin-bottom:17px!important}
+  .v3-events .v3-section-heading h2{font-size:clamp(34px,10vw,50px)!important}
+  .v3-events .v3-section-heading p{font-size:13.5px!important}
+  .v3-events .v3-schedule-photo{
+    aspect-ratio:16/10!important;max-height:255px!important;
+    border-radius:13px!important;margin-bottom:17px!important;
+  }
+  .v3-events .v3-schedule-photo figcaption{left:14px;bottom:12px}
+  .v3-events .v3-schedule-photo figcaption strong{font-size:19px!important}
+  .v3-events .v3-schedule-intro{
+    margin:4px auto 18px!important;
+    font-size:18px!important;gap:8px!important;
+  }
+  .v3-events .v3-event-switch{gap:8px!important;margin-bottom:14px!important}
+  .v3-events .v3-event-switch button{
+    min-height:49px!important;padding:8px 8px!important;
+    gap:6px!important;font-size:14px!important;border-radius:12px!important;
+  }
+  .v3-events .v3-event-switch button small{font-size:11px!important}
+  .v3-events .v3-event-panel{border-radius:16px!important}
+  .v3-events .v3-day-head{
+    padding:17px 15px!important;
+    column-gap:8px!important;row-gap:2px!important;
+  }
+  .v3-events .v3-day-head>p:first-child{font-size:9px!important;letter-spacing:.05em!important;margin-bottom:3px!important}
+  .v3-events .v3-day-head h3{font-size:30px!important;line-height:1.14!important}
+  .v3-events .v3-date{
+    padding:8px!important;gap:6px!important;border-radius:11px!important;
+  }
+  .v3-events .v3-date>strong{font-size:45px!important}
+  .v3-events .v3-date span b{font-size:9px!important}
+  .v3-events .v3-date span small{font-size:11px!important;margin-top:3px!important}
+  .v3-events .v3-day-head .v3-city{font-size:11.5px!important;margin-top:6px!important}
+  .v3-events .v3-day-items{padding:2px 15px 8px!important}
+  .v3-events .v3-event-item{
+    grid-template-columns:72px minmax(0,1fr)!important;
+    column-gap:11px!important;padding:19px 0!important;
+  }
+  .v3-events .v3-event-time strong{font-size:24px!important}
+  .v3-events .v3-event-time small{font-size:9.5px!important}
+  .v3-events .v3-event-detail h4{font-size:24px!important;line-height:1.24!important;margin-bottom:8px!important}
+  .v3-events .v3-event-detail p{font-size:12.5px!important;line-height:1.7!important;margin-bottom:12px!important}
+  .v3-events .v3-event-map{min-height:44px!important;padding:10px 16px!important;font-size:12px!important}
+  .v3-events .v3-arrival-note{max-width:100%!important;padding:13px 14px!important;font-size:12px!important;margin-top:17px!important}
+  html[lang="ja"] .v3-events .v3-day-head h3{font-size:24px!important;line-height:1.3!important}
+  html[lang="ja"] .v3-events .v3-event-detail h4{font-size:20px!important;line-height:1.45!important}
+  html[lang="ja"] .v3-events .v3-event-time small{font-size:10px!important}
+}
+@media(max-width:350px){
+  .v3-events .container{width:calc(100% - 18px)!important}
+  .v3-events .v3-day-head{padding:14px 11px!important}
+  .v3-events .v3-date>strong{font-size:39px!important}
+  .v3-events .v3-date span b{font-size:8px!important}
+  .v3-events .v3-day-head h3{font-size:26px!important}
+  .v3-events .v3-day-items{padding:2px 11px 8px!important}
+  .v3-events .v3-event-item{grid-template-columns:65px minmax(0,1fr)!important;gap:9px!important}
+  .v3-events .v3-event-detail h4{font-size:21px!important}
+  html[lang="ja"] .v3-events .v3-event-detail h4{font-size:18px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .v3-events .v3-event-map,.v3-events .v3-event-map:before,
+  .v3-events .v3-event-map .v4-map-arrow{animation:none!important;transition:none!important}
+  .v3-events .v3-event-switch button{transition:none!important}
+}
