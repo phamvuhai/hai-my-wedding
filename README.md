@@ -84,3 +84,10 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 - Photo storytelling: multilingual Split / Letter / Filmstrip / Quote blocks across five existing invitation interludes, with an optional farewell image.
 - Admin → **Thiết kế V3**: edit Hero choices, autoplay, schedule / farewell photos and ordered multilingual story blocks; one Publish stores JSON in existing `site_content` key `v3_design`. No schema migration or guest/RSVP changes.
 - Gallery images must already be published in Album. Missing or unpublished photos never render publicly. Legacy Collage V2 configuration remains stored and unchanged but V3 rendering supersedes it.
+
+### Cinematic Wedding Poster (V3.1)
+
+- Hero uses the same 1–3 published wedding photos in two perfectly synchronized layers: a blurred, burgundy-tinted full-bleed backdrop behind legible names, and an optional sharp portrait in front.
+- Desktop: left-aligned type with right portrait; phones: centered type, portrait and an accessible schedule button. Focus crop is independently editable for desktop and mobile.
+- Admin → Thiết kế V3 now includes blur (8/14/20px), backdrop tint (40/55/70%), sharp-photo toggle, desktop/mobile focus sliders and live previews. Existing v3_design JSON values are backwards-compatible.
+- Reduced-motion users and hidden tabs never auto-cycle; slideshow pauses while the invitation cover is locked. RSVP, personalized guests and event mappings are not modified.

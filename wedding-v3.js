@@ -87,55 +87,128 @@
     window.WeddingEvents.highlightInvitedDays=(days=[])=>{old(days);if(days.length===1)setDay(days[0]);};
   }
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const posterNumber=(v,defaultValue,min=0,max=100)=>{
+    const n=Number(v);return Number.isFinite(n)?Math.min(max,Math.max(min,n)):defaultValue;
+  };
   function stop(){clearInterval(state.heroTimer);state.heroTimer=0;}
+  function posterSettings(hero){
+    const data=state.config||{};
+    const blur=[8,14,20].includes(Number(data.posterBlur))?Number(data.posterBlur):14;
+    const shade=[40,55,70].includes(Number(data.posterShade))?Number(data.posterShade):55;
+    const desktopX=posterNumber(data.posterDesktopX,50),desktopY=posterNumber(data.posterDesktopY,50);
+    const mobileX=posterNumber(data.posterMobileX,50),mobileY=posterNumber(data.posterMobileY,50);
+    hero.style.setProperty('--poster-blur',blur+'px');
+    hero.style.setProperty('--poster-shade',(shade/100).toFixed(2));
+    hero.style.setProperty('--poster-focus-desktop',desktopX+'% '+desktopY+'%');
+    hero.style.setProperty('--poster-focus-mobile',mobileX+'% '+mobileY+'%');
+    hero.classList.toggle('poster-no-portrait',data.posterForeground===false);
+  }
   function show(index){
-    const slides=[...document.querySelectorAll('.v3-slide')];if(!slides.length)return;
+    const hero=document.getElementById('home');
+    const slides=[...(hero?.querySelectorAll('.hero-feature-photo .v3-slide')||[])];
+    const backgrounds=[...(hero?.querySelectorAll('.hero-full-photo .v3-backdrop-slide')||[])];
+    if(!slides.length)return;
     state.heroIndex=(index+slides.length)%slides.length;
-    slides.forEach((s,i)=>s.classList.toggle('is-current',i===state.heroIndex));
-    document.querySelectorAll('.v3-hero-dot').forEach((b,i)=>{const active=i===state.heroIndex;b.classList.toggle('is-active',active);b.setAttribute('aria-pressed',String(active));});
+    slides.forEach((el,i)=>{
+      const active=i===state.heroIndex;
+      el.classList.toggle('is-current',active);
+      el.setAttribute('aria-hidden',String(!active));
+    });
+    backgrounds.forEach((el,i)=>el.classList.toggle('is-current',i===state.heroIndex));
+    document.querySelectorAll('.v3-hero-dot').forEach((el,i)=>{
+      const active=i===state.heroIndex;
+      el.classList.toggle('is-active',active);
+      el.setAttribute('aria-pressed',String(active));
+    });
   }
   function tick(){
     stop();
-    if(state.heroUrls.length>1&&state.config?.heroAutoplay!==false&&!state.heroPaused&&!reduced.matches&&!document.hidden){
+    const autoAllowed=state.config?.heroAutoplay!==false&&!state.heroPaused&&!reduced.matches&&!document.hidden&&!document.body.classList.contains('invitation-locked');
+    if(state.heroUrls.length>1&&autoAllowed){
       state.heroTimer=setInterval(()=>show(state.heroIndex+1),7000);
     }
     const pause=document.getElementById('v3HeroPause');
-    if(pause){const playing=!!state.heroTimer;pause.textContent=playing?'Ⅱ':'▶';pause.setAttribute('aria-label',copy[language()][playing?'pause':'play']);pause.setAttribute('aria-pressed',String(!playing));}
+    if(pause){
+      pause.hidden=reduced.matches||state.config?.heroAutoplay===false;
+      const playing=Boolean(state.heroTimer);
+      pause.textContent=playing?'Ⅱ':'▶';
+      pause.setAttribute('aria-label',copy[language()][playing?'pause':'play']);
+      pause.setAttribute('aria-pressed',String(!playing));
+    }
   }
   function createSlides(){
     if(!state.heroReady||!state.photos.length)return;
-    const hero=document.getElementById('home'),frame=hero?.querySelector('.hero-feature-photo'),original=document.getElementById('heroImage');
-    if(!hero||!frame||!original)return;
+    const hero=document.getElementById('home');
+    const frame=hero?.querySelector('.hero-feature-photo');
+    const background=hero?.querySelector('.hero-full-photo');
+    const original=document.getElementById('heroImage');
+    const backOriginal=document.getElementById('heroFullImage');
+    if(!hero||!frame||!background||!original||!backOriginal)return;
     let selected=(Array.isArray(state.config?.heroIds)?state.config.heroIds:[]).map(choose).filter(Boolean);
     if(!selected.length){
       selected=[state.photos.find(i=>i.is_hero),...state.photos.filter(i=>i.show_on_homepage)].filter(Boolean);
     }
+    if(!selected.length)selected=state.photos.slice(0,3);
     selected=[...new Map(selected.map(i=>[i.id,i])).values()].slice(0,3);
     if(!selected.length)return;
-    // Use the existing first Hero <img> to preserve the opening handoff / image-ready contract.
-    stop();state.heroPaused=false;state.heroIndex=0;
-    frame.querySelectorAll('.v3-slide:not(#heroImage)').forEach(e=>e.remove());
+    // Two synchronized layers. Blur is applied ONLY to background images, never their shared parent.
+    const previousId=state.heroUrls[state.heroIndex];
+    const unchanged=selected.map(i=>i.id).join('|')===state.heroUrls.join('|') &&
+      frame.querySelectorAll('.v3-slide').length===selected.length &&
+      background.querySelectorAll('.v3-backdrop-slide').length===selected.length;
+    stop();
     hero.classList.remove('hero-layout-full','hero-layout-split','hero-layout-minimal');
-    hero.classList.add('hero-layout-framed','hero-v3');
-    original.classList.add('v3-slide','is-current');
-    original.src=url(selected[0]);original.alt=alt(selected[0]);
-    const focus=i=>(Math.max(0,Math.min(100,Number(i.focus_x??50)))+'% '+Math.max(0,Math.min(100,Number(i.focus_y??50)))+'%');
-    original.style.objectPosition=focus(selected[0]);
-    for(let n=1;n<selected.length;n++){
-      const im=document.createElement('img');im.className='v3-slide';im.loading='lazy';im.decoding='async';im.src=url(selected[n]);im.alt=alt(selected[n]);im.style.objectPosition=focus(selected[n]);frame.appendChild(im);
+    hero.classList.add('hero-layout-framed','hero-v3','hero-poster');
+    posterSettings(hero);
+    if(unchanged){
+      const l=language();
+      frame.querySelectorAll('.v3-slide').forEach((el,i)=>el.alt=alt(selected[i]));
+      document.querySelectorAll('.v3-hero-dot').forEach((button,i)=>button.setAttribute('aria-label',copy[l].photo+' '+(i+1)));
+      show(Math.max(0,selected.findIndex(i=>i.id===previousId)));
+      tick();return;
     }
+    state.heroPaused=false;state.heroIndex=0;
+    frame.querySelectorAll('.v3-slide:not(#heroImage)').forEach(el=>el.remove());
+    background.querySelectorAll('.v3-backdrop-slide:not(#heroFullImage)').forEach(el=>el.remove());
+    const make=(img,index)=>{
+      const source=url(img);
+      const foreground=index===0?original:document.createElement('img');
+      const backdrop=index===0?backOriginal:document.createElement('img');
+      foreground.className='v3-slide'+(index===0?' is-current':'');
+      foreground.src=source;foreground.alt=alt(img);
+      foreground.decoding='async';
+      foreground.loading=index===0?'eager':'lazy';
+      foreground.setAttribute('aria-hidden',String(index!==0));
+      backdrop.className='v3-backdrop-slide'+(index===0?' is-current':'');
+      backdrop.src=source;backdrop.alt='';backdrop.setAttribute('aria-hidden','true');
+      backdrop.decoding='async';backdrop.loading=index===0?'eager':'lazy';
+      const desktop=hero.style.getPropertyValue('--poster-focus-desktop')||'50% 50%';
+      foreground.style.objectPosition=desktop;
+      backdrop.style.objectPosition=desktop;
+      if(index>0){frame.appendChild(foreground);background.appendChild(backdrop);}
+    };
+    selected.forEach(make);
     state.heroUrls=selected.map(i=>i.id);
     let controls=document.getElementById('v3HeroControls');
-    if(!controls){controls=document.createElement('div');controls.id='v3HeroControls';controls.className='v3-hero-controls';hero.querySelector('.hero-content')?.appendChild(controls);}
+    if(!controls){
+      controls=document.createElement('div');controls.id='v3HeroControls';controls.className='v3-hero-controls';
+      hero.querySelector('.hero-content')?.appendChild(controls);
+    }
     controls.innerHTML='';
     if(selected.length>1){
       const dots=document.createElement('div');dots.className='v3-hero-dots';
-      selected.forEach((_,i)=>{const b=document.createElement('button');b.type='button';b.className='v3-hero-dot';b.textContent=String(i+1).padStart(2,'0');b.setAttribute('aria-label',copy[language()].photo+' '+(i+1));b.onclick=()=>{show(i);tick();};dots.appendChild(b);});
+      selected.forEach((_,i)=>{
+        const b=document.createElement('button');b.type='button';
+        b.className='v3-hero-dot';b.textContent=String(i+1).padStart(2,'0');
+        b.setAttribute('aria-label',copy[language()].photo+' '+(i+1));
+        b.onclick=()=>{show(i);tick();};
+        dots.appendChild(b);
+      });
       controls.appendChild(dots);
-      const pause=document.createElement('button');pause.type='button';pause.id='v3HeroPause';pause.className='v3-hero-pause';pause.onclick=()=>{
-        if(state.heroTimer){state.heroPaused=true;}else{state.heroPaused=false;}
-        tick();
-      };controls.appendChild(pause);
+      const pause=document.createElement('button');pause.type='button';
+      pause.id='v3HeroPause';pause.className='v3-hero-pause';
+      pause.onclick=()=>{state.heroPaused=!state.heroPaused;tick();};
+      controls.appendChild(pause);
     }
     show(0);tick();
   }
@@ -155,7 +228,8 @@
     }catch(error){console.error('Wedding V3 loading error',error);}
   }
   document.addEventListener('wedding:hero-ready',()=>{state.heroReady=true;if(initialLoaded)createSlides();});
-  document.addEventListener('wedding:language',()=>{renderStories();renderSchedule();if(initialLoaded)setTimeout(createSlides,0);});
+  document.addEventListener('wedding:language',()=>{renderStories();renderSchedule();});
+  document.addEventListener('wedding:invitation-opened',tick);
   document.addEventListener('visibilitychange',tick);
   reduced.addEventListener?.('change',tick);
   if(window.WeddingHeroReady)state.heroReady=true;

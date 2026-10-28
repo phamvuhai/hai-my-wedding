@@ -5,7 +5,7 @@
   const $=id=>document.getElementById(id);
   const slots=[['story','Sau Our Story'],['promise','Sau Countdown'],['events','Sau lịch cưới'],['moments','Sau Album'],['rsvp','Sau RSVP']];
   const styles=['split','letter','film','quote'];
-  const blank={version:3,heroIds:[],heroAutoplay:true,schedulePhotoId:'',farewellPhotoId:'',blocks:[]};
+  const blank={version:3,heroIds:[],heroAutoplay:true,schedulePhotoId:'',farewellPhotoId:'',blocks:[],posterBlur:14,posterShade:55,posterForeground:true,posterDesktopX:50,posterDesktopY:50,posterMobileX:50,posterMobileY:50};
   let cfg={...blank},loaded=false,changed=false,busy=false,editing=-1;
   const published=()=>A.images.filter(i=>i.is_published&&i.image_path);
   const uuid=()=>window.crypto?.randomUUID?.()||String(Date.now())+Math.random().toString(36).slice(2);
@@ -14,17 +14,24 @@
   function defaults(){
     const p=published().slice().sort((a,b)=>Number(b.is_hero)-Number(a.is_hero)||Number(b.is_featured)-Number(a.is_featured)||Number(a.sort_order||0)-Number(b.sort_order||0));
     const block=(slot,style,id,vi,en,ja)=>({id:uuid(),slot,style,imageId:id||'',visible:true,text:{vi,en,ja}});
-    return {version:3,heroIds:p.slice(0,3).map(i=>i.id),heroAutoplay:true,schedulePhotoId:p[0]?.id||'',farewellPhotoId:p[3]?.id||p[1]?.id||'',blocks:[
+    return {version:3,heroIds:p.slice(0,3).map(i=>i.id),heroAutoplay:true,posterBlur:14,posterShade:55,posterForeground:true,posterDesktopX:50,posterDesktopY:50,posterMobileX:50,posterMobileY:50,schedulePhotoId:p[0]?.id||'',farewellPhotoId:p[3]?.id||p[1]?.id||'',blocks:[
       block('story','split',p[0]?.id,'Từ cuộc gặp gỡ đầu tiên, chúng mình đã chọn cùng nhau đi tiếp.','From our very first hello to a lifetime of togetherness.','出会いから今日まで、ふたりで歩んできました。'),
       block('promise','letter',p[1]?.id||p[0]?.id,'Từ hôm nay, mỗi chặng đường đều có chúng mình.','From this day forward, every road is ours to share.','これからも、ずっと一緒に。'),
       block('moments','film',p[2]?.id||p[0]?.id,'Những khoảnh khắc nhỏ tạo nên một tình yêu thật lớn.','A thousand little moments, one beautiful love story.','小さな幸せが、かけがえのない思い出に。'),
       block('rsvp','quote','', 'Cảm ơn bạn đã là một phần trong câu chuyện của Hải & Mỹ.','Thank you for being part of our story.','私たちの物語に寄り添っていただき、ありがとうございます。')
     ]};
   }
+  function clampFocus(value){const n=Number(value);return Number.isFinite(n)?Math.max(0,Math.min(100,n)):50;}
   function normalize(raw){
     if(!raw||typeof raw!=='object')return defaults();
     return {version:3,heroIds:Array.isArray(raw.heroIds)?raw.heroIds.filter(v=>typeof v==='string').slice(0,3):[],
-      heroAutoplay:raw.heroAutoplay!==false,schedulePhotoId:String(raw.schedulePhotoId||''),farewellPhotoId:String(raw.farewellPhotoId||''),
+      heroAutoplay:raw.heroAutoplay!==false,
+      posterBlur:[8,14,20].includes(Number(raw.posterBlur))?Number(raw.posterBlur):14,
+      posterShade:[40,55,70].includes(Number(raw.posterShade))?Number(raw.posterShade):55,
+      posterForeground:raw.posterForeground!==false,
+      posterDesktopX:clampFocus(raw.posterDesktopX),posterDesktopY:clampFocus(raw.posterDesktopY),
+      posterMobileX:clampFocus(raw.posterMobileX),posterMobileY:clampFocus(raw.posterMobileY),
+      schedulePhotoId:String(raw.schedulePhotoId||''),farewellPhotoId:String(raw.farewellPhotoId||''),
       blocks:Array.isArray(raw.blocks)?raw.blocks.slice(0,25).filter(b=>b&&slots.some(x=>x[0]===b.slot)&&styles.includes(b.style)).map(b=>({
         id:String(b.id||uuid()),slot:b.slot,style:b.style,imageId:String(b.imageId||''),visible:b.visible!==false,
         text:{vi:String(b.text?.vi||'').slice(0,420),en:String(b.text?.en||'').slice(0,420),ja:String(b.text?.ja||'').slice(0,420)}
@@ -38,9 +45,36 @@
     cfg.heroIds.slice(0,3).forEach((id,i)=>{$('v3Hero'+i).value=id;});
     for(let i=cfg.heroIds.length;i<3;i++)$('v3Hero'+i).value='';
     $('v3Autoplay').checked=cfg.heroAutoplay;
+    $('v3PosterBlur').value=cfg.posterBlur;
+    $('v3PosterShade').value=cfg.posterShade;
+    $('v3PosterForeground').checked=cfg.posterForeground!==false;
+    ['DesktopX','DesktopY','MobileX','MobileY'].forEach(k=>{$('v3Poster'+k).value=cfg['poster'+k];});
+    renderPosterPreview();
     $('v3ScheduleImage').value=cfg.schedulePhotoId;
     $('v3FarewellImageSelect').value=cfg.farewellPhotoId;
     renderList();
+  }
+  function renderPosterPreview(){
+    const photo=published().find(i=>i.id===$('v3Hero0').value)||published().find(i=>i.is_hero)||published()[0];
+    const desktopX=clampFocus($('v3PosterDesktopX').value),desktopY=clampFocus($('v3PosterDesktopY').value);
+    const mobileX=clampFocus($('v3PosterMobileX').value),mobileY=clampFocus($('v3PosterMobileY').value);
+    const blur=[8,14,20].includes(Number($('v3PosterBlur').value))?Number($('v3PosterBlur').value):14;
+    const shade=[40,55,70].includes(Number($('v3PosterShade').value))?Number($('v3PosterShade').value):55;
+    const showPhoto=$('v3PosterForeground').checked;
+    ['DesktopX','DesktopY','MobileX','MobileY'].forEach(k=>{
+      const out=$('v3'+k+'Value');if(out)out.textContent=$('v3Poster'+k).value+'%';
+    });
+    for(const [id,x,y] of [['v3PosterPreviewDesktop',desktopX,desktopY],['v3PosterPreviewMobile',mobileX,mobileY]]){
+      const root=$(id);if(!root)continue;
+      root.style.setProperty('--preview-blur',blur+'px');
+      root.style.setProperty('--preview-shade',(shade/100).toFixed(2));
+      root.style.setProperty('--preview-focus',x+'% '+y+'%');
+      root.classList.toggle('v3-preview-no-photo',!showPhoto);
+      const src=photo?A.publicUrl(photo.image_path)+(photo.updated_at?'?v='+encodeURIComponent(photo.updated_at):''):'';
+      root.querySelectorAll('img').forEach(el=>{
+        if(src){el.src=src;el.hidden=false;}else{el.removeAttribute('src');el.hidden=true;}
+      });
+    }
   }
   function renderList(){
     const el=$('v3BlockList');
@@ -84,8 +118,9 @@
     if(action==='down'&&i<cfg.blocks.length-1)[cfg.blocks[i+1],cfg.blocks[i]]=[cfg.blocks[i],cfg.blocks[i+1]];
     dirty();renderList();
   });
-  ['v3Hero0','v3Hero1','v3Hero2','v3ScheduleImage','v3FarewellImageSelect','v3Autoplay'].forEach(id=>{
-    $(id)?.addEventListener('change',dirty);
+  ['v3Hero0','v3Hero1','v3Hero2','v3ScheduleImage','v3FarewellImageSelect','v3Autoplay','v3PosterBlur','v3PosterShade','v3PosterForeground','v3PosterDesktopX','v3PosterDesktopY','v3PosterMobileX','v3PosterMobileY'].forEach(id=>{
+    $(id)?.addEventListener('change',()=>{dirty();renderPosterPreview();});
+    if(id.startsWith('v3Poster'))$(id)?.addEventListener('input',renderPosterPreview);
   });
   async function load(){
     if(loaded||busy)return;
@@ -107,6 +142,9 @@
     const ids=[...heroIds,$('v3ScheduleImage').value,$('v3FarewellImageSelect').value,...cfg.blocks.filter(b=>b.style!=='quote').map(b=>b.imageId)].filter(Boolean);
     if(ids.some(id=>!published().some(i=>i.id===id))){status('Có ảnh chưa Publish hoặc đã bị xóa. Kiểm tra lại Album.','error');return;}
     cfg.heroIds=heroIds;cfg.heroAutoplay=$('v3Autoplay').checked;
+    cfg.posterBlur=Number($('v3PosterBlur').value);cfg.posterShade=Number($('v3PosterShade').value);
+    cfg.posterForeground=$('v3PosterForeground').checked;
+    ['DesktopX','DesktopY','MobileX','MobileY'].forEach(k=>{cfg['poster'+k]=clampFocus($('v3Poster'+k).value);});
     cfg.schedulePhotoId=$('v3ScheduleImage').value;cfg.farewellPhotoId=$('v3FarewellImageSelect').value;
     busy=true;$('v3Publish').disabled=true;status('Đang lưu thiết kế...');
     try{

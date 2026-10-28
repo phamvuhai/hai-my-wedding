@@ -333,6 +333,37 @@
                 <label>Hero · Ảnh 2<select id="v3Hero1"></select></label>
                 <label>Hero · Ảnh 3<select id="v3Hero2"></select></label>
                 <label class="v3-admin-check"><input type="checkbox" id="v3Autoplay" checked> Tự chuyển ảnh chậm (7 giây/ảnh)</label>
+                <div class="v3-poster-options">
+                  <h4>Poster · Ảnh mờ phía sau chữ</h4>
+                  <label>Độ mờ nền
+                    <select id="v3PosterBlur"><option value="8">Nhẹ · 8px</option><option value="14" selected>Vừa · 14px</option><option value="20">Đậm · 20px</option></select>
+                  </label>
+                  <label>Độ tối phía sau chữ
+                    <select id="v3PosterShade"><option value="40">Sáng · 40%</option><option value="55" selected>Cân bằng · 55%</option><option value="70">Đậm · 70%</option></select>
+                  </label>
+                  <label class="v3-admin-check"><input type="checkbox" id="v3PosterForeground" checked> Hiện ảnh đôi rõ nét phía trước</label>
+                  <div class="v3-poster-focus">
+                    <label>Desktop · Ngang <output id="v3DesktopXValue">50%</output><input id="v3PosterDesktopX" type="range" min="0" max="100" value="50"></label>
+                    <label>Desktop · Dọc <output id="v3DesktopYValue">50%</output><input id="v3PosterDesktopY" type="range" min="0" max="100" value="50"></label>
+                    <label>Mobile · Ngang <output id="v3MobileXValue">50%</output><input id="v3PosterMobileX" type="range" min="0" max="100" value="50"></label>
+                    <label>Mobile · Dọc <output id="v3MobileYValue">50%</output><input id="v3PosterMobileY" type="range" min="0" max="100" value="50"></label>
+                  </div>
+                  <p class="muted">Chỉnh vùng hiển thị để khuôn mặt không bị cắt trên điện thoại.</p>
+                  <div class="v3-poster-previews">
+                    <div class="v3-poster-preview v3-poster-preview-desktop" id="v3PosterPreviewDesktop" aria-label="Desktop preview">
+                      <img class="v3-preview-bg" alt="">
+                      <div class="v3-preview-tint"></div>
+                      <div class="v3-preview-copy"><small>THE WEDDING OF</small><strong>Hải & Mỹ</strong><span>18 — 20 · 12 · 2026</span></div>
+                      <img class="v3-preview-front" alt="">
+                    </div>
+                    <div class="v3-poster-preview v3-poster-preview-mobile" id="v3PosterPreviewMobile" aria-label="Mobile preview">
+                      <img class="v3-preview-bg" alt="">
+                      <div class="v3-preview-tint"></div>
+                      <div class="v3-preview-copy"><small>THE WEDDING OF</small><strong>Hải & Mỹ</strong><span>18 — 20 · 12 · 2026</span></div>
+                      <img class="v3-preview-front" alt="">
+                    </div>
+                  </div>
+                </div>
               </section>
               <section class="v3-admin-part">
                 <h3>02 · Ảnh lịch cưới và kết thúc</h3>
