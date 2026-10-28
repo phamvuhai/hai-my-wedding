@@ -118,3 +118,9 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 - Each active full-screen Hero layer uses exactly one published photo, repeated in up to four cropped desktop columns. Previously the four columns could show different photos simultaneously. The entire strip crossfades to the next photograph at the existing seven-second interval.
 - Tablet still shows 2–3 copies of that same photo; mobile displays one full-height photo. Text, invitation link, language handling, reduced-motion preference and guest RSVP remain unchanged.
+
+### V6 Hero: complete center photograph, repeating sides
+
+- All images in one active Hero slide use the **same** published photograph. On desktop the center column takes just over half the width and uses `object-fit: contain` to show the full photo without cropping. The two side columns repeat the same photograph with cover crop and a mild blur.
+- A blurred copy behind the center image fills any letterbox area; mobile hides the side repeats and shows a single complete central image with a blurred fill. Crossfade remains seven seconds per image and stops for reduced motion and the closed invitation.
+- No foreground triptych, visitor photo buttons, gallery lightbox, personalized guest, schedule, map, or RSVP logic is changed.

@@ -1,0 +1,78 @@
+/* Wedding V6: one uncropped center photo, repeated as edge-to-edge side wings.
+   A single source image per slide; the background crossfades together every 7 seconds. */
+.hero.hero-v5 .v5-gallery-layer{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,2.15fr) minmax(0,1fr)!important;
+  column-gap:0!important;row-gap:0!important;
+  background:#34232d!important;
+}
+.hero.hero-v5 .v5-gallery-layer>.v6-side{
+  display:block!important;
+  width:100%!important;height:100%!important;
+  object-fit:cover!important;
+  filter:blur(var(--poster-blur,6px)) saturate(.86) brightness(.84)!important;
+  -webkit-filter:blur(var(--poster-blur,6px)) saturate(.86) brightness(.84)!important;
+  transform:scale(1.045)!important;
+}
+.hero.hero-v5 .v6-center-panel{
+  position:relative!important;display:block!important;
+  width:100%!important;height:100%!important;min-width:0!important;
+  overflow:hidden!important;background:#34232d!important;isolation:isolate!important;
+}
+.hero.hero-v5 .v6-center-panel .v5-hero-tile{
+  display:block!important;position:absolute!important;inset:0!important;
+  width:100%!important;height:100%!important;max-width:none!important;
+  object-position:center!important;
+  pointer-events:none!important;user-select:none!important;
+}
+.hero.hero-v5 .v6-center-panel .v6-center-underlay{
+  z-index:0!important;object-fit:cover!important;
+  filter:blur(15px) saturate(.88) brightness(.64)!important;
+  -webkit-filter:blur(15px) saturate(.88) brightness(.64)!important;
+  transform:scale(1.08)!important;
+}
+.hero.hero-v5 .v6-center-panel .v6-center-image{
+  z-index:1!important;object-fit:contain!important;
+  filter:none!important;-webkit-filter:none!important;
+  transform:none!important;opacity:1!important;
+}
+/* Keep text readable across light photographs while leaving the center image sharp. */
+.hero.hero-v5 .hero-overlay{
+  background:
+    linear-gradient(90deg,rgba(30,16,24,.30) 0%,rgba(30,16,24,.15) 25%,rgba(27,13,24,.36) 50%,rgba(30,16,24,.15) 75%,rgba(30,16,24,.30) 100%),
+    linear-gradient(0deg,rgba(25,12,20,.48),transparent 35%,rgba(25,12,20,.15))!important;
+}
+@media(min-width:550px) and (max-width:900px){
+  .hero.hero-v5 .v5-gallery-layer{
+    display:grid!important;
+    grid-template-columns:minmax(0,0.75fr) minmax(0,2.2fr) minmax(0,0.75fr)!important;
+  }
+  .hero.hero-v5 .v5-gallery-layer>.v6-side{display:block!important}
+}
+@media(max-width:549px){
+  /* Mobile has only one photo, but the contain layer preserves the entire picture. */
+  .hero.hero-v5 .v5-gallery-layer{display:block!important}
+  .hero.hero-v5 .v5-gallery-layer>.v6-side{display:none!important}
+  .hero.hero-v5 .v6-center-panel{
+    position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+  }
+  .hero.hero-v5 .v6-center-panel .v5-hero-tile{
+    display:block!important;position:absolute!important;inset:0!important;
+    width:100%!important;height:100%!important;
+    object-position:center!important;
+  }
+  .hero.hero-v5 .v6-center-panel .v6-center-underlay{
+    object-fit:cover!important;filter:blur(9px) brightness(.72)!important;
+    -webkit-filter:blur(9px) brightness(.72)!important;
+  }
+  .hero.hero-v5 .v6-center-panel .v6-center-image{
+    object-fit:contain!important;transform:none!important;filter:none!important;
+    -webkit-filter:none!important;
+  }
+  .hero.hero-v5 .hero-overlay{
+    background:linear-gradient(180deg,rgba(28,13,22,.40),rgba(26,11,20,.48) 50%,rgba(26,11,20,.51))!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .hero.hero-v5 .v5-gallery-layer{transition:none!important}
+}

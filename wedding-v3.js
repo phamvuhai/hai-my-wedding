@@ -129,15 +129,14 @@
     const fallback=[...state.photos.filter(i=>i.is_hero),...state.photos.filter(i=>i.show_on_homepage),...state.photos];
     return [...new Map((configured.length?configured:fallback).map(img=>[img.id,img])).values()].slice(0,8);
   }
-  function buildTile(img,column,count){
+  function buildTile(img,role,index){
     const tile=document.createElement('img');
-    tile.className='v5-hero-tile';
+    tile.className='v5-hero-tile '+(role==='center'?'v6-center-image':role==='underlay'?'v6-center-underlay':'v6-side');
     tile.src=url(img);tile.alt='';tile.setAttribute('aria-hidden','true');
     tile.draggable=false;tile.decoding='async';
-    tile.loading=count===0?'eager':'lazy';
-    // Repeat this slide's SINGLE photograph across desktop columns.
-    // Vary only the crop; never mix images from different slides in one frame.
-    tile.style.setProperty('--tile-focus',['26% 50%','45% 50%','65% 50%','82% 50%'][column]);
+    tile.loading=index===0?'eager':'lazy';
+    // Both side copies reuse the exact same image as the full, uncropped center.
+    tile.style.setProperty('--tile-focus',role==='left'?'20% 50%':role==='right'?'80% 50%':'50% 50%');
     return tile;
   }
   function createSlides(){
@@ -166,9 +165,13 @@
       chosen.forEach((photo,i)=>{
         const layer=document.createElement('div');layer.className='v5-gallery-layer';
         layer.dataset.slide=String(i);
-        for(let column=0;column<4;column++){
-          layer.appendChild(buildTile(photo,column,i));
-        }
+        layer.appendChild(buildTile(photo,'left',i));
+        const center=document.createElement('div');
+        center.className='v6-center-panel';
+        center.appendChild(buildTile(photo,'underlay',i));
+        center.appendChild(buildTile(photo,'center',i));
+        layer.appendChild(center);
+        layer.appendChild(buildTile(photo,'right',i));
         gallery.appendChild(layer);
       });
       background.appendChild(gallery);
