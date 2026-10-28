@@ -6,6 +6,7 @@
   <meta name="robots" content="noindex,nofollow" />
   <title>Wedding Admin | Hải & Mỹ</title>
   <link rel="stylesheet" href="/admin/admin.css" />
+  <link rel="stylesheet" href="/admin/collage.css?v=romantic-1" />
 </head>
 <body>
   <main class="admin-shell">
@@ -19,6 +20,7 @@
           <button class="nav-item" data-tab="rsvp">RSVP</button>
           <button class="nav-item" data-tab="guests">Khách mời</button>
           <button class="nav-item" data-tab="album">Album</button>
+          <button class="nav-item" data-tab="collage">Collage thiệp</button>
         </nav>
         <div class="sidebar-bottom">
           <span id="userEmail"></span>
@@ -316,6 +318,67 @@
           </section>
         </section>
 
+        <section id="collageTab" class="tab-panel hidden">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">ROMANTIC COLLAGE</p>
+                <h3>Ảnh xen kẽ bên trong thiệp</h3>
+              </div>
+              <a href="/" class="btn ghost" target="_blank" rel="noopener">Xem thiệp ↗</a>
+            </div>
+            <p class="muted collage-admin-intro">Chọn ảnh đã Publish trong <strong>Album</strong>, đặt vị trí xuất hiện giữa các phần của thiệp, đổi phong cách Polaroid / Film / Full-width, chú thích ba ngôn ngữ rồi nhấn <strong>Publish</strong>. Bạn có thể kéo thả ảnh trong cùng một vị trí hoặc dùng ↑↓ để đổi thứ tự. Dữ liệu khách mời và RSVP không bị ảnh hưởng.</p>
+            <p class="collage-hint" id="collagePhotoHint"></p>
+            <div class="collage-editor-grid">
+              <div id="collageForm">
+                <h4>Thêm / sửa ảnh</h4>
+                <div class="collage-form-grid">
+                  <label>Ảnh trong Album
+                    <select id="collagePhoto"><option value="">Chọn ảnh</option></select>
+                  </label>
+                  <label>Vị trí trên thiệp
+                    <select id="collageSlot">
+                      <option value="story">Sau câu chuyện tình yêu</option>
+                      <option value="promise">Sau đếm ngược</option>
+                      <option value="events">Sau lịch cưới</option>
+                      <option value="moments">Sau album ảnh</option>
+                      <option value="rsvp">Sau xác nhận RSVP</option>
+                    </select>
+                  </label>
+                  <label>Kiểu hiển thị
+                    <select id="collageStyle">
+                      <option value="polaroid">Polaroid (ảnh rời)</option>
+                      <option value="film">Film (khung ảnh tối)</option>
+                      <option value="full">Full-width (ảnh ngang lớn)</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="collage-caption-fields">
+                  <label>Chú thích · Tiếng Việt<input id="collageCaption_vi" maxlength="240" placeholder="Khoảnh khắc yêu thương..."></label>
+                  <label>Caption · English<input id="collageCaption_en" maxlength="240" placeholder="Our favorite memories..."></label>
+                  <label>キャプション · 日本語<input id="collageCaption_ja" maxlength="240" placeholder="大切な思い出..."></label>
+                </div>
+                <label class="collage-checkbox"><input type="checkbox" id="collageVisible" checked> Hiển thị ảnh trên thiệp</label>
+                <div class="collage-editor-actions">
+                  <button class="btn primary" id="collageAdd" type="button">＋ Thêm ảnh vào thiệp</button>
+                  <button class="btn ghost" id="collageCancel" type="button" hidden>Hủy sửa</button>
+                </div>
+              </div>
+              <div>
+                <div class="panel-head">
+                  <div><p class="eyebrow">PHOTO ORDER</p><h3>Thứ tự ảnh</h3></div>
+                  <span class="muted" id="collageCount">0 ảnh</span>
+                </div>
+                <div id="collageList" aria-live="polite"><p class="muted">Đang tải ảnh...</p></div>
+              </div>
+            </div>
+            <div class="collage-toolbar">
+              <button id="collageSave" class="btn primary" type="button">Publish collage lên thiệp</button>
+              <p id="collageStatus" class="status" role="status" aria-live="polite"></p>
+            </div>
+          </section>
+        </section>
+
         <section id="albumTab" class="tab-panel hidden">
           <div class="stats" id="albumStats"></div>
           <section class="panel upload-panel">
@@ -496,6 +559,7 @@
   <script src="/admin/rsvp.js"></script>
   <script src="/admin/guests.js"></script>
   <script src="/admin/dashboard.js"></script>
+  <script src="/admin/collage.js?v=romantic-1"></script>
   <script src="/admin/auth.js"></script>
 </body>
 </html>
