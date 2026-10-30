@@ -60,7 +60,7 @@ function qrSource(side){
     return db?.storage.from('wedding-gallery').getPublicUrl(side.qrPath)?.data?.publicUrl||'';
   return '';
  }
- return side===config.groom?(defaultQr??(defaultQr=makeQr())):'';
+ return side===config.groom&&side.account.replace(/[\s-]/g,'')==='04480062888'?(defaultQr??(defaultQr=makeQr())):'';
 }
 function card(side,id,t){
  const name=id==='groom'?t.groom:t.bride;
