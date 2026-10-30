@@ -424,7 +424,7 @@ async function loadHomeGallery() {
   try {
     const [galleryResult,designResult] = await Promise.all([
       client.from('gallery_images')
-        .select('id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,is_hero,show_on_homepage,focus_x,focus_y,created_at,updated_at')
+        .select('id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,is_hero,show_on_homepage,show_in_album,focus_x,focus_y,created_at,updated_at')
         .eq('is_published', true)
         .order('is_featured', { ascending: false })
         .order('sort_order', { ascending: true })
@@ -440,7 +440,7 @@ async function loadHomeGallery() {
     } catch (error) {
       console.warn('Gallery order: using default ordering.', error);
     }
-    const all = (galleryResult.data || []).filter(img=>img.image_path);
+    const all = (galleryResult.data || []).filter(img=>img.image_path && img.show_in_album !== false);
     const candidates = selectedIds.length
       ? [...selectedIds.map(id=>all.find(img=>img.id===id)).filter(Boolean), ...all.filter(img=>img.show_on_homepage)]
       : all.filter(img=>img.show_on_homepage);
