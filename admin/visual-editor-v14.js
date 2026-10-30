@@ -204,7 +204,7 @@
     trigger.type='button';trigger.className='v14-story-picker-trigger';
     trigger.textContent='▧  Chọn ảnh bằng thư viện';
     trigger.addEventListener('click',()=>openPicker(id));
-    select.parentElement?.appendChild(trigger);
+    select.parentElement?.after(trigger);
   });
   const status=$('v3Status'),storyList=$('v3BlockList');
   if(status)new MutationObserver(()=>render()).observe(status,{characterData:true,childList:true,subtree:true});
