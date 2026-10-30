@@ -64,7 +64,7 @@
       el.classList.add('v18-legacy-clean');
       el.querySelectorAll('.v17-decor').forEach(decor=>decor.classList.add('v17-decor-visible'));
     });
-    const parent=node.closest('.v3-story-block');
+    const parent=node.closest('.v3-story-block, .gallery-editorial-head');
     if(parent)parent.classList.remove('v4-reveal','v4-enter-left','v4-enter-right');
   }
   function register(node,direction,group,index){
