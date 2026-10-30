@@ -127,7 +127,7 @@
       lang: lang(),
       groom: 'PHẠM VŨ HẢI',
       bride: 'NGUYỄN THỊ MỸ',
-      date: '19 · 12 · 2026',
+      date: '18 — 20 · 12 · 2026',
       script: 'Wedding Invitation',
       guestName: c.display || ''
     };
@@ -469,6 +469,18 @@
     }
   }
 
+  function showInvalidInviteNotice(){
+    const notice=document.getElementById('inviteInvalidNotice');
+    if(!notice)return;
+    const language=lang()==='ja'?'ja':lang();
+    const messages={
+      vi:'Link mời riêng không còn hợp lệ. Bạn vẫn có thể xem thiệp chung.',
+      en:'This personal invitation link is unavailable. You can still view the public invitation.',
+      ja:'この個別招待リンクはご利用いただけません。共通の招待状はご覧いただけます。'
+    };
+    notice.textContent=messages[language]||messages.vi;
+    notice.hidden=false;
+  }
   async function load() {
     const token = tokenFromUrl();
     const database = db();
@@ -482,6 +494,8 @@
     const invite = Array.isArray(data) ? data[0] : data;
     if (error || !invite) {
       document.body.classList.add('invite-invalid');
+      showInvalidInviteNotice();
+      document.addEventListener('wedding:language',showInvalidInviteNotice);
       renderWelcome(null);
       return;
     }
