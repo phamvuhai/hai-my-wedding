@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="/wedding-schedule-v7.css?v=1" />
   <link rel="stylesheet" href="/wedding-editorial-v8.css?v=2" />
   <link rel="stylesheet" href="/wedding-album-v9.css?v=1" />
+  <link rel="stylesheet" href="/wedding-refinement-v10.css?v=1" />
 </head>
 <body class="invitation-locked hero-image-loading">
 
@@ -29,15 +30,6 @@
   <!-- Luxury Romantic Invitation | Accessible, localized and personalized -->
   <section class="invitation-intro invite-minimal invite-luxury" id="invitationIntro" aria-label="Wedding invitation opening">
     <div class="luxury-ambient" aria-hidden="true"></div>
-    <div class="luxury-floral luxury-floral-left" aria-hidden="true">
-      <img src="/images/invitation/figma/figma-floral-left.svg" alt="" decoding="async" />
-    </div>
-    <div class="luxury-floral luxury-floral-right" aria-hidden="true">
-      <img src="/images/invitation/figma/figma-floral-right.svg" alt="" decoding="async" />
-    </div>
-    <div class="luxury-stardust" aria-hidden="true">
-      <i>✧</i><i>✦</i><i>✧</i><i>✧</i><i>✦</i>
-    </div>
     <div class="intro-language language-switcher minimal-language" aria-label="Language">
       <button type="button" data-lang="vi">VI</button>
       <button type="button" data-lang="en">EN</button>
@@ -45,26 +37,17 @@
     </div>
 
     <div class="luxury-card">
-      <span class="luxury-corner luxury-corner-tl" aria-hidden="true"></span>
-      <span class="luxury-corner luxury-corner-tr" aria-hidden="true"></span>
-      <span class="luxury-corner luxury-corner-bl" aria-hidden="true"></span>
-      <span class="luxury-corner luxury-corner-br" aria-hidden="true"></span>
       <div class="luxury-card-inner minimal-content">
-        <div class="luxury-crest" aria-hidden="true">✦ <span>H &amp; M</span> ✦</div>
-        <p class="luxury-overline">THE WEDDING CELEBRATION</p>
-        <div class="minimal-monogram" aria-hidden="true">H <span>&amp;</span> M</div>
+        <p class="luxury-overline">THE WEDDING OF</p>
+        <div class="minimal-monogram">Hải <span>&amp;</span> Mỹ</div>
         <p class="minimal-kicker" data-i18n="intro.invite">TRÂN TRỌNG KÍNH MỜI</p>
-        <div class="minimal-rule" aria-hidden="true"><span>✧</span></div>
         <h2 class="minimal-names">
           <span>PHẠM VŨ HẢI</span>
           <em>&amp;</em>
           <span>NGUYỄN THỊ MỸ</span>
         </h2>
-        <p class="luxury-lead" data-i18n="intro.formalLead">Đến chung vui cùng chúng tôi trong ngày hạnh phúc</p>
         <div class="luxury-date-frame">
-          <span class="luxury-date-ornament" aria-hidden="true">❦</span>
           <p class="minimal-date" data-i18n="intro.eventDate">18 — 20 · 12 · 2026</p>
-          <span class="luxury-date-ornament" aria-hidden="true">❦</span>
         </div>
         <div class="personal-guest-feature" id="personalGuestFeature" hidden aria-live="polite">
           <span class="guest-label" id="personalGuestLabel"></span>
@@ -287,7 +270,7 @@
       <div class="container our-promise-layout">
         <figure class="our-promise-visual">
           <div class="our-promise-photo-shell">
-            <img id="ourPromisePhoto" class="our-promise-photo" alt="" loading="lazy" decoding="async" hidden>
+            <img id="ourPromisePhoto" class="our-promise-photo" src="https://uxyfhgtxfodnjzwlggnc.supabase.co/storage/v1/object/public/wedding-gallery/pre-wedding/0ca51313-ddf9-4d69-a1ec-b72343de79bf.webp" alt="Hải &amp; Mỹ" loading="lazy" decoding="async">
             <div class="our-promise-fallback" aria-hidden="true"><span>H</span><span>♡</span><span>M</span></div>
           </div>
           <figcaption data-i18n="promise.caption">MỘT LỜI HẸN · MỘT MÁI NHÀ</figcaption>
@@ -459,7 +442,7 @@
   <script src="/particles.js"></script>
   <script src="/invitation.js?v=minimal-1"></script>
   <script src="/touch-effects.js?v=romantic-touch-1"></script>
-  <script src="/wedding-v3.js?v=9"></script>
+  <script src="/wedding-v3.js?v=promise-photo-v10"></script>
   <script src="/wedding-v4.js?v=2"></script>
 </body>
 </html>
