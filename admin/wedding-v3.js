@@ -26,7 +26,8 @@
       {id:'v5-chapter-8',slot:'events',style:'split',imageId:p[6]?.id||p[0]?.id||'',visible:true,text:{"vi":"Hôm nay, chúng mình không chỉ đánh dấu một ngày đặc biệt, mà còn mở ra những ngày tháng mới: cùng học cách quan tâm, cùng sẻ chia và luôn dành cho nhau một nơi để trở về.","en":"Today is not only a celebration. It is the beginning of a new chapter: caring for each other, sharing the little things, and always having a place to call home.","ja":"この日は、ひとつの節目であると同時に、新しい毎日の始まりです。互いを思いやり、喜びを分かち合い、いつでも帰れる場所をふたりでつくっていきます。"}},
       {id:'v5-chapter-9',slot:'moments',style:'split',imageId:p[7]?.id||p[1]?.id||'',visible:true,text:{"vi":"Mai này khi nhìn lại, điều chúng mình muốn nhớ nhất không chỉ là những tấm hình thật đẹp, mà còn là cảm giác được yêu thương, được lớn lên và được cùng nhau đi qua những ngày bình dị.","en":"When we look back one day, we hope to remember more than lovely photographs: the feeling of being loved, growing together, and sharing the beauty of ordinary days.","ja":"いつか振り返ったとき、美しい写真だけではなく、愛されている安心感や、ともに成長し、何気ない日々を分かち合った温かさを思い出したいと思います。"}},
       {id:'v4-chapter-7',slot:'rsvp',style:'quote',imageId:'',visible:true,text:{"vi":"“Ngày vui sẽ trọn vẹn hơn khi có bạn ở đây. Cảm ơn vì đã cùng chúng mình viết nên một kỷ niệm đáng nhớ.”","en":"“Our celebration will be lovelier with you here. Thank you for being part of a memory we will always cherish.”","ja":"「皆さまと過ごすひとときが、私たちの宝物になります。心から、ありがとうございます。」"}}
-    ];
+    ].filter(block=>['v4-chapter-1','v4-chapter-3','v4-chapter-6','v4-chapter-7'].includes(block.id))
+      .map(block=>block.style==='film'?{...block,imageIds:[p[6]?.id,p[7]?.id].filter(Boolean)}:block);
   })();
     return {version:3,heroIds:[],homePhotoIds:[],heroAutoplay:true,posterBlur:6,posterShade:40,
       posterForeground:false,posterDesktopX:50,posterDesktopY:50,posterMobileX:50,posterMobileY:50,
