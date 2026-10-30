@@ -197,6 +197,10 @@
     }catch(e){status('Không thể Publish: '+e.message,'error');}
     finally{busy=false;$('v3Publish').disabled=false;}
   });
-  document.addEventListener('admin:v3',()=>{if(!loaded)load();else{pickers();fill();}});
+  document.addEventListener('admin:v3',()=>{
+    if(!loaded)load();
+    else if(changed){pickers();status('Bạn có thay đổi chưa Publish.');}
+    else{pickers();fill();}
+  });
   document.addEventListener('admin:data',()=>{if(loaded&&!changed){pickers();fill();}});
 })();
