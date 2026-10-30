@@ -6,7 +6,6 @@
   <meta name="robots" content="noindex,nofollow" />
   <title>Wedding Admin | Hải & Mỹ</title>
   <link rel="stylesheet" href="/admin/admin.css" />
-  <link rel="stylesheet" href="/admin/collage.css?v=romantic-1" />
   <link rel="stylesheet" href="/admin/wedding-v3.css?v=3" />
   <link rel="stylesheet" href="/admin/wedding-v11.css?v=1" />
   <link rel="stylesheet" href="/admin/image-manager-v13.css?v=1" />
@@ -23,8 +22,7 @@
           <button class="nav-item" data-tab="rsvp">RSVP</button>
           <button class="nav-item" data-tab="guests">Khách mời</button>
           <button class="nav-item" data-tab="album">Album</button>
-          <button class="nav-item" data-tab="collage">Collage V2 (cũ)</button>
-          <button class="nav-item" data-tab="v3">Thiết kế V3</button>
+          <button class="nav-item" data-tab="v3">Thiết kế website</button>
         </nav>
         <div class="sidebar-bottom">
           <span id="userEmail"></span>
@@ -325,7 +323,7 @@
         
         <section id="v3Tab" class="tab-panel hidden">
           <section class="panel">
-            <div class="panel-head"><div><p class="eyebrow">WEDDING EDITORIAL V3</p><h3>Thiết kế thiệp cưới</h3></div><a class="btn ghost" href="/" target="_blank" rel="noopener">Xem thiệp ↗</a></div>
+            <div class="panel-head"><div><p class="eyebrow">WEBSITE IMAGE MANAGER</p><h3>Thiết kế website</h3></div><a class="btn ghost" href="/" target="_blank" rel="noopener">Xem thiệp ↗</a></div>
             <p class="muted">V13 Image Manager: chọn ảnh đã Publish từ thư viện, kể cả ảnh chỉ dùng cho website. Chọn vị trí và Publish để cập nhật thiết kế; ảnh có thể ẩn khỏi Album công khai mà vẫn xuất hiện tại Hero, Story, Schedule, Our Promise hoặc Footer.</p>
             <p class="muted"><strong>Thêm ảnh mới:</strong> mở tab Album → Thêm ảnh, bật “Cho phép sử dụng ảnh trên website” và bỏ chọn “Hiển thị trong Album cho khách xem”.</p>
             <div id="v13SectionPreview" class="v13-image-map" aria-label="Ảnh đang chọn cho từng khu vực website"></div>
@@ -413,68 +411,7 @@
                 <div><h4>Thứ tự nội dung</h4><div id="v3BlockList" class="v3-block-list"></div></div>
               </div>
             </div>
-            <div class="v3-admin-toolbar"><button type="button" class="btn primary" id="v3Publish">Publish toàn bộ thiết kế V3</button><p id="v3Status" class="status" role="status" aria-live="polite"></p></div>
-          </section>
-        </section>
-
-        <section id="collageTab" class="tab-panel hidden">
-          <section class="panel">
-            <div class="panel-head">
-              <div>
-                <p class="eyebrow">ROMANTIC COLLAGE</p>
-                <h3>Ảnh xen kẽ bên trong thiệp</h3>
-              </div>
-              <a href="/" class="btn ghost" target="_blank" rel="noopener">Xem thiệp ↗</a>
-            </div>
-            <p class="muted collage-admin-intro"><strong>Lưu ý: đây là trình chỉnh sửa V2 cũ, hiện không được sử dụng ở trang public.</strong> Để thay ảnh và chữ trên thiệp đang chạy, hãy chuyển sang <strong>Thiết kế V3</strong>. Cấu hình V2 chỉ được giữ lại để đối chiếu dữ liệu.</p>
-            <p class="collage-hint" id="collagePhotoHint"></p>
-            <div class="collage-editor-grid">
-              <div id="collageForm">
-                <h4>Thêm / sửa ảnh</h4>
-                <div class="collage-form-grid">
-                  <label>Ảnh trong Album
-                    <select id="collagePhoto"><option value="">Chọn ảnh</option></select>
-                  </label>
-                  <label>Vị trí trên thiệp
-                    <select id="collageSlot">
-                      <option value="story">Sau câu chuyện tình yêu</option>
-                      <option value="promise">Sau đếm ngược</option>
-                      <option value="events">Sau lịch cưới</option>
-                      <option value="moments">Sau album ảnh</option>
-                      <option value="rsvp">Sau xác nhận RSVP</option>
-                    </select>
-                  </label>
-                  <label>Kiểu hiển thị
-                    <select id="collageStyle">
-                      <option value="polaroid">Polaroid (ảnh rời)</option>
-                      <option value="film">Film (khung ảnh tối)</option>
-                      <option value="full">Full-width (ảnh ngang lớn)</option>
-                    </select>
-                  </label>
-                </div>
-                <div class="collage-caption-fields">
-                  <label>Chú thích · Tiếng Việt<input id="collageCaption_vi" maxlength="240" placeholder="Khoảnh khắc yêu thương..."></label>
-                  <label>Caption · English<input id="collageCaption_en" maxlength="240" placeholder="Our favorite memories..."></label>
-                  <label>キャプション · 日本語<input id="collageCaption_ja" maxlength="240" placeholder="大切な思い出..."></label>
-                </div>
-                <label class="collage-checkbox"><input type="checkbox" id="collageVisible" checked> Hiển thị ảnh trên thiệp</label>
-                <div class="collage-editor-actions">
-                  <button class="btn primary" id="collageAdd" type="button">＋ Thêm ảnh vào thiệp</button>
-                  <button class="btn ghost" id="collageCancel" type="button" hidden>Hủy sửa</button>
-                </div>
-              </div>
-              <div>
-                <div class="panel-head">
-                  <div><p class="eyebrow">PHOTO ORDER</p><h3>Thứ tự ảnh</h3></div>
-                  <span class="muted" id="collageCount">0 ảnh</span>
-                </div>
-                <div id="collageList" aria-live="polite"><p class="muted">Đang tải ảnh...</p></div>
-              </div>
-            </div>
-            <div class="collage-toolbar">
-              <button id="collageSave" class="btn primary" type="button">Publish collage lên thiệp</button>
-              <p id="collageStatus" class="status" role="status" aria-live="polite"></p>
-            </div>
+            <div class="v3-admin-toolbar"><button type="button" class="btn primary" id="v3Publish">Lưu &amp; Publish thiết kế</button><p id="v3Status" class="status" role="status" aria-live="polite"></p></div>
           </section>
         </section>
 
@@ -659,7 +596,6 @@
   <script src="/admin/rsvp.js"></script>
   <script src="/admin/guests.js"></script>
   <script src="/admin/dashboard.js"></script>
-  <script src="/admin/collage.js?v=romantic-1"></script>
   <script src="/admin/wedding-v3.js?v=13"></script>
   <script src="/admin/image-manager-v13.js?v=1"></script>
   <script src="/admin/auth.js"></script>
