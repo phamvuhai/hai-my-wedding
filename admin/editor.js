@@ -387,6 +387,7 @@
     document.getElementById('imageCaptionJa').value = img.caption_ja || '';
     document.getElementById('imageAltJa').value = img.alt_text_ja || '';
     document.getElementById('publishCheck').checked = img.is_published;
+    document.getElementById('albumVisibilityCheck').checked = img.show_in_album !== false;
     document.getElementById('homepageCheck').checked = img.show_on_homepage !== false;
     document.getElementById('featuredCheck').checked = !!img.is_featured;
     document.getElementById('heroCheck').checked = !!img.is_hero;
@@ -545,6 +546,7 @@
       focus_x:Number(A.focusX.toFixed(2)),
       focus_y:Number(A.focusY.toFixed(2)),
       is_published:published,
+      show_in_album:document.getElementById('albumVisibilityCheck').checked,
       show_on_homepage:showHomepage,
       is_featured:featured,
       is_hero:hero,
