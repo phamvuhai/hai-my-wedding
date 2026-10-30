@@ -72,6 +72,11 @@ html.v17-motion-ready .v17-accessible{
   overflow:hidden!important;border:0!important;white-space:nowrap!important;
   clip:rect(0,0,0,0)!important;clip-path:inset(50%)!important;
 }
+html.v17-motion-ready .v17-text .v17-word{
+  display:inline-block;
+  white-space:nowrap;
+  max-width:100%;
+}
 html.v17-motion-ready .v17-text .v17-char{
   display:inline-block;
   position:relative;
