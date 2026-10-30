@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/admin/wedding-v3.css?v=3" />
   <link rel="stylesheet" href="/admin/wedding-v11.css?v=1" />
   <link rel="stylesheet" href="/admin/visual-editor-v14.css?v=1" />
+  <link rel="stylesheet" href="/admin/wedding-gifts-v16.css?v=1" />
 </head>
 <body>
   <main class="admin-shell">
@@ -420,6 +421,45 @@
               </div>
             </div>
             </details>
+            <details class="v14-advanced v16-gift-admin" id="v16GiftSettings">
+              <summary><strong>09 · Thông tin mừng cưới</strong><span>Nhà trai trước · TPBank · QR Nhà gái</span></summary>
+              <div class="v16-admin-intro">
+                <p>Thông tin sẽ xuất hiện <strong>ngay sau RSVP, trước Footer</strong>. Phần này có nút Lưu &amp; Công bố riêng; không cần chỉnh Album.</p>
+                <label class="v16-gift-check"><input id="giftEnabled" type="checkbox" checked> Hiển thị section mừng cưới</label>
+                <label>Ai có thể xem?
+                  <select id="giftVisibility">
+                    <option value="public">Công khai trên toàn bộ thiệp</option>
+                    <option value="private">Chỉ URL mời riêng</option>
+                  </select>
+                </label>
+              </div>
+              <div class="v16-admin-cards">
+                <fieldset class="v16-admin-card">
+                  <legend>01 · Nhà trai — Hải</legend>
+                  <label class="v16-gift-check"><input id="giftGroomEnabled" type="checkbox" checked> Hiển thị thông tin Nhà trai</label>
+                  <label>Ngân hàng<input id="giftGroomBank" maxlength="100" autocomplete="off" value="TPBank"></label>
+                  <label>Tên chủ tài khoản<input id="giftGroomHolder" maxlength="120" autocomplete="off" value="PHAM VU HAI"></label>
+                  <label>Số tài khoản<input id="giftGroomAccount" maxlength="45" inputmode="numeric" autocomplete="off" value="04480062888"></label>
+                  <div class="v16-qr-preview"><img id="giftGroomQrPreview" alt="QR Nhà trai" hidden><span id="giftGroomQrNote">Đã có QR TPBank từ ảnh bạn cung cấp</span></div>
+                  <label>Đổi QR nếu thay tài khoản<input id="giftGroomQrFile" type="file" accept="image/png,image/jpeg,image/webp"></label>
+                  <p class="muted" id="giftGroomQrStatus">Mã QR mặc định được tạo lại từ dữ liệu mã bạn đã gửi.</p>
+                </fieldset>
+                <fieldset class="v16-admin-card">
+                  <legend>02 · Nhà gái — Mỹ</legend>
+                  <label class="v16-gift-check"><input id="giftBrideEnabled" type="checkbox"> Công bố thông tin Nhà gái</label>
+                  <label>Ngân hàng<input id="giftBrideBank" maxlength="100" autocomplete="off" placeholder="Nhập ngân hàng của cô dâu"></label>
+                  <label>Tên chủ tài khoản<input id="giftBrideHolder" maxlength="120" autocomplete="off" value="NGUYEN THI MY"></label>
+                  <label>Số tài khoản<input id="giftBrideAccount" maxlength="45" inputmode="numeric" autocomplete="off" placeholder="Nhập số tài khoản"></label>
+                  <div class="v16-qr-preview"><img id="giftBrideQrPreview" alt="QR Nhà gái" hidden><span id="giftBrideQrNote">Chưa có QR của Nhà gái</span></div>
+                  <label>Upload QR Nhà gái<input id="giftBrideQrFile" type="file" accept="image/png,image/jpeg,image/webp"></label>
+                  <p class="muted" id="giftBrideQrStatus">Khi chưa có thông tin, thẻ Nhà gái sẽ hiện “Đang cập nhật”.</p>
+                </fieldset>
+              </div>
+              <div class="v16-gift-actions">
+                <button type="button" class="btn primary" id="giftSave">Lưu &amp; Công bố thông tin mừng cưới</button>
+                <p id="giftSaveStatus" class="status" role="status" aria-live="polite"></p>
+              </div>
+            </details>
             <div class="v3-admin-toolbar"><button type="button" class="btn primary" id="v3Publish">Lưu &amp; Publish thiết kế</button><p id="v3Status" class="status" role="status" aria-live="polite"></p></div>
           </section>
         </section>
@@ -625,6 +665,7 @@
   <script src="/admin/dashboard.js"></script>
   <script src="/admin/wedding-v3.js?v=14"></script>
   <script src="/admin/visual-editor-v14.js?v=2"></script>
+  <script src="/admin/wedding-gifts-v16.js?v=1"></script>
   <script src="/admin/auth.js"></script>
 </body>
 </html>
