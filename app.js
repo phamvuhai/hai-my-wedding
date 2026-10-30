@@ -422,18 +422,34 @@ async function loadHomeGallery() {
   if (!root || !client) return;
 
   try {
-    const { data: images, error } = await client
-      .from('gallery_images')
-      .select('id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,is_hero,show_on_homepage,focus_x,focus_y,created_at,updated_at')
-      .eq('show_on_homepage', true)
-      .eq('is_published', true)
-      .order('is_featured', { ascending: false })
-      .order('sort_order', { ascending: true })
-      .order('created_at', { ascending: false })
-      .limit(5);
-
-    if (error) throw error;
-    galleryState.homeImages = (images || []).map(img => ({...img, publicUrl: galleryPublicUrl(img)}));
+    const [galleryResult,designResult] = await Promise.all([
+      client.from('gallery_images')
+        .select('id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,is_hero,show_on_homepage,focus_x,focus_y,created_at,updated_at')
+        .eq('is_published', true)
+        .order('is_featured', { ascending: false })
+        .order('sort_order', { ascending: true })
+        .order('created_at', { ascending: false })
+        .limit(100),
+      client.from('site_content').select('value_vi').eq('key','v3_design').maybeSingle()
+    ]);
+    if (galleryResult.error) throw galleryResult.error;
+    let selectedIds = [];
+    try {
+      const config = designResult.error ? null : JSON.parse(designResult.data?.value_vi || 'null');
+      if (Array.isArray(config?.homePhotoIds)) selectedIds=config.homePhotoIds.slice(0,5);
+    } catch (error) {
+      console.warn('Gallery order: using default ordering.', error);
+    }
+    const all = (galleryResult.data || []).filter(img=>img.image_path);
+    const candidates = selectedIds.length
+      ? [...selectedIds.map(id=>all.find(img=>img.id===id)).filter(Boolean), ...all.filter(img=>img.show_on_homepage)]
+      : all.filter(img=>img.show_on_homepage);
+    const seen=new Set();
+    galleryState.homeImages = candidates.filter(img=>{
+      if(seen.has(img.id))return false;
+      seen.add(img.id);
+      return true;
+    }).slice(0,5).map(img=>({...img, publicUrl: galleryPublicUrl(img)}));
     if (galleryState.homeImages.length) renderHomeGallery();
     await syncGalleryRoute();
   } catch (error) {
