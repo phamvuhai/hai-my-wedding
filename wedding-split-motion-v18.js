@@ -69,12 +69,12 @@
   }
   function register(node,direction,group,index){
     if(!node||registered.has(node))return;
-    if(node.closest('[hidden], [aria-hidden="true"]'))return;
+    if(node.closest('[hidden]')||node.parentElement?.closest('[aria-hidden="true"]'))return;
     registered.add(node);
     neutralizeOld(node);
     node.dataset.v18Group=group;
     node.dataset.v18Split=direction;
-    node.style.setProperty('--v18-pair-delay',(index%2===0?'0ms':'130ms'));
+    node.style.setProperty('--v18-pair-delay',direction==='right'?'var(--v18-stagger)':'0ms');
     node.classList.add('v18-split','v18-from-'+direction);
     if(!observer||reduced.matches){
       reveal(node);return;
