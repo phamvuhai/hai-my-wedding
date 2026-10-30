@@ -5,7 +5,7 @@
   const $=id=>document.getElementById(id);
   const slots=[['story','Sau Our Story'],['promise','Sau Countdown'],['events','Sau lịch cưới'],['moments','Sau Album'],['rsvp','Sau RSVP']];
   const styles=['split','letter','film','quote'];
-  const blank={version:3,heroIds:[],heroAutoplay:true,schedulePhotoId:'',farewellPhotoId:'',promisePhotoId:'',blocks:[],posterBlur:6,posterShade:40,posterForeground:true,posterDesktopX:50,posterDesktopY:50,posterMobileX:50,posterMobileY:50};
+  const blank={version:3,heroIds:[],homePhotoIds:[],heroAutoplay:true,schedulePhotoId:'',farewellPhotoId:'',promisePhotoId:'',blocks:[],posterBlur:6,posterShade:40,posterForeground:true,posterDesktopX:50,posterDesktopY:50,posterMobileX:50,posterMobileY:50};
   let cfg={...blank},loaded=false,changed=false,busy=false,editing=-1;
   const published=()=>A.images.filter(i=>i.is_published&&i.image_path);
   const uuid=()=>window.crypto?.randomUUID?.()||String(Date.now())+Math.random().toString(36).slice(2);
@@ -28,7 +28,7 @@
       {id:'v4-chapter-7',slot:'rsvp',style:'quote',imageId:'',visible:true,text:{"vi":"“Ngày vui sẽ trọn vẹn hơn khi có bạn ở đây. Cảm ơn vì đã cùng chúng mình viết nên một kỷ niệm đáng nhớ.”","en":"“Our celebration will be lovelier with you here. Thank you for being part of a memory we will always cherish.”","ja":"「皆さまと過ごすひとときが、私たちの宝物になります。心から、ありがとうございます。」"}}
     ];
   })();
-    return {version:3,heroIds:[],heroAutoplay:true,posterBlur:6,posterShade:40,
+    return {version:3,heroIds:[],homePhotoIds:[],heroAutoplay:true,posterBlur:6,posterShade:40,
       posterForeground:false,posterDesktopX:50,posterDesktopY:50,posterMobileX:50,posterMobileY:50,
       schedulePhotoId:p[0]?.id||'',farewellPhotoId:p[6]?.id||p[1]?.id||'',promisePhotoId:'',blocks};
   }
@@ -36,6 +36,7 @@
   function normalize(raw){
     if(!raw||typeof raw!=='object')return defaults();
     return {version:3,heroIds:Array.isArray(raw.heroIds)?raw.heroIds.filter(v=>typeof v==='string').slice(0,3):[],
+      homePhotoIds:Array.isArray(raw.homePhotoIds)?raw.homePhotoIds.filter(v=>typeof v==='string').slice(0,5):[],
       heroAutoplay:true,
       posterBlur:[4,6,10].includes(Number(raw.posterBlur))?Number(raw.posterBlur):6,
       posterShade:[30,40,55].includes(Number(raw.posterShade))?Number(raw.posterShade):40,
@@ -44,17 +45,19 @@
       posterMobileX:clampFocus(raw.posterMobileX),posterMobileY:clampFocus(raw.posterMobileY),
       schedulePhotoId:String(raw.schedulePhotoId||''),farewellPhotoId:String(raw.farewellPhotoId||''),promisePhotoId:String(raw.promisePhotoId||''),
       blocks:Array.isArray(raw.blocks)?raw.blocks.slice(0,25).filter(b=>b&&slots.some(x=>x[0]===b.slot)&&styles.includes(b.style)).map(b=>({
-        id:String(b.id||uuid()),slot:b.slot,style:b.style,imageId:String(b.imageId||''),visible:b.visible!==false,
+        id:String(b.id||uuid()),slot:b.slot,style:b.style,imageId:String(b.imageId||''),imageIds:Array.isArray(b.imageIds)?b.imageIds.filter(v=>typeof v==='string').slice(0,2):[],visible:b.visible!==false,
         text:{vi:String(b.text?.vi||'').slice(0,420),en:String(b.text?.en||'').slice(0,420),ja:String(b.text?.ja||'').slice(0,420)}
       })):[]};
   }
   function pickers(){
     const options='<option value="">Tự động / Không chọn</option>'+published().map(i=>'<option value="'+A.esc(i.id)+'">'+A.esc(i.title||'Ảnh cưới')+' · '+i.id.slice(0,8)+'</option>').join('');
-    ['v3Hero0','v3Hero1','v3Hero2','v3ScheduleImage','v3PromiseImage','v3FarewellImageSelect','v3BlockImage'].forEach(id=>{const el=$(id),v=el.value;el.innerHTML=options;if(published().some(i=>i.id===v))el.value=v;});
+    ['v3Hero0','v3Hero1','v3Hero2','v3ScheduleImage','v3PromiseImage','v3FarewellImageSelect','v3BlockImage','v3BlockImage2','v3BlockImage3',...Array.from({length:5},(_,i)=>'v3Album'+i)].forEach(id=>{const el=$(id);if(!el)return;const v=el.value;el.innerHTML=options;if(published().some(i=>i.id===v))el.value=v;});
   }
   function fill(){
     cfg.heroIds.slice(0,3).forEach((id,i)=>{$('v3Hero'+i).value=id;});
     for(let i=cfg.heroIds.length;i<3;i++)$('v3Hero'+i).value='';
+    for(let i=0;i<5;i++)$('v3Album'+i).value=cfg.homePhotoIds[i]||'';
+    renderAlbumPreview();
     $('v3Autoplay').checked=true;
     $('v3PosterBlur').value=cfg.posterBlur;
     $('v3PosterShade').value=cfg.posterShade;
@@ -88,6 +91,19 @@
       });
     }
   }
+  function renderAlbumPreview(){
+    const root=$('v3AlbumPreview');if(!root)return;
+    const selected=Array.from({length:5},(_,i)=>$('v3Album'+i)?.value).filter(Boolean);
+    const all=published().filter(photo=>!selected.includes(photo.id))
+      .sort((a,b)=>(Number(b.is_featured)-Number(a.is_featured))||(Number(a.sort_order||0)-Number(b.sort_order||0)));
+    const ordered=[...selected.map(id=>published().find(i=>i.id===id)).filter(Boolean),...all].slice(0,5);
+    root.innerHTML=ordered.map((photo,index)=>'<figure class="v11-admin-photo">'+
+      '<img loading="lazy" alt="" src="'+A.esc(A.publicUrl(photo.image_path)+(photo.updated_at?'?v='+encodeURIComponent(photo.updated_at):''))+'">'+
+      '<figcaption>'+(index+1).toString().padStart(2,'0')+' · '+A.esc(photo.title||'Ảnh cưới')+'</figcaption></figure>').join('');
+  }
+  function updateFilmVisibility(){
+    const wrap=$('v3FilmOptions');if(wrap)wrap.hidden=$('v3BlockStyle')?.value!=='film';
+  }
   function renderList(){
     const el=$('v3BlockList');
     if(!cfg.blocks.length){el.innerHTML='<p class="muted">Chưa có khối nội dung. Hãy thêm ảnh và chữ để bắt đầu.</p>';return;}
@@ -101,13 +117,13 @@
   }
   const dirty=()=>{changed=true;status('Bạn có thay đổi chưa Publish.');};
   function clear(){
-    editing=-1;$('v3BlockSlot').value='story';$('v3BlockStyle').value='split';$('v3BlockImage').value='';
+    editing=-1;$('v3BlockSlot').value='story';$('v3BlockStyle').value='split';$('v3BlockImage').value='';$('v3BlockImage2').value='';$('v3BlockImage3').value='';updateFilmVisibility();
     ['Vi','En','Ja'].forEach(l=>$('v3Text'+l).value='');
     $('v3BlockVisible').checked=true;$('v3BlockAdd').textContent='＋ Thêm khối';$('v3BlockCancel').hidden=true;
   }
   function edit(i){
     const b=cfg.blocks[i];if(!b)return;
-    editing=i;$('v3BlockSlot').value=b.slot;$('v3BlockStyle').value=b.style;$('v3BlockImage').value=b.imageId;
+    editing=i;$('v3BlockSlot').value=b.slot;$('v3BlockStyle').value=b.style;$('v3BlockImage').value=b.imageId;$('v3BlockImage2').value=b.imageIds?.[0]||'';$('v3BlockImage3').value=b.imageIds?.[1]||'';updateFilmVisibility();
     $('v3TextVi').value=b.text?.vi||'';$('v3TextEn').value=b.text?.en||'';$('v3TextJa').value=b.text?.ja||'';
     $('v3BlockVisible').checked=b.visible!==false;$('v3BlockAdd').textContent='✓ Cập nhật khối';$('v3BlockCancel').hidden=false;
     $('v3BlockSlot').scrollIntoView({behavior:'smooth',block:'center'});
@@ -115,7 +131,10 @@
   $('v3BlockAdd')?.addEventListener('click',()=>{
     const style=$('v3BlockStyle').value,id=$('v3BlockImage').value;
     if(style!=='quote'&&!published().some(i=>i.id===id)){status('Hãy chọn ảnh đã Publish hoặc chọn kiểu Quote.','error');return;}
-    const item={id:editing>=0?cfg.blocks[editing].id:uuid(),slot:$('v3BlockSlot').value,style,imageId:style==='quote'?'':id,
+    const extras=style==='film'?[$('v3BlockImage2').value,$('v3BlockImage3').value].filter(Boolean):[];
+    if(new Set([id,...extras]).size!==1+extras.length){status('Ba ảnh Filmstrip không được trùng nhau.','error');return;}
+    if(extras.some(photoId=>!published().some(photo=>photo.id===photoId))){status('Ảnh phụ Filmstrip phải được Publish.','error');return;}
+    const item={id:editing>=0?cfg.blocks[editing].id:uuid(),slot:$('v3BlockSlot').value,style,imageId:style==='quote'?'':id,imageIds:extras,
       visible:$('v3BlockVisible').checked,text:{vi:$('v3TextVi').value.trim(),en:$('v3TextEn').value.trim(),ja:$('v3TextJa').value.trim()}};
     if(editing>=0)cfg.blocks[editing]=item;else if(cfg.blocks.length<25)cfg.blocks.push(item);else{status('Tối đa 25 khối.','error');return;}
     clear();dirty();renderList();
@@ -129,6 +148,11 @@
     if(action==='up'&&i>0)[cfg.blocks[i-1],cfg.blocks[i]]=[cfg.blocks[i],cfg.blocks[i-1]];
     if(action==='down'&&i<cfg.blocks.length-1)[cfg.blocks[i+1],cfg.blocks[i]]=[cfg.blocks[i],cfg.blocks[i+1]];
     dirty();renderList();
+  });
+  $('v3BlockStyle')?.addEventListener('change',updateFilmVisibility);
+  ['v3BlockImage2','v3BlockImage3'].forEach(id=>$(id)?.addEventListener('change',dirty));
+  Array.from({length:5},(_,i)=>'v3Album'+i).forEach(id=>{
+    $(id)?.addEventListener('change',()=>{dirty();renderAlbumPreview();});
   });
   ['v3Hero0','v3Hero1','v3Hero2','v3ScheduleImage','v3PromiseImage','v3FarewellImageSelect','v3Autoplay','v3PosterBlur','v3PosterShade','v3PosterForeground','v3PosterDesktopX','v3PosterDesktopY','v3PosterMobileX','v3PosterMobileY'].forEach(id=>{
     $(id)?.addEventListener('change',()=>{dirty();renderPosterPreview();});
@@ -151,9 +175,11 @@
     if(!loaded||busy)return;
     const heroIds=['v3Hero0','v3Hero1','v3Hero2'].map(id=>$(id).value).filter(Boolean);
     if(new Set(heroIds).size!==heroIds.length){status('Ba ảnh Hero cần khác nhau.','error');return;}
-    const ids=[...heroIds,$('v3ScheduleImage').value,$('v3PromiseImage').value,$('v3FarewellImageSelect').value,...cfg.blocks.filter(b=>b.style!=='quote').map(b=>b.imageId)].filter(Boolean);
+    const homePhotoIds=Array.from({length:5},(_,i)=>$('v3Album'+i).value).filter(Boolean);
+    if(new Set(homePhotoIds).size!==homePhotoIds.length){status('5 ảnh Album không được chọn trùng nhau.','error');return;}
+    const ids=[...heroIds,...homePhotoIds,$('v3ScheduleImage').value,$('v3PromiseImage').value,$('v3FarewellImageSelect').value,...cfg.blocks.filter(b=>b.style!=='quote').flatMap(b=>[b.imageId,...(b.imageIds||[])])].filter(Boolean);
     if(ids.some(id=>!published().some(i=>i.id===id))){status('Có ảnh chưa Publish hoặc đã bị xóa. Kiểm tra lại Album.','error');return;}
-    cfg.heroIds=heroIds;cfg.heroAutoplay=true;
+    cfg.heroIds=heroIds;cfg.homePhotoIds=homePhotoIds;cfg.heroAutoplay=true;
     cfg.posterBlur=Number($('v3PosterBlur').value);cfg.posterShade=Number($('v3PosterShade').value);
     cfg.posterForeground=false;
     ['DesktopX','DesktopY','MobileX','MobileY'].forEach(k=>{cfg['poster'+k]=clampFocus($('v3Poster'+k).value);});
