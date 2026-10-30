@@ -75,15 +75,47 @@
     const choices=pool.length?pool:state.photos;
     const excluded=new Set([state.config?.schedulePhotoId,state.config?.farewellPhotoId]);
     const preferred=choices.filter(photo=>!excluded.has(photo.id)&&!photo.is_hero);
-    const chosen=choose(state.config?.promisePhotoId)||preferred[Math.min(3,preferred.length-1)]||choices[0];
-    if(!chosen){image.hidden=true;if(fallback)fallback.hidden=false;return;}
-    const next=url(chosen);
-    image.alt=alt(chosen);
-    image.style.objectPosition=Math.max(0,Math.min(100,Number(chosen.focus_x??50)))+'% '+Math.max(0,Math.min(100,Number(chosen.focus_y??50)))+'%';
-    image.onload=()=>{image.hidden=false;if(fallback)fallback.hidden=true;};
-    image.onerror=()=>{image.hidden=true;if(fallback)fallback.hidden=false;};
-    if(image.getAttribute('src')!==next)image.src=next;
-    else if(image.complete&&image.naturalWidth){image.hidden=false;if(fallback)fallback.hidden=true;}
+    const aspect=photo=>(Number(photo.width)||1)/(Number(photo.height)||1);
+    const portraits=preferred
+      .filter(photo=>aspect(photo)>=.48&&aspect(photo)<=.88)
+      .sort((a,b)=>(Number(b.width)||0)*(Number(b.height)||0)-(Number(a.width)||0)*(Number(a.height)||0));
+    // Explicit Admin photo wins, then high-resolution portrait, then other published photos.
+    const seen=new Set();
+    const candidates=[choose(state.config?.promisePhotoId),...portraits,...preferred,...choices]
+      .filter(photo=>{
+        if(!valid(photo)||seen.has(photo.id))return false;
+        seen.add(photo.id);
+        return true;
+      });
+    let current=0;
+    const complete=()=>{
+      image.hidden=false;
+      if(fallback)fallback.hidden=true;
+      image.parentElement?.classList.add('is-photo-loaded');
+    };
+    const failed=()=>{
+      image.hidden=true;
+      if(fallback)fallback.hidden=false;
+      image.parentElement?.classList.remove('is-photo-loaded');
+    };
+    const attempt=()=>{
+      const photo=candidates[current++];
+      if(!photo){failed();return;}
+      const next=url(photo);
+      if(!next){attempt();return;}
+      image.alt=alt(photo);
+      image.style.objectPosition=Math.max(0,Math.min(100,Number(photo.focus_x??50)))+'% '+Math.max(0,Math.min(100,Number(photo.focus_y??50)))+'%';
+      image.onload=complete;
+      image.onerror=attempt;
+      image.hidden=false;
+      if(image.getAttribute('src')!==next)image.src=next;
+      else if(image.complete)(image.naturalWidth?complete:attempt)();
+    };
+    if(candidates.length){attempt();return;}
+    // HTML has a genuine published-photo fallback even when the CMS is unavailable.
+    image.onload=complete;
+    image.onerror=failed;
+    if(image.complete)(image.naturalWidth?complete:failed)();
   }
   function renderSchedule(){
     const img=choose(state.config?.schedulePhotoId)||state.photos.find(i=>i.is_hero)||state.photos[0];
@@ -203,7 +235,7 @@
   async function load(){
     try{
       const [photos,config]=await Promise.all([
-        state.db.from('gallery_images').select('id,image_path,title,title_en,title_ja,alt_text,alt_text_en,alt_text_ja,focus_x,focus_y,sort_order,is_published,is_hero,show_on_homepage,updated_at').eq('is_published',true).order('sort_order',{ascending:true}).limit(100),
+        state.db.from('gallery_images').select('id,image_path,title,title_en,title_ja,alt_text,alt_text_en,alt_text_ja,width,height,focus_x,focus_y,sort_order,is_published,is_hero,show_on_homepage,updated_at').eq('is_published',true).order('sort_order',{ascending:true}).limit(100),
         state.db.from('site_content').select('value_vi').eq('key','v3_design').maybeSingle()
       ]);
       if(photos.error)throw photos.error;
@@ -211,7 +243,8 @@
       state.byId=new Map(state.photos.map(i=>[i.id,i]));
       try{state.config=config.error?null:(config.data?.value_vi?JSON.parse(config.data.value_vi):null);}catch{state.config=null;}
       initialLoaded=true;
-      renderStories();renderSchedule();renderPromisePhoto();createSlides();
+      // The Promise image must not depend on optional Story blocks rendering successfully.
+      renderPromisePhoto();renderSchedule();createSlides();renderStories();
     }catch(error){console.error('Wedding V3 loading error',error);}
   }
   document.addEventListener('wedding:hero-ready',()=>{state.heroReady=true;if(initialLoaded)createSlides();});
