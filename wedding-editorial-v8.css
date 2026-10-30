@@ -133,6 +133,8 @@ html[lang="vi"] .gallery-section .gallery-editorial-head .section-heading > p:la
   grid-row:1 / 3!important;
 }
 .gallery-section #homeGallery > .home-photo img{
+  position:absolute!important;
+  inset:0;
   display:block;
   width:100%!important;
   height:100%!important;
@@ -141,6 +143,7 @@ html[lang="vi"] .gallery-section .gallery-editorial-head .section-heading > p:la
   filter:none!important;
   transition:transform .5s ease,filter .5s ease!important;
 }
+.gallery-section #homeGallery .photo-curtain{display:none!important}
 .gallery-section #homeGallery > .home-photo::before{
   content:none!important;
   display:none!important;
