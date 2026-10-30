@@ -422,6 +422,7 @@
     ['imageTitle','imageCaption','imageAlt','imageTitleEn','imageCaptionEn','imageAltEn','imageTitleJa','imageCaptionJa','imageAltJa']
       .forEach(id => document.getElementById(id).value = '');
     document.getElementById('publishCheck').checked = true;
+    document.getElementById('albumVisibilityCheck').checked = true;
     document.getElementById('homepageCheck').checked = true;
     document.getElementById('featuredCheck').checked = false;
     document.getElementById('heroCheck').checked = false;
