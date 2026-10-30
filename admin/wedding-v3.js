@@ -171,7 +171,7 @@
       const raw=data?.value_vi?JSON.parse(data.value_vi):null;
       cfg=raw?normalize(raw):defaults();
       pickers();fill();loaded=true;changed=false;
-      status(raw?'Đã tải thiết kế đang sử dụng.':'Đã chuẩn bị bố cục V3 mặc định. Nhấn Publish để lưu lựa chọn.');
+      status(raw?'Đã tải thiết kế đang sử dụng.':'Đã chuẩn bị bố cục mặc định. Nhấn Publish để lưu lựa chọn.');
     }catch(e){status('Không tải được thiết kế: '+e.message,'error');}
     finally{busy=false;}
   }
@@ -193,7 +193,7 @@
     try{
       const {error}=await db.from('site_content').upsert({key:'v3_design',value_vi:JSON.stringify(cfg),value_en:null,value_ja:null,updated_at:new Date().toISOString()},{onConflict:'key'});
       if(error)throw error;
-      changed=false;status('Đã Publish V3 thành công. Tải lại thiệp để xem.','success');
+      changed=false;status('Đã Publish thiết kế thành công. Tải lại thiệp để xem.','success');
     }catch(e){status('Không thể Publish: '+e.message,'error');}
     finally{busy=false;$('v3Publish').disabled=false;}
   });
