@@ -325,7 +325,9 @@
         <section id="v3Tab" class="tab-panel hidden">
           <section class="panel">
             <div class="panel-head"><div><p class="eyebrow">WEDDING EDITORIAL V3</p><h3>Thiết kế thiệp cưới</h3></div><a class="btn ghost" href="/" target="_blank" rel="noopener">Xem thiệp ↗</a></div>
-            <p class="muted">Chọn ảnh đã Publish trong Album. Hero chuyển ảnh nhẹ nhàng; ảnh đôi phía trên lịch cưới; thêm khối ảnh và chữ giữa các phần. Chỉnh sửa ở đây không thay đổi RSVP, khách mời hay dữ liệu album.</p>
+            <p class="muted">V13 Image Manager: chọn ảnh đã Publish từ thư viện, kể cả ảnh chỉ dùng cho website. Chọn vị trí và Publish để cập nhật thiết kế; ảnh có thể ẩn khỏi Album công khai mà vẫn xuất hiện tại Hero, Story, Schedule, Our Promise hoặc Footer.</p>
+            <p class="muted"><strong>Thêm ảnh mới:</strong> mở tab Album → Thêm ảnh, bật “Cho phép sử dụng ảnh trên website” và bỏ chọn “Hiển thị trong Album cho khách xem”.</p>
+            <div id="v13SectionPreview" class="v13-image-map" aria-label="Ảnh đang chọn cho từng khu vực website"></div>
             <div class="v3-admin-layout">
               <section class="v3-admin-part">
                 <h3>01 · Hero slideshow</h3>
@@ -349,7 +351,7 @@
                     <label>Mobile · Ngang <output id="v3MobileXValue">50%</output><input id="v3PosterMobileX" type="range" min="0" max="100" value="50"></label>
                     <label>Mobile · Dọc <output id="v3MobileYValue">50%</output><input id="v3PosterMobileY" type="range" min="0" max="100" value="50"></label>
                   </div>
-                  <p class="muted">Ảnh nền lấy tự động từ Album công khai và chỉ làm phông trang trí; khách không có nút chọn hay xem riêng ảnh nền.</p>
+                  <p class="muted">Ảnh nền lấy từ thư viện website đã Publish; có thể ẩn khỏi Album công khai. Khách không có nút mở ảnh nền trực tiếp.</p>
                   <div class="v3-poster-previews">
                     <div class="v3-poster-preview v3-poster-preview-desktop" id="v3PosterPreviewDesktop" aria-label="Desktop preview">
                       <img class="v3-preview-bg" alt="">
@@ -368,7 +370,7 @@
               </section>
               <section class="v3-admin-part">
                 <h3>02 · Ảnh lịch cưới và kết thúc</h3>
-                <p class="muted">Chọn ảnh lịch cưới, ảnh Our Promise và ảnh cuối thiệp từ Album đã Publish. Có thể để trống để website tự chọn ảnh phù hợp.</p>
+                <p class="muted">Chọn ảnh website đã Publish. Không yêu cầu ảnh xuất hiện trong Album công khai. Có thể để trống để tự chọn.</p>
                 <label>Ảnh đôi ở lịch cưới<select id="v3ScheduleImage"></select></label>
                 <label>Ảnh Our Promise (bên trái lời hẹn)<select id="v3PromiseImage"></select></label>
                 <label>Ảnh cuối thiệp<select id="v3FarewellImageSelect"></select></label>
@@ -386,7 +388,7 @@
                 <label>Ảnh 05<select id="v3Album4"></select></label>
               </div>
               <div id="v3AlbumPreview" class="v11-admin-photo-preview" aria-label="Ảnh Album trang chủ theo thứ tự đã chọn"></div>
-              <p class="muted">Ảnh được chọn phải đã Publish. Hệ thống sẽ bổ sung ảnh tự động nếu chọn ít hơn 5 ảnh.</p>
+              <p class="muted">Gallery chỉ hiển thị ảnh có bật “Hiển thị trong Album cho khách xem”. Nếu chọn ít hơn 5 ảnh, hệ thống bổ sung ảnh Album công khai.</p>
             </div>
             <div class="v3-admin-part v3-builder">
               <h3>04 · Story Builder — Ảnh và chữ xen kẽ</h3>
