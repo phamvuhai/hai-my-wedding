@@ -51,8 +51,14 @@
     if(!img)return '<div class="v3-story-block v3-story-quote">'+caption+'</div>';
     const photo=i=>'<img loading="lazy" decoding="async" src="'+safe(url(i))+'" alt="'+safe(alt(i))+'" style="object-position:'+Math.max(0,Math.min(100,Number(i.focus_x??50)))+'% '+Math.max(0,Math.min(100,Number(i.focus_y??50)))+'%">';
     if(b.style==='film'){
-      const others=state.photos.filter(x=>x.id!==img.id).slice(0,2);
-      return '<div class="v3-story-block v3-story-film"><div class="v3-film-images">'+[img,...others].map(photo).join('')+'</div>'+caption+'</div>';
+      const configured=Array.isArray(b.imageIds)?b.imageIds.map(choose).filter(Boolean):[];
+      const used=new Set([img.id]);const images=[img];
+      for(const next of [...configured,...state.photos]){
+        if(!next||used.has(next.id))continue;
+        images.push(next);used.add(next.id);
+        if(images.length===3)break;
+      }
+      return '<div class="v3-story-block v3-story-film"><div class="v3-film-images">'+images.map(photo).join('')+'</div>'+caption+'</div>';
     }
     return '<div class="v3-story-block v3-story-'+b.style+(idx%2?' v3-story-reversed':'')+'"><div class="v3-story-visual">'+photo(img)+'</div>'+caption+'</div>';
   }
