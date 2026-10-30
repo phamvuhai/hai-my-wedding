@@ -52,7 +52,7 @@ Admin writes are limited by Supabase authenticated policies to the configured ad
 
 ## Thiết kế V11 — ảnh theo vị trí
 
-Mở `/admin` → **Thiết kế V3** (đây là editor đang dùng trên trang public).
+Mở `/admin` → **Thiết kế website** (editor hiện tại, dùng cấu hình V3).
 
 - **Hero**: chọn tối đa ba ảnh đã Publish và chỉnh điểm lấy nét desktop/mobile.
 - **Ảnh lịch cưới / Our Promise / Farewell**: chọn riêng từng ảnh.
@@ -60,7 +60,7 @@ Mở `/admin` → **Thiết kế V3** (đây là editor đang dùng trên trang 
 - **Story Builder**: Split/Letter chọn một ảnh; Filmstrip chọn một ảnh chính và tùy chọn hai ảnh phụ. Ba ảnh không được trùng nhau.
 - Bấm **Publish toàn bộ thiết kế V3** để lưu. Chỉ thay đổi trong form không làm thay đổi public.
 
-Tab **Collage V2 (cũ)** chỉ giữ để đối chiếu, không kết nối vào public hiện tại. Các ô chọn ảnh dùng ảnh từ Album đã được Publish.
+**Collage V2 đã được gỡ khỏi Admin** vì không được trang public sử dụng. Dữ liệu cấu hình cũ, nếu có, vẫn được giữ trong Supabase để có thể đối chiếu hoặc phục hồi.
 
 ## Mời riêng theo URL
 
