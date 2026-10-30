@@ -128,12 +128,22 @@
     const img=choose(state.config?.schedulePhotoId)||state.photos.find(i=>i.is_hero)||state.photos[0];
     const wrap=document.getElementById('v3SchedulePhotoWrap'),target=document.getElementById('v3SchedulePhoto');
     if(wrap&&target&&img){
-      target.src=url(img);target.alt=alt(img);target.style.objectPosition=(Number(img.focus_x??50))+'% '+(Number(img.focus_y??50))+'%';
+      target.alt=alt(img);target.style.objectPosition=(Number(img.focus_x??50))+'% '+(Number(img.focus_y??50))+'%';
       target.onerror=()=>{wrap.hidden=true;};target.onload=()=>{wrap.hidden=false;};
+      const next=url(img);
+      if(target.getAttribute('src')!==next)target.src=next;
+      else if(target.complete&&target.naturalWidth>0)wrap.hidden=false;
     }
     const goodbye=choose(state.config?.farewellPhotoId)||state.photos.find(i=>i.show_on_homepage&&i.id!==img?.id);
     const foot=document.getElementById('v3Farewell'),end=document.getElementById('v3FarewellImage');
-    if(foot&&end&&goodbye){end.src=url(goodbye);end.alt=alt(goodbye);end.onload=()=>{foot.hidden=false;};end.onerror=()=>{foot.hidden=true;};}
+    if(foot&&end&&goodbye){
+      end.alt=alt(goodbye);
+      end.style.objectPosition=(Number(goodbye.focus_x??50))+'% '+(Number(goodbye.focus_y??50))+'%';
+      end.onload=()=>{foot.hidden=false;};end.onerror=()=>{foot.hidden=true;};
+      const next=url(goodbye);
+      if(end.getAttribute('src')!==next)end.src=next;
+      else if(end.complete&&end.naturalWidth>0)foot.hidden=false;
+    }
   }
   function setDay(day){
     if(!['bride','groom'].includes(day))return;
