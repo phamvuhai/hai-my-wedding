@@ -38,7 +38,7 @@
   }
 
   function render() {
-    // Collage configuration is structured JSON and managed exclusively in the Collage tab.
+    // Keep legacy collage_layout data out of generic content editing; its editor was retired.
     root.innerHTML = A.contentRows.filter(row => !['collage_layout','v3_design'].includes(row.key)).map((row) => `
       <article class="content-row" data-key="${A.esc(row.key)}">
         <div class="content-row-head">
