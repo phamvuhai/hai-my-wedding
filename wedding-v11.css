@@ -59,3 +59,18 @@ html[lang="ja"] .gallery-section .gallery-editorial-head .section-heading h2{
   .gallery-section .photo-curtain{display:none!important}
   .gallery-section #homeGallery > .home-photo,.gallery-section #homeGallery > .home-photo img{transition:none!important;animation:none!important}
 }
+
+/* Invalid personalized invite links show a safe localized hint, never guest data. */
+.invite-luxury .v11-invalid-invite:not([hidden]){
+  display:block;
+  max-width:39ch;
+  margin:14px auto 0;
+  padding:12px 15px;
+  border:1px solid rgba(151,94,89,.28);
+  border-radius:7px;
+  color:#70454b;
+  background:#faf0eb;
+  font:500 12px/1.6 "Lora",Georgia,serif;
+  overflow-wrap:anywhere;
+}
+.invite-luxury .v11-invalid-invite[hidden]{display:none!important}
