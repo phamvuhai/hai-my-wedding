@@ -1,0 +1,31 @@
+/* Wedding V11 Admin — unified image management, compact inputs and responsive previews */
+.v11-image-manager{margin-top:24px}
+.v11-home-selectors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px;margin:17px 0}
+.v11-home-selectors label,.v11-film-options label{display:flex;flex-direction:column;gap:7px;min-width:0;font-weight:600}
+.v11-home-selectors select,.v11-film-options select{width:100%;max-width:100%;min-width:0;min-height:45px;padding:9px 12px;background:#fff;border-radius:9px;border:1px solid #d8c9c5;color:#4d3d3d}
+.v11-home-selectors label:first-child{grid-column:1/-1}
+.v11-admin-photo-preview{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:18px 0 12px}
+.v11-admin-photo{position:relative;min-width:0;margin:0;overflow:hidden;border:1px solid rgba(112,73,68,.13);border-radius:11px;background:#f4ece5}
+.v11-admin-photo img{display:block;width:100%;height:clamp(115px,15vw,190px);object-fit:cover;object-position:center}
+.v11-admin-photo figcaption{min-width:0;min-height:36px;padding:8px;font:500 12px/1.4 system-ui;color:#62504b;overflow-wrap:anywhere}
+.v11-film-options[hidden]{display:none!important}
+.v11-film-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 18px;padding:15px;border-radius:12px;border:1px solid #e0d0c8;background:#fffaf6}
+.v11-film-options .muted{grid-column:1/-1;margin:0;font-size:13px}
+.v3-admin-block{min-width:0}
+.v3-admin-block strong,.v3-admin-block p{overflow-wrap:anywhere}
+@media(max-width:1024px){
+ .v11-admin-photo-preview{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .v11-admin-photo img{height:148px}
+}
+@media(max-width:680px){
+ .v11-home-selectors,.v11-film-options{grid-template-columns:minmax(0,1fr);gap:12px}
+ .v11-admin-photo-preview{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .v11-admin-photo img{height:135px}
+ .v11-image-manager{margin-top:18px}
+ .v11-film-options .muted{grid-column:1}
+ .v3-admin-part{min-width:0}
+ .v3-admin-part select,.v3-admin-part textarea{max-width:100%}
+}
+@media(prefers-reduced-motion:reduce){
+ .v11-admin-photo img{transition:none!important}
+}
