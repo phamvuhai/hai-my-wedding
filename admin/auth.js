@@ -45,16 +45,14 @@
     document.getElementById('rsvpTab').classList.toggle('hidden', tab !== 'rsvp');
     document.getElementById('guestsTab').classList.toggle('hidden', tab !== 'guests');
     document.getElementById('albumTab').classList.toggle('hidden', tab !== 'album');
-    document.getElementById('collageTab').classList.toggle('hidden', tab !== 'collage');
     document.getElementById('v3Tab').classList.toggle('hidden', tab !== 'v3');
-    const titles = {overview:'Tổng quan',content:'Nội dung website',rsvp:'RSVP',guests:'Khách mời',album:'Album',collage:'Collage thiệp (V2)',v3:'Thiết kế V3'};
+    const titles = {overview:'Tổng quan',content:'Nội dung website',rsvp:'RSVP',guests:'Khách mời',album:'Album',v3:'Thiết kế website'};
     document.getElementById('pageTitle').textContent = titles[tab] || 'Admin';
 
     if (tab === 'overview') document.dispatchEvent(new Event('admin:overview'));
     if (tab === 'content') document.dispatchEvent(new Event('admin:content'));
     if (tab === 'rsvp') document.dispatchEvent(new Event('admin:rsvp'));
     if (tab === 'guests') document.dispatchEvent(new Event('admin:guests'));
-    if (tab === 'collage') document.dispatchEvent(new Event('admin:collage'));
     if (tab === 'v3') document.dispatchEvent(new Event('admin:v3'));
   }
 
