@@ -39,7 +39,7 @@
 
   function render() {
     // Keep legacy collage_layout data out of generic content editing; its editor was retired.
-    root.innerHTML = A.contentRows.filter(row => !['collage_layout','v3_design'].includes(row.key)).map((row) => `
+    root.innerHTML = A.contentRows.filter(row => !['collage_layout','v3_design','wedding_gifts_v1'].includes(row.key)).map((row) => `
       <article class="content-row" data-key="${A.esc(row.key)}">
         <div class="content-row-head">
           <strong>${A.esc(labels[row.key] || row.key)}</strong>
