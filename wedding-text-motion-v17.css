@@ -30,7 +30,7 @@ html.v17-motion-ready .v17-text.v17-headline{
     opacity var(--v17-title-duration) ease,
     transform var(--v17-title-duration) var(--v17-curve),
     filter var(--v17-title-duration) ease;
-  transition-delay:calc(var(--v17-order,0) * 35ms);
+  transition-delay:var(--v17-item-delay,0ms);
 }
 html.v17-motion-ready .v17-text.v17-headline.v17-visible{
   opacity:1;
@@ -46,7 +46,7 @@ html.v17-motion-ready .v17-text.v17-line{
   transition:opacity var(--v17-line-duration) ease,
     transform var(--v17-line-duration) var(--v17-curve),
     clip-path var(--v17-line-duration) var(--v17-curve);
-  transition-delay:calc(var(--v17-order,0) * 35ms);
+  transition-delay:var(--v17-item-delay,0ms);
 }
 html.v17-motion-ready .v17-text.v17-line.v17-visible{
   opacity:1;transform:none;clip-path:inset(0 0 0 0);
@@ -64,6 +64,13 @@ html.v17-motion-ready .v17-text.v17-soft.v17-visible{opacity:1;transform:none}
    a single accessible label, including all accents and Japanese characters. */
 html.v17-motion-ready .v17-text.v17-letters{
   overflow:visible!important;
+}
+/* Screen-reader-only original string stays alongside decorative graphemes. */
+html.v17-motion-ready .v17-accessible{
+  position:absolute!important;width:1px!important;height:1px!important;
+  padding:0!important;margin:-1px!important;
+  overflow:hidden!important;border:0!important;white-space:nowrap!important;
+  clip:rect(0,0,0,0)!important;clip-path:inset(50%)!important;
 }
 html.v17-motion-ready .v17-text .v17-char{
   display:inline-block;
@@ -131,7 +138,7 @@ html.v17-motion-ready #weddingGifts .v17-text.v17-card:not(.v17-visible){
 html.v17-motion-ready #weddingGifts .v17-text.v17-card{
   transition:opacity var(--v17-title-duration) ease,
     transform var(--v17-title-duration) var(--v17-curve);
-  transition-delay:calc(var(--v17-order,0) * 110ms);
+  transition-delay:var(--v17-card-delay,0ms);
 }
 html.v17-motion-ready #weddingGifts .v17-text.v17-card.v17-visible{
   opacity:1;transform:none;
