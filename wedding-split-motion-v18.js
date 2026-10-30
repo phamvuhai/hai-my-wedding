@@ -67,7 +67,7 @@
     const parent=node.closest('.v3-story-block, .gallery-editorial-head');
     if(parent)parent.classList.remove('v4-reveal','v4-enter-left','v4-enter-right');
   }
-  function register(node,direction,group,index){
+  function register(node,direction,group,index,previouslySeen){
     if(!node||registered.has(node))return;
     if(node.closest('[hidden]')||node.parentElement?.closest('[aria-hidden="true"]'))return;
     registered.add(node);
@@ -79,18 +79,23 @@
     if(!observer||reduced.matches){
       reveal(node);return;
     }
-    if(group!=='hero'&&resolvedGroups.has(group)){
+    if(group!=='hero'&&previouslySeen){
       reveal(node);return;
     }
     if(group==='hero'&&document.body.classList.contains('invitation-locked')){
       observer.observe(node);return;
     }
-    if(inView(node)){reveal(node);return;}
+    if(inView(node)){
+      // Paint the offscreen starting position before beginning the transition.
+      requestAnimationFrame(()=>requestAnimationFrame(()=>reveal(node)));
+      return;
+    }
     observer.observe(node);
   }
   function scan(){
+    const previouslyRevealed=new Set(resolvedGroups);
     rules.forEach(([selector,direction,group])=>{
-      document.querySelectorAll(selector).forEach((node,index)=>register(node,direction,group,index));
+      document.querySelectorAll(selector).forEach((node,index)=>register(node,direction,group,index,previouslyRevealed.has(group)));
     });
   }
   let scanScheduled=false;
