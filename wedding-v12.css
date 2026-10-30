@@ -363,3 +363,16 @@ html[lang="ja"] .v3-section-heading h2{
   .gallery-section #homeGallery .photo-curtain{display:none!important;animation:none!important}
   .hero.hero-v5 .hero-copy>.btn.btn-primary{transition:none!important}
 }
+
+/* Photo focus follows the coordinates saved in Admin for the presentation layer. */
+.hero.hero-v5 .v6-center-panel .v6-center-underlay{
+  object-position:var(--poster-focus-desktop,50% 50%)!important;
+}
+.hero.hero-v5 .v5-gallery-layer > .v6-side{
+  object-position:var(--tile-focus,50% 50%)!important;
+}
+@media(max-width:767px){
+  .hero.hero-v5 .v6-center-panel .v6-center-underlay{
+    object-position:var(--poster-focus-mobile,50% 50%)!important;
+  }
+}
