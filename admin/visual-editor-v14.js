@@ -183,6 +183,10 @@
   $('v14PickerClose')?.addEventListener('click',closePicker);
   $('v14PickerCancel')?.addEventListener('click',closePicker);
   $('v14PickerAutomatic')?.addEventListener('click',()=>choosePhoto(''));
+  $('v14PickerAdd')?.addEventListener('click',()=>{
+    closePicker();switchTab('album');
+    requestAnimationFrame(()=>document.querySelector('.upload-panel')?.scrollIntoView({block:'start',behavior:'smooth'}));
+  });
   document.addEventListener('keydown',event=>{
     if(backdrop.hidden)return;
     if(event.key==='Escape'){event.preventDefault();closePicker();return}
