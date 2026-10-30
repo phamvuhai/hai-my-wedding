@@ -1,0 +1,443 @@
+/* Wedding Editorial V8 — quiet luxury photo storytelling.
+   Loaded last so it intentionally supersedes legacy gallery/film layouts.
+   Scope: public invitation only; no RSVP, map or admin changes. */
+
+.gallery-section{
+  isolation:isolate;
+  padding:clamp(76px,9vw,136px) 0 clamp(80px,9vw,140px)!important;
+  background:#faf6f0!important;
+}
+.gallery-section .container{
+  width:min(1280px,calc(100% - clamp(36px,6vw,112px)))!important;
+  max-width:1280px!important;
+}
+.gallery-section .gallery-editorial-head{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  justify-items:center;
+  align-items:center;
+  gap:clamp(18px,2.6vw,32px)!important;
+  width:min(850px,100%);
+  margin:0 auto clamp(32px,5vw,62px)!important;
+  text-align:center;
+}
+.gallery-section .gallery-display,
+html[lang="vi"] .gallery-section .gallery-display{
+  display:flex!important;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:center;
+  gap:.58em;
+  width:auto;
+  min-width:0;
+  color:#986e60;
+  font:500 clamp(12px,1.15vw,15px)/1.5 "Lora",Georgia,serif!important;
+  letter-spacing:.24em!important;
+  text-transform:uppercase;
+}
+.gallery-section .gallery-display:before,
+.gallery-section .gallery-display:after{
+  content:"";
+  width:clamp(24px,4vw,58px);
+  height:1px;
+  background:#c8af9f;
+}
+.gallery-section .gallery-display span,
+.gallery-section .gallery-display span:last-child{
+  padding:0!important;
+  margin:0;
+  color:#986e60!important;
+  font:inherit!important;
+  font-style:normal!important;
+  line-height:inherit!important;
+  letter-spacing:inherit!important;
+}
+.gallery-section .gallery-editorial-head .section-heading,
+html[lang="vi"] .gallery-section .gallery-editorial-head .section-heading{
+  width:100%!important;
+  max-width:800px!important;
+  margin:0 auto!important;
+  text-align:center!important;
+}
+.gallery-section .section-heading .eyebrow{display:none!important}
+.gallery-section .gallery-editorial-head .section-heading h2,
+html[lang="vi"] .gallery-section .gallery-editorial-head .section-heading h2{
+  max-width:100%;
+  margin:0!important;
+  color:#503d37!important;
+  font:500 clamp(42px,5.8vw,78px)/1.08 "Cormorant Garamond",Georgia,serif!important;
+  letter-spacing:-.028em!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+  text-wrap:balance;
+}
+.gallery-section .gallery-editorial-head .section-heading h2:after{
+  display:block;
+  margin:clamp(16px,2vw,24px) auto!important;
+  width:54px;
+  height:1px;
+  background:#bc9c85;
+}
+.gallery-section .gallery-editorial-head .section-heading > p:last-child,
+html[lang="vi"] .gallery-section .gallery-editorial-head .section-heading > p:last-child{
+  max-width:54ch!important;
+  margin:0 auto!important;
+  color:#77645a!important;
+  font:400 clamp(14px,1.35vw,17px)/1.83 "Lora",Georgia,serif!important;
+  overflow-wrap:normal;
+  text-wrap:pretty;
+}
+
+/* Main photo left; two quiet, equally sized supporting photos right. */
+.gallery-section #homeGallery.home-gallery{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.32fr) minmax(0,1fr)!important;
+  grid-template-rows:repeat(2,minmax(0,1fr))!important;
+  grid-auto-flow:row!important;
+  grid-auto-rows:auto!important;
+  gap:clamp(12px,1.6vw,20px)!important;
+  height:clamp(520px,55vw,760px)!important;
+  min-width:0;
+  perspective:none!important;
+  overflow:visible!important;
+}
+.gallery-section #homeGallery > .home-photo{
+  display:block;
+  box-sizing:border-box;
+  position:relative;
+  grid-column:2 / 3!important;
+  grid-row:auto!important;
+  min-width:0!important;
+  min-height:0!important;
+  height:100%!important;
+  width:100%!important;
+  aspect-ratio:auto!important;
+  margin:0!important;
+  overflow:hidden!important;
+  background:#e5d9ce!important;
+  border:1px solid rgba(109,76,62,.11)!important;
+  border-radius:5px!important;
+  box-shadow:0 12px 35px rgba(67,43,32,.07)!important;
+  transform:none!important;
+  filter:none!important;
+  isolation:isolate;
+}
+.gallery-section #homeGallery > .home-photo:first-child{
+  grid-column:1 / 2!important;
+  grid-row:1 / 3!important;
+}
+.gallery-section #homeGallery[data-count="1"] > .home-photo:first-child{
+  grid-column:1 / -1!important;
+}
+.gallery-section #homeGallery[data-count="2"] > .home-photo:nth-child(2){
+  grid-row:1 / 3!important;
+}
+.gallery-section #homeGallery > .home-photo img{
+  display:block;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  transform:scale(1)!important;
+  filter:none!important;
+  transition:transform .5s ease,filter .5s ease!important;
+}
+.gallery-section #homeGallery > .home-photo::before{
+  content:none!important;
+  display:none!important;
+}
+.gallery-section #homeGallery > .home-photo::after{
+  content:"";
+  display:block!important;
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  opacity:1!important;
+  background:linear-gradient(180deg,rgba(24,18,17,.18) 0%,transparent 30%,transparent 52%,rgba(25,20,18,.64) 100%)!important;
+}
+.gallery-section #homeGallery .home-photo-copy{
+  z-index:3;
+  left:clamp(14px,2vw,30px)!important;
+  right:clamp(14px,2vw,30px)!important;
+  bottom:clamp(15px,2vw,29px)!important;
+  opacity:1!important;
+  color:#fff9f3!important;
+  transform:none!important;
+  text-shadow:0 2px 12px rgba(21,16,14,.28);
+}
+.gallery-section #homeGallery .home-photo-copy strong{
+  display:block;
+  max-width:100%;
+  color:inherit!important;
+  font:500 clamp(19px,2.2vw,33px)/1.1 "Cormorant Garamond",Georgia,serif!important;
+  letter-spacing:.015em;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+}
+.gallery-section #homeGallery .home-photo-copy small{
+  display:-webkit-box;
+  max-width:38ch;
+  margin-top:5px;
+  color:rgba(255,249,243,.88)!important;
+  font:400 clamp(11px,1.05vw,14px)/1.55 "Lora",Georgia,serif!important;
+  white-space:normal;
+  overflow:hidden;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+}
+.gallery-section #homeGallery .home-photo-index{
+  position:absolute;
+  z-index:3;
+  top:clamp(14px,1.7vw,24px);
+  left:clamp(14px,1.7vw,24px);
+  padding-bottom:6px;
+  border-bottom:1px solid rgba(255,250,245,.75);
+  color:#fffbf5;
+  font:600 11px/1.4 "Lora",Georgia,serif;
+  letter-spacing:.12em;
+  text-shadow:0 2px 12px rgba(0,0,0,.32);
+  pointer-events:none;
+}
+.gallery-section #homeGallery .home-photo-index i{
+  display:inline-block;
+  width:17px;
+  height:1px;
+  margin:0 6px 3px;
+  background:currentColor;
+  opacity:.8;
+}
+.gallery-section .gallery-empty{
+  align-self:stretch;
+  grid-column:1 / -1!important;
+  grid-row:1 / -1!important;
+  min-height:230px;
+  border-radius:8px!important;
+  background:#f4ede5!important;
+}
+.gallery-section .gallery-cta{
+  margin-top:clamp(28px,4vw,46px)!important;
+  text-align:center;
+}
+.gallery-section .gallery-cta .btn{
+  background:transparent!important;
+  border:1px solid #a98d7a!important;
+  border-radius:3px!important;
+  color:#6c4b3c!important;
+  min-height:48px;
+  padding:14px 26px!important;
+  font:600 12px/1.6 "Lora",Georgia,serif!important;
+  letter-spacing:.055em!important;
+  box-shadow:none!important;
+}
+@media(hover:hover) and (pointer:fine){
+  .gallery-section #homeGallery:hover .home-photo{filter:none!important}
+  .gallery-section #homeGallery > .home-photo:hover{transform:none!important;filter:none!important}
+  .gallery-section #homeGallery > .home-photo:hover img{transform:scale(1.035)!important}
+  .gallery-section .gallery-cta .btn:hover{background:#6c4b3c!important;color:white!important}
+}
+
+/* Match the three-photo Film chapter to the same art-directed rhythm. */
+.romance-collage-slot .v3-story-container{
+  width:min(1200px,calc(100% - clamp(36px,6vw,96px)))!important;
+  gap:clamp(38px,5vw,70px)!important;
+  padding:clamp(60px,7.5vw,108px) 0!important;
+}
+.romance-collage-slot .v3-story-block{box-shadow:none!important}
+.romance-collage-slot .v3-story-split,
+.romance-collage-slot .v3-story-letter{
+  background:#f7f0e8!important;
+  border-radius:8px!important;
+  overflow:hidden;
+}
+.romance-collage-slot .v3-story-split .v3-story-copy p,
+.romance-collage-slot .v3-story-letter .v3-story-copy p,
+.romance-collage-slot .v3-story-film .v3-story-copy p{
+  font:400 clamp(16px,1.7vw,21px)/1.8 "Lora",Georgia,serif!important;
+  color:#65514b!important;
+  max-width:44ch!important;
+}
+.romance-collage-slot .v3-story-chapter{
+  color:#946d5b!important;
+  font:600 11px/1.5 "Lora",Georgia,serif!important;
+  letter-spacing:.16em!important;
+}
+.romance-collage-slot .v3-story-copy small{color:#aa8474!important}
+.romance-collage-slot .v3-story-quote{
+  border:1px solid #eadbd0!important;
+  border-radius:8px!important;
+  background:#f8f2eb!important;
+  padding:clamp(24px,4vw,48px) 10px!important;
+}
+.romance-collage-slot .v3-story-quote .v3-story-copy p{
+  color:#735349!important;
+  font:italic 500 clamp(27px,3.3vw,43px)/1.45 "Cormorant Garamond",Georgia,serif!important;
+}
+.romance-collage-slot .v3-story-film .v3-film-images{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.28fr) minmax(0,1fr)!important;
+  grid-template-rows:repeat(2,minmax(0,1fr))!important;
+  gap:clamp(10px,1.6vw,19px)!important;
+  height:clamp(430px,47vw,680px)!important;
+}
+.romance-collage-slot .v3-story-film .v3-film-images img{
+  box-sizing:border-box;
+  width:100%!important;
+  height:100%!important;
+  max-height:none!important;
+  min-height:0!important;
+  aspect-ratio:auto!important;
+  border:0!important;
+  border-radius:4px!important;
+  object-fit:cover!important;
+  box-shadow:none!important;
+}
+.romance-collage-slot .v3-story-film .v3-film-images img:first-child{
+  grid-column:1!important;
+  grid-row:1 / 3!important;
+}
+.romance-collage-slot .v3-story-film .v3-film-images img:first-child:last-child{
+  grid-column:1 / -1!important;
+}
+.romance-collage-slot .v3-story-film .v3-film-images img:nth-child(2):last-child{
+  grid-row:1 / 3!important;
+}
+.romance-collage-slot .v3-story-film .v3-story-copy{
+  padding:clamp(24px,3vw,38px) 18px 0!important;
+}
+
+/* Relax the promise photo treatment; leave its face-safe crop to existing styles. */
+.our-promise .our-promise-letter h2{letter-spacing:-.03em!important}
+.our-promise .our-promise-photo-shell{box-shadow:0 22px 58px rgba(70,48,40,.10)!important}
+
+@media (min-width:761px) and (max-width:1100px){
+  .gallery-section #homeGallery.home-gallery{height:clamp(480px,61vw,650px)!important}
+  .gallery-section .gallery-editorial-head .section-heading h2,
+  html[lang="vi"] .gallery-section .gallery-editorial-head .section-heading h2{
+    font-size:clamp(41px,5.5vw,62px)!important;
+  }
+}
+@media(max-width:760px){
+  .gallery-section{
+    padding:clamp(55px,10vw,76px) 0 clamp(64px,10vw,90px)!important;
+  }
+  .gallery-section .container{
+    width:calc(100% - 32px)!important;
+  }
+  .gallery-section .gallery-editorial-head{
+    margin-bottom:30px!important;
+    gap:15px!important;
+  }
+  .gallery-section .gallery-display,
+  html[lang="vi"] .gallery-section .gallery-display{
+    font-size:11px!important;
+    letter-spacing:.15em!important;
+    gap:.42em!important;
+  }
+  .gallery-section .gallery-display::before,
+  .gallery-section .gallery-display::after{width:24px}
+  .gallery-section .gallery-editorial-head .section-heading h2,
+  html[lang="vi"] .gallery-section .gallery-editorial-head .section-heading h2{
+    font-size:clamp(37px,9vw,53px)!important;
+    line-height:1.1!important;
+  }
+  .gallery-section .gallery-editorial-head .section-heading > p:last-child{
+    font-size:14px!important;
+    line-height:1.7!important;
+    max-width:36ch!important;
+  }
+  .gallery-section #homeGallery.home-gallery{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-template-rows:auto auto!important;
+    gap:9px!important;
+    height:auto!important;
+    overflow:visible!important;
+  }
+  .gallery-section #homeGallery > .home-photo,
+  .gallery-section #homeGallery > .home-photo.size-small,
+  .gallery-section #homeGallery > .home-photo.size-tall,
+  .gallery-section #homeGallery > .home-photo.size-large,
+  .gallery-section #homeGallery > .home-photo.size-wide{
+    grid-column:auto!important;
+    grid-row:auto!important;
+    width:100%!important;
+    height:auto!important;
+    aspect-ratio:4 / 5!important;
+    border-radius:4px!important;
+  }
+  .gallery-section #homeGallery > .home-photo:first-child,
+  .gallery-section #homeGallery[data-count="1"] > .home-photo:first-child{
+    grid-column:1 / -1!important;
+    grid-row:auto!important;
+    aspect-ratio:4 / 5!important;
+  }
+  .gallery-section #homeGallery[data-count="2"] > .home-photo:nth-child(2){
+    grid-column:1 / -1!important;
+    grid-row:auto!important;
+    aspect-ratio:5 / 3!important;
+  }
+  .gallery-section #homeGallery .home-photo-copy{
+    left:12px!important;
+    right:12px!important;
+    bottom:12px!important;
+  }
+  .gallery-section #homeGallery .home-photo-copy strong{font-size:18px!important}
+  .gallery-section #homeGallery > .home-photo:first-child .home-photo-copy strong{font-size:clamp(26px,7vw,36px)!important}
+  .gallery-section #homeGallery .home-photo-copy small{
+    font-size:11px!important;
+    line-height:1.42!important;
+    -webkit-line-clamp:2;
+  }
+  .gallery-section #homeGallery > .home-photo:not(:first-child) .home-photo-copy small{
+    display:none!important;
+  }
+  .gallery-section #homeGallery .home-photo-index{
+    top:11px;
+    left:11px;
+    font-size:10px;
+  }
+  .romance-collage-slot .v3-story-container{
+    width:calc(100% - 32px)!important;
+    gap:28px!important;
+    padding:44px 0!important;
+  }
+  .romance-collage-slot .v3-story-film .v3-film-images{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-template-rows:auto auto!important;
+    height:auto!important;
+    gap:9px!important;
+  }
+  .romance-collage-slot .v3-story-film .v3-film-images img{
+    width:100%!important;
+    height:auto!important;
+    aspect-ratio:4 / 5!important;
+  }
+  .romance-collage-slot .v3-story-film .v3-film-images img:first-child,
+  .romance-collage-slot .v3-story-film .v3-film-images img:first-child:last-child{
+    grid-column:1 / -1!important;
+    grid-row:auto!important;
+    aspect-ratio:4 / 5!important;
+  }
+  .romance-collage-slot .v3-story-film .v3-film-images img:nth-child(2):last-child{
+    grid-column:1 / -1!important;
+    grid-row:auto!important;
+    aspect-ratio:5 / 3!important;
+  }
+  .romance-collage-slot .v3-story-film .v3-story-copy{padding:22px 5px 0!important}
+  .romance-collage-slot .v3-story-split .v3-story-copy p,
+  .romance-collage-slot .v3-story-letter .v3-story-copy p,
+  .romance-collage-slot .v3-story-film .v3-story-copy p{
+    font-size:15px!important;
+    line-height:1.78!important;
+  }
+}
+@media(max-width:380px){
+  .gallery-section .container,
+  .romance-collage-slot .v3-story-container{width:calc(100% - 26px)!important}
+  .gallery-section #homeGallery .home-photo-copy strong{font-size:16px!important}
+  .gallery-section #homeGallery .home-photo-index i{width:12px;margin-inline:3px}
+}
+@media(prefers-reduced-motion:reduce){
+  .gallery-section #homeGallery > .home-photo,
+  .gallery-section #homeGallery > .home-photo img,
+  .gallery-section .gallery-cta .btn{animation:none!important;transition:none!important}
+}
