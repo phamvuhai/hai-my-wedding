@@ -404,7 +404,7 @@ function renderHomeGallery() {
         class="home-photo size-${size} ${index === 0 ? 'editorial-featured' : ''} reveal visible"
         data-photo-id="${galleryEsc(img.id)}"
         aria-label="${galleryEsc(loc.alt || 'Hải Phạm & Mỹ Nguyễn')}">
-        <img loading="lazy" decoding="async" src="${url}" alt="${galleryEsc(loc.alt)}"
+        <img loading="eager" decoding="async" src="${url}" alt="${galleryEsc(loc.alt)}"
           style="object-position:${Number(img.focus_x ?? 50)}% ${Number(img.focus_y ?? 50)}%">
         <span class="photo-curtain" aria-hidden="true"></span>
         <span class="home-photo-index" aria-hidden="true">${String(index + 1).padStart(2, '0')} <i></i> ${String(galleryState.homeImages.length).padStart(2, '0')}</span>
@@ -754,7 +754,18 @@ document.addEventListener('visibilitychange', () => {
 });
 
 document.addEventListener('wedding:language', () => {
-  renderHomeGallery();
+  // Preserve existing loaded image nodes so switching languages never replays the curtain.
+  const tiles=[...document.querySelectorAll('#homeGallery > .home-photo')];
+  if(tiles.length===galleryState.homeImages.length && tiles.every((tile,i)=>tile.dataset.photoId===galleryState.homeImages[i].id)){
+    tiles.forEach((tile,i)=>{
+      const copy=galleryLocalized(galleryState.homeImages[i]);
+      tile.setAttribute('aria-label',copy.alt||'Hải & Mỹ');
+      const image=tile.querySelector('img');if(image)image.alt=copy.alt||'';
+      const title=tile.querySelector('.home-photo-copy strong');if(title)title.textContent=copy.title||'';
+      const caption=tile.querySelector('.home-photo-copy small');if(caption)caption.textContent=copy.caption||'';
+      const err=tile.querySelector('.album-v12-error');if(err)err.textContent=window.WeddingI18n?.language==='ja'?'画像を読み込めませんでした':window.WeddingI18n?.language==='en'?'Photo unavailable':'Ảnh chưa tải được';
+    });
+  } else if(galleryState.homeImages.length) renderHomeGallery();
   if (galleryState.albumOpen) renderAlbumOverlay();
   if (galleryState.lightboxOpen) renderLightbox();
 });
