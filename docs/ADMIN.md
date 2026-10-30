@@ -87,3 +87,16 @@ Mở **Admin → Thiết kế website**. Trình chỉnh sửa hiển thị chín
 Nhấn **Chọn ảnh / Đổi ảnh** ngay trên hình thu nhỏ, tìm kiếm và chọn ảnh từ thư viện đã Publish. Ảnh *Website only* dùng được cho các khu vực khác Gallery; Gallery chỉ nhận ảnh có quyền hiển thị Album. Nút **Dùng ảnh tự động** trả vị trí về mặc định. Các nút PC/Tablet/Mobile đổi tỷ lệ preview minh họa (không thay đổi nội dung thực tế). **Lưu & Publish thiết kế** lưu qua cùng cơ chế V3, không tự động lưu khi chọn ảnh.
 
 Các phần **Tùy chỉnh Hero**, **Thiết lập Album chi tiết**, **Story Builder** là những bảng nâng cao có thể mở rộng. Khi mở thư viện chọn ảnh, có thể chuyển đến tab Album để upload ảnh mới. Các thay đổi chưa Publish được giữ nguyên khi chuyển qua lại giữa các tab, nhưng **không tồn tại sau khi tải lại trình duyệt**.
+
+## Mừng cưới — tài khoản Nhà trai & Nhà gái (V16)
+
+Vào **Admin → Thiết kế website → 09 · Thông tin mừng cưới**. Phần này xuất hiện trực tiếp **sau RSVP và trước lời cảm ơn/Footer**. Nhà trai luôn đứng trước Nhà gái.
+
+- **Hiển thị section**: bật/tắt toàn bộ. **Ai có thể xem**: công khai toàn thiệp, hoặc chỉ URL mời riêng.
+- **Nhà trai**: mặc định TPBank, PHAM VU HAI, 04480062888. QR mặc định dựng từ đúng dữ liệu VietQR đã cung cấp, không kết nối với dịch vụ sinh QR bên ngoài.
+- **Nhà gái**: chưa có tài khoản và QR; giữ chế độ chưa công bố, hiển thị thông báo đang cập nhật. Điền đủ ngân hàng, tên chủ tài khoản và số tài khoản, sau đó upload QR để công bố.
+- **Upload QR**: PNG/JPEG/WebP dưới 3 MB, lưu trong bucket `wedding-gallery` dưới tiền tố `wedding-gifts/`, không đưa vào Album cưới.
+- **Lưu & Công bố**: nút lưu riêng cho thông tin mừng cưới; không yêu cầu Publish thiết kế V3 hoặc deploy lại.
+- Nếu thay số tài khoản Nhà trai, phải upload QR mới. Trước khi thông báo cho khách, luôn thử quét QR và xác nhận tên/số tài khoản tại ứng dụng ngân hàng.
+
+Các URL mời riêng, Album, RSVP không bị thay đổi. Thông tin số tài khoản và QR khi bật công khai có thể được bất kỳ khách truy cập nào xem và chia sẻ.
