@@ -7,8 +7,8 @@
  if(!$('giftSave'))return;
  const KEY='wedding_gifts_v1';
  const defaults={enabled:true,visibility:'public',
-  groom:{enabled:true,bank:'TPBank',holder:'PHAM VU HAI',account:'04480062888',qrPath:''},
-  bride:{enabled:false,bank:'',holder:'NGUYEN THI MY',account:'',qrPath:''}};
+  groom:{enabled:true,bank:'TPBank',holder:'PHAM VU HAI',account:'04480062888',qrPath:'',qrAccount:''},
+  bride:{enabled:false,bank:'',holder:'NGUYEN THI MY',account:'',qrPath:'',qrAccount:''}};
  let cfg=JSON.parse(JSON.stringify(defaults)),pendingUploads=0,loaded=false;
  const formKeys=['giftEnabled','giftVisibility','giftGroomEnabled','giftGroomBank','giftGroomHolder','giftGroomAccount','giftBrideEnabled','giftBrideBank','giftBrideHolder','giftBrideAccount'];
  const status=(message,type='')=>A.setStatus($('giftSaveStatus'),message,type);
@@ -69,6 +69,7 @@
    const {error}=await db.storage.from('wedding-gallery').upload(path,file,{contentType:file.type,upsert:false,cacheControl:'31536000'});
    if(error)throw error;
    cfg[id.toLowerCase()].qrPath=path;
+   cfg[id.toLowerCase()].qrAccount=escapeString($('gift'+id+'Account').value).replace(/[\s-]/g,'');
    preview(id);
    msg.textContent='Đã upload QR. Nhấn Lưu & Công bố để áp dụng lên website.';
    status('QR đã upload nhưng chưa được công bố.');
@@ -83,6 +84,9 @@
    const item=cfg[side];
    if(item.enabled&&(!item.bank||!item.holder||!item.account)){
     status('Thiếu thông tin ngân hàng của '+(side==='groom'?'Nhà trai':'Nhà gái')+'.','error');return;
+   }
+   if(item.enabled && item.qrPath && item.qrAccount!==item.account.replace(/[\s-]/g,'')){
+    status('Số tài khoản đã thay đổi sau khi upload QR. Vui lòng upload QR mới cho '+(side==='groom'?'Nhà trai':'Nhà gái')+'.','error');return;
    }
    if(item.account&&!/^[0-9\s-]{5,45}$/.test(item.account)){
     status('Số tài khoản chỉ được chứa chữ số, khoảng trắng hoặc dấu gạch ngang.','error');return;
