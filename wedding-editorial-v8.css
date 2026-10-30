@@ -439,6 +439,34 @@ html[lang="vi"] .gallery-section .gallery-editorial-head .section-heading > p:la
   .gallery-section #homeGallery .home-photo-copy strong{font-size:16px!important}
   .gallery-section #homeGallery .home-photo-index i{width:12px;margin-inline:3px}
 }
+/* Localized line breaking: Japanese needs a Mincho rhythm, not a Latin display face. */
+html[lang="ja"] .gallery-section .gallery-editorial-head .section-heading h2{
+  font-family:"Yu Mincho","Hiragino Mincho ProN","Noto Serif JP",serif!important;
+  font-size:clamp(30px,4.2vw,56px)!important;
+  font-weight:500!important;
+  letter-spacing:.02em!important;
+  line-height:1.4!important;
+}
+html[lang="ja"] .gallery-section .gallery-editorial-head .section-heading > p:last-child{
+  line-break:strict!important;
+  overflow-wrap:anywhere!important;
+}
+html[lang="ja"] .romance-collage-slot .v3-story-copy p{
+  font-family:"Yu Mincho","Hiragino Mincho ProN","Noto Serif JP",serif!important;
+  line-height:1.85!important;
+}
+@media(max-width:760px){
+  .gallery-section #homeGallery > .home-photo:not(:first-child) .home-photo-copy strong{
+    display:-webkit-box!important;
+    overflow:hidden!important;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    line-height:1.18!important;
+  }
+  html[lang="ja"] .gallery-section .gallery-editorial-head .section-heading h2{
+    font-size:clamp(28px,7.5vw,39px)!important;
+  }
+}
 @media(prefers-reduced-motion:reduce){
   .gallery-section #homeGallery > .home-photo,
   .gallery-section #homeGallery > .home-photo img,
