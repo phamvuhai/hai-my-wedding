@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/admin/admin.css" />
   <link rel="stylesheet" href="/admin/collage.css?v=romantic-1" />
   <link rel="stylesheet" href="/admin/wedding-v3.css?v=3" />
+  <link rel="stylesheet" href="/admin/wedding-v11.css?v=1" />
 </head>
 <body>
   <main class="admin-shell">
@@ -21,7 +22,7 @@
           <button class="nav-item" data-tab="rsvp">RSVP</button>
           <button class="nav-item" data-tab="guests">Khách mời</button>
           <button class="nav-item" data-tab="album">Album</button>
-          <button class="nav-item" data-tab="collage">Collage thiệp (V2)</button>
+          <button class="nav-item" data-tab="collage">Collage V2 (cũ)</button>
           <button class="nav-item" data-tab="v3">Thiết kế V3</button>
         </nav>
         <div class="sidebar-bottom">
@@ -374,14 +375,32 @@
                 <p class="muted">Nếu để Tự động, website lấy ảnh đã Publish trong Album.</p>
               </section>
             </div>
+            <div class="v3-admin-part v11-image-manager">
+              <h3>03 · Album trang chủ — chọn đúng 5 ảnh</h3>
+              <p class="muted">Chọn ảnh và thứ tự hiển thị trên PC, tablet và mobile. Ảnh 01 là ảnh nổi bật. Để trống cả 5 ô để dùng thứ tự tự động của Album. Trang Album chi tiết vẫn hiển thị tất cả ảnh được Publish.</p>
+              <div class="v11-home-selectors">
+                <label>Ảnh 01 · Ảnh chính<select id="v3Album0"></select></label>
+                <label>Ảnh 02<select id="v3Album1"></select></label>
+                <label>Ảnh 03<select id="v3Album2"></select></label>
+                <label>Ảnh 04<select id="v3Album3"></select></label>
+                <label>Ảnh 05<select id="v3Album4"></select></label>
+              </div>
+              <div id="v3AlbumPreview" class="v11-admin-photo-preview" aria-label="Ảnh Album trang chủ theo thứ tự đã chọn"></div>
+              <p class="muted">Ảnh được chọn phải đã Publish. Hệ thống sẽ bổ sung ảnh tự động nếu chọn ít hơn 5 ảnh.</p>
+            </div>
             <div class="v3-admin-part v3-builder">
-              <h3>03 · Story Builder — Ảnh và chữ xen kẽ</h3>
+              <h3>04 · Story Builder — Ảnh và chữ xen kẽ</h3>
               <p class="muted">Bố cục Split (ảnh cạnh chữ), Letter (ảnh lớn trên chữ), Filmstrip (ba ảnh) hoặc Quote (chỉ chữ). Hỗ trợ tiếng Việt, English và 日本語. Các khối sắp xếp theo thứ tự trong từng vị trí.</p>
               <div class="v3-admin-layout">
                 <div class="v3-block-form">
                   <label>Vị trí<select id="v3BlockSlot"><option value="story">Sau Our Story</option><option value="promise">Sau Countdown</option><option value="events">Sau lịch cưới</option><option value="moments">Sau Album</option><option value="rsvp">Sau RSVP</option></select></label>
                   <label>Bố cục<select id="v3BlockStyle"><option value="split">Split · Ảnh cạnh chữ</option><option value="letter">Letter · Ảnh rồi đến chữ</option><option value="film">Filmstrip · Ba ảnh liên tiếp</option><option value="quote">Quote · Chỉ chữ</option></select></label>
                   <label>Ảnh chính<select id="v3BlockImage"></select></label>
+                  <div class="v11-film-options" id="v3FilmOptions" hidden>
+                    <p class="muted">Filmstrip · chọn ảnh 02 và 03 (để trống để tự chọn)</p>
+                    <label>Ảnh thứ 02<select id="v3BlockImage2"></select></label>
+                    <label>Ảnh thứ 03<select id="v3BlockImage3"></select></label>
+                  </div>
                   <label>Nội dung · Tiếng Việt<textarea id="v3TextVi" rows="3" maxlength="420" placeholder="Từ hôm nay, mỗi chặng đường đều có chúng mình."></textarea></label>
                   <label>Text · English<textarea id="v3TextEn" rows="3" maxlength="420" placeholder="From this day, always."></textarea></label>
                   <label>文章 · 日本語<textarea id="v3TextJa" rows="3" maxlength="420" placeholder="これからもずっと一緒に。"></textarea></label>
@@ -637,7 +656,7 @@
   <script src="/admin/guests.js"></script>
   <script src="/admin/dashboard.js"></script>
   <script src="/admin/collage.js?v=romantic-1"></script>
-  <script src="/admin/wedding-v3.js?v=4"></script>
+  <script src="/admin/wedding-v3.js?v=11"></script>
   <script src="/admin/auth.js"></script>
 </body>
 </html>
