@@ -23,7 +23,8 @@
     {number:'06',key:'promise',title:'Our Promise',subtitle:'Lời hẹn của chúng mình',note:'Ưu tiên ảnh chân dung đứng, không cắt khuôn mặt.',type:'photos',ids:['v3PromiseImage'],labels:['Ảnh Our Promise'],settings:'v14AdvancedHero'},
     {number:'07',key:'gallery',title:'Our Moments — 5 ảnh',subtitle:'Gallery trang chủ',note:'Ảnh 01 lớn, bốn ảnh còn lại nhỏ. Chỉ chọn ảnh được phép xuất hiện trong Album.',type:'photos',ids:['v3Album0','v3Album1','v3Album2','v3Album3','v3Album4'],labels:['Ảnh lớn 01','Ảnh 02','Ảnh 03','Ảnh 04','Ảnh 05'],settings:'v14AdvancedAlbum'},
     {number:'08',key:'rsvp',title:'Xác nhận tham dự',subtitle:'RSVP',note:'Khách xác nhận tham dự qua biểu mẫu. Không có ảnh nền riêng.',type:'static',symbol:'✓'},
-    {number:'09',key:'farewell',title:'Lời cảm ơn cuối thiệp',subtitle:'Farewell / Footer',note:'Ảnh kết thúc câu chuyện, đi cùng lời cảm ơn.',type:'photos',ids:['v3FarewellImageSelect'],labels:['Ảnh cuối thiệp'],settings:'v14AdvancedHero'}
+    {number:'09',key:'gifts',title:'Thông tin mừng cưới',subtitle:'NHÀ TRAI TRƯỚC · NHÀ GÁI SAU',note:'Công bố tài khoản và QR ngân hàng, hiển thị ngay sau RSVP.',type:'gifts',settings:'v16GiftSettings'},
+    {number:'10',key:'farewell',title:'Lời cảm ơn cuối thiệp',subtitle:'Farewell / Footer',note:'Ảnh kết thúc câu chuyện, đi cùng lời cảm ơn.',type:'photos',ids:['v3FarewellImageSelect'],labels:['Ảnh cuối thiệp'],settings:'v14AdvancedHero'}
   ];
   let device='desktop',activeSlot='',lastFocus=null;
   const normalizeText=text=>String(text||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
@@ -65,6 +66,9 @@
       const klass=step.key==='gallery'?'v14-photos-gallery':step.key==='hero'?'v14-photos-hero':'v14-photos-single';
       content='<div class="v14-photo-grid '+klass+'">'+step.ids.map((id,i)=>tile(id,step.labels[i],i)).join('')+'</div>';
       content+='<button type="button" class="v14-inline-advanced" data-v14-settings="'+step.settings+'">Căn chỉnh / tùy chỉnh nâng cao <span aria-hidden="true">↗</span></button>';
+    } else if(step.type==='gifts'){
+      content='<div class="v14-story-preview"><div class="v14-story-mark" aria-hidden="true">♡</div><p>Nhà trai · Hải → Nhà gái · Mỹ</p><span>TPBank · QR · Mừng cưới</span></div>'+
+        '<button type="button" class="v14-open-story" data-v14-settings="v16GiftSettings">Chỉnh thông tin ngân hàng &amp; QR <span aria-hidden="true">↗</span></button>';
     } else if(step.type==='story'){
       const blocks=$('v3BlockList')?.querySelectorAll('.v3-admin-block').length||0;
       content='<div class="v14-story-preview"><div class="v14-story-mark" aria-hidden="true">“</div><p>Những khoảnh khắc tạo nên câu chuyện của chúng mình.</p>'+
