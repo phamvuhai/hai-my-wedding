@@ -496,6 +496,7 @@ async function loadAlbumImages({force=false} = {}) {
     client.from('gallery_images')
       .select('id,album_id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,focus_x,focus_y,created_at,updated_at,is_published')
       .eq('is_published', true)
+      .eq('show_in_album', true)
       .order('is_featured', { ascending: false })
       .order('sort_order', { ascending: true })
       .order('created_at', { ascending: false })
