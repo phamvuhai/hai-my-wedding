@@ -8,6 +8,7 @@
   const blank={version:3,heroIds:[],homePhotoIds:[],heroAutoplay:true,schedulePhotoId:'',farewellPhotoId:'',promisePhotoId:'',blocks:[],posterBlur:6,posterShade:40,posterForeground:true,posterDesktopX:50,posterDesktopY:50,posterMobileX:50,posterMobileY:50};
   let cfg={...blank},loaded=false,changed=false,busy=false,editing=-1;
   const published=()=>A.images.filter(i=>i.is_published&&i.image_path);
+  const albumPhotos=()=>published().filter(i=>i.show_in_album!==false);
   const uuid=()=>window.crypto?.randomUUID?.()||String(Date.now())+Math.random().toString(36).slice(2);
   const name=id=>A.images.find(i=>i.id===id)?.title||id?.slice(0,8)||'Không có ảnh';
   const status=(txt,type='')=>A.setStatus($('v3Status'),txt,type);
@@ -52,7 +53,9 @@
   }
   function pickers(){
     const options='<option value="">Tự động / Không chọn</option>'+published().map(i=>'<option value="'+A.esc(i.id)+'">'+A.esc(i.title||'Ảnh cưới')+' · '+i.id.slice(0,8)+'</option>').join('');
-    ['v3Hero0','v3Hero1','v3Hero2','v3ScheduleImage','v3PromiseImage','v3FarewellImageSelect','v3BlockImage','v3BlockImage2','v3BlockImage3',...Array.from({length:5},(_,i)=>'v3Album'+i)].forEach(id=>{const el=$(id);if(!el)return;const v=el.value;el.innerHTML=options;if(published().some(i=>i.id===v))el.value=v;});
+    ['v3Hero0','v3Hero1','v3Hero2','v3ScheduleImage','v3PromiseImage','v3FarewellImageSelect','v3BlockImage','v3BlockImage2','v3BlockImage3',].forEach(id=>{const el=$(id);if(!el)return;const v=el.value;el.innerHTML=options;if(published().some(i=>i.id===v))el.value=v;});
+    const albumOptions='<option value="">Tự động / Không chọn</option>'+albumPhotos().map(i=>'<option value="'+A.esc(i.id)+'">'+A.esc(i.title||'Ảnh cưới')+'</option>').join('');
+    Array.from({length:5},(_,i)=>'v3Album'+i).forEach(id=>{const el=$(id);const v=el.value;el.innerHTML=albumOptions;if(albumPhotos().some(i=>i.id===v))el.value=v;});
   }
   function fill(){
     cfg.heroIds.slice(0,3).forEach((id,i)=>{$('v3Hero'+i).value=id;});
@@ -95,9 +98,9 @@
   function renderAlbumPreview(){
     const root=$('v3AlbumPreview');if(!root)return;
     const selected=Array.from({length:5},(_,i)=>$('v3Album'+i)?.value).filter(Boolean);
-    const all=published().filter(photo=>!selected.includes(photo.id))
+    const all=albumPhotos().filter(photo=>!selected.includes(photo.id))
       .sort((a,b)=>(Number(b.is_featured)-Number(a.is_featured))||(Number(a.sort_order||0)-Number(b.sort_order||0)));
-    const ordered=[...selected.map(id=>published().find(i=>i.id===id)).filter(Boolean),...all].slice(0,5);
+    const ordered=[...selected.map(id=>albumPhotos().find(i=>i.id===id)).filter(Boolean),...all].slice(0,5);
     root.innerHTML=ordered.map((photo,index)=>'<figure class="v11-admin-photo">'+
       '<img loading="lazy" alt="" src="'+A.esc(A.publicUrl(photo.image_path)+(photo.updated_at?'?v='+encodeURIComponent(photo.updated_at):''))+'">'+
       '<figcaption>'+(index+1).toString().padStart(2,'0')+' · '+A.esc(photo.title||'Ảnh cưới')+'</figcaption></figure>').join('');
@@ -178,6 +181,7 @@
     if(new Set(heroIds).size!==heroIds.length){status('Ba ảnh Hero cần khác nhau.','error');return;}
     const homePhotoIds=Array.from({length:5},(_,i)=>$('v3Album'+i).value).filter(Boolean);
     if(new Set(homePhotoIds).size!==homePhotoIds.length){status('5 ảnh Album không được chọn trùng nhau.','error');return;}
+    if(homePhotoIds.some(id=>!albumPhotos().some(photo=>photo.id===id))){status('Ảnh Gallery phải được cho phép hiển thị trong Album.','error');return;}
     const ids=[...heroIds,...homePhotoIds,$('v3ScheduleImage').value,$('v3PromiseImage').value,$('v3FarewellImageSelect').value,...cfg.blocks.filter(b=>b.style!=='quote').flatMap(b=>[b.imageId,...(b.imageIds||[])])].filter(Boolean);
     if(ids.some(id=>!published().some(i=>i.id===id))){status('Có ảnh chưa Publish hoặc đã bị xóa. Kiểm tra lại Album.','error');return;}
     cfg.heroIds=heroIds;cfg.homePhotoIds=homePhotoIds;cfg.heroAutoplay=true;
