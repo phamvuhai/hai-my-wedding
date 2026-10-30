@@ -393,7 +393,7 @@ function renderHomeGallery() {
   const root = document.getElementById('homeGallery');
   if (!root || !galleryState.homeImages.length) return;
 
-  // The public homepage is a curated three-frame editorial; the full Album is unchanged.
+  // Show up to five curated homepage photos; the complete published Album stays available.
   root.dataset.count = String(galleryState.homeImages.length);
   root.innerHTML = galleryState.homeImages.map((img, index) => {
     const loc = galleryLocalized(img);
@@ -429,7 +429,7 @@ async function loadHomeGallery() {
       .order('is_featured', { ascending: false })
       .order('sort_order', { ascending: true })
       .order('created_at', { ascending: false })
-      .limit(3);
+      .limit(5);
 
     if (error) throw error;
     galleryState.homeImages = (images || []).map(img => ({...img, publicUrl: galleryPublicUrl(img)}));
