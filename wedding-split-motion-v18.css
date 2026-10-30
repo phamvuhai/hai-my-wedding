@@ -50,6 +50,15 @@ html.v18-motion-ready .v18-in-view .motion-line-inner{
   transform:none!important;
   opacity:1!important;
 }
+/* Gallery labels were previously revealed by .motion-in on individual words;
+   V18 now owns the complete two-sided block. Do not leave these spans hidden. */
+html.v18-motion-ready .gallery-display.v18-split span{
+  opacity:1!important;
+  transform:none!important;
+  animation:none!important;
+}
+/* The RSVP display 'SAY / YES' continues to use its existing lightweight
+   effect, while V18 moves only the surrounding left panel. */
 /* Nested text in a paired section stays legible, including untranslated content.
    The original V17 letter spans remain visual and retain an accessible label. */
 html.v18-motion-ready .v18-split .v17-char{
