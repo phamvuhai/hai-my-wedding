@@ -66,7 +66,7 @@
   };
 
   function letterize(el){
-    const text=(el.textContent||'').replace(/\s+/g,' ').trim();
+    const text=(el.querySelector('.v17-accessible')?.textContent||el.textContent||'').replace(/\s+/g,' ').trim();
     if(!text||graphemes(text).length>44)return;
     if(el.dataset.v17Text===text&&el.querySelector('.v17-char'))return;
     const wasVisible=el.classList.contains('v17-visible');
@@ -78,10 +78,14 @@
       const span=document.createElement('span');
       span.className='v17-char';
       span.setAttribute('aria-hidden','true');
-      span.style.setProperty('--v17-char-index',String(index));
+      span.style.setProperty('--v17-char-delay',String(Math.min(index,36)*32)+'ms');
       span.textContent=char;
       fragment.appendChild(span);
     });
+    const accessible=document.createElement('span');
+    accessible.className='v17-accessible';
+    accessible.textContent=text;
+    fragment.appendChild(accessible);
     el.replaceChildren(fragment);
     if(wasVisible)el.classList.add('v17-language-updated');
   }
@@ -105,7 +109,8 @@
     seen.add(el);
     el.classList.add('v17-text','v17-'+effect);
     el.dataset.v17Effect=effect;
-    el.style.setProperty('--v17-order',String(index%3));
+    el.style.setProperty('--v17-item-delay',String((index%3)*55)+'ms');
+    el.style.setProperty('--v17-card-delay',String((index%3)*110)+'ms');
     if(effect==='letters')letterize(el);
     if(!observer||inViewport(el))reveal(el);
     else observer.observe(el);
