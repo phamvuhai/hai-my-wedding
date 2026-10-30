@@ -393,6 +393,8 @@ function renderHomeGallery() {
   const root = document.getElementById('homeGallery');
   if (!root || !galleryState.homeImages.length) return;
 
+  // The public homepage is a curated three-frame editorial; the full Album is unchanged.
+  root.dataset.count = String(galleryState.homeImages.length);
   root.innerHTML = galleryState.homeImages.map((img, index) => {
     const loc = galleryLocalized(img);
     const size = gallerySize(img);
@@ -405,6 +407,7 @@ function renderHomeGallery() {
         <img loading="lazy" decoding="async" src="${url}" alt="${galleryEsc(loc.alt)}"
           style="object-position:${Number(img.focus_x ?? 50)}% ${Number(img.focus_y ?? 50)}%">
         <span class="photo-curtain" aria-hidden="true"></span>
+        <span class="home-photo-index" aria-hidden="true">${String(index + 1).padStart(2, '0')} <i></i> ${String(galleryState.homeImages.length).padStart(2, '0')}</span>
         <span class="home-photo-copy">
           <strong>${galleryEsc(loc.title)}</strong>
           <small>${galleryEsc(loc.caption)}</small>
@@ -426,7 +429,7 @@ async function loadHomeGallery() {
       .order('is_featured', { ascending: false })
       .order('sort_order', { ascending: true })
       .order('created_at', { ascending: false })
-      .limit(6);
+      .limit(3);
 
     if (error) throw error;
     galleryState.homeImages = (images || []).map(img => ({...img, publicUrl: galleryPublicUrl(img)}));
