@@ -67,7 +67,7 @@
     const parent=node.closest('.v3-story-block, .gallery-editorial-head');
     if(parent)parent.classList.remove('v4-reveal','v4-enter-left','v4-enter-right');
   }
-  function register(node,direction,group,index,previouslySeen){
+  function register(node,direction,group,previouslySeen){
     if(!node||registered.has(node))return;
     if(node.closest('[hidden]')||node.parentElement?.closest('[aria-hidden="true"]'))return;
     registered.add(node);
@@ -95,7 +95,7 @@
   function scan(){
     const previouslyRevealed=new Set(resolvedGroups);
     rules.forEach(([selector,direction,group])=>{
-      document.querySelectorAll(selector).forEach((node,index)=>register(node,direction,group,index,previouslyRevealed.has(group)));
+      document.querySelectorAll(selector).forEach(node=>register(node,direction,group,previouslyRevealed.has(group)));
     });
   }
   let scanScheduled=false;
