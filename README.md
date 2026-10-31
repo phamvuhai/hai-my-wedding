@@ -74,66 +74,34 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 - **Admin → Thiết kế website** provides the active Visual Editor for Hero, Story, Schedule, Our Promise, Gallery, RSVP, wedding gifts and Farewell.
 - Photos used only as website backgrounds can be excluded from the public Album via `show_in_album`.
 - The old Romantic Collage V2 editor and runtime were retired. Historical `collage_layout` data is intentionally left untouched in Supabase.
-- The invitation cover uses `invitation.js` and `invitation-simple.css`; the earlier Figma Canvas/Atelier JavaScript implementation was retired. Design reference assets remain in the repository.
+- The invitation cover uses `invitation.js` and `invitation-simple.css`; the earlier Figma Canvas/Atelier JavaScript implementation was retired. Original design references are archived on a Git backup branch.
 
-## Wedding Editorial V3 (2026-10-28)
+## Current production implementation (V18)
 
-- Hero: one to three published photos with 7-second crossfade, pause and manual controls; reduced-motion support. Uses existing Hero as fallback.
-- Wedding Schedule: shared couple photo above two compact columns (Bride left, Groom right), with preserved four event times, addresses, and map links; mobile toggle honors personalized invite priority.
-- Photo storytelling: multilingual Split / Letter / Filmstrip / Quote blocks across five existing invitation interludes, with an optional farewell image.
-- Admin → **Thiết kế V3**: edit Hero choices, autoplay, schedule / farewell photos and ordered multilingual story blocks; one Publish stores JSON in existing `site_content` key `v3_design`. No schema migration or guest/RSVP changes.
-- Gallery images must already be published in Album. Missing or unpublished photos never render publicly. Legacy Collage V2 configuration remains stored and unchanged but V3 rendering supersedes it.
+The active public site is a single invitation rendered from `index.html`, with
+localized entry points `/vi`, `/en`, `/jp`, and private invitation links.
+**Do not delete a CSS/JS file merely because its name includes an older V-number:**
+the production HTML still imports some V3–V12 layers to preserve the final cascade.
 
-### Cinematic Wedding Poster (V3.1)
+- **Invitation cover:** `invitation.js` and `invitation-simple.css`.
+- **Wedding photography and story:** `wedding-v3.js`, `wedding-v11.css`,
+  `wedding-v12.css`, and active preceding stylesheets.
+- **Countdown:** `wedding-countdown-v15.css`; live countdown values remain in `app.js`.
+- **Wedding gifts:** `wedding-gifts-v16.js/css`, edited through Admin.
+- **Scroll motion:** `motion.js`, `wedding-v4.js/css`,
+  `wedding-text-motion-v17.js/css`, `wedding-split-motion-v18.js/css`.
+- **Admin Visual Editor:** `admin/visual-editor-v14.js/css` plus the live CMS modules.
+- **Album and RSVP:** retained with multilingual text and personalized invite links.
 
-- Hero uses the same 1–3 published wedding photos in two perfectly synchronized layers: a blurred, burgundy-tinted full-bleed backdrop behind legible names, and an optional sharp portrait in front.
-- Desktop: left-aligned type with right portrait; phones: centered type, portrait and an accessible schedule button. Focus crop is independently editable for desktop and mobile.
-- Admin → Thiết kế V3 now includes blur (8/14/20px), backdrop tint (40/55/70%), sharp-photo toggle, desktop/mobile focus sliders and live previews. Existing v3_design JSON values are backwards-compatible.
-- Reduced-motion users and hidden tabs never auto-cycle; slideshow pauses while the invitation cover is locked. RSVP, personalized guests and event mappings are not modified.
+## Removed prototypes and backups
 
-### Wedding Cinematic Triptych (V3.2)
+Retired source code (Romantic Collage V2, Image Manager V13, Canvas/Atelier/Couture
+opening) and obsolete Figma/Canvas storyboard exports have been removed from
+`main` because they are no longer used by the current site.
 
-- Hero restores original UTM Beautiful Caps calligraphic names and reuses the name-fitting script, now refitting when the poster grid mounts.
-- Up to three DISTINCT published images appear simultaneously in an animated overlapping triptych; the prominent center photo and background rotate together every seven seconds. One photo centers; two form a centered pair, with no blank frames. Pause and manual dots remain functional.
-- No database schema changes; images continue to be selected in Admin → Thiết kế V3. Mobile has an independent focus crop and compact photo stack.
+The original design assets and code remain recoverable on GitHub branch
+`backup/before-legacy-design-cleanup-20261031` (and earlier cleanup backup).
+The editable Figma project is separate from production source.
+Do not delete the active four-viewport invitation audit or WebKit smoke tests.
 
-## Wedding V4 — Our Forever Story
-
-- Seven interlude chapters (five image compositions and two quotes) tell the wedding story in VI/EN/JA. Saved V3 Admin blocks take precedence if published.
-- Background auto-crossfades, remains non-interactive and no public-facing photo picker/lightbox is shown. Blur defaults to 6px, tint to 40%. Published image URLs remain technically accessible; hiding the UI is not access control.
-- Scroll reveal slides in from alternating sides; map links pulse subtly to invite a click; reduced-motion mode is respected.
-- Full Hero, Story, Countdown, Event, Gallery, RSVP and Thank You copy updated across languages, with matching legacy site_content overrides to be synchronized.
-
-
-## Wedding V5 — Full-bleed desktop and mobile hero
-
-- Removes the boxed/overlapping Hero triptych entirely. The existing legacy `#heroImage` is retained hidden for older loading logic.
-- Desktop uses 3–4 full-height edge-to-edge photographic columns behind centered wedding typography. If the admin chooses only one image, its crops repeat across 4 columns; 2 images alternate. Tablet uses 2–3 columns. Mobile uses one full-screen image, never repeated.
-- The background automatically crossfades between available photos every 7 seconds; there are no picker, lightbox, or clickable image controls. Original published photo URLs are still public, which is independent of the visible UI.
-- All ten localized narrative content keys and the four original wedding-event map destinations are retained. Two new VI/EN/JA photo chapters were added after the schedule and near the memories section; Admin default Story Builder is synchronized.
-- Desktop editorial sections use wider landscape photographs, increased spacing, and a roomier two-column schedule. Mobile keeps its separate layout and event-day selector.
-
-### V5.1 Hero: one photograph per slide
-
-- Each active full-screen Hero layer uses exactly one published photo, repeated in up to four cropped desktop columns. Previously the four columns could show different photos simultaneously. The entire strip crossfades to the next photograph at the existing seven-second interval.
-- Tablet still shows 2–3 copies of that same photo; mobile displays one full-height photo. Text, invitation link, language handling, reduced-motion preference and guest RSVP remain unchanged.
-
-### V6 Hero: complete center photograph, repeating sides
-
-- All images in one active Hero slide use the **same** published photograph. On desktop the center column takes just over half the width and uses `object-fit: contain` to show the full photo without cropping. The two side columns repeat the same photograph with cover crop and a mild blur.
-- A blurred copy behind the center image fills any letterbox area; mobile hides the side repeats and shows a single complete central image with a blurred fill. Crossfade remains seven seconds per image and stops for reduced motion and the closed invitation.
-- No foreground triptych, visitor photo buttons, gallery lightbox, personalized guest, schedule, map, or RSVP logic is changed.
-
-## Our Promise editorial section (2026-10-29)
-
-- Replaces the previous dark 100svh `forever-transition` marquee with an ivory editorial portrait and a heartfelt, fully localized VI/EN/JA vow. The previous scroll-scale/marquee effects are inactive; the section participates in the existing gentle scroll entrances.
-- Responsive: desktop 52/48 image and text columns; tablet 46/54; mobile image above the copy. Photo uses a published Album image and a graceful monogram fallback on failure.
-- Admin → Thiết kế V3 offers a dedicated `promisePhotoId`; default picks a published non-hero photo without a schema change. The six Promise copy keys live in `site_content` and are editable under Admin → Nội dung, with dictionary fallbacks.
-- Adds localized event family tags, the December 2026 label, schedule photo caption and selection accessibility label; makes several Japanese RSVP labels more natural. Does not modify any event times, map destinations, RSVP or guest records.
-
-## Wedding Schedule V7: responsive event cards
-
-- Wedding events redesigned as two aligned editorial cards on wide desktops and landscape tablets (>=900px); portrait tablets and phones use accessible bride/groom tabs showing one card at a time.
-- Header now groups family, date and localized city, minimizing vertical space. Times are in a narrow column; ceremony name, official Vietnamese address and compact Google Maps button are in the wider column.
-- Japanese headings use a compact Mincho font at 18–23px on mobile instead of inheriting the much larger Latin display heading. Bride-side ceremony is simply `婚礼の儀` within the already-labeled bride card. Month/year, city, and family tags follow VI/EN/JA.
-- Schedule portrait adapts to wide / 16:9 tablet / compact 16:10 mobile, with safe wrapping and reduced-motion support. Event times, venue addresses, existing map URLs, personal invitation and RSVP are unchanged.
+For the current admin workflow, see [docs/ADMIN.md](docs/ADMIN.md).
