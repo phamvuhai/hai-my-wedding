@@ -74,12 +74,12 @@
     el.dataset.v17Text=text;
     const fragment=document.createDocumentFragment();
     let index=0;
-    for(const part of text.split(/(\\s+)/)){
+    for(const part of text.split(/(\s+)/)){
       if(!part)continue;
-      if(/^\\s+$/.test(part)){fragment.appendChild(document.createTextNode(part));continue;}
+      if(/^\s+$/.test(part)){fragment.appendChild(document.createTextNode(part));continue;}
       // Keep Latin/Vietnamese words intact when wrapping on narrow devices.
       // Japanese graphemes may wrap naturally at permitted break opportunities.
-      const cjk=/[\\u3040-\\u30ff\\u3400-\\u9fff]/u.test(part);
+      const cjk=/[\u3040-\u30ff\u3400-\u9fff]/u.test(part);
       const holder=cjk?fragment:document.createElement('span');
       if(!cjk)holder.className='v17-word';
       for(const char of graphemes(part)){
