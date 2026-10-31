@@ -68,14 +68,13 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 - [Personalized invitations](docs/PERSONALIZED_INVITES.md)
 - [Technical memo](docs/MEMO.md)
 
-## Romantic Collage invitation
+## Active story and image management
 
-- The interior invitation includes five optional photo interludes after Story, Countdown, Events, Gallery and RSVP.
-- By default, up to seven already-published homepage photos appear in a curated Romantic Collage arrangement; the layout remains empty if no images exist.
-- Admin → **Collage thiệp** uses published Album images and saves the ordered layout as JSON to `site_content` with key `collage_layout` (no database migration).
-- Admin supports Polaroid, film-frame, full-width, caption in VI/EN/JA, hide/show, reorder (drag or buttons), edit, remove and explicit Publish.
-- Album uploads, storage, guest invites and RSVP behavior remain unchanged. Only already-published gallery images render publicly.
-- To intentionally hide all collage photos, remove the entries and Publish an empty list. To add new photos, upload and Publish them in Admin → Album first.
+- Public storytelling uses **Wedding Editorial V3 / Story Builder**, driven by the `v3_design` configuration.
+- **Admin → Thiết kế website** provides the active Visual Editor for Hero, Story, Schedule, Our Promise, Gallery, RSVP, wedding gifts and Farewell.
+- Photos used only as website backgrounds can be excluded from the public Album via `show_in_album`.
+- The old Romantic Collage V2 editor and runtime were retired. Historical `collage_layout` data is intentionally left untouched in Supabase.
+- The invitation cover uses `invitation.js` and `invitation-simple.css`; the earlier Figma Canvas/Atelier JavaScript implementation was retired. Design reference assets remain in the repository.
 
 ## Wedding Editorial V3 (2026-10-28)
 
