@@ -10,6 +10,7 @@ remain recoverable from Git history and the existing backup branches.
 | Public website (VI / EN / JA) | `index.html` | `assets/css/site.css` |
 | CMS | `admin/index.html` | `assets/css/admin.css` |
 | CMS sign-in | `admin/login/index.html` | `assets/css/login.css` |
+| CMS password recovery | `admin/reset-password/index.html` | `assets/css/login.css` |
 
 The public CSS bundle is ordered **foundation → invitation cover → touch
 effects → wedding sections → countdown → gift cards → scroll animations**.
@@ -53,7 +54,9 @@ assets/js/admin/auth.js
 ```
 
 The sign-in page loads `assets/js/config.js` and
-`assets/js/admin/login.js`. Static decorations live in `assets/images/`.
+`assets/js/admin/login.js`. The password recovery page loads
+`assets/js/config.js` and `assets/js/admin/reset-password.js`.
+Static decorations live in `assets/images/`.
 
 ## Cleanup and maintenance rules
 
@@ -73,6 +76,6 @@ The sign-in page loads `assets/js/config.js` and
 
 ## Verify before merging
 
-Run `node tools/check-asset-refs.mjs`, then the WebKit smoke workflow to test
+Run `node tools/check-asset-refs.mjs` and `node tools/audit-password-recovery.mjs`, then the WebKit smoke workflow to test
 the public invitation, localized pages, Admin editor, QR/bank info, gallery,
 RSVP and mobile layout. Static checks do not replace browser/production tests.
