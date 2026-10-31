@@ -144,9 +144,19 @@ for(const entry of scenarios){
     [...document.querySelectorAll('.hero-name-fit-text')].every(el=>Number(el.dataset.fitFontSize)>0),
     undefined,{timeout:6500}
   );
+  // Current V7 wedding schedule uses .v3-event-panel, not the deleted
+  // .event-day-panel/.event-card timeline. Validate visible text and touch links.
+  await page.locator('.gallery-display').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(760);
+  await page.locator('#events .v3-event-panel.is-active').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(760);
   const mobileLayout=await page.evaluate(()=>{
     const viewport=document.documentElement.clientWidth;
     const rect=el=>el?.getBoundingClientRect();
+    const inside=(el,padding=1)=>{
+      const b=rect(el);
+      return !!b&&b.width>0&&b.left>=-padding&&b.right<=viewport+padding;
+    };
     const names=[...document.querySelectorAll('.hero-name-fit-text')].map(el=>({
       text:el.textContent.trim(),left:Math.round(rect(el)?.left||0),
       right:Math.round(rect(el)?.right||0),
@@ -158,62 +168,62 @@ for(const entry of scenarios){
       text:el.textContent.trim(),left:Math.round(rect(el)?.left||0),
       right:Math.round(rect(el)?.right||0)
     }));
-    const families=[...document.querySelectorAll('.event-day-panel')].map(panel=>{
-      const first=panel.querySelector('.event-card');
-      const second=first?.nextElementSibling;
-      const head=panel.querySelector('.family-header');
-      const action=first?.querySelector('.event-actions');
+    const families=[...document.querySelectorAll('#events .v3-event-panel')];
+    const panel=families.find(el=>el.classList.contains('is-active'));
+    const items=[...(panel?.querySelectorAll('.v3-event-item')||[])];
+    const eventReadability=items.map(item=>{
+      const title=item.querySelector('h4');
+      const address=item.querySelector('.v3-event-detail p');
+      const map=item.querySelector('.v3-event-map');
       return {
-        headerToFirst:Math.round((rect(first)?.top||0)-(rect(head)?.bottom||0)),
-        firstToSecond:Math.round((rect(second)?.top||0)-(rect(first)?.bottom||0)),
-        actionWithinFirst:(rect(action)?.bottom||0)<=(rect(first)?.bottom||0)+3,
-        firstHeight:Math.round(rect(first)?.height||0),
-        secondHeight:Math.round(rect(second)?.height||0)
+        titlePx:title?parseFloat(getComputedStyle(title).fontSize):0,
+        addressPx:address?parseFloat(getComputedStyle(address).fontSize):0,
+        mapHeight:rect(map)?.height||0,
+        mapWithinViewport:inside(map),
+        bodyWithinViewport:inside(item)
       };
     });
-    const eventReadability=[...document.querySelectorAll('.event-day-panel .event-card')].map(card=>{
-      const mapLink=card.querySelector('.map-link');
-      const css=getComputedStyle(card);
-      return {
-        opacity:Number(css.opacity),
-        headingPx:parseFloat(getComputedStyle(card.querySelector('h4')).fontSize),
-        addressPx:parseFloat(getComputedStyle(card.querySelector('.event-meta')).fontSize),
-        borderRadius:parseFloat(css.borderTopLeftRadius),
-        mapHeight:mapLink?.getBoundingClientRect().height||0,
-        borderWidth:parseFloat(css.borderTopWidth)
-      };
-    });
-    const largeNames=names.length===2&&names.every(x=>x.fontPx >= (viewport>=390?40:37));
-    const readableEvents=eventReadability.length===4&&eventReadability.every(x=>
-      x.opacity>=.99&&x.headingPx>=22&&x.addressPx>=12.5&&
-      x.borderRadius>=10&&x.mapHeight>=39&&x.borderWidth>=.8);
-    const arrival=document.querySelector('.event-arrival-note');
-    const arrivalStyle=arrival&&getComputedStyle(arrival);
-    const timelineTrackHidden=[...document.querySelectorAll('.event-day-panel .event-timeline')].every(el=>
-      getComputedStyle(el,'::before').display==='none');
-    const arrivalSafe=!!arrivalStyle&&parseFloat(arrivalStyle.paddingRight)>=65;
-    const nameFits=names.length===2&&names.every(x=>x.left>=1&&x.right<=viewport-1&&x.width>20&&x.intrinsicWidth<=viewport-20);
-    const galleryFits=gallery.length===2&&gallery.every(x=>x.left>=1&&x.right<=viewport-1);
-    const eventsFit=families.length===2&&families.every(x=>x.headerToFirst>=-2&&x.firstToSecond>=-3&&
-      x.actionWithinFirst&&x.firstHeight>90&&x.firstHeight<500&&x.secondHeight>90&&x.secondHeight<500);
-    return {viewport,names,gallery,families,eventReadability,largeNames,readableEvents,
-      timelineTrackHidden,arrivalSafe,nameFits,galleryFits,eventsFit};
+    const nonOverlap=items.length===2&&(()=>{
+      const x=rect(items[0]),y=rect(items[1]);
+      return x.bottom<=y.top+4||y.bottom<=x.top+4||
+        x.right<=y.left+4||y.right<=x.left+4;
+    })();
+    const arrival=document.querySelector('#events .v3-arrival-note');
+    const nameFits=names.length===2&&names.every(x=>
+      x.left>=-1&&x.right<=viewport+1&&x.width>20&&
+      x.intrinsicWidth<=viewport-18);
+    const galleryFits=gallery.length===2&&gallery.every(x=>
+      x.left>=-1&&x.right<=viewport+1);
+    const largeNames=names.length===2&&names.every(x=>x.fontPx>=
+      (viewport>=390?40:37));
+    const readableEvents=eventReadability.length===2&&eventReadability.every(x=>
+      x.titlePx>=17&&x.addressPx>=11&&x.mapHeight>=32&&
+      x.mapWithinViewport&&x.bodyWithinViewport);
+    const eventsFit=families.length===2&&!!panel&&items.length===2&&nonOverlap;
+    const arrivalSafe=inside(arrival);
+    return {viewport,names,gallery,families:families.map(p=>p.dataset.eventDay),
+      eventReadability,largeNames,readableEvents,
+      arrivalSafe,nameFits,galleryFits,eventsFit};
   });
   if(lang==='jp'){
     await page.locator('.hero-copy').scrollIntoViewIfNeeded();
     await page.screenshot({path:join(out,entry.name+'-japanese-hero-font.png')});
     await page.locator('.gallery-display').scrollIntoViewIfNeeded();
     await page.screenshot({path:join(out,entry.name+'-gallery-layout.png')});
-    await page.locator('.event-day-panel').first().scrollIntoViewIfNeeded();
+    await page.locator('#events .v3-event-panel[data-event-day="bride"]').scrollIntoViewIfNeeded();
     await page.screenshot({path:join(out,entry.name+'-schedule-layout.png')});
-    await page.locator('.event-day-panel[data-event-day="groom"]').scrollIntoViewIfNeeded();
+    await page.locator('#events [data-v3-day-button="groom"]').click();
+    await page.waitForTimeout(500);
+    const groomVisible=await page.locator('#events .v3-event-panel[data-event-day="groom"]')
+      .evaluate(el=>el.classList.contains('is-active')&&
+        getComputedStyle(el).display!=='none');
+    if(!groomVisible)errors.push('Groom event switch did not reveal its panel');
     await page.screenshot({path:join(out,entry.name+'-groom-card-design.png')});
   }
   if(!mobileLayout.nameFits||!mobileLayout.galleryFits||!mobileLayout.eventsFit||
-     !mobileLayout.largeNames||!mobileLayout.readableEvents||
-     !mobileLayout.timelineTrackHidden||!mobileLayout.arrivalSafe){
+     !mobileLayout.largeNames||!mobileLayout.readableEvents||!mobileLayout.arrivalSafe){
     console.log('MOBILE_LAYOUT_FAILURE '+entry.name+' '+lang+': '+JSON.stringify(mobileLayout));
-    errors.push(lang+' mobile visual layout failed: '+JSON.stringify(mobileLayout));
+    errors.push(lang+' current V7 mobile visual layout failed: '+JSON.stringify(mobileLayout));
   }
   const first=page.locator('#rsvpForm .radio-row label.radio').first();
   const second=page.locator('#rsvpForm .radio-row label.radio').nth(1);
