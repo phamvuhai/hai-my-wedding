@@ -72,7 +72,7 @@ Không dùng link riêng làm link công khai vì người có link có thể xe
 
 ## Visual Editor V14 — chọn ảnh theo thứ tự hiển thị
 
-Mở **Admin → Thiết kế website**. Trình chỉnh sửa hiển thị chín khu vực theo đúng hành trình của khách mời:
+Mở **Admin → Thiết kế website**. Trình chỉnh sửa hiển thị mười khu vực theo đúng hành trình của khách mời:
 
 1. Mở thiệp (nội dung chữ, không có ảnh)
 2. Hero (tối đa ba ảnh)
@@ -82,7 +82,8 @@ Mở **Admin → Thiết kế website**. Trình chỉnh sửa hiển thị chín
 6. Our Promise (một ảnh)
 7. Our Moments (năm ảnh Album, ảnh thứ nhất là ảnh lớn)
 8. RSVP (không có ảnh riêng)
-9. Farewell (một ảnh)
+9. Thông tin mừng cưới (tài khoản và QR của Nhà trai/Nhà gái)
+10. Farewell (một ảnh)
 
 Nhấn **Chọn ảnh / Đổi ảnh** ngay trên hình thu nhỏ, tìm kiếm và chọn ảnh từ thư viện đã Publish. Ảnh *Website only* dùng được cho các khu vực khác Gallery; Gallery chỉ nhận ảnh có quyền hiển thị Album. Nút **Dùng ảnh tự động** trả vị trí về mặc định. Các nút PC/Tablet/Mobile đổi tỷ lệ preview minh họa (không thay đổi nội dung thực tế). **Lưu & Publish thiết kế** lưu qua cùng cơ chế V3, không tự động lưu khi chọn ảnh.
 
