@@ -1,0 +1,79 @@
+{
+  "style": "Romantic & Timeless",
+  "updated": "2026-10-31",
+  "scope": "Website copy only. Dates, places, existing countdown quote and banking data unchanged.",
+  "translations": {
+    "hero.note": {
+      "vi": "Giữa bao cuộc gặp gỡ, thật may mắn khi chúng mình tìm thấy nhau. Và từ hôm nay, hạnh phúc là biết rằng mọi chặng đường phía trước đều có nhau.",
+      "en": "Of all the people we could have met, how lucky we are to have found each other. From this day on, our greatest joy is knowing we will walk every road together.",
+      "ja": "たくさんの出会いの中で、私たちはお互いに巡り会いました。これからの何気ない毎日を、ふたりで歩んでいけることが何よりの幸せです。"
+    },
+    "story.title": {
+      "vi": "Từ những điều bình dị, đến một đời có nhau",
+      "en": "From the little things to a lifetime together",
+      "ja": "何気ない日々から、これからの人生へ"
+    },
+    "story.text": {
+      "vi": "Tình yêu của chúng mình không bắt đầu bằng những điều lớn lao. Đó là những lời hỏi han, những tiếng cười và những câu chuyện chẳng muốn dừng lại. Qua từng ngày, Hải và Mỹ học cách lắng nghe, sẻ chia và cùng mơ về một mái nhà. Để rồi nhận ra: điều quý giá nhất không phải là tìm được một người hoàn hảo, mà là tìm được người khiến mình muốn cùng đi hết những năm tháng phía trước.",
+      "en": "Our love wasn't built on grand gestures. It grew through small kindnesses, shared laughter, and conversations we wished would never end. With time, Hai and My learned to listen, to care, and to dream of a home together. We came to realize that love isn't about finding someone perfect, but finding someone you want beside you through all the years ahead.",
+      "ja": "私たちの愛は、大きな出来事ではなく、日々の小さな思いやりの中で育まれてきました。何気ない会話や笑顔、そばにいるだけでほっとできる時間。お互いを思いやり、同じ未来を描くうちに、完璧な人を探すのではなく、この人とこれからの人生を歩んでいきたいと思うようになりました。"
+    },
+    "promise.title": {
+      "vi": "Và rồi, mình chọn một đời có nhau.",
+      "en": "And so, we choose a lifetime together.",
+      "ja": "そして、これからの人生も一緒に。"
+    },
+    "promise.body1": {
+      "vi": "Chúng mình không mong cuộc sống lúc nào cũng êm đềm. Chỉ mong giữa những bộn bề, vẫn có một người để kể chuyện mỗi ngày, cùng lắng nghe, cùng sẻ chia và thấy lòng bình yên khi trở về.",
+      "en": "We don't expect every day to be easy. We simply hope that, amid life's busy moments, we will always have someone to listen, to share the little things with, and to come home to.",
+      "ja": "これからの日々が、いつも穏やかとは限りません。それでも、忙しい毎日の中で言葉を交わし、喜びも悩みも分かち合い、帰る場所でほっとできるふたりでありたいと思います。"
+    },
+    "promise.body2": {
+      "vi": "Từ hôm nay, Hải và Mỹ cùng vun đắp một mái nhà: nơi những niềm vui nhỏ được nâng niu, những ngày khó khăn có người bên cạnh và tình yêu được giữ gìn bằng sự dịu dàng, thấu hiểu.",
+      "en": "From today onward, Hai and My will build a home together — one that treasures small joys, offers comfort on difficult days, and grows stronger through tenderness and understanding.",
+      "ja": "今日から私たちは、ささやかな幸せを大切にし、難しい時には支え合いながら、思いやりと優しさに満ちた家庭を築いていきます。"
+    },
+    "events.subtitle": {
+      "vi": "Từ lễ gia tiên ấm áp đến tiệc mừng cùng những người thương, từng khoảnh khắc sẽ đẹp hơn khi có bạn ở bên. Chọn Nhà gái hoặc Nhà trai để xem thời gian, địa điểm và chỉ đường.",
+      "en": "From our intimate family ceremonies to the celebrations with everyone we love, each moment will be sweeter with you there. Choose the bride's or groom's family for times, venues, and directions.",
+      "ja": "家族と過ごす温かな儀式から、皆さまと喜びを分かち合う披露宴まで。一つひとつの瞬間を、大切な方々とともに迎えられたら幸いです。日程・会場・アクセスは新婦側／新郎側からご確認ください。"
+    },
+    "gallery.subtitle": {
+      "vi": "Không phải bức ảnh nào cũng thật hoàn hảo. Nhưng mỗi khoảnh khắc đều giữ lại một ánh nhìn, một nụ cười và những ngày chúng mình đã thương nhau bằng tất cả sự chân thành.",
+      "en": "Not every photograph needs to be perfect. Each one holds a smile, a familiar glance, and an ordinary day we never want to forget. These are the moments that tell our story.",
+      "ja": "写真に残るのは、笑顔やまなざし、何気ない日のぬくもり。どれも私たちにとって、いつまでも大切にしたい思い出です。"
+    },
+    "rsvp.subtitle": {
+      "vi": "Chúng mình rất mong được gặp bạn trong ngày vui. Hãy dành một chút thời gian xác nhận tham dự để Hải và Mỹ có thể đón tiếp bạn thật chu đáo nhé!",
+      "en": "We would love to see you on our special day. Please take a moment to RSVP so that Hai and My can prepare a warm welcome for you.",
+      "ja": "皆さまと一緒にこの日を迎えられることを、心より楽しみにしております。おもてなしの準備のため、出欠をお知らせいただけますと幸いです。"
+    },
+    "footer.thanks": {
+      "vi": "Khép lại một trang thiệp, mở ra một hành trình mới. Cảm ơn bạn đã dành thời gian, những lời chúc và tình thương cho Hải và Mỹ. Thật hạnh phúc khi những ngày đáng nhớ này có bạn ở bên. Thương mến, Hải & Mỹ ♡",
+      "en": "One invitation closes; a new chapter begins. Thank you for sharing your time, kindness, and heartfelt wishes with us. It means so much to have you beside us as we begin this life together. With love, Hai & My ♡",
+      "ja": "この招待状の先に、ふたりの新しい日々が始まります。大切なお時間と温かいお祝いの言葉をありがとうございます。皆さまに見守っていただけることを、心から幸せに思います。感謝を込めて、ハイ＆ミー ♡"
+    }
+  },
+  "storyBlocks": {
+    "v4-chapter-1": {
+      "vi": "Hạnh phúc đôi khi đơn giản là có một người để kể chuyện mỗi ngày, cùng bật cười vì những điều bé nhỏ và thấy lòng nhẹ hơn sau một ngày dài. Với chúng mình, tình yêu lớn lên từ những điều như thế.",
+      "en": "Sometimes happiness is simply having someone to tell about your day, to laugh with over little things, and to feel at peace beside when the day is done. That's how our love has grown.",
+      "ja": "幸せとは、今日あったことを話せる人がいて、小さなことで一緒に笑い、一日の終わりにほっとできること。私たちの愛は、そんな何気ない瞬間の中で育ってきました。"
+    },
+    "v4-chapter-6": {
+      "vi": "Mỗi tấm ảnh giữ lại một nụ cười, một ánh nhìn và cả những ngày thật bình thường mà chúng mình luôn muốn nhớ. Một ngày nào đó nhìn lại, mong vẫn thấy nguyên vẹn sự dịu dàng của hôm nay.",
+      "en": "Every photograph holds a smile, a glance, and an ordinary day we never want to forget. Years from now, we hope these moments will still feel as warm and tender as they do today.",
+      "ja": "写真一枚一枚に、笑顔やまなざし、忘れたくない何気ない日々が残っています。いつか見返したときにも、今日の温かさをそのまま感じられますように。"
+    },
+    "v4-chapter-7": {
+      "vi": "“Có những niềm vui chỉ thật trọn vẹn khi được sẻ chia. Cảm ơn bạn đã dành một góc yêu thương cho ngày hạnh phúc của Hải và Mỹ.”",
+      "en": "“Some joys become truly complete only when shared. Thank you for being part of this beautiful day in our lives.”",
+      "ja": "「大切な喜びを皆さまと分かち合えることが、何よりの幸せです。温かいお気持ちを、本当にありがとうございます。」"
+    }
+  },
+  "giftLead": {
+    "vi": "Sự hiện diện và những lời chúc của bạn là món quà quý giá nhất với chúng mình. Nếu muốn gửi thêm chút yêu thương từ xa, bạn có thể tham khảo thông tin dưới đây.",
+    "en": "Your presence and warm wishes mean more to us than any gift. If you would like to send a little love from afar, you can find our bank details below.",
+    "ja": "皆さまのご出席と温かいお祝いのお言葉が、私たちにとって何よりの贈り物です。遠方からお気持ちをお寄せいただく場合は、以下の口座情報をご参照ください。"
+  }
+}
