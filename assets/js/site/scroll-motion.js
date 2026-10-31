@@ -40,8 +40,8 @@
     ['#weddingGifts .wedding-gift-footer','soft'],
     ['.footer .footer-small','soft'],
     /* Story Builder blocks can be added/removed independently from the CMS. */
-    ['.romance-collage-slot .v3-story-chapter','letters'],
-    ['.romance-collage-slot .v3-story-copy > p','line']
+    ['.romance-collage-slot .v3-story-block:not(.v3-story-quote) .v3-story-chapter','letters'],
+    ['.romance-collage-slot .v3-story-block:not(.v3-story-quote) .v3-story-copy > p','line']
   ];
   const rules=all.map(([selector,effect])=>({selector,effect}));
   const seen=new WeakSet();
