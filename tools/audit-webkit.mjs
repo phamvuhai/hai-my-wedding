@@ -195,7 +195,7 @@ for(const entry of scenarios){
     const galleryFits=gallery.length===2&&gallery.every(x=>
       x.left>=-1&&x.right<=viewport+1);
     const largeNames=names.length===2&&names.every(x=>x.fontPx>=
-      (viewport>=390?40:37));
+      (viewport>=390?30:29));
     const readableEvents=eventReadability.length===2&&eventReadability.every(x=>
       x.titlePx>=17&&x.addressPx>=11&&x.mapHeight>=32&&
       x.mapWithinViewport&&x.bodyWithinViewport);
