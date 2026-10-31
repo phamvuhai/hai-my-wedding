@@ -837,3 +837,30 @@ body.v14-dialog-open{overflow:hidden!important}
  .v16-gift-admin .v16-admin-intro>label select{margin-left:0}
 }
 @media(max-width:520px){.v16-gift-admin .v16-admin-card{padding:15px}.v16-gift-admin .v16-gift-actions button{width:100%}}
+
+/* Visual Editor: meaningful checks for image reuse and unconfigured QR.
+   The two Story Builder quote slots are text content, not missing pictures. */
+.v14-editor-audit{
+  display:grid;gap:10px;margin:16px 0 24px;padding:16px 19px;
+  border:1px solid #e6d8d1;border-radius:13px;background:#fcf9f6;
+  color:#69545a;font:500 13px/1.6 system-ui,sans-serif;
+}
+.v14-editor-audit>strong{color:#68404e;font-size:14px;letter-spacing:.01em}
+.v14-audit-item{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding-top:9px;border-top:1px solid #eee1dc;
+}
+.v14-audit-item>span{min-width:0;max-width:65ch}
+.v14-audit-item>button{
+  flex-shrink:0;border:1px solid #d8c4bc;border-radius:8px;
+  padding:8px 11px;background:#fff;color:#7b465a;cursor:pointer;
+  font:600 12px/1.35 system-ui,sans-serif;
+}
+.v14-audit-item>button:hover{background:#f6ede8;border-color:#c7a69b}
+.v14-audit-item>button:focus-visible{outline:3px solid #d6aba6;outline-offset:2px}
+.v14-quote-preview{background:linear-gradient(125deg,#fbf6f1,#f6ebe9)}
+.v14-quote-preview p{font-size:clamp(16px,2vw,20px);line-height:1.6}
+@media(max-width:640px){
+  .v14-audit-item{align-items:flex-start;flex-direction:column}
+  .v14-audit-item>button{width:100%;text-align:center}
+}
