@@ -14,6 +14,7 @@ const server=createServer((req,res)=>{
  if(path==='/'||patterns.test(path))path='/index.html';
  else if(path==='/admin'||path==='/admin/')path='/admin/index.html';
  else if(path==='/admin/login')path='/admin/login/index.html';
+ else if(path==='/admin/reset-password'||path==='/admin/reset-password/')path='/admin/reset-password/index.html';
  const file=resolve(root,'.'+path);
  if(!file.startsWith(root+'/')||!existsSync(file)){res.writeHead(404).end();return;}
  try{res.writeHead(200,{'content-type':mime[extname(file)]||'application/octet-stream'});res.end(readFileSync(file));}

@@ -17,6 +17,18 @@
   
   
   
+  <!-- A Supabase recovery callback must never render the public wedding page. -->
+  <script>
+    (() => {
+      const q = new URLSearchParams(location.search);
+      const h = new URLSearchParams(location.hash.slice(1));
+      if ((h.get('type') === 'recovery' && h.has('access_token')) ||
+          (q.get('type') === 'recovery' && q.has('token_hash')) ||
+          q.has('code') || q.has('error_code')) {
+        location.replace('/admin/reset-password/' + location.search + location.hash);
+      }
+    })();
+  </script>
 </head>
 <body class="invitation-locked hero-image-loading">
 
