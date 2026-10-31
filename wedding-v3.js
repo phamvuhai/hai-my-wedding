@@ -12,8 +12,10 @@
     ja:{story:'出会いから今日まで、ふたりで歩んできました。',promise:'これからも、ずっと一緒に。',moments:'小さな幸せが、かけがえのない思い出に。',rsvp:'私たちの物語に寄り添っていただき、ありがとうございます。',event:'ふたつの家族がひとつになる日',pause:'スライドを一時停止',play:'スライドを再開',photo:'ウェディング写真'}
   };
   const cfg=window.WEDDING_CONFIG||{};
-  if(!cfg.supabaseUrl||!cfg.supabaseAnonKey||!window.supabase)return;
-  state.db=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey);
+  // Calendar date tabs should work even if the remote photo/database SDK fails
+  // to load (offline visitors, CSP blocking, or an unstable network).
+  if(cfg.supabaseUrl&&cfg.supabaseAnonKey&&window.supabase)
+    state.db=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey);
   function url(img){
     if(!img?.image_path)return '';
     const base=state.db.storage.from('wedding-gallery').getPublicUrl(img.image_path).data.publicUrl;
@@ -270,5 +272,6 @@
   document.addEventListener('visibilitychange',tick);
   reduced.addEventListener?.('change',tick);
   if(window.WeddingHeroReady)state.heroReady=true;
-  setDay('bride');load();
+  setDay('bride');
+  if(state.db)load();
 })();

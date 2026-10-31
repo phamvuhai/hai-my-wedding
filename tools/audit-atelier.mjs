@@ -50,7 +50,7 @@ for(const cfg of configs){
   return {
    cover:!!document.querySelector('.invitation-intro.invite-luxury'),
    cardVisible:!!cardRect&&cardRect.width>300&&cardRect.top>=-4&&cardRect.left>=0&&cardRect.right<=innerWidth+2,
-   floralAssets:document.querySelectorAll('.luxury-floral img').length===2,
+   ambientLayer:!!document.querySelector('.invite-luxury .luxury-ambient'),
    names:names.map(x=>x.textContent.trim()),
    namesFit,
    buttonVisible:!!r&&r.width>=120&&r.height>=44&&r.top>=0&&r.bottom<=innerHeight,
@@ -68,7 +68,7 @@ for(const cfg of configs){
  }));
  await page.screenshot({path:join(out,cfg.name+'-homepage.png')});
  await page.close();
- const passed=closed.cover&&closed.cardVisible&&closed.floralAssets&&closed.namesFit&&closed.names.length===2&&closed.buttonVisible&&
+ const passed=closed.cover&&closed.cardVisible&&closed.ambientLayer&&closed.namesFit&&closed.names.length===2&&closed.buttonVisible&&
   !closed.horizontalOverflow&&finish.opened&&!finish.locked&&!finish.horizontalOverflow&&errors.length===0;
  report.push({viewport:cfg.name,passed,closed,finish,errors});
  console.log(cfg.name+': '+(passed?'PASS':'FAIL')+' buttonVisible='+closed.buttonVisible+' errors='+errors.length);

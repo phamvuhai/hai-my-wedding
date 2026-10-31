@@ -76,22 +76,42 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 - The old Romantic Collage V2 editor and runtime were retired. Historical `collage_layout` data is intentionally left untouched in Supabase.
 - The invitation cover uses `invitation.js` and `invitation-simple.css`; the earlier Figma Canvas/Atelier JavaScript implementation was retired. Original design references are archived on a Git backup branch.
 
-## Current production implementation (V18)
+## Active source structure (V18 consolidated)
 
-The active public site is a single invitation rendered from `index.html`, with
-localized entry points `/vi`, `/en`, `/jp`, and private invitation links.
-**Do not delete a CSS/JS file merely because its name includes an older V-number:**
-the production HTML still imports some V3–V12 layers to preserve the final cascade.
+The current production website uses `index.html` for all VI/EN/JA routes.
+Source files are grouped by responsibility; old version labels alone do **not**
+mean that a script can be removed.
 
-- **Invitation cover:** `invitation.js` and `invitation-simple.css`.
-- **Wedding photography and story:** `wedding-v3.js`, `wedding-v11.css`,
-  `wedding-v12.css`, and active preceding stylesheets.
-- **Countdown:** `wedding-countdown-v15.css`; live countdown values remain in `app.js`.
-- **Wedding gifts:** `wedding-gifts-v16.js/css`, edited through Admin.
-- **Scroll motion:** `motion.js`, `wedding-v4.js/css`,
-  `wedding-text-motion-v17.js/css`, `wedding-split-motion-v18.js/css`.
-- **Admin Visual Editor:** `admin/visual-editor-v14.js/css` plus the live CMS modules.
-- **Album and RSVP:** retained with multilingual text and personalized invite links.
+### Website CSS loading order
+
+1. `styles.css` — shared base/responsive styles
+2. `invitation-simple.css` — interactive invitation cover
+3. `touch-effects.css` — touch feedback
+4. `wedding-sections.css` — wedding layout, Hero, Story, Schedule, Promise and Gallery;
+   merges twelve older visual CSS files while preserving the exact cascade
+5. `wedding-countdown-v15.css` — live countdown presentation
+6. `wedding-gifts-v16.css` — bank information cards
+7. `wedding-scroll-motion.css` — V17/V18 scroll text and split animations
+
+### Website JavaScript
+
+- `config.js`, `i18n.js`, `personalized.js`, `app.js` — configuration,
+  localization, private invitations, RSVP and public data
+- `invitation.js`, `motion.js`, `music.js`, `particles.js`,
+  `touch-effects.js` — invitation and presentation behavior
+- `wedding-v3.js`, `wedding-v4.js`, `wedding-album-v12.js`,
+  `wedding-gifts-v16.js` — current section, story, gallery and gift features
+- `wedding-scroll-motion.js` — concatenated IIFE modules (V17 then V18);
+  both still work independently, and execute after other website features
+
+### Admin
+
+- `admin/admin.css` — shared dashboard CSS
+- `admin/editor-features.css` — design editor, visual previews, bank/QR settings
+- Admin JavaScript modules remain separate by workflow (guest invites, RSVP,
+  Album, visual editor, security/auth) to prevent global state and load-order regressions.
+
+For the full active source map see [docs/ASSET_MAP.md](docs/ASSET_MAP.md).
 
 ## Removed prototypes and backups
 
