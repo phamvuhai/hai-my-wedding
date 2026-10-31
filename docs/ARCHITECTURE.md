@@ -58,16 +58,12 @@ GitHub `main` → Vercel production.
 
 ## Important design rules
 
-- The invitation cover content should stay visually stable during opening.
-- The couple photo must not animate upward.
-- The moving object is the inner invitation card emerging from the envelope.
-- Wedding schedule scroll animation is owned by `app.js`; do not restore the deleted legacy detailed-schedule animation in `motion.js`.
-
-
-## Cache strategy
-
-- Customer HTML and mutable frontend assets are served with `Cache-Control: no-store` to avoid stale in-app browser/Safari layouts.
-- Gallery/Hero image URLs include the database `updated_at` value as a version query.
-- Replacing an image from Admin writes a new Storage object path instead of overwriting the previous public path.
-- When a page is restored from Safari/iOS BFCache, the frontend reloads once so the current deployed UI is used.
-- Album data cached in memory is invalidated after the page stays in the background for more than 60 seconds.
+- The current cover uses `invite-luxury` and `invitation-simple.css`; the retired
+  Canvas/Atelier/Couture opening is not a production dependency.
+- The invitation cover content should remain legible and stable while opening.
+- Keep the Hero photo and fitted calligraphy stable across VI/EN/JP and mobile layouts.
+- Current event schedule layout uses V7 cards and `wedding-v3.js`.
+- Shared animation exists in `motion.js`, with V17 typography and V18
+  split convergence layers; keep each component's transform owner explicit.
+- Original Figma/Canvas reference exports were archived on
+  `backup/before-legacy-design-cleanup-20261031`, not served by production.
