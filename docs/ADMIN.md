@@ -100,6 +100,18 @@ Nhấn **Chọn ảnh / Đổi ảnh** ngay trên hình thu nhỏ, tìm kiếm v
 
 Các phần **Tùy chỉnh Hero**, **Thiết lập Album chi tiết**, **Story Builder** là những bảng nâng cao có thể mở rộng. Khi mở thư viện chọn ảnh, có thể chuyển đến tab Album để upload ảnh mới. Các thay đổi chưa Publish được giữ nguyên khi chuyển qua lại giữa các tab, nhưng **không tồn tại sau khi tải lại trình duyệt**.
 
+## Kiểm tra hình ảnh và khối Quote (2026-10-31)
+
+**Thiết kế website** hiện theo thứ tự **12 khu vực**, gồm cả hai khối chữ có trong Story Builder:
+- **05 · Lời nhắn sau Countdown**: nội dung ở vị trí `promise` / **Sau Countdown**.
+- **10 · Lời nhắn sau RSVP**: nội dung ở vị trí `rsvp` / **Sau RSVP**.
+
+Hai phần này mặc định sử dụng bố cục **Quote (chỉ chữ)**; không phải lỗi thiếu hình ảnh. Có thể chọn **Sửa nội dung / thay thành ảnh** để mở Story Builder, sửa nội dung VI/EN/JA, chuyển sang bố cục ảnh hoặc ẩn khối và **Publish thiết kế**.
+
+Thanh **Kiểm tra cấu hình** trong Visual Editor báo khi (1) không có ảnh đã Publish, (2) Footer chọn cùng ID ảnh với lịch cưới, hoặc (3) QR Nhà gái đang tắt trong Admin. Một vị trí đặt **Tự động** không bị coi là ảnh hỏng; website có thể sử dụng ảnh dự phòng từ thư viện. Thay đổi chọn ảnh/Story cần **Lưu & Publish thiết kế**; thông tin ngân hàng dùng nút **Lưu & Công bố** riêng.
+
+Các quote công khai luôn hiển thị chữ ngay cả trước khi hiệu ứng cuộn chạy để trang chụp full-page không giống khung ảnh trống. Không thay đổi dữ liệu `v3_design` và `wedding_gifts_v1` hiện có.
+
 ## Mừng cưới — tài khoản Nhà trai & Nhà gái (V16)
 
 Vào **Admin → Thiết kế website → 09 · Thông tin mừng cưới**. Phần này xuất hiện trực tiếp **sau RSVP và trước lời cảm ơn/Footer**. Nhà trai luôn đứng trước Nhà gái.
