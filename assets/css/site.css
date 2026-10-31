@@ -12286,3 +12286,27 @@ html.v18-motion-ready body #weddingGifts .wedding-gift-card.v18-split{
     transition:none!important;
   }
 }
+
+/* Quote-only Story Builder panels are content, never image placeholders.
+ * Keep their text readable even when IntersectionObserver has not fired
+ * (full-page captures, delayed CMS hydration, in-page anchors, or restore). */
+html body .romance-collage-slot .v3-story-block.v3-story-quote,
+html body.v4-motion-ready .romance-collage-slot .v3-story-block.v3-story-quote{
+  opacity:1!important;
+  visibility:visible!important;
+  transform:none!important;
+  filter:none!important;
+  clip-path:none!important;
+  animation:none!important;
+  transition:none!important;
+}
+html body .romance-collage-slot .v3-story-quote .v3-story-copy,
+html.v17-motion-ready body .romance-collage-slot .v3-story-quote .v3-story-copy > p{
+  opacity:1!important;
+  visibility:visible!important;
+  transform:none!important;
+  filter:none!important;
+  clip-path:none!important;
+  animation:none!important;
+  transition:none!important;
+}
