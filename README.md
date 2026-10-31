@@ -22,16 +22,31 @@ Production: https://hai-my-wedding-gamma.vercel.app
 
 ## Architecture
 
-- `index.html` — public wedding site
-- `app.js` — RSVP, gallery and public page behavior
-- `personalized.js` — personalized invite loading, prefill, welcome and open tracking
-- `invitation.js` — invitation-cover opening flow
-- `particles.js` — global wedding particle system
-- `motion.js` — page motion effects
-- `music.js` — wedding music controls
-- `admin/` — authenticated wedding CMS
-- `supabase.sql` — reference schema/policies/functions
-- `docs/` — technical documentation and project memo
+```text
+hai-my-wedding/
+├── index.html                 # Public website and invitations
+├── admin/
+│   ├── index.html             # Wedding CMS
+│   └── login/index.html       # Admin sign-in
+├── assets/
+│   ├── css/
+│   │   ├── site.css           # All public styles, cascade preserved
+│   │   ├── admin.css          # Admin dashboard + editor styles
+│   │   └── login.css          # Admin sign-in styles
+│   ├── js/
+│   │   ├── config.js          # Supabase public client configuration
+│   │   ├── site/              # Public features and page animations
+│   │   └── admin/             # CMS features, editor, authentication
+│   └── images/                # Bundled static decorative assets
+├── tools/                     # Visual and asset-integrity checks
+├── docs/                      # Technical documentation
+├── supabase.sql               # Reference schema
+└── vercel.json                # Routes and cache policy
+```
+
+Styles are consolidated by entry point; JavaScript is grouped by responsibility.
+All loaded script order and CSS cascade order from the previous website are preserved.
+See [active asset map](docs/ASSET_MAP.md) for the exact entry points.
 
 ## RSVP model
 
@@ -49,7 +64,7 @@ Serve the repository with any static HTTP server. Opening `index.html` directly 
 
 ## Supabase
 
-Configuration is stored in `config.js`.
+Configuration is stored in `assets/js/config.js`.
 
 The production project currently uses the schema documented in `supabase.sql`. Database changes should be applied through migrations, not by editing production data manually.
 
@@ -67,6 +82,7 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 - [Deployment](docs/DEPLOYMENT.md)
 - [Personalized invitations](docs/PERSONALIZED_INVITES.md)
 - [Technical memo](docs/MEMO.md)
+- [Active source map](docs/ASSET_MAP.md)
 
 ## Active story and image management
 
@@ -74,44 +90,26 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 - **Admin → Thiết kế website** provides the active Visual Editor for Hero, Story, Schedule, Our Promise, Gallery, RSVP, wedding gifts and Farewell.
 - Photos used only as website backgrounds can be excluded from the public Album via `show_in_album`.
 - The old Romantic Collage V2 editor and runtime were retired. Historical `collage_layout` data is intentionally left untouched in Supabase.
-- The invitation cover uses `invitation.js` and `invitation-simple.css`; the earlier Figma Canvas/Atelier JavaScript implementation was retired. Original design references are archived on a Git backup branch.
+- The invitation cover uses `assets/js/site/invitation.js` and the invitation section of `assets/css/site.css`; the earlier Figma Canvas/Atelier JavaScript implementation was retired. Original design references are archived on a Git backup branch.
 
-## Active source structure (V18 consolidated)
+## Active source layout
 
-The current production website uses `index.html` for all VI/EN/JA routes.
-Source files are grouped by responsibility; old version labels alone do **not**
-mean that a script can be removed.
+The website loads a single public stylesheet, `assets/css/site.css`, followed
+by its JavaScript files in the original initialization order. The CSS contains
+labeled sections for foundations, cover, touch feedback, wedding sections,
+countdown, gifts and scroll motion.
 
-### Website CSS loading order
+The Admin dashboard loads `assets/css/admin.css`, while the sign-in page
+uses `assets/css/login.css`. Their JavaScript is kept in
+`assets/js/admin/` as separate feature files to preserve execution order.
 
-1. `styles.css` — shared base/responsive styles
-2. `invitation-simple.css` — interactive invitation cover
-3. `touch-effects.css` — touch feedback
-4. `wedding-sections.css` — wedding layout, Hero, Story, Schedule, Promise and Gallery;
-   merges twelve older visual CSS files while preserving the exact cascade
-5. `wedding-countdown-v15.css` — live countdown presentation
-6. `wedding-gifts-v16.css` — bank information cards
-7. `wedding-scroll-motion.css` — V17/V18 scroll text and split animations
+File names describe responsibility, not release number. **Versioned CSS
+selectors, data attributes and database keys are intentionally retained**:
+they are runtime hooks, not obsolete duplicate files.
 
-### Website JavaScript
-
-- `config.js`, `i18n.js`, `personalized.js`, `app.js` — configuration,
-  localization, private invitations, RSVP and public data
-- `invitation.js`, `motion.js`, `music.js`, `particles.js`,
-  `touch-effects.js` — invitation and presentation behavior
-- `wedding-v3.js`, `wedding-v4.js`, `wedding-album-v12.js`,
-  `wedding-gifts-v16.js` — current section, story, gallery and gift features
-- `wedding-scroll-motion.js` — concatenated IIFE modules (V17 then V18);
-  both still work independently, and execute after other website features
-
-### Admin
-
-- `admin/admin.css` — shared dashboard CSS
-- `admin/editor-features.css` — design editor, visual previews, bank/QR settings
-- Admin JavaScript modules remain separate by workflow (guest invites, RSVP,
-  Album, visual editor, security/auth) to prevent global state and load-order regressions.
-
-For the full active source map see [docs/ASSET_MAP.md](docs/ASSET_MAP.md).
+Run `node tools/check-asset-refs.mjs` to validate local HTML/CSS references,
+asset organization and the Vercel cache policy before pushing changes.
+See [docs/ASSET_MAP.md](docs/ASSET_MAP.md) for file-by-file details.
 
 ## Removed prototypes and backups
 
