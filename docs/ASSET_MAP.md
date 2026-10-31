@@ -1,95 +1,78 @@
-# Active assets and cleanup rules
+# Active asset map
 
-Updated: 2026-10-31. This inventory describes source usage on `main` after the
-consolidation. It is not an archive of older versions.
+Updated: 2026-10-31. This is the current source layout. Historical versions
+remain recoverable from Git history and the existing backup branches.
 
-## Public page: `index.html`
+## Entry points and styles
 
-| Order | CSS asset | Role |
+| Page | HTML | Active stylesheet |
 | --- | --- | --- |
-| 1 | `/styles.css` | Site-wide layout, shared tokens and responsive rules |
-| 2 | `/invitation-simple.css` | Current wedding opening card |
-| 3 | `/touch-effects.css` | Mobile touch feedback |
-| 4 | `/wedding-sections.css` | Hero, Story, Event, Promise, Gallery and previous V3–V12 cascade |
-| 5 | `/wedding-countdown-v15.css` | Countdown |
-| 6 | `/wedding-gifts-v16.css` | Wedding bank/QR cards |
-| 7 | `/wedding-scroll-motion.css` | Scroll typography + split convergence |
+| Public website (VI / EN / JA) | `index.html` | `assets/css/site.css` |
+| CMS | `admin/index.html` | `assets/css/admin.css` |
+| CMS sign-in | `admin/login/index.html` | `assets/css/login.css` |
 
-**The order is deliberate.** The consolidated CSS contains boundary comments
-for each previous stylesheet; the original order and declarations are retained.
+The public CSS bundle is ordered **foundation → invitation cover → touch
+effects → wedding sections → countdown → gift cards → scroll animations**.
+The Admin bundle loads base dashboard CSS before editor feature overrides.
+Avoid reordering these sections without visual regression tests.
 
-Public JavaScript files, in order:
+## Public scripts (loaded in this order)
 
 ```text
-config.js
-i18n.js
-personalized.js
-app.js
-motion.js
-music.js
-particles.js
-invitation.js
-touch-effects.js
-wedding-v3.js
-wedding-v4.js
-wedding-album-v12.js
-wedding-gifts-v16.js
-wedding-scroll-motion.js
+assets/js/config.js
+assets/js/site/i18n.js
+assets/js/site/personalized.js
+assets/js/site/app.js
+assets/js/site/motion.js
+assets/js/site/music.js
+assets/js/site/particles.js
+assets/js/site/invitation.js
+assets/js/site/touch-effects.js
+assets/js/site/wedding.js
+assets/js/site/reveal.js
+assets/js/site/album.js
+assets/js/site/gifts.js
+assets/js/site/scroll-motion.js
 ```
 
-The new `wedding-scroll-motion.js` contains two isolated self-invoking
-modules in the original V17 → V18 execution order. Do not merge unrelated
-workflow scripts unless their global state and initialization order are tested.
-
-## Admin: `admin/index.html`
-
-CSS order:
+## Admin scripts (loaded in this order)
 
 ```text
-admin/admin.css
-admin/editor-features.css
+assets/js/config.js
+assets/js/admin/state.js
+assets/js/admin/library.js
+assets/js/admin/editor.js
+assets/js/admin/content.js
+assets/js/admin/rsvp.js
+assets/js/admin/guests.js
+assets/js/admin/dashboard.js
+assets/js/admin/wedding.js
+assets/js/admin/visual-editor.js
+assets/js/admin/gifts.js
+assets/js/admin/auth.js
 ```
 
-Admin JavaScript files are independently loaded for access control, image
-library, settings, RSVP, guests, visual editing and gift management.
-`admin/login/index.html` has its own login-specific CSS and JS.
+The sign-in page loads `assets/js/config.js` and
+`assets/js/admin/login.js`. Static decorations live in `assets/images/`.
 
-## Removed old runtime files
+## Cleanup and maintenance rules
 
-The originals of these stylesheets are now embedded in their corresponding
-bundle and deleted as separate assets:
+- Name files by feature, without release suffixes (such as `-v15`).
+- Keep JS files separate by workflow rather than merging global scripts
+  blindly. All scripts currently use classic loading semantics.
+- Keep CSS in one stylesheet per page entry, with labeled section boundaries
+  and the original cascading declaration order.
+- Do **not** rename versioned CSS selectors (such as `countdown-v15`),
+  JavaScript data keys or Supabase columns without a tested migration. These
+  identifiers are referenced at runtime even though versioned **filenames**
+  have been removed.
+- Do not remove `tools/audit-atelier.mjs`, `tools/audit-webkit.mjs` or
+  `tools/audit-touch.mjs`: GitHub Actions still uses them.
+- The database schema and stored images, invitations, bank details and RSVP
+  records were not changed by this repository refactor.
 
-- `wedding-v3.css`, `wedding-poster.css`, `wedding-v4.css`,
-  `wedding-v5.css`, `wedding-v6.css`, `wedding-promise.css`,
-  `wedding-schedule-v7.css`, `wedding-editorial-v8.css`,
-  `wedding-album-v9.css`, `wedding-refinement-v10.css`,
-  `wedding-v11.css`, `wedding-v12.css`
-- `wedding-text-motion-v17.css`, `wedding-split-motion-v18.css`
-- `wedding-text-motion-v17.js`, `wedding-split-motion-v18.js`
-- `admin/wedding-v3.css`, `admin/wedding-v11.css`,
-  `admin/visual-editor-v14.css`, `admin/wedding-gifts-v16.css`
+## Verify before merging
 
-Older removed prototypes (Collage V2, Canvas/Atelier/Couture opening,
-Image Manager V13, and old Figma exports) were deleted in the previous cleanup.
-
-## Retained on purpose
-
-- `wedding-v3.js`, `wedding-v4.js`, `wedding-album-v12.js`,
-  `wedding-gifts-v16.js`, and their Admin counterparts are **active**.
-- `wedding-countdown-v15.css` and `wedding-gifts-v16.css` are **active**
-  purpose-specific styles, not abandoned versions.
-- `tools/audit-atelier.mjs`, `tools/audit-webkit.mjs`, and
-  `tools/audit-touch.mjs` are still invoked from GitHub Actions workflows.
-- `supabase.sql` provides historical schema context; database tables and
-  stored guest/QR/photo records were not modified.
-
-## Recovery
-
-Cleanup snapshots are on
-`backup/before-legacy-design-cleanup-20261031` and
-`backup/pre-cleanup-v18-20261031`; the original bundle input files are also
-available in Git history before this consolidation.
-
-When editing a bundle, maintain its section boundary comments and the order
-of cascading declarations. Perform language, screen-size, invitation opening,
-RSVP, Album and QR regression checks before production deployment.
+Run `node tools/check-asset-refs.mjs`, then the WebKit smoke workflow to test
+the public invitation, localized pages, Admin editor, QR/bank info, gallery,
+RSVP and mobile layout. Static checks do not replace browser/production tests.
