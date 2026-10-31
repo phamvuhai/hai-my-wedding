@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="referrer" content="no-referrer" />
+  <title>Đặt lại mật khẩu Admin | Hải & Mỹ</title>
+  <link rel="stylesheet" href="/assets/css/login.css" />
+</head>
+<body>
+  <main class="login-page">
+    <section class="visual">
+      <a class="brand" href="/admin/login/">H & M</a>
+      <div class="visual-copy">
+        <p class="eyebrow">ADMIN SECURITY</p>
+        <h1>Hải & Mỹ</h1>
+        <p>Trang đặt lại mật khẩu dành riêng cho tài khoản quản trị.</p>
+      </div>
+    </section>
+    <section class="login-panel">
+      <div class="login-card">
+        <p class="eyebrow dark">ACCOUNT RECOVERY</p>
+        <h2>Đặt lại mật khẩu</h2>
+        <p class="subtitle">Đang xác thực liên kết đặt lại mật khẩu...</p>
+        <form id="resetForm" class="hidden">
+          <label>Mật khẩu mới
+            <div class="password-field">
+              <input id="newPassword" type="password" minlength="8" autocomplete="new-password" required />
+              <button id="toggleNewPassword" type="button">Hiện</button>
+            </div>
+          </label>
+          <label>Nhập lại mật khẩu mới
+            <input id="confirmPassword" type="password" minlength="8" autocomplete="new-password" required />
+          </label>
+          <button id="savePassword" class="primary" type="submit">Cập nhật mật khẩu</button>
+        </form>
+        <p id="resetStatus" class="status" role="status" aria-live="polite"></p>
+        <a class="back" href="/admin/login/">← Quay lại đăng nhập Admin / Yêu cầu liên kết mới</a>
+      </div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/assets/js/config.js"></script>
+  <script src="/assets/js/admin/reset-password.js"></script>
+</body>
+</html>

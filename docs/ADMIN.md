@@ -48,6 +48,17 @@ Guest management includes:
 
 ## Security
 
+### Quên mật khẩu Admin / Password recovery
+
+- Từ `/admin/login/`, chọn **Quên mật khẩu?**; chỉ email quản trị được phép yêu cầu.
+- Supabase `resetPasswordForEmail` sử dụng `redirectTo` là `https://hai-my-wedding-gamma.vercel.app/admin/reset-password/` trên production.
+- Email phải chứa liên kết xác thực `{{ .ConfirmationURL }}` trong mẫu **Reset Password**; **không** liên kết tới `{{ .SiteURL }}` (trang thiệp cưới).
+- Supabase Dashboard → **Authentication → URL Configuration → Redirect URLs** phải có chính xác `https://hai-my-wedding-gamma.vercel.app/admin/reset-password/` (nên thêm cả biến thể không có dấu `/` cuối). Đây là cấu hình Supabase, không nằm trong Git và không tự đổi theo deploy.
+- Trang `/admin/reset-password/` xác thực mã recovery (implicit token, PKCE code hoặc OTP hash) và email Admin trước khi hiển thị form tạo mật khẩu mới; truy cập trực tiếp hoặc dùng mã hết hạn chỉ hiển thị lỗi.
+- Đổi mật khẩu thành công → sign out → `/admin/login/?reset=success` để đăng nhập lại bằng mật khẩu mới. Các link cũ gửi đến `/admin/login/` được chuyển tiếp sang trang recovery chuyên dụng, giữ nguyên token.
+- Nếu Supabase vì cấu hình sai chuyển callback về trang thiệp cưới kèm token recovery, script đầu trang sẽ chuyển ngay tới `/admin/reset-password/`. Tuy nhiên **không thể** sửa email được tạo bằng `{{ .SiteURL }}` thuần (không chứa token) ở frontend; phải thay template trong dashboard.
+
+
 Admin writes are limited by Supabase authenticated policies to the configured admin account.
 
 ## Thiết kế V11 — ảnh theo vị trí

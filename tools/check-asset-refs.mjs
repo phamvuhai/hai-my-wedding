@@ -4,7 +4,7 @@ import { join, resolve, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
-const htmlPages = ['index.html', 'admin/index.html', 'admin/login/index.html'];
+const htmlPages = ['index.html', 'admin/index.html', 'admin/login/index.html', 'admin/reset-password/index.html'];
 const cssFiles = ['assets/css/site.css', 'assets/css/admin.css', 'assets/css/login.css'];
 const errors = [];
 const references = new Set();

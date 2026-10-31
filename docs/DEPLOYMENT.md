@@ -61,3 +61,12 @@ Production deliberately disables caching for HTML and mutable CSS/JS through Ver
 - Restoring the site from iOS/Safari BFCache reloads the current deployment.
 
 Do not reintroduce same-path Storage upserts for public wedding images; stale CDN/browser images can otherwise survive a deployment.
+
+## Admin password recovery verification
+
+1. Confirm `/admin/reset-password/` serves the dedicated Admin page (not the wedding site).
+2. In Supabase → Authentication → URL Configuration, allow `https://hai-my-wedding-gamma.vercel.app/admin/reset-password/` as a Redirect URL.
+3. In Authentication → Email Templates → Reset Password, use `{{ .ConfirmationURL }}` as the action link instead of `{{ .SiteURL }}`.
+4. Request a reset from `/admin/login/` using the Admin account, open the email, and check that only a valid, unexpired recovery token reveals the new-password form.
+5. Confirm updating the password signs out and redirects to `/admin/login/?reset=success`; check that the old password no longer works.
+6. Verify `/`, `/vi`, `/en`, `/jp` and private invitation URLs still show the wedding normally. Do not use real tokens in CI.

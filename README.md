@@ -13,6 +13,7 @@ Production: https://hai-my-wedding-gamma.vercel.app
 - Site-wide wedding particles: 🌸 ✨ ❤️ ❄️
 - RSVP form with public and invite-based response flows
 - Invite RSVP upsert: reopening the same invite updates the existing response
+- Admin password recovery through a dedicated verified reset page
 - Admin RSVP editing and source filtering
 - Guest invite management, sent/opened tracking and link generation
 - Wedding gallery / album management
@@ -27,7 +28,8 @@ hai-my-wedding/
 ├── index.html                 # Public website and invitations
 ├── admin/
 │   ├── index.html             # Wedding CMS
-│   └── login/index.html       # Admin sign-in
+│   ├── login/index.html       # Admin sign-in
+│   └── reset-password/index.html  # Admin password recovery
 ├── assets/
 │   ├── css/
 │   │   ├── site.css           # All public styles, cascade preserved

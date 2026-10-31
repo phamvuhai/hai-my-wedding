@@ -120,6 +120,14 @@
       "destination": "/admin/index.html"
     },
     {
+      "source": "/admin/reset-password",
+      "destination": "/admin/reset-password/index.html"
+    },
+    {
+      "source": "/admin/reset-password/",
+      "destination": "/admin/reset-password/index.html"
+    },
+    {
       "source": "/admin/login",
       "destination": "/admin/login/index.html"
     },
@@ -348,6 +356,40 @@
     },
     {
       "source": "/assets/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, max-age=0"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "Vercel-CDN-Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/admin/reset-password",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, max-age=0"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "Vercel-CDN-Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/admin/reset-password/",
       "headers": [
         {
           "key": "Cache-Control",

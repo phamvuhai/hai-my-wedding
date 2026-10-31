@@ -1,159 +1,94 @@
 (() => {
   const cfg = window.WEDDING_CONFIG || {};
   const ADMIN_EMAIL = 'phamvuhai23@gmail.com';
-  const APP_ORIGIN = location.origin;
   const status = document.getElementById('status');
-  const resetStatus = document.getElementById('resetStatus');
   const loginForm = document.getElementById('loginForm');
-  const resetForm = document.getElementById('resetForm');
   const emailEl = document.getElementById('email');
   const passwordEl = document.getElementById('password');
   const params = new URLSearchParams(location.search);
+  const fragment = new URLSearchParams(location.hash.slice(1));
 
-  let authFlowActive =
-    params.has('code') ||
-    location.hash.includes('type=recovery') ||
-    location.hash.includes('access_token=');
+  // Backward compatibility with password recovery emails issued before the
+  // dedicated reset page existed. Preserve the token and validation errors.
+  if (params.has('code') || params.has('token_hash') ||
+      params.has('error') || params.has('error_code') ||
+      fragment.get('type') === 'recovery' || fragment.has('access_token') ||
+      fragment.has('error')) {
+    location.replace('/admin/reset-password/' + location.search + location.hash);
+    return;
+  }
 
-  function setStatus(el, message, type = '') {
-    if (!el) return;
-    el.textContent = message;
-    el.className = 'status ' + type;
+  function setStatus(message, type = '') {
+    status.textContent = message;
+    status.className = 'status ' + type;
   }
 
   if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.supabase) {
-    setStatus(status, 'Thiếu cấu hình đăng nhập.', 'error');
+    setStatus('Thiếu cấu hình đăng nhập.', 'error');
     return;
   }
 
   const db = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+  const isAdmin = email => String(email || '').toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
-  function isAdmin(email = '') {
-    return email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+  if (params.get('reset') === 'success') {
+    setStatus('Đặt lại mật khẩu thành công. Hãy đăng nhập bằng mật khẩu mới.', 'success');
   }
+  const toggle = document.getElementById('togglePassword');
+  toggle.addEventListener('click', () => {
+    const visible = passwordEl.type === 'password';
+    passwordEl.type = visible ? 'text' : 'password';
+    toggle.textContent = visible ? 'Ẩn' : 'Hiện';
+  });
 
-  function toggle(input, button) {
-    const show = input.type === 'password';
-    input.type = show ? 'text' : 'password';
-    button.textContent = show ? 'Ẩn' : 'Hiện';
-  }
-
-  function showResetMode() {
-    authFlowActive = true;
-    loginForm.classList.add('hidden');
-    resetForm.classList.remove('hidden');
-    document.getElementById('formTitle').textContent = 'Đặt mật khẩu mới';
-    document.getElementById('formSubtitle').textContent = 'Nhập mật khẩu mới cho tài khoản quản trị.';
-  }
-
-  document.getElementById('togglePassword').onclick = () =>
-    toggle(passwordEl, document.getElementById('togglePassword'));
-
-  document.getElementById('toggleNewPassword').onclick = () =>
-    toggle(document.getElementById('newPassword'), document.getElementById('toggleNewPassword'));
-
-  loginForm.addEventListener('submit', async (event) => {
+  loginForm.addEventListener('submit', async event => {
     event.preventDefault();
     const email = emailEl.value.trim();
-    const password = passwordEl.value;
-
     if (!isAdmin(email)) {
-      setStatus(status, 'Email này không có quyền quản trị.', 'error');
+      setStatus('Email này không có quyền quản trị.', 'error');
       return;
     }
 
-    setStatus(status, 'Đang đăng nhập...');
-    const { error } = await db.auth.signInWithPassword({ email, password });
-
+    setStatus('Đang đăng nhập...');
+    const { error } = await db.auth.signInWithPassword({
+      email, password: passwordEl.value
+    });
     if (error) {
-      const message = /invalid login credentials/i.test(error.message)
+      setStatus(/invalid login credentials/i.test(error.message)
         ? 'Email hoặc mật khẩu không đúng.'
-        : 'Không thể đăng nhập. Vui lòng thử lại.';
-      setStatus(status, message, 'error');
+        : 'Không thể đăng nhập. Vui lòng thử lại.', 'error');
       return;
     }
-
-    setStatus(status, 'Đăng nhập thành công.', 'success');
     location.replace('/admin/');
   });
 
   document.getElementById('forgotBtn').addEventListener('click', async () => {
     const email = emailEl.value.trim() || ADMIN_EMAIL;
-
     if (!isAdmin(email)) {
-      setStatus(status, 'Nhập đúng email quản trị trước.', 'error');
+      setStatus('Nhập đúng email quản trị trước.', 'error');
       return;
     }
 
-    setStatus(status, 'Đang gửi email đặt lại mật khẩu...');
-    const { error } = await db.auth.resetPasswordForEmail(email, {
-      redirectTo: APP_ORIGIN + '/admin/login/'
-    });
-
+    setStatus('Đang gửi email đặt lại mật khẩu...');
+    // Supabase must allowlist this exact redirect URL under Auth > URL Configuration.
+    const redirectTo = new URL('/admin/reset-password/', location.origin).href;
+    const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo });
     if (error) {
-      const message = /rate limit/i.test(error.message)
+      setStatus(/rate limit/i.test(error.message)
         ? 'Đã gửi quá nhiều email trong thời gian ngắn. Vui lòng thử lại sau.'
-        : error.message;
-      setStatus(status, message, 'error');
+        : 'Không thể gửi email đặt lại mật khẩu. Vui lòng thử lại.', 'error');
       return;
     }
-
-    setStatus(status, 'Đã gửi email đặt lại mật khẩu. Hãy mở liên kết trong email.', 'success');
-  });
-
-  db.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'PASSWORD_RECOVERY') {
-      showResetMode();
-      return;
-    }
-
-  });
-
-  resetForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const password = document.getElementById('newPassword').value;
-    const confirm = document.getElementById('confirmPassword').value;
-
-    if (password.length < 8) {
-      setStatus(resetStatus, 'Mật khẩu cần ít nhất 8 ký tự.', 'error');
-      return;
-    }
-
-    if (password !== confirm) {
-      setStatus(resetStatus, 'Hai mật khẩu chưa khớp.', 'error');
-      return;
-    }
-
-    const { data: userData } = await db.auth.getUser();
-    if (!isAdmin(userData?.user?.email || '')) {
-      setStatus(resetStatus, 'Phiên thiết lập không hợp lệ. Vui lòng mở lại liên kết từ email quản trị.', 'error');
-      return;
-    }
-
-    setStatus(resetStatus, 'Đang lưu mật khẩu mới...');
-    const { error } = await db.auth.updateUser({ password });
-
-    if (error) {
-      setStatus(resetStatus, error.message, 'error');
-      return;
-    }
-
-    setStatus(resetStatus, 'Đổi mật khẩu thành công. Đang vào Admin...', 'success');
-    location.replace('/admin/');
+    setStatus('Nếu email quản trị tồn tại, một liên kết đặt lại mật khẩu sẽ được gửi. Hãy kiểm tra hộp thư.', 'success');
   });
 
   async function redirectIfLoggedIn() {
-    if (authFlowActive) return;
-
     const { data: { session } } = await db.auth.getSession();
     if (!session) return;
-
-    if (isAdmin(session.user?.email || '')) {
-      location.replace('/admin/');
-    } else {
-      await db.auth.signOut();
-    }
+    if (isAdmin(session.user?.email)) location.replace('/admin/');
+    else await db.auth.signOut();
   }
 
-  setTimeout(redirectIfLoggedIn, 350);
+  // Keep a successful-reset notice visible instead of navigating immediately.
+  if (params.get('reset') !== 'success') setTimeout(redirectIfLoggedIn, 350);
 })();

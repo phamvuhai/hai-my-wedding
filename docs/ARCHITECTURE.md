@@ -24,6 +24,12 @@ The old standalone `album/` implementation was removed. Public album routes now 
 
 The `admin/` folder contains authenticated CMS HTML routes; its scripts live in `assets/js/admin/` and its styles in `assets/css/admin.css`.
 
+Admin authentication has separate `/admin/login/` and `/admin/reset-password/`
+routes. The password recovery page verifies the Supabase one-time credentials
+and the Admin identity before calling `updateUser`, then signs out. Supabase
+must allowlist the recovery redirect URL and its Reset Password email template
+must use `{{ .ConfirmationURL }}`. See `docs/ADMIN.md` for the operator checklist.
+
 Main areas:
 - Overview dashboard
 - Multilingual content

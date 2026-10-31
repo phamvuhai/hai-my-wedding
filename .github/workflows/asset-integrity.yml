@@ -13,3 +13,4 @@ jobs:
         with:
           node-version: '22'
       - run: node tools/check-asset-refs.mjs
+      - run: node tools/audit-password-recovery.mjs
