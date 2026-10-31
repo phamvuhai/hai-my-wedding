@@ -19,12 +19,14 @@
     {number:'02',key:'hero',title:'Hero — ảnh cưới chính',subtitle:'Slideshow tự chuyển',note:'Chọn tối đa 3 ảnh. Ảnh số 1 là ảnh mở đầu.',type:'photos',ids:['v3Hero0','v3Hero1','v3Hero2'],labels:['Ảnh mở đầu','Ảnh thứ 2','Ảnh thứ 3'],settings:'v14AdvancedHero'},
     {number:'03',key:'story',title:'Our Story',subtitle:'Câu chuyện của chúng mình',note:'Sắp xếp ảnh, lời kể và các khối Filmstrip trong Story Builder.',type:'story',settings:'v14AdvancedStory'},
     {number:'04',key:'countdown',title:'Đếm ngược ngày cưới',subtitle:'Countdown',note:'Hiển thị thời gian còn lại. Không cần chọn ảnh riêng.',type:'static',symbol:'◷'},
-    {number:'05',key:'schedule',title:'Wedding Schedule',subtitle:'Ảnh phía trên lịch cưới',note:'Ưu tiên ảnh ngang, thấy rõ cả hai người.',type:'photos',ids:['v3ScheduleImage'],labels:['Ảnh lịch cưới'],settings:'v14AdvancedHero'},
-    {number:'06',key:'promise',title:'Our Promise',subtitle:'Lời hẹn của chúng mình',note:'Ưu tiên ảnh chân dung đứng, không cắt khuôn mặt.',type:'photos',ids:['v3PromiseImage'],labels:['Ảnh Our Promise'],settings:'v14AdvancedHero'},
-    {number:'07',key:'gallery',title:'Our Moments — 5 ảnh',subtitle:'Gallery trang chủ',note:'Ảnh 01 lớn, bốn ảnh còn lại nhỏ. Chỉ chọn ảnh được phép xuất hiện trong Album.',type:'photos',ids:['v3Album0','v3Album1','v3Album2','v3Album3','v3Album4'],labels:['Ảnh lớn 01','Ảnh 02','Ảnh 03','Ảnh 04','Ảnh 05'],settings:'v14AdvancedAlbum'},
-    {number:'08',key:'rsvp',title:'Xác nhận tham dự',subtitle:'RSVP',note:'Khách xác nhận tham dự qua biểu mẫu. Không có ảnh nền riêng.',type:'static',symbol:'✓'},
-    {number:'09',key:'gifts',title:'Thông tin mừng cưới',subtitle:'NHÀ TRAI TRƯỚC · NHÀ GÁI SAU',note:'Công bố tài khoản và QR ngân hàng, hiển thị ngay sau RSVP.',type:'gifts',settings:'v16GiftSettings'},
-    {number:'10',key:'farewell',title:'Lời cảm ơn cuối thiệp',subtitle:'Farewell / Footer',note:'Ảnh kết thúc câu chuyện, đi cùng lời cảm ơn.',type:'photos',ids:['v3FarewellImageSelect'],labels:['Ảnh cuối thiệp'],settings:'v14AdvancedHero'}
+    {number:'05',key:'quote-promise',slot:'promise',title:'Lời nhắn sau Countdown',subtitle:'STORY BUILDER · QUOTE',note:'Đây là khối chữ chuyển cảnh, không phải vị trí ảnh trống. Có thể sửa, đổi bố cục hoặc ẩn trong Story Builder.',type:'quote-slot',settings:'v14AdvancedStory'},
+    {number:'06',key:'schedule',title:'Wedding Schedule',subtitle:'Ảnh phía trên lịch cưới',note:'Ưu tiên ảnh ngang, thấy rõ cả hai người.',type:'photos',ids:['v3ScheduleImage'],labels:['Ảnh lịch cưới'],settings:'v14AdvancedHero'},
+    {number:'07',key:'promise',title:'Our Promise',subtitle:'Lời hẹn của chúng mình',note:'Ưu tiên ảnh chân dung đứng, không cắt khuôn mặt.',type:'photos',ids:['v3PromiseImage'],labels:['Ảnh Our Promise'],settings:'v14AdvancedHero'},
+    {number:'08',key:'gallery',title:'Our Moments — 5 ảnh',subtitle:'Gallery trang chủ',note:'Ảnh 01 lớn, bốn ảnh còn lại nhỏ. Chỉ chọn ảnh được phép xuất hiện trong Album.',type:'photos',ids:['v3Album0','v3Album1','v3Album2','v3Album3','v3Album4'],labels:['Ảnh lớn 01','Ảnh 02','Ảnh 03','Ảnh 04','Ảnh 05'],settings:'v14AdvancedAlbum'},
+    {number:'09',key:'rsvp',title:'Xác nhận tham dự',subtitle:'RSVP',note:'Khách xác nhận tham dự qua biểu mẫu. Không có ảnh nền riêng.',type:'static',symbol:'✓'},
+    {number:'10',key:'quote-rsvp',slot:'rsvp',title:'Lời nhắn sau RSVP',subtitle:'STORY BUILDER · QUOTE',note:'Khối chữ trước thông tin mừng cưới, không cần ảnh. Có thể sửa hoặc ẩn độc lập.',type:'quote-slot',settings:'v14AdvancedStory'},
+    {number:'11',key:'gifts',title:'Thông tin mừng cưới',subtitle:'NHÀ TRAI TRƯỚC · NHÀ GÁI SAU',note:'Công bố tài khoản và QR ngân hàng, hiển thị ngay sau RSVP.',type:'gifts',settings:'v16GiftSettings'},
+    {number:'12',key:'farewell',title:'Lời cảm ơn cuối thiệp',subtitle:'Farewell / Footer',note:'Ảnh kết thúc câu chuyện, nên khác ảnh lịch cưới.',type:'photos',ids:['v3FarewellImageSelect'],labels:['Ảnh cuối thiệp'],settings:'v14AdvancedHero'}
   ];
   let device='desktop',activeSlot='',lastFocus=null;
   const normalizeText=text=>String(text||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
@@ -46,11 +48,11 @@
     const automatically=!value;
     const status=selected
       ?(selected.show_in_album===false?'Chỉ dùng trên website':'Dùng trên website & Album')
-      :(automatically?'Đang dùng ảnh tự động':'Ảnh đã bị ẩn hoặc không còn dùng được');
+      :(automatically?(source().length?'Tự động / chưa chọn ảnh riêng':'Chưa có ảnh đã Publish'):'Ảnh đã bị ẩn hoặc không còn dùng được');
     const tag=index===0&&kind==='gallery'?'ẢNH CHÍNH':'';
     const description=selected?selected.title||selected.alt_text||'Ảnh cưới':'Chọn từ thư viện';
     const picture=selected?'<img loading="lazy" decoding="async" src="'+attr(imageUrl(selected))+'" alt="'+attr(description)+'">':
-      '<span class="v14-empty-photo" aria-hidden="true"><span>＋</span><small>Chọn ảnh</small></span>';
+      '<span class="v14-empty-photo" aria-hidden="true"><span>'+(automatically&&source().length?'↻':'＋')+'</span><small>'+(automatically&&source().length?'Tự động':'Chọn ảnh')+'</small></span>';
     return '<button type="button" class="v14-photo-tile '+(index===0?'v14-featured':'')+
       '" data-v14-pick="'+attr(id)+'" aria-label="Thay '+attr(label)+'">'+
       '<span class="v14-photo-frame">'+picture+
@@ -69,6 +71,16 @@
     } else if(step.type==='gifts'){
       content='<div class="v14-story-preview"><div class="v14-story-mark" aria-hidden="true">♡</div><p>Nhà trai · Hải → Nhà gái · Mỹ</p><span>TPBank · QR · Mừng cưới</span></div>'+
         '<button type="button" class="v14-open-story" data-v14-settings="v16GiftSettings">Chỉnh thông tin ngân hàng &amp; QR <span aria-hidden="true">↗</span></button>';
+    } else if(step.type==='quote-slot'){
+      const location=step.slot==='promise'?'Sau Countdown':'Sau RSVP';
+      const items=[...document.querySelectorAll('#v3BlockList .v3-admin-block')].filter(item=>
+        item.querySelector('small')?.textContent?.includes(location));
+      const quote=items.find(item=>item.querySelector('small')?.textContent?.includes('quote'));
+      const summary=quote?.querySelector('p')?.textContent?.trim()||items[0]?.querySelector('p')?.textContent?.trim()||
+        'Chưa có nội dung tại vị trí này. Bạn có thể thêm khối ảnh hoặc chữ trong Story Builder.';
+      content='<div class="v14-story-preview v14-quote-preview"><div class="v14-story-mark" aria-hidden="true">“</div><p>'+attr(summary)+'</p>'+
+        '<span>'+(items.length?items.length+' khối nội dung · Không yêu cầu ảnh':'Chưa có khối nội dung')+'</span></div>'+
+        '<button type="button" class="v14-open-story" data-v14-settings="v14AdvancedStory">Sửa nội dung / thay thành ảnh <span aria-hidden="true">↗</span></button>';
     } else if(step.type==='story'){
       const blocks=$('v3BlockList')?.querySelectorAll('.v3-admin-block').length||0;
       content='<div class="v14-story-preview"><div class="v14-story-mark" aria-hidden="true">“</div><p>Những khoảnh khắc tạo nên câu chuyện của chúng mình.</p>'+
@@ -86,6 +98,28 @@
       '</div>'+content+'</div></article>';
   }
 
+  function audit(){
+    const messages=[];
+    if(!source().length)messages.push({
+      message:'Thư viện chưa có ảnh đã Publish. Hãy upload và công bố ảnh trước khi sử dụng.',
+      tab:'album',label:'Mở Album'
+    });
+    const schedule=$('v3ScheduleImage')?.value,footer=$('v3FarewellImageSelect')?.value;
+    if(schedule&&footer&&schedule===footer)messages.push({
+      message:'Ảnh Footer đang trùng ảnh lịch cưới. Bạn có thể chọn riêng để tránh lặp ảnh.',
+      pick:'v3FarewellImageSelect',label:'Đổi ảnh Footer'
+    });
+    if($('giftBrideEnabled')&&!$('giftBrideEnabled').checked)messages.push({
+      message:'Thông tin ngân hàng và QR Nhà gái chưa được công bố.',
+      settings:'v16GiftSettings',label:'Thiết lập QR Nhà gái'
+    });
+    if(!messages.length)return '<div class="v14-editor-audit"><strong>Kiểm tra cấu hình</strong><span>Không phát hiện mục ảnh cần chú ý.</span></div>';
+    return '<div class="v14-editor-audit"><strong>Kiểm tra cấu hình · '+messages.length+' mục cần chú ý</strong>'+
+      messages.map(item=>'<div class="v14-audit-item"><span>'+attr(item.message)+'</span>'+
+        '<button type="button" '+(item.pick?'data-v14-pick="'+attr(item.pick)+'"':item.settings?'data-v14-settings="'+attr(item.settings)+'"':'data-v14-tab="'+attr(item.tab)+'"')+
+        '>'+attr(item.label)+' ↗</button></div>').join('')+'</div>';
+  }
+
   function render(){
     const status=$('v3Status')?.textContent?.trim()||'Chọn ảnh rồi bấm Publish để lưu lên website.';
     const statusClass=/chưa Publish|thay đổi/i.test(status)?'v14-unsaved':/thành công/i.test(status)?'v14-saved':'';
@@ -97,7 +131,7 @@
       [['desktop','PC'],['tablet','Tablet'],['mobile','Mobile']].map(([id,label])=>
         '<button type="button" data-v14-device="'+id+'" aria-pressed="'+(device===id)+'" class="'+(device===id?'is-active':'')+'">'+label+'</button>').join('')+
       '</div></div>'+
-      '<div class="v14-editor-help"><span>① Chọn khung ảnh</span><span>② Chọn ảnh từ thư viện</span><span>③ Publish thiết kế</span></div>'+
+      '<div class="v14-editor-help"><span>① Chọn khung ảnh</span><span>② Chọn ảnh từ thư viện</span><span>③ Publish thiết kế</span></div>'+audit()+
       '<div class="v14-journey">'+steps.map(section).join('')+'</div>'+
       '<div class="v14-publish-bar"><div><strong>Áp dụng lên website</strong><p class="'+statusClass+'" role="status">'+attr(status)+'</p></div>'+
       '<button type="button" class="v14-publish-button" data-v14-publish> Lưu &amp; Publish thiết kế <span aria-hidden="true">↗</span></button></div>'+
@@ -219,5 +253,7 @@
   if(storyList)new MutationObserver(()=>render()).observe(storyList,{childList:true});
   document.addEventListener('admin:data',()=>setTimeout(render,0));
   document.addEventListener('admin:v3',()=>setTimeout(render,120));
+  document.addEventListener('admin:gift-settings',()=>setTimeout(render,0));
+  $('giftBrideEnabled')?.addEventListener('change',render);
   render();
 })();
