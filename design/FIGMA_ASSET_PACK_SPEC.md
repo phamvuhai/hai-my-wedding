@@ -275,29 +275,19 @@ CSS must not recreate:
 - cord
 - flowers
 
-## 13. Git source structure
+## 13. Implementation history and current source
 
-```
-index.html
-styles.css
-invitation-assets.js
-invitation-config.js
-invitation-canvas.js
-invitation.js
+**Historical specification:** The Canvas-based invitation modules
+(`invitation-assets.js`, `invitation-config.js`, `invitation-canvas.js`)
+were part of an earlier opening design prototype. They were removed in the
+2026-10-31 cleanup because the production HTML does not import them.
 
-images/invitation/figma/
-  figma-card.svg
-  figma-envelope-back.svg
-  figma-envelope-front.svg
-  figma-envelope-flap.svg
-  figma-envelope-lining.svg
-  figma-cord.svg
-  figma-wax-seal.svg
-  figma-floral-left.svg
-  figma-floral-right.svg
-  figma-petal-01.svg
-  figma-petal-02.svg
-```
+**Active production opening:** `index.html`, `invitation.js`,
+`invitation-simple.css`, `i18n.js` and `personalized.js`.
+
+Figma assets and historical design references are retained under
+`images/invitation/figma/` and `design-source/invitation/` for future
+reference, but they are not a required runtime dependency.
 
 ## 14. Acceptance checklist
 
