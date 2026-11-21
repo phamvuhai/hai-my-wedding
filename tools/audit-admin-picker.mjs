@@ -8,7 +8,7 @@ import {resolve,extname} from 'node:path';
 import {webkit} from 'playwright';
 
 const root=process.cwd();
-const fixture=String.raw\`<!doctype html>
+const fixture=String.raw`<!doctype html>
 <html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="/assets/css/admin.css"></head>
 <body>
@@ -27,7 +27,7 @@ const fixture=String.raw\`<!doctype html>
   </div>
 </div>
 <script src="/assets/js/admin/visual-editor.js"></script>
-</body></html>\`;
+</body></html>`;
 const mime={'.html':'text/html','.js':'application/javascript','.css':'text/css'};
 const server=createServer((req,res)=>{
   const path=new URL(req.url,'http://localhost').pathname;
