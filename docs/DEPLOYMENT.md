@@ -81,3 +81,17 @@ Reference-inspired but original additive effects, independent of the existing Ad
 - Original links, RSVP submission, Supabase gallery records, existing Home gallery selection, personal invitation tokens, and the mobile scroll lock remain unchanged.
 
 Verification: GitHub WebKit workflow runs `tools/audit-romantic-motion.mjs` offline, then existing Safari/iPhone and invitation touch regression. Also check VI/EN/JP titles, desktop hover/focus, small-screen overflow and reduced-motion behavior before production merge. No Supabase schema migration is necessary.
+
+## V23 — Rose Gold Particle Heart (2026-11-21)
+
+The existing **Our Promise → Crystal Heart → Album** placement is unchanged. V23 adds a short, original SVG/Canvas 2D transition **inside** the V19 Crystal Heart scene; there are no extra sections, external images, videos, libraries, storage rows or database migrations.
+
+- **Draw (~1.8s)** — SVG path traced in a champagne/gold line with rose glow, using stroke dash offsets.
+- **Particle burst (~1.45–3.75s)** — deterministic rose/blush/champagne sparks originate from the right-hand heart arc. Canvas 2D, 180 particles on desktop and 64 on narrow/touch devices. Limit to ~60fps desktop and ~30fps mobile; canvas resolution capped at 2× DPR.
+- **Crystal reveal (~2.65–4.0s)** — the existing V19 facet heart fades in. After ~4.7s the frame loop stops entirely and the original subtle CSS dust/Crystal Heart remain.
+- **Pause** — animation stops offscreen, when the invitation is locked, when a Lightbox or Album overlay is open, or when the tab is hidden. Reentering resumes from its previous position; it does not restart on every scroll or language change.
+- **Accessibility** — Reduced Motion and CMS motion mode `minimal`/`off` show the original static crystal; the overlay is `aria-hidden` and `pointer-events:none`.
+- **No external requests** — SVG path and particles are generated locally; no WebGL, third-party JavaScript, API or Supabase dependency.
+- **QA** — offline WebKit smoke `node tools/audit-particle-heart.mjs` validates real Canvas pixels, SVG progress, pause/resume, budgets, and reduced-motion fallback. The existing V19, V21 and Admin tests continue running in CI.
+
+Release only after GitHub CI and Vercel Preview are green, then squash-merge to the linked Production branch (`main`) and verify the Production deployment's exact commit/domain.
