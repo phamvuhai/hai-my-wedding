@@ -1,0 +1,76 @@
+/* Album Detail image viewer — pinch/double tap/mouse zoom.
+   Image is clipped to its own stage; buttons and caption remain in place.
+   The original image is loaded only after opening photo detail. */
+.photo-lightbox-stage {
+  width:100%;
+  height:100%;
+  min-width:0;
+  min-height:0;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  touch-action:none;
+  overscroll-behavior:contain;
+}
+.photo-lightbox-stage #photoLightboxImage {
+  display:block;
+  width:auto;
+  height:auto;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  transform-origin:center center;
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-user-drag:none;
+  cursor:zoom-in;
+  will-change:transform;
+  backface-visibility:hidden;
+}
+.photo-lightbox-stage.is-zoomed #photoLightboxImage {
+  cursor:grab;
+}
+.photo-lightbox-stage.is-zoomed:active #photoLightboxImage {
+  cursor:grabbing;
+}
+.photo-lightbox-zoom {
+  position:absolute;
+  z-index:10;
+  top:max(18px,calc(8px + env(safe-area-inset-top)));
+  left:max(18px,calc(8px + env(safe-area-inset-left)));
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  padding:0;
+  border:1px solid rgba(255,255,255,.24);
+  border-radius:50%;
+  background:rgba(33,26,28,.72);
+  color:#fff;
+  box-shadow:0 7px 20px rgba(0,0,0,.22);
+  cursor:pointer;
+  font:400 28px/1 system-ui,sans-serif;
+}
+.photo-lightbox-zoom:focus-visible{
+  outline:3px solid #fff;
+  outline-offset:3px;
+}
+.photo-lightbox-zoom[aria-pressed="true"] {
+  background:rgba(137,88,104,.9);
+}
+@media(max-width:680px) {
+  .photo-lightbox-zoom {
+    top:max(12px,calc(8px + env(safe-area-inset-top)));
+    left:max(12px,calc(8px + env(safe-area-inset-left)));
+    width:42px;
+    height:42px;
+  }
+  .photo-lightbox-figure .photo-lightbox-stage {
+    max-height:calc(92svh - 104px);
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  .photo-lightbox-stage #photoLightboxImage {transition:none!important}
+}
