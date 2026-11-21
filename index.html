@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Lora:wght@400;500;600&display=swap" rel="stylesheet" />
   <link href="https://fonts.cdnfonts.com/css/utm-beautiful-caps" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/css/site.css" />
+  <link rel="stylesheet" href="/assets/css/romantic-motion.css" />
   
   
   
@@ -298,6 +299,48 @@
       </div>
     </section>
 
+    <!-- V19: original SVG crystal-heart scene. Pure decoration; no WebGL or image dependencies. -->
+    <section class="hm-forever-scene chapter-member" id="weddingMagic" aria-labelledby="hmForeverTitle">
+      <div class="hm-forever-particles" aria-hidden="true"></div>
+      <div class="hm-forever-inner">
+        <p class="hm-forever-eyebrow">HẢI &amp; MỸ · 2026</p>
+        <div class="hm-crystal-stage" aria-hidden="true">
+          <span class="hm-crystal-halo"></span>
+          <span class="hm-crystal-orbit"></span>
+          <span class="hm-crystal-orbit hm-crystal-orbit--inner"></span>
+          <svg class="hm-crystal-heart" viewBox="0 0 220 200" focusable="false" role="presentation" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <path id="hm-heart-shape" d="M110 181C91 162 24 117 24 70C24 31 74 16 110 53C146 16 196 31 196 70C196 117 129 162 110 181Z"/>
+              <clipPath id="hm-crystal-clip"><use href="#hm-heart-shape"/></clipPath>
+              <linearGradient id="hm-crystal-base" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#fff3e5"/><stop offset=".24" stop-color="#eab3c3"/>
+                <stop offset=".58" stop-color="#aa5d82"/><stop offset="1" stop-color="#5e304b"/>
+              </linearGradient>
+              <linearGradient id="hm-crystal-glint" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0" stop-color="#fffaf4" stop-opacity=".94"/>
+                <stop offset="1" stop-color="#ffd4dc" stop-opacity=".03"/>
+              </linearGradient>
+            </defs>
+            <use href="#hm-heart-shape" fill="url(#hm-crystal-base)"/>
+            <g clip-path="url(#hm-crystal-clip)">
+              <path fill="#f4d0d1" opacity=".8" d="M21 70L62 28L108 54L82 110Z"/>
+              <path fill="#ce7e9a" opacity=".93" d="M62 28L110 53L136 28L152 86L82 110Z"/>
+              <path fill="#824463" opacity=".9" d="M136 28L197 60L168 112L152 86Z"/>
+              <path fill="#f8d4d2" opacity=".55" d="M21 70L82 110L110 181L47 126Z"/>
+              <path fill="#d78caa" opacity=".71" d="M82 110L152 86L110 181Z"/>
+              <path fill="#6a3557" opacity=".85" d="M152 86L199 80L168 124L110 181Z"/>
+              <path fill="url(#hm-crystal-glint)" opacity=".88" d="M62 28L110 53L82 110L48 67Z"/>
+              <path class="hm-facet-lines" d="M62 28L108 54L82 110L24 70 M110 53L152 86L82 110L110 181 M152 86L196 70 M82 110L167 123L110 181"/>
+            </g>
+            <use href="#hm-heart-shape" class="hm-crystal-outline"/>
+          </svg>
+          <span class="hm-crystal-flare"></span>
+        </div>
+        <h2 class="hm-forever-heading" id="hmForeverTitle" data-i18n="effects.foreverTitle">Một trái tim, một hành trình</h2>
+        <p class="hm-forever-caption">FOREVER &amp; ALWAYS</p>
+      </div>
+    </section>
+
     <section class="section gallery-section chapter-member">
       <div class="container">
         <div class="gallery-editorial-head">
@@ -470,5 +513,6 @@
   <script src="/assets/js/site/album.js"></script>
   <script src="/assets/js/site/gifts.js"></script>
   <script src="/assets/js/site/scroll-motion.js"></script>
+  <script src="/assets/js/site/romantic-motion.js"></script>
 </body>
 </html>
