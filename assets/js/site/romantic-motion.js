@@ -13,6 +13,16 @@
   function silkButton(button) {
     if (!button) return;
     button.classList.add('hm-silk-button');
+    // Localized content can replace a CTA's text node after our initial scan.
+    // Watch direct children only and re-add the two decorative layers if removed.
+    if (!button.dataset.hmSilkObserved) {
+      button.dataset.hmSilkObserved = '1';
+      new MutationObserver(() => {
+        if (button.isConnected && !button.querySelector(':scope > .hm-silk-glint')) {
+          silkButton(button);
+        }
+      }).observe(button,{childList:true});
+    }
     // data-i18n on links can reset textContent on language changes; re-attach.
     if (!button.querySelector(':scope > .hm-silk-glint')) {
       const glint = document.createElement('span');
