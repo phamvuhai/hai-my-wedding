@@ -805,3 +805,11 @@ revoke all on function public.reorder_gallery_images(uuid,uuid[]) from PUBLIC,an
 revoke all on function public.move_gallery_images(uuid[],uuid) from PUBLIC,anon;
 grant execute on function public.reorder_gallery_images(uuid,uuid[]) to authenticated;
 grant execute on function public.move_gallery_images(uuid[],uuid) to authenticated;
+
+
+-- Adaptive images for Supabase Free: immutable public WebP paths, keyed by width.
+-- Existing records keep {} and continue using image_path until Admin backfills them.
+alter table public.gallery_images
+  add column if not exists image_variants jsonb not null default '{}'::jsonb;
+comment on column public.gallery_images.image_variants is
+  'Public WebP variant paths keyed by intrinsic width (480,960,1440), from authenticated Admin upload; original remains image_path';
