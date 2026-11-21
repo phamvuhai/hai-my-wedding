@@ -33,6 +33,7 @@ jobs:
           node --check assets/js/admin/image-backfill.js
           node --check tools/audit-adaptive-images.mjs
           node --check assets/js/site/progressive-gallery.js
+          node --check assets/js/site/lightbox-zoom.js
           node --check tools/audit-v21-gallery.mjs
           node --check assets/js/admin/visual-editor.js
           node --check tools/audit-admin-picker.mjs
