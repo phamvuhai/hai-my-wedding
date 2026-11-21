@@ -72,6 +72,7 @@ try {
         update:data=>{state.operation='update';state.input=data;return methods;},
         delete:()=>{state.operation='delete';return methods;},
         single:()=>{state.single=true;return executor();},
+        maybeSingle:()=>{state.single=true;return executor();},
         then:(resolve,reject)=>executor().then(resolve,reject)
       };
       return methods;
@@ -129,7 +130,7 @@ try {
   });
   assert.equal(await page.locator('#bulkUploadPanel').isVisible(),true);
   assert.equal(await page.evaluate(()=>window.AdminApp.db.__offlineMock),true,'Admin must use offline Supabase mock');
-  const pixel=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAFklEQVR4nGN8Nm3afwYkwMSABggLAADKCAMZxpQtEgAAAABJRU5ErkJggg==','base64');
+  const pixel=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAGUlEQVR4nGN8fWILAymAiSTVoxpGNQwpDQCLUgKHpX12FgAAAABJRU5ErkJggg==','base64');
   await page.locator('#bulkFileInput').setInputFiles([
     {name:'Photo_001.png',mimeType:'image/png',buffer:pixel},
     {name:'Photo_002.png',mimeType:'image/png',buffer:pixel}
