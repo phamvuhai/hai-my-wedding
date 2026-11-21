@@ -704,6 +704,7 @@ function showPhotoByIndex(index, images, {push = true} = {}) {
   galleryState.activeImages = images;
   galleryState.activeIndex = Math.max(0, Math.min(images.length - 1, index));
   galleryState.lightboxOpen = true;
+  window.WeddingProgressiveGallery?.pause(true);
   lightbox.classList.add('is-open');
   lightbox.setAttribute('aria-hidden','false');
   document.body.classList.add('photo-lightbox-open');
@@ -722,6 +723,7 @@ function hidePhoto() {
   const lightbox = document.getElementById('photoLightbox');
   if (!lightbox || !galleryState.lightboxOpen) return;
   galleryState.lightboxOpen = false;
+  window.WeddingProgressiveGallery?.pause(false);
   galleryState.photoPushed = false;
   galleryState.hdTicket=(galleryState.hdTicket||0)+1;
   if (galleryState.pendingHD) {
