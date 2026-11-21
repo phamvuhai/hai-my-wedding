@@ -91,7 +91,7 @@ try {
   await page.locator('[data-tab="album"]').click();
   await page.locator('[data-album-mode="bulk"]').click();
   assert.equal(await page.locator('#bulkUploadPanel').isVisible(),true);
-  const pixel=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLttAAAAABJRU5ErkJggg==','base64');
+  const pixel=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAFklEQVR4nGN8Nm3afwYkwMSABggLAADKCAMZxpQtEgAAAABJRU5ErkJggg==','base64');
   await page.locator('#bulkFileInput').setInputFiles([
     {name:'Photo_001.png',mimeType:'image/png',buffer:pixel},
     {name:'Photo_002.png',mimeType:'image/png',buffer:pixel}
