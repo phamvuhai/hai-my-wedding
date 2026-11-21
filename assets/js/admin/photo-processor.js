@@ -87,7 +87,7 @@
       image.src = '';
     }
   }
-  const RESPONSIVE_WIDTHS = [480,960,1440];
+  const RESPONSIVE_WIDTHS = [320,480,960,1440];
   async function variantsFromPublicBlob(blob, sourceWidth) {
     // Resize from the finished public file: matches its exact crop/rotation/look.
     if (!blob) return [];
@@ -101,7 +101,7 @@
         canvas.width=width;canvas.height=height;
         try {
           canvas.getContext('2d').drawImage(img,0,0,width,height);
-          const compressed=await canvasToWebp(canvas,width<=480?.70:width<=960?.76:.81);
+          const compressed=await canvasToWebp(canvas,width<=320?.67:width<=480?.70:width<=960?.76:.81);
           results.push({width,blob:compressed});
         } finally {releaseCanvas(canvas);}
       }
