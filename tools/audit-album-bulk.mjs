@@ -64,12 +64,12 @@ try {
       auth:{getUser:async()=>({data:{user:{email:'phamvuhai23@gmail.com'}},error:null}),
         getSession:async()=>({data:{session:{user:{email:'phamvuhai23@gmail.com'}}}}),
         onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}}),signOut:async()=>({})},
-      from, storage:()=>({
+      from, storage:{from:()=>({
         upload:async()=>({data:{path:'mock'},error:null}),
         remove:async()=>({data:[],error:null}),
         getPublicUrl:path=>({data:{publicUrl:'https://example.test/'+path}}),
         download:async()=>({data:null,error:new Error('not needed in smoke test')})
-      }),
+      })},
       rpc:async(name,args)=>{
         if(name==='reorder_gallery_images'){
           if(args.p_image_ids.length!==images.filter(x=>x.album_id===args.p_album_id).length)
