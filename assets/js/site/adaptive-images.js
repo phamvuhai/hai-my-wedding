@@ -38,7 +38,13 @@
     if (!image?.image_path) return [];
     const maxSize = Number(image.width) || 2400;
     const original = {width:maxSize,path:image.image_path};
-    const candidates = [...variants(image).filter(v=>v.width<maxSize),original];
+    const copies = variants(image).filter(v=>v.width < maxSize);
+    // Thumbnails must never advertise the original full-size file via srcset.
+    // Full resolution is requested only after opening a Lightbox.
+    const candidates = role === 'lightbox' ? [original]
+      : role === 'thumb' ? (copies.filter(v=>v.width<=960).length
+        ? copies.filter(v=>v.width<=960) : [original])
+      : [...copies,original];
     const cap = priorityCap(role);
     if (Number.isFinite(cap)) {
       const capped = candidates.filter(v=>v.width<=cap);
@@ -56,6 +62,21 @@
     return resolved(client,picked.path,image);
   }
 
+  function fullUrl(client,image) {
+    return image?.image_path ? resolved(client,image.image_path,image) : '';
+  }
+  function previewUrl(client,image) {
+    const copies = variants(image);
+    // 320px when available; legacy images already have a 480px variant.
+    const picked = copies.find(x=>x.width>=320 && x.width<=480) ||
+      copies.find(x=>x.width<=960) || copies[0];
+    return resolved(client,picked?.path||image?.image_path,image);
+  }
+  function mediumUrl(client,image) {
+    const copies=variants(image).filter(v=>v.width<=960);
+    const picked=copies.find(v=>v.width>=960) || copies[copies.length-1];
+    return resolved(client,picked?.path||image?.image_path,image);
+  }
   function srcset(client,image,role='gallery') {
     const list = sources(client,image,role);
     if (list.length<=1) return '';
@@ -111,5 +132,5 @@
     img.src=v.src;
   }
 
-  window.WeddingAdaptiveImages={widths,bandwidth,priorityCap,variants,resolved,sources,select,srcset,attrs,htmlAttrs,apply,pixelWidth};
+  window.WeddingAdaptiveImages={widths,bandwidth,priorityCap,variants,resolved,sources,select,srcset,attrs,htmlAttrs,apply,pixelWidth,fullUrl,previewUrl,mediumUrl};
 })();
