@@ -25,6 +25,12 @@ try {
   const errors=[];
   page.on('pageerror',e=>errors.push(e.message));
   await page.route('https://**',route=>route.abort());
+  // The Album test isolates the CMS workflows: emulate a successful Admin guard.
+  // Authentication itself is tested separately; no actual credentials are used here.
+  await page.route('**/assets/js/admin/auth.js',route=>route.fulfill({
+    status:200,contentType:'application/javascript',
+    body:"document.getElementById('cmsView').classList.remove('hidden');document.getElementById('userEmail').textContent='Mock Admin';window.AdminApp.loadData();"
+  }));
   await page.addInitScript(()=>{
     const album={id:'00000000-0000-0000-0000-000000000001',title:'Pre-wedding',slug:'pre-wedding',sort_order:0};
     const images=[];
