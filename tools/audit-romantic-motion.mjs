@@ -57,11 +57,13 @@ try{
   assert.equal(await page.locator('.hm-forever-scene').count(),1,'Crystal-heart section must exist');
   assert.equal(await page.locator('.hm-crystal-heart').count(),1,'Crystal heart SVG must exist');
   assert.equal(await page.locator('.hm-forever-particle').count(),24,'Decorative particle budget');
+  await page.waitForFunction(()=>!!document.querySelector('.hero-copy > .btn .hm-silk-glint'),null,{timeout:6000});
   assert.equal(await page.locator('#openInvitation .hm-silk-glint').count(),1,'Original open button enhanced');
   assert.equal(await page.locator('.hero-copy > .btn .hm-silk-glint').count(),1,'Original Hero link enhanced');
   assert.equal(await page.locator('.rsvp-form button[type=submit] .hm-silk-glint').count(),1,'Original RSVP button enhanced');
   await page.evaluate(()=>window.WeddingI18n.setLanguage('en'));
   await page.waitForFunction(()=>document.getElementById('hmForeverTitle').textContent.trim()==='Two hearts, one journey');
+  await page.waitForFunction(()=>!!document.querySelector('.hero-copy > .btn .hm-silk-glint'),null,{timeout:6000});
   assert.equal(await page.locator('.hero-copy > .btn .hm-silk-glint').count(),1,'I18n must preserve silk decoration');
   await page.evaluate(()=>{
     const el=document.querySelector('#story .story-copy');
