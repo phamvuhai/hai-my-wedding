@@ -26,7 +26,9 @@ try {
   page.on('pageerror',e=>errors.push(e.message));
   // Block *all* external requests, including Supabase and CDN, in this offline test.
   await page.route('**/*',route=>{
-    if(route.request().url().startsWith('http://127.0.0.1:'+server.address().port+'/'))return route.continue();
+    const url=route.request().url();
+    if(url.startsWith('http://127.0.0.1:'+server.address().port+'/') ||
+       url.startsWith('blob:') || url.startsWith('data:'))return route.continue();
     return route.abort();
   });
   // Never load production credentials in the test, even if the Supabase mock is bypassed.
