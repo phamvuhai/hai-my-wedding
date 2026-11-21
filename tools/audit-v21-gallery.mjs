@@ -36,7 +36,12 @@ try{
     if(url.startsWith(origin+'/')||url.startsWith('blob:')||url.startsWith('data:'))return route.continue();
     return route.abort();
   });
-  await page.route('https://img.test/**',route=>route.fulfill({status:200,body:png,contentType:'image/png'}));
+  await page.route('https://img.test/**',route=>{
+    // Full HD failure for the second photo must not blank the preview.
+    if(route.request().url().includes('/full-1.webp'))
+      return route.fulfill({status:404,body:'missing full',contentType:'text/plain'});
+    return route.fulfill({status:200,body:png,contentType:'image/png'});
+  });
   await page.route('**/assets/js/config.js',route=>route.fulfill({
     status:200,contentType:'application/javascript',
     body:"window.WEDDING_CONFIG={supabaseUrl:'https://offline.mock.invalid',supabaseAnonKey:'offline-only'};"
@@ -95,11 +100,51 @@ try{
   await page.waitForFunction(()=>document.getElementById('photoLightboxCounter').textContent.trim()==='1 / 25');
   await page.waitForFunction(()=>document.getElementById('photoLightboxImage').getAttribute('src')?.includes('full-0.webp'),{timeout:10000});
   assert.ok(imageRequests.some(x=>x.includes('/full-0.webp')),'Full image starts after opening detail');
+  assert.ok(await page.locator('#photoLightboxImage').evaluate(el=>el.naturalWidth>0),'Image visible in detail');
+  assert.ok(await page.locator('#photoLightboxZoom').isVisible(),'Zoom button visible on iPhone');
+  await page.locator('#photoLightboxZoom').click();
+  assert.ok((await page.evaluate(()=>window.WeddingPhotoZoom.status().scale))>2,'Zoom button enlarges detail image');
+  // Two-finger pinch must NOT cause a slide change, even when it ends at scale 1.
+  await page.evaluate(()=>{
+    window.WeddingPhotoZoom.reset();
+    const stage=document.getElementById('photoLightboxStage');
+    function emit(type,touches,changed){
+      const event=new Event(type,{bubbles:true,cancelable:true});
+      Object.defineProperty(event,'touches',{value:touches});
+      Object.defineProperty(event,'changedTouches',{value:changed});
+      stage.dispatchEvent(event);
+    }
+    const t=(id,x,y)=>({identifier:id,target:stage,clientX:x,clientY:y});
+    emit('touchstart',[t(1,150,250),t(2,240,250)],[t(1,150,250),t(2,240,250)]);
+    emit('touchmove',[t(1,105,250),t(2,285,250)],[t(1,105,250),t(2,285,250)]);
+    emit('touchend',[],[t(1,105,250),t(2,285,250)]);
+  });
+  assert.ok((await page.evaluate(()=>window.WeddingPhotoZoom.status().scale))>1.5,'Pinch gesture increases zoom scale');
+  assert.equal((await page.locator('#photoLightboxCounter').innerText()).trim(),'1 / 25','Pinch may not navigate to another photo');
+  // A single-finger pan while zoomed must stay on this same photo.
+  await page.evaluate(()=>{
+    const stage=document.getElementById('photoLightboxStage');
+    const t=(id,x,y)=>({identifier:id,target:stage,clientX:x,clientY:y});
+    function emit(type,touches,changed){
+      const event=new Event(type,{bubbles:true,cancelable:true});
+      Object.defineProperty(event,'touches',{value:touches});
+      Object.defineProperty(event,'changedTouches',{value:changed});
+      stage.dispatchEvent(event);
+    }
+    emit('touchstart',[t(1,180,280)],[t(1,180,280)]);
+    emit('touchmove',[t(1,80,280)],[t(1,80,280)]);
+    emit('touchend',[],[t(1,80,280)]);
+  });
+  assert.equal((await page.locator('#photoLightboxCounter').innerText()).trim(),'1 / 25','Panning a zoomed photo does not swipe to next');
   assert.equal(await page.locator('#photoLightboxPrev').isDisabled(),true);
   await page.keyboard.press('ArrowLeft');
   assert.equal((await page.locator('#photoLightboxCounter').innerText()).trim(),'1 / 25','First photo must not wrap to last');
   await page.locator('#photoLightboxNext').click();
   assert.equal((await page.locator('#photoLightboxCounter').innerText()).trim(),'2 / 25');
+  assert.equal(await page.evaluate(()=>window.WeddingPhotoZoom.status().scale),1,'Switching photo resets zoom');
+  await page.waitForFunction(()=>!document.getElementById('photoLightboxRetry').hidden,null,{timeout:8000});
+  assert.ok(await page.locator('#photoLightboxImage').evaluate(el=>el.naturalWidth>0),
+    'Failed full resolution retains a visible WebP preview');
   await page.locator('#photoLightboxPrev').click();
   assert.equal((await page.locator('#photoLightboxCounter').innerText()).trim(),'1 / 25');
   for(let i=0;i<24;i++)await page.keyboard.press('ArrowRight');
@@ -114,7 +159,7 @@ try{
   await page.evaluate(()=>{const overlay=document.getElementById('albumOverlay');overlay.scrollTop=overlay.scrollHeight;});
   await page.waitForFunction(()=>document.querySelectorAll('#albumOverlayGrid [data-album-photo-id]').length>10,{timeout:12000});
   assert.equal(errors.filter(x=>/progressive-gallery|adaptive-images|renderLightbox/i.test(x)).length,0,'No gallery JavaScript errors');
-  console.log('PASS: staged thumbnail load, no Full HD before click, detail HD, bounded arrows and batched scroll');
+  console.log('PASS: V21 + Album Detail zoom: pinch/pan, no gesture swipe, image reset, HD 404 fallback, bounded arrows and batched scroll');
 } finally {
   await browser.close();
   await new Promise(resolve=>http.close(resolve));

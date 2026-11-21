@@ -613,88 +613,133 @@ function hideAlbumOverlay({restoreScroll = true} = {}) {
 }
 
 function renderLightbox() {
-  const img = galleryState.activeImages[galleryState.activeIndex];
-  if (!img) return;
-  const loc = galleryLocalized(img);
-  const image = document.getElementById('photoLightboxImage');
-  const title = document.getElementById('photoLightboxTitle');
-  const caption = document.getElementById('photoLightboxCaption');
-  const counter = document.getElementById('photoLightboxCounter');
-  const prev = document.getElementById('photoLightboxPrev');
-  const next = document.getElementById('photoLightboxNext');
-  const status = document.getElementById('photoLightboxLoading');
-  const retry = document.getElementById('photoLightboxRetry');
-  if (!image) return;
+  const img=galleryState.activeImages[galleryState.activeIndex];
+  if(!img)return;
+  const loc=galleryLocalized(img);
+  const image=document.getElementById('photoLightboxImage');
+  const title=document.getElementById('photoLightboxTitle');
+  const caption=document.getElementById('photoLightboxCaption');
+  const counter=document.getElementById('photoLightboxCounter');
+  const prev=document.getElementById('photoLightboxPrev');
+  const next=document.getElementById('photoLightboxNext');
+  const status=document.getElementById('photoLightboxLoading');
+  const retry=document.getElementById('photoLightboxRetry');
+  if(!image)return;
   const index=galleryState.activeIndex;
   const total=galleryState.activeImages.length;
-  if (prev) {prev.disabled=index<=0;prev.setAttribute('aria-disabled',String(index<=0));}
-  if (next) {next.disabled=index>=total-1;next.setAttribute('aria-disabled',String(index>=total-1));}
-  image.alt = loc.alt;
-  title.textContent = loc.title;
-  caption.textContent = loc.caption;
-  counter.textContent = `${index + 1} / ${total}`;
+  if(prev){prev.disabled=index<=0;prev.setAttribute('aria-disabled',String(index<=0));}
+  if(next){next.disabled=index>=total-1;next.setAttribute('aria-disabled',String(index>=total-1));}
+  image.alt=loc.alt;
+  if(title)title.textContent=loc.title;
+  if(caption)caption.textContent=loc.caption;
+  if(counter)counter.textContent=`${index+1} / ${total}`;
 
-  // Language changes update captions without restarting the network request.
-  if (image.dataset.photoId!==String(img.id) || !image.getAttribute('src')) {
+  // A language-only update must not reload the original or reset zoom.
+  if(image.dataset.photoId!==String(img.id)||!image.getAttribute('src')){
+    window.WeddingPhotoZoom?.reset();
     const ticket=(galleryState.hdTicket||0)+1;
     galleryState.hdTicket=ticket;
-    if (galleryState.pendingHD) {
+    if(galleryState.pendingHD){
       galleryState.pendingHD.onload=null;
       galleryState.pendingHD.onerror=null;
       galleryState.pendingHD.src='';
       galleryState.pendingHD=null;
     }
+    image.onload=null;
+    image.onerror=null;
     image.dataset.photoId=String(img.id);
     image.removeAttribute('srcset');
     image.removeAttribute('sizes');
     image.decoding='async';
     image.fetchPriority='high';
     image.loading='eager';
+    delete image.dataset.fullHd;
+
     const client=galleryClient();
     const adaptive=window.WeddingAdaptiveImages;
     const full=adaptive&&client?adaptive.fullUrl(client,img):galleryPublicUrl(img,'lightbox');
-    const preview=adaptive&&client?adaptive.previewUrl(client,img):full;
-    image.src=preview || full;
+    const medium=adaptive&&client?adaptive.mediumUrl(client,img):'';
+    const small=adaptive&&client?adaptive.previewUrl(client,img):'';
+    // On mobile, a cached 960px WebP is a much faster first image than
+    // a 5MB original. Full resolution still loads after opening detail.
+    const fallbackUrls=[medium,small,full].filter((url,i,arr)=>url&&arr.indexOf(url)===i);
+    let fallbackIndex=0;
     const isCurrent=()=>galleryState.lightboxOpen && galleryState.hdTicket===ticket &&
       image.dataset.photoId===String(img.id);
     const language=()=>window.WeddingI18n?.language||'vi';
-    const hdLabel=()=>language()==='ja'?'高画質を読み込み中…':
-      language()==='en'?'Loading full-resolution photo…':'Đang tải ảnh Full HD…';
-    if (status) status.textContent=preview&&preview!==full?hdLabel():'';
-    if (retry) retry.hidden=true;
-    image.classList.toggle('is-hd-pending',Boolean(preview&&preview!==full));
+    const words=(vi,en,ja)=>language()==='ja'?ja:language()==='en'?en:vi;
+    const loadingLabel=()=>words('Đang tải ảnh Full HD…','Loading full-resolution photo…','高画質を読み込み中…');
+    const failureLabel=()=>words('Không tải được bản Full HD. Ảnh xem trước vẫn có thể phóng to.',
+      'Full-resolution unavailable. You can still zoom the preview.',
+      '高画質を読み込めませんでした。プレビューは拡大できます。');
+    const missingLabel=()=>words('Ảnh không tải được. Hãy thử lại.','Photo unavailable. Please retry.','画像を読み込めません。再試行してください。');
+    if(status)status.textContent=full&&full!==fallbackUrls[0]?loadingLabel():'';
+    if(retry)retry.hidden=true;
+    image.classList.toggle('is-hd-pending',Boolean(full&&full!==fallbackUrls[0]));
+
+    image.onerror=()=>{
+      if(!isCurrent())return;
+      fallbackIndex++;
+      if(fallbackIndex<fallbackUrls.length){
+        image.src=fallbackUrls[fallbackIndex];
+      }else{
+        if(status)status.textContent=missingLabel();
+        image.classList.remove('is-hd-pending');
+        if(retry)retry.hidden=false;
+      }
+    };
+    if(fallbackUrls.length) image.src=fallbackUrls[0];
+    else{
+      if(status)status.textContent=missingLabel();
+      if(retry)retry.hidden=false;
+    }
+
     const loadFull=()=>{
-      if (!full || !isCurrent())return;
+      if(!full||!isCurrent())return;
+      if(galleryState.pendingHD){
+        galleryState.pendingHD.onload=null;
+        galleryState.pendingHD.onerror=null;
+        galleryState.pendingHD.src='';
+      }
       const hd=new Image();
       galleryState.pendingHD=hd;
-      hd.decoding='async';hd.fetchPriority='high';
+      hd.decoding='async';
+      hd.fetchPriority='high';
+      if(status)status.textContent=loadingLabel();
+      if(retry)retry.hidden=true;
+      image.classList.toggle('is-hd-pending',Boolean(image.getAttribute('src')));
       hd.onload=()=>{
         if(!isCurrent())return;
-        image.src=full; // Already downloaded and decoded by the browser.
+        galleryState.pendingHD=null;
+        // Browser normally reuses the decoded image from this preload.
+        // Pinch scale remains untouched when swapping preview to original.
+        image.src=full;
+        image.dataset.fullHd='true';
         image.classList.remove('is-hd-pending');
         if(status)status.textContent='';
         if(retry)retry.hidden=true;
-        galleryState.pendingHD=null;
       };
       hd.onerror=()=>{
         if(!isCurrent())return;
-        image.classList.remove('is-hd-pending');
-        if(status)status.textContent=language()==='ja'?'高画質を読み込めませんでした':
-          language()==='en'?'Could not load full-resolution photo':'Không tải được ảnh Full HD';
-        if(retry)retry.hidden=false;
         galleryState.pendingHD=null;
+        image.classList.remove('is-hd-pending');
+        if(status)status.textContent=failureLabel();
+        if(retry)retry.hidden=false;
       };
       hd.src=full;
     };
-    if(preview&&preview!==full)loadFull();
-    else{
+    if(retry)retry.onclick=()=>{
+      if(!image.naturalWidth && fallbackUrls.length){
+        fallbackIndex=0;
+        image.src=fallbackUrls[0];
+      }
+      loadFull();
+    };
+    if(full && full!==fallbackUrls[0])loadFull();
+    else if(full) {
       image.classList.remove('is-hd-pending');
       if(status)status.textContent='';
     }
-    if(retry)retry.onclick=loadFull;
-  } else if (status && image.classList.contains('is-hd-pending')) {
-    status.textContent=(window.WeddingI18n?.language==='en'?'Loading full-resolution photo…':
-      window.WeddingI18n?.language==='ja'?'高画質を読み込み中…':'Đang tải ảnh Full HD…');
   }
   document.dispatchEvent(new CustomEvent('wedding:gallery-photo-change',{
     detail:{index:galleryState.activeIndex,total:galleryState.activeImages.length}
@@ -731,6 +776,7 @@ function hidePhoto() {
   const lightbox = document.getElementById('photoLightbox');
   if (!lightbox || !galleryState.lightboxOpen) return;
   galleryState.lightboxOpen = false;
+  window.WeddingPhotoZoom?.reset();
   window.WeddingProgressiveGallery?.pause(false);
   galleryState.photoPushed = false;
   galleryState.hdTicket=(galleryState.hdTicket||0)+1;
@@ -842,15 +888,28 @@ function initGalleryInteractions() {
   });
 
   let touchX = 0;
+  let touchMulti = false;
   const lightbox = document.getElementById('photoLightbox');
   lightbox?.addEventListener('touchstart', event => {
-    touchX = event.changedTouches[0]?.clientX || 0;
+    if (event.touches.length > 1) {
+      touchMulti = true;
+      return;
+    }
+    touchX = event.touches[0]?.clientX || 0;
+  }, {passive:true});
+  lightbox?.addEventListener('touchmove', event => {
+    if (event.touches.length > 1) touchMulti = true;
   }, {passive:true});
   lightbox?.addEventListener('touchend', event => {
+    if (event.touches.length) return;
+    const allowSwipe = !touchMulti && (window.WeddingPhotoZoom?.canSwipe() ?? true);
+    touchMulti = false;
+    if (!allowSwipe) return;
     const endX = event.changedTouches[0]?.clientX || 0;
     const delta = endX - touchX;
-    if (Math.abs(delta) > 45) movePhoto(delta > 0 ? -1 : 1);
+    if (Math.abs(delta) > 55) movePhoto(delta > 0 ? -1 : 1);
   }, {passive:true});
+  lightbox?.addEventListener('touchcancel',()=>{touchMulti=false;},{passive:true});
 
   addEventListener('popstate', () => { syncGalleryRoute(); });
 }
