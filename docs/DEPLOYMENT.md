@@ -95,3 +95,47 @@ The existing **Our Promise → Crystal Heart → Album** placement is unchanged.
 - **QA** — offline WebKit smoke `node tools/audit-particle-heart.mjs` validates real Canvas pixels, SVG progress, pause/resume, budgets, and reduced-motion fallback. The existing V19, V21 and Admin tests continue running in CI.
 
 Release only after GitHub CI and Vercel Preview are green, then squash-merge to the linked Production branch (`main`) and verify the Production deployment's exact commit/domain.
+
+
+## V24 — Compact Luxury wedding responsive layout (2026-11-21)
+
+**Goal:** a noticeably shorter, calmer invitation on PC/tablet/iPhone without removing
+critical wedding event details, maps, RSVP, personalized invitations, Gallery, or V23
+particle/Crystal Heart animations.
+
+- Added a final CSS layer \`assets/css/compact-wedding-v24.css\`: scope is the public
+  wedding invitation only (not Admin). Stronger spacing hierarchy and smaller
+  headings/cards across four responsive widths; photo Hero and Love Story remain
+  the big emotional visual moments.
+- Reduced redundant content in **VI/EN/JA** for Hero note, Story, Promise, Event
+  intro, Gallery intro, RSVP intro, and Footer. Kept existing translations for
+  family names, wedding dates/venues, address text, RSVP controls and errors.
+- Countdown is a compact horizontal strip on desktop and one heading + one
+  4-digit-row countdown on phones. The duplicate decorative date stamp and
+  repetitive schedule tagline are *visually hidden*; the dates and schedule
+  remain visible elsewhere.
+- Simplified Event cards, Promise photo/letter, Album intro and RSVP spacing
+  without changing any form fields, family schedule logic, event destinations,
+  bank account values, or album imagery.
+- Gift cards use **two parallel columns even on phones**, each with a compact
+  QR preview. Tapping an actual QR opens an accessible \`<dialog>\` with the
+  same authentic QR enlarged for scanning; Escape/close dismisses it.
+  Account number Copy remains unchanged. Dynamic Supabase \`wedding_gifts_v1\`
+  settings and public/private availability continue to control what is shown.
+- **Important**: Production Bride gift account is currently disabled/unconfigured,
+  so the Bride tile remains a *small truthful unavailable placeholder*; never
+  publish a fabricated Bride bank, account, or QR image. Admin can enable Bride
+  later and the parallel two-column view will show both real QRs automatically.
+- No database migrations or changes to photo ordering, storage, RSVP, Hero
+  focus, or the invitation's protected-personalization workflow.
+- Gate Production on \`tools/audit-compact-wedding-v24.mjs\` running under WebKit
+  at widths **340/390/768/1280**, including QR enlargement, Escape, copy
+  behavior, 2-column alignment, missing Bride fallback and enabled Bride
+  fixture, plus existing WebKit, asset integrity and visual regression CI.
+
+### Mobile acceptance notes
+
+QR shown at 93–126 CSS pixels in the two-up gift cards is for recognition;
+a guest needing to scan must tap it to open the full-size 300px version. The
+button has an accessible label and a minimum 42px copy target.
+Keep descriptions and titles readable after switching to EN/JA.
