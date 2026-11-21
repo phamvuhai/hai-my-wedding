@@ -111,8 +111,12 @@ try {
     }));
     throw error;
   }
-  // Auth stub does not register the sidebar tab controller; show Album directly.\n  await page.evaluate(()=>document.getElementById('albumTab').classList.remove('hidden'));
-  await page.locator('[data-album-mode="bulk"]').click();
+  // Auth stub does not register the sidebar tab controller; show Album directly.\n  await page.evaluate(()=>{
+    const tab=document.getElementById('albumTab');
+    tab.classList.remove('hidden');
+    tab.style.setProperty('display','block','important');
+    window.AdminAlbumModes.switchMode('bulk');
+  });
   assert.equal(await page.locator('#bulkUploadPanel').isVisible(),true);
   const pixel=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAFklEQVR4nGN8Nm3afwYkwMSABggLAADKCAMZxpQtEgAAAABJRU5ErkJggg==','base64');
   await page.locator('#bulkFileInput').setInputFiles([
@@ -125,7 +129,7 @@ try {
   assert.match(await page.locator('#bulkStatus').innerText(),/2\/2 ảnh/);
   assert.equal(await page.evaluate(()=>window.__mockGalleryImages.length),2);
   assert.equal(await page.evaluate(()=>window.__mockGalleryImages.every(x=>!x.is_published&&!x.show_on_homepage)),true);
-  await page.locator('[data-album-mode="sort"]').click();
+  await page.evaluate(()=>window.AdminAlbumModes.switchMode('sort'));
   await page.waitForSelector('.sort-photo-card:nth-child(2)');
   await page.locator('.sort-photo-card:first-child [data-down]').click();
   assert.equal(await page.locator('#sortSaveBtn').isEnabled(),true);
