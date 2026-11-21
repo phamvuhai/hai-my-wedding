@@ -407,13 +407,12 @@ function renderHomeGallery() {
   root.innerHTML = galleryState.homeImages.map((img, index) => {
     const loc = galleryLocalized(img);
     const size = gallerySize(img);
-    const url = galleryPublicUrl(img);
     return `
       <button type="button"
         class="home-photo size-${size} ${index === 0 ? 'editorial-featured' : ''} reveal visible"
         data-photo-id="${galleryEsc(img.id)}"
         aria-label="${galleryEsc(loc.alt || 'Hải Phạm & Mỹ Nguyễn')}">
-        <img ${imageHtmlAttrs(img, 'thumb', '(max-width:760px) 48vw, (max-width:1100px) 45vw, 30vw', index===0?'eager':'lazy', index===0?'auto':'low')} alt="${galleryEsc(loc.alt)}"
+        <img data-home-progressive loading="lazy" decoding="async" alt="${galleryEsc(loc.alt)}"
           style="object-position:${Number(img.focus_x ?? 50)}% ${Number(img.focus_y ?? 50)}%">
         <span class="photo-curtain" aria-hidden="true"></span>
         <span class="home-photo-index" aria-hidden="true">${String(index + 1).padStart(2, '0')} <i></i> ${String(galleryState.homeImages.length).padStart(2, '0')}</span>
@@ -423,6 +422,15 @@ function renderHomeGallery() {
         </span>
       </button>`;
   }).join('');
+  // Only start thumbnail requests as the home images approach the viewport.
+  root.querySelectorAll('img[data-home-progressive]').forEach((element,index)=>{
+    const item=galleryState.homeImages[index];
+    const client=galleryClient();
+    const adaptive=window.WeddingAdaptiveImages;
+    if(adaptive?.progressiveApply && client)
+      adaptive.progressiveApply(element,client,item,{role:'home',priority:'low'});
+    else element.src=galleryPublicUrl(item,'thumb');
+  });
 }
 
 async function loadHomeGallery() {
@@ -932,8 +940,10 @@ async function loadHeroPhoto() {
     const heroBaseUrl = client.storage.from('wedding-gallery').getPublicUrl(data.image_path).data.publicUrl;
     const fallbackUrl = data.updated_at ? `${heroBaseUrl}?v=${encodeURIComponent(data.updated_at)}` : heroBaseUrl;
     const responsive = window.WeddingAdaptiveImages;
-    const heroAttrs = responsive?.attrs(client,data,{role:'hero',sizes:'100vw',loading:'eager',priority:'high'});
-    const url = heroAttrs?.src || fallbackUrl;
+    // First paint is a small pre-generated WebP; never preload the original.
+    // A 960/1440px version replaces it later on a sufficiently fast network.
+    const previewUrl = responsive?.previewUrl(client,data) || fallbackUrl;
+    const url = previewUrl;
     const layout = ['full','framed','split','minimal'].includes(data.hero_layout) ? data.hero_layout : 'full';
 
     hero.classList.remove(
@@ -962,26 +972,18 @@ async function loadHeroPhoto() {
     };
     hero.style.setProperty('--hero-frame-max', ratioWidths[data.hero_desktop_ratio] || '680px');
 
-    // Preload + decode the actual Admin-selected Hero before revealing any photo.
+    // Decode the lightweight image before revealing the Hero to avoid blank frames.
     const preload = new Image();
-    if (heroAttrs?.srcset) {preload.sizes=heroAttrs.sizes;preload.srcset=heroAttrs.srcset;}
     preload.fetchPriority='high';
     preload.src = url;
-    try {
-      await preload.decode();
-    } catch {
-      await new Promise((resolve, reject) => {
-        preload.onload = resolve;
-        preload.onerror = reject;
-      });
-    }
+    await preload.decode();
 
-    if (responsive) responsive.apply(framedImg,client,data,{role:'hero',sizes:'100vw',loading:'eager',priority:'high'});
-    else framedImg.src = url;
+    framedImg.src = url; // Legacy hidden image must not trigger a second HD request.
     framedImg.alt = alt || 'Hải Phạm & Mỹ Nguyễn';
     framedImg.style.objectPosition = `${fx}% ${fy}%`;
 
-    if (responsive) responsive.apply(fullImg,client,data,{role:'hero',sizes:'100vw',loading:'eager',priority:'high'});
+    if (responsive?.progressiveApply)
+      responsive.progressiveApply(fullImg,client,data,{role:'hero',immediate:true,priority:'high'});
     else fullImg.src = url;
     fullImg.alt = '';
     fullImg.style.objectPosition = `${fx}% ${fy}%`;
