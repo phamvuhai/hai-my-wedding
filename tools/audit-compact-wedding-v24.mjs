@@ -10,7 +10,7 @@ const root=process.cwd();
 const mime={'.html':'text/html;charset=utf-8','.js':'application/javascript','.css':'text/css'};
 const fixture='<!doctype html><html lang="vi"><head><meta name="viewport" content="width=device-width,initial-scale=1">'+
   '<link rel="stylesheet" href="/assets/css/site.css">'+
-  '<link rel="stylesheet" href="/assets/css/compact-wedding-v24.css"></head>'+
+  '<link rel="stylesheet" href="/assets/css/compact-wedding.css"></head>'+
   '<body><main><section id="weddingGifts" class="section wedding-gifts chapter-member"></section></main>'+
   '<script src="/assets/js/site/gifts.js"></script></body></html>';
 const server=createServer((req,res)=>{
