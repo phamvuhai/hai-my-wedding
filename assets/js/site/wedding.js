@@ -199,6 +199,11 @@
     if(!nodes.length)return;
     state.heroIndex=(index+nodes.length)%nodes.length;
     nodes.forEach((layer,i)=>layer.classList.toggle('is-current',i===state.heroIndex));
+    // Images for unopened slides are intentionally left without src.
+    // The current slide uses one small WebP, then a larger cached variant.
+    const active=nodes[state.heroIndex];
+    const photo=choose(state.heroUrls[state.heroIndex]);
+    window.WeddingAdaptiveImages?.progressiveSlide?.(active,state.db,photo);
   }
   function tick(){
     stop();
@@ -214,10 +219,13 @@
   function buildTile(img,role,index){
     const tile=document.createElement('img');
     tile.className='v5-hero-tile '+(role==='center'?'v6-center-image':role==='underlay'?'v6-center-underlay':'v6-side');
-    responsiveImg(tile,img,'hero','100vw',index===0?'eager':'lazy');
+    // Do not assign src to all slides during construction. Hidden slide
+    // requests otherwise compete with the visible Hero on mobile connections.
+    if(!window.WeddingAdaptiveImages?.progressiveSlide)
+      responsiveImg(tile,img,'hero','100vw',index===0?'eager':'lazy');
     tile.alt='';tile.setAttribute('aria-hidden','true');
     tile.draggable=false;tile.decoding='async';
-    tile.loading=index===0?'eager':'lazy';
+    tile.loading='lazy';
     // Both side copies reuse the exact same image as the full, uncropped center.
     tile.style.setProperty('--tile-focus',role==='left'?'20% 50%':role==='right'?'80% 50%':'50% 50%');
     return tile;
