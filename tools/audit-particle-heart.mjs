@@ -93,11 +93,7 @@ try{
   assert.ok(started.canvasWidth>100&&started.canvasHeight>100);
   await page.waitForFunction(()=>window.WeddingParticleHeart.status().elapsed>=2650,{timeout:9000});
   const halfway=await page.evaluate(()=>{
-    const canvas=document.querySelector('.hm-particle-canvas');
-    const context=canvas.getContext('2d');
-    const pixels=context.getImageData(0,0,canvas.width,canvas.height).data;
-    let painted=0;
-    for(let i=3;i<pixels.length;i+=4)if(pixels[i]>0)painted++;
+    const painted=window.WeddingParticleHeart.status().drawnParticles;
     return {
       painted,
       reveal:Number(document.getElementById('weddingMagic').style.getPropertyValue('--hm-v23-reveal'))
@@ -105,6 +101,9 @@ try{
   });
   assert.ok(halfway.painted>0,'Canvas particles must actually be rendered');
   assert.ok(halfway.reveal>0&&halfway.reveal<1,'Crystal should be gradually revealed');
+  console.log('V23 half reveal',JSON.stringify({
+    painted:halfway.painted,reveal:halfway.reveal
+  }));
   await page.waitForFunction(()=>window.WeddingParticleHeart.status().finished,{timeout:12000});
   const completed=await page.evaluate(()=>({
     state:window.WeddingParticleHeart.status(),
