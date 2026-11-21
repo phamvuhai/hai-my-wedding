@@ -16,10 +16,17 @@
   // to load (offline visitors, CSP blocking, or an unstable network).
   if(cfg.supabaseUrl&&cfg.supabaseAnonKey&&window.supabase)
     state.db=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey);
-  function url(img){
+  function url(img,role='story'){
     if(!img?.image_path)return '';
+    const responsive=window.WeddingAdaptiveImages;
+    if(responsive)return responsive.select(state.db,img,undefined,role);
     const base=state.db.storage.from('wedding-gallery').getPublicUrl(img.image_path).data.publicUrl;
     return img.updated_at?base+'?v='+encodeURIComponent(img.updated_at):base;
+  }
+  function responsiveImg(image,img,role='story',sizes='(max-width:760px) 95vw, 46vw',loading='lazy') {
+    const adaptive=window.WeddingAdaptiveImages;
+    if(adaptive) adaptive.apply(image,state.db,img,{role,sizes,loading,priority:role==='hero'?'high':'low'});
+    else image.src=url(img,role);
   }
   function alt(img){
     const l=language();return (l==='en'?(img.alt_text_en||img.title_en):l==='ja'?(img.alt_text_ja||img.title_ja):null)||img.alt_text||img.title||'Hải & Mỹ';
@@ -52,7 +59,13 @@
     const caption='<div class="v3-story-copy"><span class="v3-story-chapter">H ♡ M · '+safe(b.slot==='story'?'OUR STORY':b.slot==='moments'?'OUR MOMENTS':'FOREVER & ALWAYS')+'</span><p>'+safe(words)+'</p><small>Hải & Mỹ</small></div>';
     if(b.style==='quote')return '<div class="v3-story-block v3-story-quote">'+caption+'</div>';
     if(!img)return '<div class="v3-story-block v3-story-quote">'+caption+'</div>';
-    const photo=i=>'<img loading="lazy" decoding="async" src="'+safe(url(i))+'" alt="'+safe(alt(i))+'" style="object-position:'+Math.max(0,Math.min(100,Number(i.focus_x??50)))+'% '+Math.max(0,Math.min(100,Number(i.focus_y??50)))+'%">';
+    const photo=i=>{
+      const adapt=window.WeddingAdaptiveImages;
+      const attributes=adapt
+        ? adapt.htmlAttrs(state.db,i,{role:'story',sizes:'(max-width:760px) 94vw, (max-width:1100px) 49vw, 36vw',loading:'lazy',priority:'low'})
+        : 'loading="lazy" decoding="async" src="'+safe(url(i))+'"';
+      return '<img '+attributes+' alt="'+safe(alt(i))+'" style="object-position:'+Math.max(0,Math.min(100,Number(i.focus_x??50)))+'% '+Math.max(0,Math.min(100,Number(i.focus_y??50)))+'%">';
+    };
     if(b.style==='film'){
       const configured=Array.isArray(b.imageIds)?b.imageIds.map(choose).filter(Boolean):[];
       const used=new Set([img.id]);const images=[img];
@@ -117,7 +130,7 @@
       image.onload=complete;
       image.onerror=attempt;
       image.hidden=false;
-      if(image.getAttribute('src')!==next)image.src=next;
+      if(image.getAttribute('src')!==next)responsiveImg(image,photo,'story','(max-width:760px) 94vw, 42vw','lazy');
       else if(image.complete)(image.naturalWidth?complete:attempt)();
     };
     if(candidates.length){attempt();return;}
@@ -133,7 +146,7 @@
       target.alt=alt(img);target.style.objectPosition=(Number(img.focus_x??50))+'% '+(Number(img.focus_y??50))+'%';
       target.onerror=()=>{wrap.hidden=true;};target.onload=()=>{wrap.hidden=false;};
       const next=url(img);
-      if(target.getAttribute('src')!==next)target.src=next;
+      if(target.getAttribute('src')!==next)responsiveImg(target,img,'story','(max-width:760px) 95vw, 78vw','lazy');
       else if(target.complete&&target.naturalWidth>0)wrap.hidden=false;
     }
     const goodbye=choose(state.config?.farewellPhotoId)||state.photos.find(i=>i.show_on_homepage&&i.id!==img?.id);
@@ -143,7 +156,7 @@
       end.style.objectPosition=(Number(goodbye.focus_x??50))+'% '+(Number(goodbye.focus_y??50))+'%';
       end.onload=()=>{foot.hidden=false;};end.onerror=()=>{foot.hidden=true;};
       const next=url(goodbye);
-      if(end.getAttribute('src')!==next)end.src=next;
+      if(end.getAttribute('src')!==next)responsiveImg(end,goodbye,'thumb','(max-width:760px) 85vw, 40vw','lazy');
       else if(end.complete&&end.naturalWidth>0)foot.hidden=false;
     }
   }
@@ -201,7 +214,8 @@
   function buildTile(img,role,index){
     const tile=document.createElement('img');
     tile.className='v5-hero-tile '+(role==='center'?'v6-center-image':role==='underlay'?'v6-center-underlay':'v6-side');
-    tile.src=url(img);tile.alt='';tile.setAttribute('aria-hidden','true');
+    responsiveImg(tile,img,'hero','100vw',index===0?'eager':'lazy');
+    tile.alt='';tile.setAttribute('aria-hidden','true');
     tile.draggable=false;tile.decoding='async';
     tile.loading=index===0?'eager':'lazy';
     // Both side copies reuse the exact same image as the full, uncropped center.
@@ -254,7 +268,7 @@
   async function load(){
     try{
       const [photos,config]=await Promise.all([
-        state.db.from('gallery_images').select('id,image_path,title,title_en,title_ja,alt_text,alt_text_en,alt_text_ja,width,height,focus_x,focus_y,sort_order,is_published,is_hero,show_on_homepage,updated_at').eq('is_published',true).order('sort_order',{ascending:true}).limit(100),
+        state.db.from('gallery_images').select('id,image_path,image_variants,title,title_en,title_ja,alt_text,alt_text_en,alt_text_ja,width,height,focus_x,focus_y,sort_order,is_published,is_hero,show_on_homepage,updated_at').eq('is_published',true).order('sort_order',{ascending:true}).limit(100),
         state.db.from('site_content').select('value_vi').eq('key','v3_design').maybeSingle()
       ]);
       if(photos.error)throw photos.error;
