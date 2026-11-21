@@ -5,6 +5,19 @@
   const input=$('bulkFileInput'),zone=$('bulkDropZone'),list=$('bulkPreviewGrid');
   const albumSelect=$('bulkAlbumSelect'), startBtn=$('bulkStartBtn'),retryBtn=$('bulkRetryBtn'),clearBtn=$('bulkClearBtn');
   if(!input||!zone||!list||!P||!db)return;
+  const modeButtons=[...document.querySelectorAll('[data-album-mode]')];
+  const modePanels=[...document.querySelectorAll('[data-album-panel]')];
+  function switchMode(mode){
+    modeButtons.forEach(b=>{
+      const active=b.dataset.albumMode===mode;
+      b.classList.toggle('active',active);
+      b.setAttribute('aria-pressed',String(active));
+    });
+    modePanels.forEach(p=>p.classList.toggle('hidden',p.dataset.albumPanel!==mode));
+  }
+  modeButtons.forEach(b=>b.addEventListener('click',()=>switchMode(b.dataset.albumMode)));
+  switchMode('single');
+  window.AdminAlbumModes={switchMode};
   let queue=[],running=false,dragId=null;
   const allowed=new Set(['image/jpeg','image/png','image/webp']);
   const status=$('bulkStatus'),bar=$('bulkProgressBar'),stats=$('bulkSummary');
