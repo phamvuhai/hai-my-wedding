@@ -529,22 +529,36 @@ function renderAlbumOverlay() {
   if (!grid) return;
   renderAlbumFilters();
   const visibleAlbumImages = filteredAlbumImages();
+  window.WeddingProgressiveGallery?.destroy();
   if (!visibleAlbumImages.length) {
     grid.innerHTML = `<p class="album-overlay-empty">${galleryEsc(tr('album.empty','Album đang được chuẩn bị ♡'))}</p>`;
     return;
   }
-
-  grid.innerHTML = visibleAlbumImages.map((img, index) => {
+  const renderCard = (img) => {
     const loc = galleryLocalized(img);
     const size = gallerySize(img);
     return `
-      <button type="button" class="album-overlay-photo size-${size}" data-album-photo-id="${galleryEsc(img.id)}"
+      <button type="button" class="album-overlay-photo size-${size} album-progressive-card"
+        data-album-photo-id="${galleryEsc(img.id)}"
+        data-photo-title="${galleryEsc(loc.alt)}"
         aria-label="${galleryEsc(loc.alt)}">
-        <img ${imageHtmlAttrs(img, 'thumb', '(max-width:760px) 48vw, (max-width:1100px) 32vw, 23vw', 'lazy', 'low')} alt="${galleryEsc(loc.alt)}"
+        <img data-progressive-image class="album-progressive-image" alt="${galleryEsc(loc.alt)}"
+          loading="lazy" decoding="async"
           style="object-position:${Number(img.focus_x ?? 50)}% ${Number(img.focus_y ?? 50)}%">
+        <i class="album-progressive-indicator" aria-hidden="true"></i>
+        <i class="album-progressive-error" aria-hidden="true">Ảnh chưa tải được · Chạm để mở</i>
         <span><strong>${galleryEsc(loc.title)}</strong><small>${galleryEsc(loc.caption)}</small></span>
       </button>`;
-  }).join('');
+  };
+  if (window.WeddingProgressiveGallery && galleryClient()) {
+    window.WeddingProgressiveGallery.mount(grid,visibleAlbumImages,renderCard,galleryClient());
+  } else {
+    grid.innerHTML = visibleAlbumImages.map(img => {
+      const markup=renderCard(img);
+      return markup.replace('data-progressive-image class="album-progressive-image"',
+        'class="album-progressive-image" src="'+galleryEsc(galleryPublicUrl(img,'thumb'))+'"');
+    }).join('');
+  }
 }
 
 function localizedPath(album = false) {
@@ -568,6 +582,7 @@ async function showAlbumOverlay({push = true} = {}) {
   overlay.classList.add('is-open');
   overlay.setAttribute('aria-hidden','false');
   document.body.classList.add('gallery-overlay-open');
+  requestAnimationFrame(() => window.WeddingProgressiveGallery?.activate());
 
   if (push) {
     galleryState.albumPushed = true;
@@ -585,6 +600,7 @@ function hideAlbumOverlay({restoreScroll = true} = {}) {
   overlay.classList.remove('is-open');
   overlay.setAttribute('aria-hidden','true');
   document.body.classList.remove('gallery-overlay-open');
+  window.WeddingProgressiveGallery?.destroy();
   if (restoreScroll) requestAnimationFrame(() => window.scrollTo({top:galleryState.scrollY,left:0,behavior:'auto'}));
 }
 
