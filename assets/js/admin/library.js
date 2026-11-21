@@ -79,11 +79,11 @@
           .filter(img=>img&&(img.is_published||img.is_hero||img.is_featured||img.is_cover||img.show_on_homepage));
         if(guarded.length)throw new Error('Xóa hàng loạt chỉ hỗ trợ ảnh Draft chưa dùng làm Hero/Featured/Homepage/Cover.');
         if(!confirm(`Xóa vĩnh viễn ${ids.length} ảnh Draft khỏi Supabase Storage và database?`))return;
-        const {data,error}=await db.from('gallery_images').delete().in('id',ids).select('id,image_path,original_path');
+        const {data,error}=await db.from('gallery_images').delete().in('id',ids).select('id,image_path,original_path,image_variants');
         if(error)throw error;
         if(data?.length!==ids.length)throw new Error('Không thể xác nhận đủ số bản ghi đã xóa. Cần kiểm tra dữ liệu.');
         const [publicClean,masterClean]=await Promise.all([
-          db.storage.from('wedding-gallery').remove(data.map(x=>x.image_path)),
+          db.storage.from('wedding-gallery').remove(data.flatMap(x=>[x.image_path,...Object.values(x.image_variants||{})])),
           db.storage.from('wedding-originals').remove(data.map(x=>x.original_path))
         ]);
         if(publicClean.error||masterClean.error)A.setStatus(status,'Đã xóa database, nhưng một số file Storage chưa được dọn: '+(publicClean.error?.message||masterClean.error?.message),'error');
@@ -113,7 +113,7 @@
       const {data,error}=await db.from('gallery_images').delete().eq('id',id).select('id');
       if(error||!data?.length)return alert(error?.message||'Không xóa được ảnh.');
       const [pub,master]=await Promise.all([
-        db.storage.from('wedding-gallery').remove([img.image_path]),
+        db.storage.from('wedding-gallery').remove([img.image_path,...Object.values(img.image_variants||{})]),
         db.storage.from('wedding-originals').remove([img.original_path])
       ]);
       if(pub.error||master.error)console.warn('Storage clean-up failed',pub.error,master.error);
