@@ -12,7 +12,11 @@
   const source=()=>Array.isArray(A.images)?A.images.filter(photo=>photo.is_published&&photo.image_path):[];
   const albums=()=>source().filter(photo=>photo.show_in_album!==false);
   const byId=id=>source().find(photo=>photo.id===id);
-  const imageUrl=photo=>A.publicUrl(photo.image_path)+(photo.updated_at?'?v='+encodeURIComponent(photo.updated_at):'');
+  const imageUrl=photo=>{
+    // Editor cards only need a preview, never a 2000px public original.
+    const path=photo.image_variants?.['960']||photo.image_variants?.['480']||photo.image_path;
+    return A.publicUrl(path)+(path===photo.image_path&&photo.updated_at?'?v='+encodeURIComponent(photo.updated_at):'');
+  };
   const attr=value=>esc(value);
   const steps=[
     {number:'01',key:'opening',title:'Mở thiệp',subtitle:'Opening Invitation',note:'Màn hình giới thiệu, tên Hải & Mỹ và nút Mở thiệp.',type:'static',symbol:'✉'},
