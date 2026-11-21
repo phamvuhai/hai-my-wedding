@@ -90,12 +90,12 @@
   const RESPONSIVE_WIDTHS = [480,960,1440];
   async function variantsFromPublicBlob(blob, sourceWidth) {
     // Resize from the finished public file: matches its exact crop/rotation/look.
-    if (!blob || !sourceWidth) return [];
+    if (!blob) return [];
     const img=await decodeImage(blob);
     try {
       const results=[];
       for(const width of RESPONSIVE_WIDTHS) {
-        if (width >= img.naturalWidth || width >= sourceWidth) continue;
+        if (width >= img.naturalWidth || (sourceWidth && width >= sourceWidth)) continue;
         const height=Math.max(1,Math.round(img.naturalHeight*width/img.naturalWidth));
         const canvas=document.createElement('canvas');
         canvas.width=width;canvas.height=height;
@@ -109,7 +109,7 @@
     } finally {img.src='';}
   }
 
-  async function uploadResponsiveVariants(db,blob,imagePath,sourceWidth) {
+  async function uploadResponsiveVariants(db,blob,imagePath,sourceWidth,{strict=false}={}) {
     const results={};
     const uploaded=[];
     const storage=db.storage.from('wedding-gallery');
@@ -133,6 +133,7 @@
         if(cleanup.error)console.warn('Unable to clean responsive variants',cleanup.error);
       }
       console.warn('Responsive variant generation failed; full image remains available',error);
+      if(strict)throw error;
       return {};
     }
     return results;
