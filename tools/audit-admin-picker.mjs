@@ -92,6 +92,7 @@ async function run({mobile}){
   });
   await page.route('**/*',route=>{
     const url=route.request().url();
+    if(url.startsWith('https://pictures.test/'))return route.fallback();
     if(url.startsWith(origin+'/')||url.startsWith('data:')||url.startsWith('blob:'))return route.continue();
     return route.abort();
   });
