@@ -88,7 +88,23 @@ try {
     window.__mockGalleryImages=images;
   });
   await page.goto('http://127.0.0.1:'+server.address().port+'/admin',{waitUntil:'load'});
-  await page.waitForSelector('#cmsView:not(.hidden)',{timeout:12000});
+  try {
+    await page.waitForSelector('#cmsView:not(.hidden)',{timeout:12000});
+  } catch (error) {
+    console.error('ADMIN DEBUG',JSON.stringify({
+      url:page.url(),errors,
+      page:await page.evaluate(()=>({
+        title:document.title,
+        cms:document.getElementById('cmsView')?.className,
+        adminApp:!!window.AdminApp,
+        db:!!window.AdminApp?.db,
+        supabase:!!window.supabase,
+        userEmail:document.getElementById('userEmail')?.textContent,
+        scripts:[...document.scripts].map(s=>s.src)
+      })).catch(e=>({error:e.message}))
+    }));
+    throw error;
+  }
   await page.locator('[data-tab="album"]').click();
   await page.locator('[data-album-mode="bulk"]').click();
   assert.equal(await page.locator('#bulkUploadPanel').isVisible(),true);
