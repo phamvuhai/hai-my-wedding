@@ -140,3 +140,24 @@ The Library section supports multi-select and **Publish, Unpublish, Show in Albu
 The public **Album** now orders by `sort_order ASC`, then `created_at DESC` and `id ASC`, independently of Featured. The **Homepage** remains curated separately using the existing Visual Editor's five selected images and is not affected by Album drag ordering.
 
 **Verification checklist**: run `node tools/check-asset-refs.mjs`; GitHub WebKit workflow runs `node tools/audit-album-bulk.mjs` with a mocked Supabase client; test with a real Admin account on Preview before promoting to production. No production images are created by automated smoke tests.
+
+
+## V20 — Adaptive Image Loading / Supabase Free (2026-11-21)
+
+The gallery uses **pre-generated public WebP variants** because this Supabase organization is on the Free tier, where server-side Storage Image Transformations cannot be assumed available. The original public image and private master are always retained.
+
+- Database: \`public.gallery_images.image_variants jsonb NOT NULL DEFAULT '{}'\`, keyed by intrinsic widths \`480\`, \`960\`, and \`1440\`. Entries contain actual immutable \`wedding-gallery\` Storage paths; they are not guessed.
+- New bulk and individual uploads generate the three sizes (when smaller than the full original), after the main public file is uploaded. A variant failure logs a warning and preserves the full-size public image as a fallback.
+- Existing images: **Admin → Album → Ảnh nhẹ cho điện thoại & mạng chậm → Tối ưu ảnh cũ**. This is deliberately an explicit action because downloading and re-encoding the current gallery consumes Storage, network, and browser processing. The tool works one image at a time; it reports errors and supports Stop/Resume. It never changes album membership, order, Hero, Featured, or Publish state.
+- Gallery rendering: \`srcset\` and \`sizes\` choose an appropriate size by layout/DPR. When the browser supports Network Information or Save Data, the candidate range is capped for slower connections; Safari without those APIs falls back to responsive \`srcset\` alone. Hero remains eager/high priority; offscreen gallery and Story images load lazily; Lightbox requests larger images.
+- To keep backward compatibility, any record without variants continues using its existing \`image_path\` and yields no \`srcset\`. A file path is emitted in \`srcset\` **only after** a successful Storage upload and database save.
+- Bulk and single-image deletion include all variant paths; editing an image cleans old variants when the new public image replaces it.
+- Native responsive rendering does not measure internet speed or force a fixed resolution on Safari. Do not promise exact download byte savings without testing image data.
+
+### Regression checklist
+
+1. Upload an image larger than 1600px. Verify \`image_variants\` is populated with 480/960/1440 paths.
+2. Refresh Admin and verify all images remain visible, and Hero/RSVP/navigation remain unaffected.
+3. Run \`tools/audit-adaptive-images.mjs\` in WebKit CI, covering actual WebP generation, \`srcset\` selection, network caps and legacy fallback.
+4. Confirm lazy loading and Hero priority using Network tab, iPhone/Android and desktop viewport sizes.
+5. During legacy backfill, inspect available Supabase Free Storage usage. Existing public images currently consume material space; avoid backfilling everything if storage is near your plan limit.

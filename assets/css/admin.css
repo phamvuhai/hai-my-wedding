@@ -931,3 +931,19 @@ button:disabled.btn{opacity:.45;cursor:not-allowed}
   .sort-photo-buttons button{min-height:25px}
   .bulk-library-toolbar select,.bulk-library-toolbar .btn{width:100%;max-width:none}
 }
+
+/* Supabase Free adaptive gallery controls, V20 */
+.adaptive-backfill-panel{
+  display:grid;gap:13px;margin-bottom:18px;
+  border:1px solid rgba(162,120,99,.22);
+  background:linear-gradient(132deg,#fffaf5,#f9f1ed);
+}
+.adaptive-backfill-panel h3 {margin:4px 0 8px;font-size:1.25rem}
+.adaptive-backfill-panel p {max-width:90ch}
+.adaptive-backfill-actions {display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.adaptive-backfill-track {width:100%;height:8px;border-radius:99px;background:#eee1d8;overflow:hidden}
+.adaptive-backfill-track>span {display:block;height:100%;width:0;background:#946b58;transition:width .25s ease}
+@media(max-width:600px){
+  .adaptive-backfill-actions .btn{width:100%}
+  .adaptive-backfill-panel{padding:16px}
+}

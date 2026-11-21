@@ -481,6 +481,20 @@
 
         <section id="albumTab" class="tab-panel hidden">
           <div class="stats" id="albumStats"></div>
+          <section class="panel adaptive-backfill-panel" aria-label="Tối ưu ảnh cũ">
+            <div>
+              <p class="eyebrow">ADAPTIVE IMAGE DELIVERY</p>
+              <h3>Ảnh nhẹ cho điện thoại & mạng chậm</h3>
+              <p id="adaptiveBackfillCount" class="muted">Đang kiểm tra thư viện ảnh...</p>
+              <p class="muted">Ảnh mới được tạo phiên bản 480 / 960 / 1440px tự động. Với ảnh cũ, bấm nút bên dưới một lần để bổ sung các bản nhẹ (không thay thế ảnh gốc). Có thể dừng và tiếp tục.</p>
+            </div>
+            <div class="adaptive-backfill-actions">
+              <button id="adaptiveBackfillBtn" class="btn primary" type="button" disabled>Tối ưu ảnh cũ</button>
+              <button id="adaptiveBackfillStop" class="btn ghost" type="button" disabled>Tạm dừng</button>
+            </div>
+            <div class="adaptive-backfill-track" role="presentation"><span id="adaptiveBackfillProgress"></span></div>
+            <p id="adaptiveBackfillStatus" class="status" aria-live="polite"></p>
+          </section>
           <nav class="album-mode-tabs" aria-label="Quản lý ảnh">
             <button class="album-mode-btn active" type="button" data-album-mode="single">＋ Thêm 1 ảnh</button>
             <button class="album-mode-btn" type="button" data-album-mode="bulk">⇧ Import hàng loạt</button>
@@ -713,6 +727,7 @@
   <script src="/assets/js/config.js"></script>
   <script src="/assets/js/admin/state.js"></script>
   <script src="/assets/js/admin/photo-processor.js"></script>
+  <script src="/assets/js/admin/image-backfill.js"></script>
   <script src="/assets/js/admin/library.js"></script>
   <script src="/assets/js/admin/editor.js"></script>
   <script src="/assets/js/admin/bulk-upload.js"></script>

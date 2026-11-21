@@ -87,6 +87,61 @@
       image.src = '';
     }
   }
+  const RESPONSIVE_WIDTHS = [480,960,1440];
+  async function variantsFromPublicBlob(blob, sourceWidth) {
+    // Resize from the finished public file: matches its exact crop/rotation/look.
+    if (!blob) return [];
+    const img=await decodeImage(blob);
+    try {
+      const results=[];
+      for(const width of RESPONSIVE_WIDTHS) {
+        if (width >= img.naturalWidth || (sourceWidth && width >= sourceWidth)) continue;
+        const height=Math.max(1,Math.round(img.naturalHeight*width/img.naturalWidth));
+        const canvas=document.createElement('canvas');
+        canvas.width=width;canvas.height=height;
+        try {
+          canvas.getContext('2d').drawImage(img,0,0,width,height);
+          const compressed=await canvasToWebp(canvas,width<=480?.70:width<=960?.76:.81);
+          results.push({width,blob:compressed});
+        } finally {releaseCanvas(canvas);}
+      }
+      return results;
+    } finally {img.src='';}
+  }
+
+  async function uploadResponsiveVariants(db,blob,imagePath,sourceWidth,{strict=false}={}) {
+    const results={};
+    const uploaded=[];
+    const storage=db.storage.from('wedding-gallery');
+    try {
+      const prepared=await variantsFromPublicBlob(blob,sourceWidth);
+      const base=imagePath.replace(/\.webp$/i,'');
+      const version=crypto.randomUUID().slice(0,8);
+      for (const item of prepared) {
+        const variantPath=base+'-'+version+'-w'+item.width+'.webp';
+        const {error}=await storage.upload(variantPath,item.blob,{
+          contentType:'image/webp',cacheControl:'31536000',upsert:false
+        });
+        if(error)throw error;
+        uploaded.push(variantPath);
+        results[String(item.width)]=variantPath;
+      }
+    } catch (error) {
+      // Original full-size public image remains usable. Never publish fake paths.
+      if (uploaded.length) {
+        const cleanup=await storage.remove(uploaded);
+        if(cleanup.error)console.warn('Unable to clean responsive variants',cleanup.error);
+      }
+      console.warn('Responsive variant generation failed; full image remains available',error);
+      if(strict)throw error;
+      return {};
+    }
+    return results;
+  }
+  function variantPaths(imageVariants) {
+    return Object.values(imageVariants||{}).filter(value=>typeof value==='string');
+  }
+
   function friendlyStorageError(error, label, mb) {
     const message = error?.message || 'Upload thất bại.';
     return /maximum allowed size|exceeded|too large|payload too large/i.test(message)
@@ -99,7 +154,7 @@
     const id = crypto.randomUUID();
     const originalPath = `${album.slug}/${id}-master.webp`;
     const imagePath = `${album.slug}/${id}.webp`;
-    let masterUploaded = false, publicUploaded = false;
+    let masterUploaded = false, publicUploaded = false, imageVariants = {};
     try {
       const masterResult = await db.storage.from('wedding-originals').upload(originalPath, processed.master.blob, {
         contentType:'image/webp', upsert:false
@@ -113,9 +168,10 @@
       if (publicResult.error) throw new Error(friendlyStorageError(publicResult.error,'Ảnh public',6));
       publicUploaded = true;
 
+      imageVariants=await uploadResponsiveVariants(db,processed.publicImage.blob,imagePath,processed.publicImage.width);
       const baseName = String(file.name || 'Ảnh cưới').replace(/\.[^.]+$/,'').slice(0,120);
       const payload = {
-        id,album_id:album.id,original_path:originalPath,image_path:imagePath,
+        id,album_id:album.id,original_path:originalPath,image_path:imagePath,image_variants:imageVariants,
         title:baseName || 'Ảnh cưới',caption:null,alt_text:'Ảnh cưới Hải và Mỹ',
         width:processed.publicImage.width,height:processed.publicImage.height,
         focus_x:50,focus_y:50,is_published:!!settings.published,
@@ -128,7 +184,7 @@
       return {id,imagePath,originalPath,publicBytes:processed.publicImage.blob.size};
     } catch(error) {
       const cleanups = [];
-      if (publicUploaded) cleanups.push(db.storage.from('wedding-gallery').remove([imagePath]));
+      if (publicUploaded) cleanups.push(db.storage.from('wedding-gallery').remove([imagePath,...variantPaths(imageVariants)]));
       if (masterUploaded) cleanups.push(db.storage.from('wedding-originals').remove([originalPath]));
       const results = await Promise.allSettled(cleanups);
       if (results.some(r => r.status==='rejected' || r.value?.error)) console.warn('Could not completely clean up failed photo upload',results);
@@ -138,6 +194,7 @@
 
   window.AdminPhotoProcessor = {
     PUBLIC_LIMIT,MASTER_LIMIT,formatMb,validateFile,prepareBulk,
-    optimizePublic,optimizeMaster,uploadBulkImage
+    optimizePublic,optimizeMaster,uploadBulkImage,
+    variantsFromPublicBlob,uploadResponsiveVariants,variantPaths
   };
 })();

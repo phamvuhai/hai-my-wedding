@@ -373,13 +373,22 @@ function galleryClient() {
   return galleryState.client;
 }
 
-function galleryPublicUrl(img) {
-  if (img.publicUrl) return img.publicUrl;
+function galleryPublicUrl(img, role = 'gallery') {
   const client = galleryClient();
-  if (!client) return '';
+  if (!client) return img.publicUrl || '';
+  const adaptive = window.WeddingAdaptiveImages;
+  if (adaptive) return adaptive.select(client, img, undefined, role);
+  if (img.publicUrl) return img.publicUrl;
   const base = client.storage.from('wedding-gallery').getPublicUrl(img.image_path).data.publicUrl;
   const version = img.updated_at || img.created_at || '';
   return version ? `${base}?v=${encodeURIComponent(version)}` : base;
+}
+function imageHtmlAttrs(img, role = 'thumb', sizes = '100vw', loading = 'lazy', priority = 'auto') {
+  const adaptive = window.WeddingAdaptiveImages;
+  if (adaptive && galleryClient()) {
+    return adaptive.htmlAttrs(galleryClient(),img,{role,sizes,loading,priority});
+  }
+  return 'src="' + galleryEsc(galleryPublicUrl(img,role)) + '" loading="' + loading + '" decoding="async"';
 }
 
 function gallerySize(img) {
@@ -404,7 +413,7 @@ function renderHomeGallery() {
         class="home-photo size-${size} ${index === 0 ? 'editorial-featured' : ''} reveal visible"
         data-photo-id="${galleryEsc(img.id)}"
         aria-label="${galleryEsc(loc.alt || 'Hải Phạm & Mỹ Nguyễn')}">
-        <img loading="eager" decoding="async" src="${url}" alt="${galleryEsc(loc.alt)}"
+        <img ${imageHtmlAttrs(img, 'thumb', '(max-width:760px) 48vw, (max-width:1100px) 45vw, 30vw', index===0?'eager':'lazy', index===0?'auto':'low')} alt="${galleryEsc(loc.alt)}"
           style="object-position:${Number(img.focus_x ?? 50)}% ${Number(img.focus_y ?? 50)}%">
         <span class="photo-curtain" aria-hidden="true"></span>
         <span class="home-photo-index" aria-hidden="true">${String(index + 1).padStart(2, '0')} <i></i> ${String(galleryState.homeImages.length).padStart(2, '0')}</span>
@@ -424,7 +433,7 @@ async function loadHomeGallery() {
   try {
     const [galleryResult,designResult] = await Promise.all([
       client.from('gallery_images')
-        .select('id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,is_hero,show_on_homepage,show_in_album,focus_x,focus_y,created_at,updated_at')
+        .select('id,image_path,image_variants,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,is_hero,show_on_homepage,show_in_album,focus_x,focus_y,created_at,updated_at')
         .eq('is_published', true)
         .order('is_featured', { ascending: false })
         .order('sort_order', { ascending: true })
@@ -494,7 +503,7 @@ async function loadAlbumImages({force=false} = {}) {
   const [albumResult, imageResult] = await Promise.all([
     client.from('gallery_albums').select('id,title,slug,sort_order').order('sort_order', {ascending:true}),
     client.from('gallery_images')
-      .select('id,album_id,image_path,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,focus_x,focus_y,created_at,updated_at,is_published')
+      .select('id,album_id,image_path,image_variants,title,caption,alt_text,title_en,caption_en,alt_text_en,title_ja,caption_ja,alt_text_ja,width,height,sort_order,display_size,is_featured,focus_x,focus_y,created_at,updated_at,is_published')
       .eq('is_published', true)
       .eq('show_in_album', true)
       // Album order is independent of Featured; homepage selection keeps its own order.
@@ -531,7 +540,7 @@ function renderAlbumOverlay() {
     return `
       <button type="button" class="album-overlay-photo size-${size}" data-album-photo-id="${galleryEsc(img.id)}"
         aria-label="${galleryEsc(loc.alt)}">
-        <img loading="lazy" decoding="async" src="${galleryPublicUrl(img)}" alt="${galleryEsc(loc.alt)}"
+        <img ${imageHtmlAttrs(img, 'thumb', '(max-width:760px) 48vw, (max-width:1100px) 32vw, 23vw', 'lazy', 'low')} alt="${galleryEsc(loc.alt)}"
           style="object-position:${Number(img.focus_x ?? 50)}% ${Number(img.focus_y ?? 50)}%">
         <span><strong>${galleryEsc(loc.title)}</strong><small>${galleryEsc(loc.caption)}</small></span>
       </button>`;
@@ -589,7 +598,11 @@ function renderLightbox() {
   const counter = document.getElementById('photoLightboxCounter');
   if (!image) return;
 
-  image.src = galleryPublicUrl(img);
+  if (window.WeddingAdaptiveImages && galleryClient()) {
+    window.WeddingAdaptiveImages.apply(image,galleryClient(),img,{role:'lightbox',sizes:'100vw',loading:'eager',priority:'high'});
+  } else {
+    image.src = galleryPublicUrl(img,'lightbox');
+  }
   image.alt = loc.alt;
   title.textContent = loc.title;
   caption.textContent = loc.caption;
@@ -805,7 +818,7 @@ async function loadHeroPhoto() {
     const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
     const { data, error } = await client
       .from('gallery_images')
-      .select('image_path,alt_text,title,alt_text_en,title_en,alt_text_ja,title_ja,focus_x,focus_y,width,height,hero_layout,hero_desktop_ratio,hero_mobile_ratio,hero_zoom,hero_spacing,updated_at')
+      .select('image_path,image_variants,alt_text,title,alt_text_en,title_en,alt_text_ja,title_ja,focus_x,focus_y,width,height,hero_layout,hero_desktop_ratio,hero_mobile_ratio,hero_zoom,hero_spacing,updated_at')
       .eq('is_hero', true)
       .eq('is_published', true)
       .limit(1)
@@ -822,7 +835,10 @@ async function loadHeroPhoto() {
       (data.alt_text || data.title);
 
     const heroBaseUrl = client.storage.from('wedding-gallery').getPublicUrl(data.image_path).data.publicUrl;
-    const url = data.updated_at ? `${heroBaseUrl}?v=${encodeURIComponent(data.updated_at)}` : heroBaseUrl;
+    const fallbackUrl = data.updated_at ? `${heroBaseUrl}?v=${encodeURIComponent(data.updated_at)}` : heroBaseUrl;
+    const responsive = window.WeddingAdaptiveImages;
+    const heroAttrs = responsive?.attrs(client,data,{role:'hero',sizes:'100vw',loading:'eager',priority:'high'});
+    const url = heroAttrs?.src || fallbackUrl;
     const layout = ['full','framed','split','minimal'].includes(data.hero_layout) ? data.hero_layout : 'full';
 
     hero.classList.remove(
@@ -853,6 +869,8 @@ async function loadHeroPhoto() {
 
     // Preload + decode the actual Admin-selected Hero before revealing any photo.
     const preload = new Image();
+    if (heroAttrs?.srcset) {preload.sizes=heroAttrs.sizes;preload.srcset=heroAttrs.srcset;}
+    preload.fetchPriority='high';
     preload.src = url;
     try {
       await preload.decode();
@@ -863,11 +881,13 @@ async function loadHeroPhoto() {
       });
     }
 
-    framedImg.src = url;
+    if (responsive) responsive.apply(framedImg,client,data,{role:'hero',sizes:'100vw',loading:'eager',priority:'high'});
+    else framedImg.src = url;
     framedImg.alt = alt || 'Hải Phạm & Mỹ Nguyễn';
     framedImg.style.objectPosition = `${fx}% ${fy}%`;
 
-    fullImg.src = url;
+    if (responsive) responsive.apply(fullImg,client,data,{role:'hero',sizes:'100vw',loading:'eager',priority:'high'});
+    else fullImg.src = url;
     fullImg.alt = '';
     fullImg.style.objectPosition = `${fx}% ${fy}%`;
 

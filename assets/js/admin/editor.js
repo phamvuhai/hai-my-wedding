@@ -463,6 +463,8 @@
       return A.setStatus(status, friendlyStorageError(p.error, 'Ảnh public', 6), 'error');
     }
 
+    const imageVariants = await P.uploadResponsiveVariants(db,rendered.blob,imagePath,rendered.width);
+
     if (hero) {
       await db.from('gallery_images').update({ is_hero:false }).neq('id', id || '00000000-0000-0000-0000-000000000000');
     }
@@ -471,6 +473,7 @@
       album_id:al.id,
       original_path:originalPath,
       image_path:imagePath,
+      image_variants:imageVariants,
       title:title || null,
       caption:caption || null,
       alt_text:alt || title || 'Ảnh cưới Hải và Mỹ',
@@ -506,7 +509,7 @@
     const { error } = await op;
     if (error) {
       await Promise.all([
-        db.storage.from('wedding-gallery').remove([imagePath]),
+        db.storage.from('wedding-gallery').remove([imagePath,...P.variantPaths(imageVariants)]),
         !A.editRecord && createdOriginal
           ? db.storage.from('wedding-originals').remove([originalPath])
           : Promise.resolve()
@@ -515,8 +518,9 @@
     }
 
     if (oldImagePath && oldImagePath !== imagePath) {
-      const cleanup = await db.storage.from('wedding-gallery').remove([oldImagePath]);
-      if (cleanup.error) console.warn('Could not remove previous public image:', cleanup.error);
+      const previousPaths=[oldImagePath,...P.variantPaths(A.editRecord?.image_variants)];
+      const cleanup = await db.storage.from('wedding-gallery').remove(previousPaths);
+      if (cleanup.error) console.warn('Could not remove previous public images:', cleanup.error);
     }
 
     await A.loadData();

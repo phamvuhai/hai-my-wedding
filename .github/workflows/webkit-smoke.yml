@@ -26,6 +26,10 @@ jobs:
           node --check assets/js/site/romantic-motion.js
           node --check assets/js/site/i18n.js
           node --check tools/audit-romantic-motion.mjs
+          node --check assets/js/site/adaptive-images.js
+          node --check assets/js/site/wedding.js
+          node --check assets/js/admin/image-backfill.js
+          node --check tools/audit-adaptive-images.mjs
       - name: Install WebKit browser and its dependencies
         run: |
           npm install --no-save --package-lock=false playwright@1.56.0
@@ -34,6 +38,8 @@ jobs:
         run: node tools/audit-album-bulk.mjs
       - name: Test new romantic motion without production data
         run: node tools/audit-romantic-motion.mjs
+      - name: Test adaptive images on Safari with mock-only Supabase
+        run: node tools/audit-adaptive-images.mjs
       - name: Test iPhone-like Safari browser
         run: node tools/audit-webkit.mjs
       - name: Test touch experience and mocked invited guests
