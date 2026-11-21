@@ -24,7 +24,16 @@ try {
   const page=await browser.newPage();
   const errors=[];
   page.on('pageerror',e=>errors.push(e.message));
-  await page.route('https://**',route=>route.abort());
+  // Block *all* external requests, including Supabase and CDN, in this offline test.
+  await page.route('**/*',route=>{
+    if(route.request().url().startsWith('http://127.0.0.1:'+server.address().port+'/'))return route.continue();
+    return route.abort();
+  });
+  // Never load production credentials in the test, even if the Supabase mock is bypassed.
+  await page.route('**/assets/js/config.js',route=>route.fulfill({
+    status:200,contentType:'application/javascript',
+    body:"window.WEDDING_CONFIG={supabaseUrl:'http://127.0.0.1/disabled-supabase',supabaseAnonKey:'local-test-only'};"
+  }));
   // The Album test isolates the CMS workflows: emulate a successful Admin guard.
   // Authentication itself is tested separately; no actual credentials are used here.
   await page.route('**/assets/js/admin/auth.js',route=>route.fulfill({
@@ -67,7 +76,7 @@ try {
       };
       return methods;
     }
-    window.supabase={createClient:()=>({
+    window.supabase={createClient:()=>({__offlineMock:true,
       auth:{getUser:async()=>({data:{user:{email:'phamvuhai23@gmail.com'}},error:null}),
         getSession:async()=>({data:{session:{user:{email:'phamvuhai23@gmail.com'}}}}),
         onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}}),signOut:async()=>({})},
@@ -119,6 +128,7 @@ try {
     window.AdminAlbumModes.switchMode('bulk');
   });
   assert.equal(await page.locator('#bulkUploadPanel').isVisible(),true);
+  assert.equal(await page.evaluate(()=>window.AdminApp.db.__offlineMock),true,'Admin must use offline Supabase mock');
   const pixel=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAFklEQVR4nGN8Nm3afwYkwMSABggLAADKCAMZxpQtEgAAAABJRU5ErkJggg==','base64');
   await page.locator('#bulkFileInput').setInputFiles([
     {name:'Photo_001.png',mimeType:'image/png',buffer:pixel},
