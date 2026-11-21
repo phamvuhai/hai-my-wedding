@@ -731,3 +731,77 @@ drop policy if exists admin_can_delete_rsvp on public.rsvp;
 create policy admin_can_delete_rsvp on public.rsvp
 for delete to authenticated
 using (((select auth.jwt())->>'email') = 'phamvuhai23@gmail.com');
+
+
+-- Gallery reorder and cross-album move (deployed 2026-11-21).
+-- SECURITY INVOKER (default) keeps gallery_images RLS policies enforced.
+CREATE OR REPLACE FUNCTION public.reorder_gallery_images(p_album_id uuid, p_image_ids uuid[])
+ RETURNS integer
+ LANGUAGE plpgsql
+ SET search_path TO 'public'
+AS $function$
+declare v_total integer; v_matching integer; v_updated integer;
+begin
+  if p_album_id is null or p_image_ids is null or cardinality(p_image_ids)>1000 then
+    raise exception 'Invalid gallery reorder request';
+  end if;
+  perform 1 from public.gallery_albums where id=p_album_id for update;
+  if not found then raise exception 'Album not found'; end if;
+  select count(*) into v_total from public.gallery_images where album_id=p_album_id;
+  if v_total<>cardinality(p_image_ids) then
+    raise exception 'Gallery changed: refresh and try ordering again';
+  end if;
+  select count(distinct x.id) into v_matching
+  from unnest(p_image_ids) as x(id)
+  join public.gallery_images g on g.id=x.id and g.album_id=p_album_id;
+  if v_matching<>v_total then raise exception 'Invalid photo list: duplicates or wrong album'; end if;
+  with desired as (
+    select x.id, x.ordinality from unnest(p_image_ids) with ordinality as x(id,ordinality)
+  )
+  update public.gallery_images g
+     set sort_order = (d.ordinality*10)::integer, updated_at = now()
+    from desired d where g.id=d.id and g.album_id=p_album_id;
+  get diagnostics v_updated = row_count;
+  if v_updated<>v_total then raise exception 'Update denied or photo list changed'; end if;
+  return v_updated;
+end;
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public.move_gallery_images(p_image_ids uuid[], p_target_album_id uuid)
+ RETURNS integer
+ LANGUAGE plpgsql
+ SET search_path TO 'public'
+AS $function$
+declare v_count integer; v_matching integer; v_max integer; v_updated integer;
+begin
+  if p_target_album_id is null or p_image_ids is null or cardinality(p_image_ids)>1000 then
+    raise exception 'Invalid gallery move request';
+  end if;
+  perform 1 from public.gallery_albums where id=p_target_album_id for update;
+  if not found then raise exception 'Destination album not found'; end if;
+  v_count := cardinality(p_image_ids);
+  if v_count=0 then return 0; end if;
+  select count(distinct x.id) into v_matching
+  from unnest(p_image_ids) as x(id) join public.gallery_images g on g.id=x.id;
+  if v_matching<>v_count then raise exception 'Photo list changed or has duplicates'; end if;
+  select coalesce(max(sort_order),0) into v_max
+    from public.gallery_images where album_id=p_target_album_id and not (id=any(p_image_ids));
+  with desired as (
+    select id,row_number() over(order by sort_order,created_at,id) as n
+      from public.gallery_images where id=any(p_image_ids)
+  )
+  update public.gallery_images g
+     set album_id=p_target_album_id,sort_order=v_max+(d.n*10)::integer,updated_at=now()
+    from desired d where g.id=d.id;
+  get diagnostics v_updated = row_count;
+  if v_updated<>v_count then raise exception 'Move denied or photo list changed'; end if;
+  return v_updated;
+end;
+$function$
+;
+
+revoke all on function public.reorder_gallery_images(uuid,uuid[]) from PUBLIC,anon;
+revoke all on function public.move_gallery_images(uuid[],uuid) from PUBLIC,anon;
+grant execute on function public.reorder_gallery_images(uuid,uuid[]) to authenticated;
+grant execute on function public.move_gallery_images(uuid[],uuid) to authenticated;

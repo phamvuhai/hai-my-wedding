@@ -481,7 +481,52 @@
 
         <section id="albumTab" class="tab-panel hidden">
           <div class="stats" id="albumStats"></div>
-          <section class="panel upload-panel">
+          <nav class="album-mode-tabs" aria-label="Quản lý ảnh">
+            <button class="album-mode-btn active" type="button" data-album-mode="single">＋ Thêm 1 ảnh</button>
+            <button class="album-mode-btn" type="button" data-album-mode="bulk">⇧ Import hàng loạt</button>
+            <button class="album-mode-btn" type="button" data-album-mode="sort">↕ Sắp xếp thứ tự</button>
+          </nav>
+          <section id="bulkUploadPanel" class="panel album-mode-panel hidden" data-album-panel="bulk">
+            <div class="panel-head"><div><p class="eyebrow">BULK PHOTO IMPORT</p>
+              <h3>Upload nhiều ảnh cùng lúc</h3>
+              <p class="muted">JPG/PNG/WebP · Master tối đa 20 MB · Public tối đa 6 MB · Tự động tối ưu · 2 ảnh đồng thời</p></div></div>
+            <div class="bulk-drop-zone" id="bulkDropZone" tabindex="0" role="button" aria-label="Chọn nhiều ảnh để upload">
+              <span class="bulk-drop-icon" aria-hidden="true">⇧</span>
+              <strong>Kéo thả ảnh vào đây</strong>
+              <span>hoặc chọn 50–200 ảnh từ máy tính</span>
+              <button class="btn ghost" type="button" data-open-files>Chọn nhiều ảnh</button>
+              <input id="bulkFileInput" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden>
+            </div>
+            <div class="bulk-settings">
+              <label>Album đích<select id="bulkAlbumSelect" aria-label="Album đích"></select></label>
+              <label class="bulk-setting-check"><input id="bulkPublishCheck" type="checkbox"> Publish ngay (mặc định là Draft)</label>
+              <label class="bulk-setting-check"><input id="bulkShowInAlbumCheck" type="checkbox" checked> Cho phép hiển thị trong Album khi Publish</label>
+            </div>
+            <div class="panel-head bulk-list-header"><div><h4>Ảnh đã chọn</h4>
+              <p class="muted">Kéo thả hoặc nhấn ↑ ↓ để đổi thứ tự trước khi upload.</p></div>
+              <span id="bulkSummary">0 ảnh</span></div>
+            <div id="bulkPreviewGrid" class="bulk-preview-grid" aria-live="polite"></div>
+            <div id="bulkProgressTrack" class="bulk-progress-track" role="progressbar" aria-label="Tiến độ import" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="bulkProgressBar"></div></div>
+            <div class="bulk-actions">
+              <button class="btn primary" id="bulkStartBtn" type="button" disabled>Bắt đầu upload</button>
+              <button class="btn ghost" id="bulkRetryBtn" type="button" disabled>Thử lại ảnh lỗi</button>
+              <button class="btn ghost" id="bulkClearBtn" type="button" disabled>Dọn danh sách</button>
+            </div>
+            <p class="status" id="bulkStatus" aria-live="polite"></p>
+          </section>
+          <section id="photoSortPanel" class="panel album-mode-panel hidden" data-album-panel="sort">
+            <div class="panel-head"><div><p class="eyebrow">PHOTO ORDERING</p><h3>Sắp xếp ảnh trong Album</h3>
+              <p class="muted">Ảnh ở trên sẽ hiển thị trước. Kéo thả trên PC hoặc dùng nút mũi tên trên điện thoại.</p></div></div>
+            <div class="sort-toolbar">
+              <label>Chọn Album<select id="sortAlbumSelect"></select></label>
+              <span id="sortDirtyLabel">Đã đồng bộ</span>
+              <button id="sortDiscardBtn" class="btn ghost" type="button" disabled>Hoàn tác</button>
+              <button id="sortSaveBtn" class="btn primary" type="button" disabled>Lưu thứ tự</button>
+            </div>
+            <div id="sortPhotoList" class="sort-photo-list"></div>
+            <p id="sortStatus" class="status" aria-live="polite"></p>
+          </section>
+          <section id="singleUploadPanel" data-album-panel="single" class="panel upload-panel album-mode-panel">
             <div>
               <p class="eyebrow">UPLOAD & EDIT</p>
               <h3>Thêm ảnh mới</h3>
@@ -644,6 +689,19 @@
               <div><p class="eyebrow">LIBRARY</p><h3>Thư viện ảnh</h3></div>
               <select id="libraryAlbumFilter"><option value="all">Tất cả album</option></select>
             </div>
+            <div id="bulkLibraryToolbar" class="bulk-library-toolbar">
+              <label class="bulk-select-all"><input id="bulkLibrarySelectAll" type="checkbox"> Chọn tất cả ảnh đang lọc</label>
+              <strong id="bulkLibraryCount">Đã chọn 0 ảnh</strong>
+              <select id="bulkLibraryAction" aria-label="Thao tác hàng loạt">
+                <option value="">Thao tác hàng loạt...</option>
+                <option value="publish">Publish</option><option value="unpublish">Unpublish</option>
+                <option value="show">Hiển thị Album</option><option value="hide">Chỉ hiển thị Website</option>
+                <option value="move">Chuyển Album</option><option value="delete">Xóa ảnh Draft</option>
+              </select>
+              <select id="bulkLibraryTargetAlbum" aria-label="Album đích" hidden></select>
+              <button id="bulkLibraryApply" class="btn primary compact" type="button" disabled>Áp dụng</button>
+            </div>
+            <p id="bulkLibraryStatus" class="status" aria-live="polite"></p>
             <div id="adminGallery" class="admin-gallery"></div>
           </section>
         </section>
@@ -654,8 +712,11 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/assets/js/config.js"></script>
   <script src="/assets/js/admin/state.js"></script>
+  <script src="/assets/js/admin/photo-processor.js"></script>
   <script src="/assets/js/admin/library.js"></script>
   <script src="/assets/js/admin/editor.js"></script>
+  <script src="/assets/js/admin/bulk-upload.js"></script>
+  <script src="/assets/js/admin/photo-sort.js"></script>
   <script src="/assets/js/admin/content.js"></script>
   <script src="/assets/js/admin/rsvp.js"></script>
   <script src="/assets/js/admin/guests.js"></script>
