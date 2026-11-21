@@ -23,12 +23,17 @@ jobs:
           node --check assets/js/admin/library.js
           node --check assets/js/site/app.js
           node --check tools/audit-album-bulk.mjs
+          node --check assets/js/site/romantic-motion.js
+          node --check assets/js/site/i18n.js
+          node --check tools/audit-romantic-motion.mjs
       - name: Install WebKit browser and its dependencies
         run: |
           npm install --no-save --package-lock=false playwright@1.56.0
           npx playwright install --with-deps webkit
       - name: Test bulk photo import and sorting with mocked Supabase
         run: node tools/audit-album-bulk.mjs
+      - name: Test new romantic motion without production data
+        run: node tools/audit-romantic-motion.mjs
       - name: Test iPhone-like Safari browser
         run: node tools/audit-webkit.mjs
       - name: Test touch experience and mocked invited guests
