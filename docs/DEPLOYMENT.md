@@ -139,3 +139,13 @@ QR shown at 93–126 CSS pixels in the two-up gift cards is for recognition;
 a guest needing to scan must tap it to open the full-size 300px version. The
 button has an accessible label and a minimum 42px copy target.
 Keep descriptions and titles readable after switching to EN/JA.
+
+
+## Album Detail pinch / Full HD compatibility fix (2026-11-21)
+
+- **Scope:** public Album + homepage photo Lightbox only. No database migration, Gallery reorder, Hero, RSVP or storage writes.
+- Original \`image_path\` records are present in public Supabase Storage, but individual full-resolution images can be several megabytes. The viewer now starts with a 960px WebP when available, and loads the true original only **after opening detail**, in the background. A failed Full HD request leaves the already-visible preview in place and offers Retry.
+- Added \`lightbox-zoom.js\` and \`lightbox-zoom.css\` to provide actual two-finger pinch (up to 4×), one-finger panning while zoomed, double-tap, accessible +/- reset control, double-click and mouse-wheel zoom on desktop. Closing or changing the photo resets zoom.
+- Single-finger swipe only switches photos when not zoomed. Two-finger pinch must **never** advance photos, and navigation still stops at the first/last album photo.
+- WebKit offline regression \`tools/audit-v21-gallery.mjs\` now tests the new zoom control, simulated pinch/pan without navigation, zoom reset on next, and fallback on an intentionally missing 5MB original. Safari regression, Asset Integrity and Atelier Visual QA must all pass before merge.
+- Post-release: verify an actual iPhone over 4G with a published album photo and inspect whether the original WebP opens from the Supabase public URL. CI mocks verify interface behavior, not cell-network throughput.
