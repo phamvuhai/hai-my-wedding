@@ -22,7 +22,7 @@ const server=createServer((req,res)=>{
 await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
 const origin='http://127.0.0.1:'+server.address().port;
 const browser=await webkit.launch({headless:true});
-const expected=['480','960','1440'];
+const expected=['320','480','960','1440'];
 
 async function testContext(connection,viewport={width:390,height:844},dpr=3){
   const context=await browser.newContext({viewport,deviceScaleFactor:dpr});
@@ -102,7 +102,7 @@ try {
     return {keys:Object.keys(paths),paths,uploads};
   });
   assert.deepEqual(storage.keys,expected);
-  assert.equal(storage.uploads.length,3);
+  assert.equal(storage.uploads.length,4);
   assert.ok(storage.uploads.every(x=>x.contentType==='image/webp'&&x.bytes>0));
   assert.deepEqual(errors,[]);
   await context.close();
