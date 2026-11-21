@@ -30,6 +30,8 @@ jobs:
           node --check assets/js/site/wedding.js
           node --check assets/js/admin/image-backfill.js
           node --check tools/audit-adaptive-images.mjs
+          node --check assets/js/site/progressive-gallery.js
+          node --check tools/audit-v21-gallery.mjs
       - name: Install WebKit browser and its dependencies
         run: |
           npm install --no-save --package-lock=false playwright@1.56.0
@@ -40,6 +42,8 @@ jobs:
         run: node tools/audit-romantic-motion.mjs
       - name: Test adaptive images on Safari with mock-only Supabase
         run: node tools/audit-adaptive-images.mjs
+      - name: Test V21 progressive gallery, click-only HD and bounded navigation
+        run: node tools/audit-v21-gallery.mjs
       - name: Test iPhone-like Safari browser
         run: node tools/audit-webkit.mjs
       - name: Test touch experience and mocked invited guests

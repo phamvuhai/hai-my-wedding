@@ -1,0 +1,114 @@
+/* V21 — viewport-first gallery, gradual sharpness and click-to-HD detail.
+ * The original Album grid, filter, lightbox and personalized invitation stay intact. */
+.album-progressive-card {position:relative;isolation:isolate;background:#e9ddd5}
+.album-progressive-card::before {
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:linear-gradient(115deg,#eadfd7 15%,#f4ece6 47%,#eadfd7 80%);
+  background-size:210% 100%;
+  animation:hm-preview-shimmer 2.1s ease-in-out infinite;
+  transition:opacity .3s ease;
+}
+.album-progressive-card.is-photo-ready::before {opacity:0;animation:none}
+.album-overlay-photo .album-progressive-image {
+  position:relative;z-index:1;opacity:0;
+  transition:opacity .34s ease,transform .42s ease;
+}
+.album-overlay-photo.is-photo-ready .album-progressive-image {opacity:1}
+.album-overlay-photo .album-progressive-sharp {
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  z-index:2;opacity:0;pointer-events:none;
+  transition:opacity .38s ease;
+}
+.album-overlay-photo .album-progressive-sharp.is-sharp {opacity:1}
+.album-progressive-card>span {
+  z-index:4;
+  pointer-events:none;
+}
+.album-progressive-indicator {
+  position:absolute;left:calc(50% - 13px);top:calc(50% - 13px);
+  width:26px;height:26px;z-index:3;
+  border:2px solid rgba(255,255,255,.42);
+  border-top-color:rgba(103,75,67,.65);
+  border-radius:50%;
+  opacity:0;pointer-events:none;
+}
+.album-progressive-card.is-photo-loading .album-progressive-indicator {
+  opacity:1;animation:hm-preview-spin 1.1s linear infinite;
+}
+.album-progressive-card.is-photo-ready .album-progressive-indicator {display:none}
+.album-progressive-error {
+  position:absolute;inset:42% 12px auto;z-index:3;
+  padding:9px;border-radius:9px;
+  font:600 .74rem/1.4 system-ui,sans-serif;
+  color:#57413a;background:rgba(255,249,241,.86);
+  text-align:center;pointer-events:none;display:none;
+}
+.album-progressive-card.is-photo-error .album-progressive-error {display:block}
+.album-progressive-card.is-photo-error .album-progressive-indicator {display:none}
+.album-batch-sentinel {
+  grid-column:1/-1;
+  min-height:35px;
+  display:grid;place-items:center;
+  color:#9f8b83;
+  font:500 .75rem/1.4 system-ui,sans-serif;
+  letter-spacing:.03em;
+  padding:10px;
+}
+.album-batch-sentinel[hidden] {display:none!important}
+/* The floating music dock sits above the Lightbox and intercepts the Next
+ * arrow on iPhone. Hide controls only while photo detail is open; audio keeps playing. */
+body.photo-lightbox-open #musicDock {
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+.photo-lightbox-nav:disabled,
+.photo-lightbox-nav[aria-disabled="true"] {
+  opacity:.2!important;
+  pointer-events:none!important;
+  cursor:default!important;
+  box-shadow:none!important;
+}
+.photo-lightbox-figure #photoLightboxLoading {
+  color:rgba(255,236,229,.8);
+  font-size:.74rem;
+  margin-top:7px;
+  min-height:0;
+}
+.photo-lightbox-retry {
+  margin:9px auto 0;
+  padding:7px 13px;
+  color:#3e2823;
+  background:#f6e8df;
+  border:1px solid rgba(255,255,255,.3);
+  border-radius:18px;
+  cursor:pointer;
+  font:600 .76rem system-ui,sans-serif;
+}
+.photo-lightbox-retry[hidden] {display:none!important}
+.photo-lightbox-figure #photoLightboxImage {
+  transition:filter .38s ease;
+}
+.photo-lightbox-figure #photoLightboxImage.is-hd-pending {
+  filter:blur(1.5px);
+}
+@keyframes hm-preview-shimmer {
+  from{background-position:100% 0}to{background-position:-100% 0}
+}
+@keyframes hm-preview-spin {
+  to{transform:rotate(360deg)}
+}
+@media (prefers-reduced-motion:reduce) {
+  .album-progressive-card::before,
+  .album-progressive-indicator,
+  .album-progressive-image,
+  .album-progressive-sharp,
+  .photo-lightbox-figure #photoLightboxImage {animation:none!important;transition:none!important}
+  .photo-lightbox-figure #photoLightboxImage.is-hd-pending {filter:none}
+}
+html[data-motion="minimal"] .album-progressive-card::before,
+html[data-motion="minimal"] .album-progressive-indicator {animation:none!important}
+@media(max-width:680px) {
+  .album-progressive-error{font-size:.69rem;padding:7px}
+  .album-batch-sentinel{font-size:.72rem}
+}

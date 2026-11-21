@@ -161,3 +161,17 @@ The gallery uses **pre-generated public WebP variants** because this Supabase or
 3. Run \`tools/audit-adaptive-images.mjs\` in WebKit CI, covering actual WebP generation, \`srcset\` selection, network caps and legacy fallback.
 4. Confirm lazy loading and Hero priority using Network tab, iPhone/Android and desktop viewport sizes.
 5. During legacy backfill, inspect available Supabase Free Storage usage. Existing public images currently consume material space; avoid backfilling everything if storage is near your plan limit.
+
+
+## V21 — Progressive Gallery + non-circular Lightbox (2026-11-21)
+
+**Public Album** is staged rather than downloading 48 full-resolution images at once:
+
+- Album initially renders **10 cards**, appending another 10 when the bottom sentinel approaches the scroll viewport. Filter changes reset the list without changing the stored \`sort_order\`.
+- Each card begins as a colored skeleton with **no image URL**. An IntersectionObserver attached to the scrolling Album overlay starts at most three small requests concurrently near the viewport.
+- Preview is **320px** when available, otherwise existing **480px**. After the card stays on screen for ~1.25s, one visible card at a time can be upgraded to the 960px WebP, using a short crossfade; Save Data / 2G / 3G skip the upgrade. Unseen cards do not request the next resolution.
+- In the Album grid, \`srcset\` never includes the full public original. Full resolution is requested **only on Photo Lightbox open**, with the cached thumbnail shown while HD loads. Background thumbnail requests pause while a Lightbox is open. A failed HD request reveals a retry button.
+- Lightbox Previous/Next, arrow keys and swipe navigation **stop at the first and last photo**, rather than wrapping. Both endpoint buttons are disabled and marked \`aria-disabled\`.
+- Failed thumbnails try a second existing variant, then show a readable placeholder; users can still tap the card to open its original. Images and Gallery state work without an external animation library.
+- Existing photos already have 480/960 variants. New Admin uploads generate **320/480/960/1440px** copies where supported. To add 320px previews to earlier uploads, use **Admin → Album → Tối ưu ảnh cũ**; this reuses the 480px copy to avoid downloading original full files, preserves all earlier variant paths and is resumable.
+- Test \`node tools/audit-v21-gallery.mjs\` in WebKit (offline only) plus all prior Safari, UI and asset integrity suites before promoting a Production commit. Keep RSVP, Hero, personalized invitations, and animations untouched.

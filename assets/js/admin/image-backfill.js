@@ -10,12 +10,12 @@
   const bar=document.getElementById('adaptiveBackfillProgress');
   if(!db||!P||!btn||!label||!bar)return;
   let active=false,stop=false;
-  const pending=()=>A.images.filter(img=>img.image_path&&!Object.keys(img.image_variants||{}).length);
+  const pending=()=>A.images.filter(img=>img.image_path && Number(img.width||0)>320 && !img.image_variants?.['320']);
 
   function render(){
     const total=pending().length;
     label.textContent=total
-      ? total+' ảnh chưa có phiên bản nhẹ (480/960/1440px)'
+      ? total+' ảnh chưa có bản xem trước 320px'
       : 'Mọi ảnh đã có metadata adaptive (hoặc chưa có ảnh)';
     btn.disabled=active||!total;
     stopBtn.disabled=!active;
@@ -33,7 +33,7 @@
     try{await verify();}catch(e){A.setStatus(status,e.message,'error');return;}
     const items=pending();
     if(!items.length)return render();
-    if(!confirm('Tạo ảnh WebP kích thước nhỏ cho '+items.length+' ảnh đã có?\n\nTác vụ chỉ bổ sung ảnh trong Storage và metadata, không sửa ảnh gốc, không đổi Publish/Hero/Album.'))return;
+    if(!confirm('Bổ sung bản xem nhanh 320px cho '+items.length+' ảnh?\n\nGiữ nguyên bản 480/960/1440px, ảnh gốc và mọi thiết lập Album/Publish.'))return;
     active=true;stop=false;render();
     const errors=[];
     let done=0;
@@ -44,10 +44,14 @@
         A.setStatus(status,'Đang xử lý '+(done+1)+'/'+items.length+': '+(img.title||img.image_path));
         let newPaths={};
         try{
-          const response=await storage.download(img.image_path);
+          const existing=img.image_variants||{};
+          const sourcePath=existing['480']||img.image_path;
+          const sourceWidth=existing['480']?480:img.width;
+          const response=await storage.download(sourcePath);
           if(response.error || !response.data)throw response.error || new Error('Không tải được ảnh public.');
-          newPaths=await P.uploadResponsiveVariants(db,response.data,img.image_path,img.width,{strict:true});
-          const stored=Object.keys(newPaths).length?newPaths:{ready:true};
+          newPaths=await P.uploadResponsiveVariants(db,response.data,img.image_path,sourceWidth,{strict:true});
+          if(!Object.keys(newPaths).length)throw new Error('Không tạo được bản 320px.');
+          const stored={...existing,...newPaths};
           const {data,error}=await db.from('gallery_images').update({image_variants:stored})
             .eq('id',img.id).select('id').single();
           if(error||data?.id!==img.id)throw error || new Error('Không thể cập nhật metadata.');

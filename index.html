@@ -12,6 +12,7 @@
   <link href="https://fonts.cdnfonts.com/css/utm-beautiful-caps" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/css/site.css" />
   <link rel="stylesheet" href="/assets/css/romantic-motion.css" />
+  <link rel="stylesheet" href="/assets/css/progressive-gallery.css" />
   
   
   
@@ -467,6 +468,8 @@
         <strong id="photoLightboxTitle"></strong>
         <span id="photoLightboxCaption"></span>
         <small id="photoLightboxCounter"></small>
+        <small class="photo-lightbox-loading" id="photoLightboxLoading" role="status" aria-live="polite"></small>
+        <button class="photo-lightbox-retry" id="photoLightboxRetry" type="button" hidden>Thử tải lại HD</button>
       </figcaption>
     </figure>
     <button class="photo-lightbox-nav photo-lightbox-next" id="photoLightboxNext" type="button" data-i18n-aria="album.next" aria-label="Next photo">›</button>
@@ -503,6 +506,7 @@
   <script src="/assets/js/site/i18n.js"></script>
   <script src="/assets/js/site/personalized.js"></script>
   <script src="/assets/js/site/adaptive-images.js"></script>
+  <script src="/assets/js/site/progressive-gallery.js"></script>
   <script src="/assets/js/site/app.js"></script>
   <script src="/assets/js/site/motion.js"></script>
   <script src="/assets/js/site/music.js"></script>

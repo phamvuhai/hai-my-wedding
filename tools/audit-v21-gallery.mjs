@@ -1,0 +1,121 @@
+#!/usr/bin/env node
+/* V21: offline Safari full-flow smoke. No production Supabase requests or credentials. */
+import assert from 'node:assert/strict';
+import {createServer} from 'node:http';
+import {existsSync,readFileSync,statSync} from 'node:fs';
+import {resolve,extname} from 'node:path';
+import {webkit} from 'playwright';
+
+const root=process.cwd();
+const mime={'.js':'application/javascript','.html':'text/html;charset=utf-8','.css':'text/css'};
+const http=createServer((req,res)=>{
+  let path=new URL(req.url,'http://localhost').pathname;
+  if(path==='/'||/^\/(vi|en|jp)\/?(?:album)?\/?$/.test(path))path='/index.html';
+  const absolute=resolve(root,'.'+decodeURIComponent(path));
+  if(!absolute.startsWith(root+'/')||!existsSync(absolute)||!statSync(absolute).isFile()){
+    res.writeHead(404).end();return;
+  }
+  res.writeHead(200,{'content-type':mime[extname(absolute)]||'application/octet-stream'});
+  res.end(readFileSync(absolute));
+});
+await new Promise(resolve=>http.listen(0,'127.0.0.1',resolve));
+const origin='http://127.0.0.1:'+http.address().port;
+const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAGUlEQVR4nGN8fWILAymAiSTVoxpGNQwpDQCLUgKHpX12FgAAAABJRU5ErkJggg==','base64');
+const browser=await webkit.launch({headless:true});
+try{
+  const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:3,hasTouch:true,isMobile:true});
+  const page=await context.newPage();
+  const imageRequests=[];
+  const errors=[];
+  page.on('pageerror',error=>errors.push(error.message));
+  page.on('request',request=>{
+    if(request.url().startsWith('https://img.test/'))imageRequests.push(request.url());
+  });
+  await page.route('**/*',route=>{
+    const url=route.request().url();
+    if(url.startsWith(origin+'/')||url.startsWith('blob:')||url.startsWith('data:'))return route.continue();
+    return route.abort();
+  });
+  await page.route('https://img.test/**',route=>route.fulfill({status:200,body:png,contentType:'image/png'}));
+  await page.route('**/assets/js/config.js',route=>route.fulfill({
+    status:200,contentType:'application/javascript',
+    body:"window.WEDDING_CONFIG={supabaseUrl:'https://offline.mock.invalid',supabaseAnonKey:'offline-only'};"
+  }));
+  await page.addInitScript(()=>{
+    const photos=Array.from({length:25},(_,i)=>({
+      id:'p'+String(i+1).padStart(2,'0'), album_id:'album-1',
+      title:'Photo '+(i+1),image_path:'pre/full-'+i+'.webp',
+      image_variants:{480:'pre/preview-'+i+'-w480.webp',960:'pre/medium-'+i+'-w960.webp'},
+      width:2000,height:3000,sort_order:i*10,focus_x:50,focus_y:50,
+      is_published:true,show_in_album:true,show_on_homepage:false,is_hero:false,created_at:'2026-11-21'
+    }));
+    const album={id:'album-1',title:'Pre-Wedding',slug:'pre-wedding',sort_order:0};
+    function from(table){
+      const state={filters:[],select:'',limit:Infinity};
+      const run=()=>{
+        let data=(table==='gallery_images'?photos:table==='gallery_albums'?[album]:[]).filter(x=>state.filters.every(([k,v])=>x[k]===v));
+        // Only Album requests should receive the fixture photo list.
+        if(table==='gallery_images' && !state.filters.some(x=>x[0]==='show_in_album'))data=[];
+        return Promise.resolve({data:data.slice(0,state.limit),error:null});
+      };
+      const api={
+        select:columns=>{state.select=columns;return api;},
+        eq:(key,value)=>{state.filters.push([key,value]);return api;},
+        order:()=>api,limit:n=>{state.limit=n;return api;},
+        maybeSingle:async()=>({data:null,error:null}),
+        single:async()=>({data:null,error:null}),
+        then:(resolve,reject)=>run().then(resolve,reject)
+      };
+      return api;
+    }
+    window.supabase={createClient:()=>({
+      from,
+      storage:{from:()=>({getPublicUrl:path=>({data:{publicUrl:'https://img.test/'+path}})})},
+      auth:{getSession:async()=>({data:{session:null},error:null}),
+        onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})}
+    })};
+  });
+  await page.goto(origin+'/vi',{waitUntil:'domcontentloaded'});
+  await page.waitForFunction(()=>!!window.WeddingProgressiveGallery && !!window.WeddingAdaptiveImages,{timeout:14000});
+  // Go through real public Album route and actual event listeners.
+  await page.evaluate(()=>document.querySelector('[data-album-link]')?.click());
+  await page.waitForSelector('#albumOverlay.is-open',{timeout:12000});
+  await page.waitForFunction(()=>document.querySelectorAll('#albumOverlayGrid [data-album-photo-id]').length>=10,{timeout:12000});
+  const initial=await page.locator('#albumOverlayGrid [data-album-photo-id]').count();
+  assert.ok(initial>=10 && initial<25,'Album renders batches, not all 25 images at once');
+  await page.waitForSelector('#albumOverlayGrid .is-photo-ready',{timeout:12000});
+  assert.ok(imageRequests.some(x=>x.includes('-w480.webp')),'Preview loaded');
+  assert.ok(!imageRequests.some(x=>x.includes('/full-')),'No full image before clicking detail');
+  const distant=page.locator('#albumOverlayGrid [data-album-photo-id="p25"]');
+  assert.equal(await distant.count(),0,'Offscreen rows are not initially created');
+
+  // Open photo 1 — only now can its Full HD be requested.
+  await page.locator('#albumOverlayGrid [data-album-photo-id="p01"]').click();
+  await page.waitForSelector('#photoLightbox.is-open',{timeout:12000});
+  await page.waitForFunction(()=>document.getElementById('photoLightboxCounter').textContent.trim()==='1 / 25');
+  await page.waitForFunction(()=>document.getElementById('photoLightboxImage').getAttribute('src')?.includes('full-0.webp'),{timeout:10000});
+  assert.ok(imageRequests.some(x=>x.includes('/full-0.webp')),'Full image starts after opening detail');
+  assert.equal(await page.locator('#photoLightboxPrev').isDisabled(),true);
+  await page.keyboard.press('ArrowLeft');
+  assert.equal((await page.locator('#photoLightboxCounter').innerText()).trim(),'1 / 25','First photo must not wrap to last');
+  await page.locator('#photoLightboxNext').click();
+  assert.equal((await page.locator('#photoLightboxCounter').innerText()).trim(),'2 / 25');
+  await page.locator('#photoLightboxPrev').click();
+  assert.equal((await page.locator('#photoLightboxCounter').innerText()).trim(),'1 / 25');
+  for(let i=0;i<24;i++)await page.keyboard.press('ArrowRight');
+  assert.equal((await page.locator('#photoLightboxCounter').innerText()).trim(),'25 / 25');
+  assert.equal(await page.locator('#photoLightboxNext').isDisabled(),true);
+  await page.keyboard.press('ArrowRight');
+  assert.equal((await page.locator('#photoLightboxCounter').innerText()).trim(),'25 / 25','Last photo must not wrap to first');
+
+  // Release HD, then lazy-load further batches as the user scrolls.
+  await page.locator('#photoLightboxClose').click();
+  await page.waitForFunction(()=>!document.getElementById('photoLightbox').classList.contains('is-open'),null,{timeout:12000});
+  await page.evaluate(()=>{const overlay=document.getElementById('albumOverlay');overlay.scrollTop=overlay.scrollHeight;});
+  await page.waitForFunction(()=>document.querySelectorAll('#albumOverlayGrid [data-album-photo-id]').length>10,{timeout:12000});
+  assert.equal(errors.filter(x=>/progressive-gallery|adaptive-images|renderLightbox/i.test(x)).length,0,'No gallery JavaScript errors');
+  console.log('PASS: staged thumbnail load, no Full HD before click, detail HD, bounded arrows and batched scroll');
+} finally {
+  await browser.close();
+  await new Promise(resolve=>http.close(resolve));
+}
