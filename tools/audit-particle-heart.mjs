@@ -91,7 +91,10 @@ try{
   assert.equal(started.particles,180);
   assert.ok(started.traceOffset<started.length,'The SVG line must be actively drawn');
   assert.ok(started.canvasWidth>100&&started.canvasHeight>100);
-  await page.waitForFunction(()=>window.WeddingParticleHeart.status().elapsed>=2650,{timeout:9000});
+  await page.waitForFunction(()=>{
+    const reveal=Number(document.getElementById('weddingMagic').style.getPropertyValue('--hm-v23-reveal'));
+    return reveal>0.06 && reveal<1 && window.WeddingParticleHeart.status().drawnParticles>0;
+  },null,{timeout:9000});
   const halfway=await page.evaluate(()=>{
     const painted=window.WeddingParticleHeart.status().drawnParticles;
     return {
