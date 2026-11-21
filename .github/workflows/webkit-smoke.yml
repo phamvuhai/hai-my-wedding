@@ -7,13 +7,22 @@ on:
   workflow_dispatch:
 jobs:
   webkit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Check photo and website JavaScript syntax
+        run: |
+          node --check assets/js/admin/photo-processor.js
+          node --check assets/js/admin/editor.js
+          node --check assets/js/admin/bulk-upload.js
+          node --check assets/js/admin/photo-sort.js
+          node --check assets/js/admin/library.js
+          node --check assets/js/site/app.js
+          node --check tools/audit-album-bulk.mjs
       - name: Install WebKit browser and its dependencies
         run: |
           npm install --no-save --package-lock=false playwright@1.56.0
