@@ -1,0 +1,212 @@
+/* Romantic Motion V19 — additive effects only. No WebGL or third-party dependencies.
+   Three concepts: a parallax photo/paper card, silk-responsive CTA and a crystal heart. */
+:root {
+  --hm-rose:#c88e99;
+  --hm-champagne:#f4d8ad;
+  --hm-wine:#45212f;
+}
+.hm-forever-scene {
+  position:relative;
+  display:grid;
+  place-items:center;
+  isolation:isolate;
+  min-height:440px;
+  padding:60px 22px 66px;
+  overflow:hidden;
+  color:#fff1e8;
+  text-align:center;
+  background:
+    radial-gradient(ellipse 430px 260px at 50% 41%, rgba(154,76,104,.36), transparent 77%),
+    radial-gradient(ellipse 90% 90% at 50% 104%, rgba(113,54,74,.38),transparent 70%),
+    linear-gradient(150deg,#23131b 0%,#401c2b 55%,#2b1624 100%);
+}
+.hm-forever-scene::before {
+  content:"";position:absolute;inset:16px;
+  border:1px solid rgba(251,223,207,.17);border-radius:3px;
+  pointer-events:none;z-index:0;
+}
+.hm-forever-scene::after {
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 50%,transparent 32%,rgba(19,8,13,.33));
+  pointer-events:none;z-index:0;
+}
+.hm-forever-inner {position:relative;z-index:2;width:min(100%,760px);margin:auto}
+.hm-forever-eyebrow {
+  font:650 10px/1.4 Inter,system-ui,sans-serif;
+  color:#e6c7b4;letter-spacing:.35em;margin:0 0 13px;
+}
+.hm-forever-heading {
+  margin:8px auto 0;
+  font:italic 500 clamp(31px,4.2vw,54px)/1.13 "Cormorant Garamond",Georgia,serif;
+  letter-spacing:.012em;color:#fff1e8;text-wrap:balance;
+}
+.hm-forever-caption {
+  font:550 10px/1.6 Inter,system-ui,sans-serif;
+  letter-spacing:.38em;margin:14px 0 0;color:#eac5b9;
+}
+.hm-crystal-stage {
+  position:relative;
+  width:clamp(185px,27vw,258px);
+  height:clamp(176px,24vw,238px);
+  margin:0 auto;
+  display:grid;place-items:center;
+  perspective:850px;
+  pointer-events:none;
+}
+.hm-crystal-halo {
+  position:absolute;inset:18% 10%;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,166,189,.23),rgba(195,90,131,.08) 45%,transparent 73%);
+  filter:blur(11px);
+  animation:hm-halo-breathe 5s ease-in-out infinite alternate;
+}
+.hm-crystal-orbit {
+  position:absolute;inset:15% 12%;
+  border:1px solid rgba(255,210,217,.16);
+  border-radius:50%;
+  transform:rotate(-24deg) scaleY(.72);
+  animation:hm-orbit-drift 18s linear infinite;
+}
+.hm-crystal-orbit--inner {
+  inset:23% 22%;
+  border-color:rgba(255,236,219,.19);
+  transform:rotate(35deg) scaleY(.82);
+  animation-duration:13s;animation-direction:reverse;
+}
+.hm-crystal-heart {
+  position:relative;z-index:2;
+  width:88%;height:88%;
+  filter:drop-shadow(0 14px 20px rgba(22,3,14,.33)) drop-shadow(0 0 18px rgba(244,148,169,.22));
+  transform-style:preserve-3d;
+  animation:hm-crystal-hover 7s ease-in-out infinite;
+}
+.hm-crystal-heart .hm-facet-lines {fill:none;stroke:#fff8ea;stroke-opacity:.21;stroke-width:1}
+.hm-crystal-heart .hm-crystal-outline {fill:none;stroke:#fff5e9;stroke-opacity:.54;stroke-width:1.35}
+.hm-crystal-flare {
+  position:absolute;top:20%;left:64%;width:8px;height:8px;border-radius:50%;
+  background:#fff7dc;box-shadow:0 0 10px 3px rgba(255,239,215,.7);
+  animation:hm-facet-flare 4.5s ease-in-out infinite;z-index:3;
+}
+.hm-crystal-flare::before,.hm-crystal-flare::after {
+  content:"";position:absolute;top:50%;left:50%;background:#fff2da;transform:translate(-50%,-50%);
+}
+.hm-crystal-flare::before{width:1px;height:24px}
+.hm-crystal-flare::after{width:24px;height:1px}
+.hm-forever-particles {position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.hm-forever-particle {
+  position:absolute;left:var(--hm-px);top:var(--hm-py);
+  width:var(--hm-p-size);height:var(--hm-p-size);border-radius:50%;
+  background:var(--hm-p-color,#ffe9de);opacity:var(--hm-p-opacity,.5);
+  box-shadow:0 0 9px rgba(254,181,193,.42);
+  animation:hm-dust-drift var(--hm-p-time,8s) ease-in-out var(--hm-p-delay,0s) infinite alternate;
+}
+.hm-forever-scene:not(.hm-awake) .hm-crystal-heart,
+.hm-forever-scene:not(.hm-awake) .hm-crystal-halo,
+.hm-forever-scene:not(.hm-awake) .hm-crystal-orbit,
+.hm-forever-scene:not(.hm-awake) .hm-crystal-flare,
+.hm-forever-scene:not(.hm-awake) .hm-forever-particle {animation-play-state:paused}
+@keyframes hm-crystal-hover {
+  0%,100%{transform:translate3d(0,1px,0) rotateY(-12deg) rotateZ(-2deg)}
+  50%{transform:translate3d(0,-8px,0) rotateY(12deg) rotateZ(2deg)}
+}
+@keyframes hm-halo-breathe{from{opacity:.62;transform:scale(.91)}to{opacity:1;transform:scale(1.13)}}
+@keyframes hm-orbit-drift{from{rotate:0deg}to{rotate:360deg}}
+@keyframes hm-facet-flare{0%,35%,100%{opacity:.27;scale:.6}50%{opacity:1;scale:1.1}}
+@keyframes hm-dust-drift{
+  0%{transform:translate3d(-5px,10px,0) scale(.7);opacity:.16}
+  100%{transform:translate3d(var(--hm-p-drift,9px),-16px,0) scale(1.25);opacity:var(--hm-p-opacity,.5)}
+}
+
+/* Venom-button inspiration, adapted as champagne silk/light ribbons — the
+   controls keep their original click, keyboard, ripple and localization logic. */
+.hm-silk-button {isolation:isolate;position:relative;overflow:hidden}
+.hm-silk-button > .hm-silk-glint {
+  position:absolute;inset:-2px;pointer-events:none;z-index:2;
+  background:linear-gradient(108deg,transparent 22%,rgba(255,246,227,.0) 36%,rgba(255,245,220,.30) 50%,rgba(255,244,229,.0) 64%,transparent 76%);
+  transform:translateX(-135%) skewX(-11deg);
+  transition:transform .7s cubic-bezier(.2,.78,.21,1);
+  border-radius:inherit;
+}
+.hm-silk-button > .hm-silk-thread {
+  position:absolute;top:-26px;height:27px;width:1.5px;
+  left:var(--hm-thread-left,34%);pointer-events:none;z-index:3;
+  background:linear-gradient(to bottom,transparent,rgba(255,237,201,.78),transparent);
+  border-radius:90% 90% 20% 20%;
+  transform:translate3d(0,0,0) rotate(var(--hm-thread-rotate,-22deg)) scaleY(.2);
+  transform-origin:bottom;
+  opacity:0;
+  transition:transform .55s cubic-bezier(.18,.76,.22,1),opacity .24s ease;
+}
+.hm-silk-button > .hm-silk-thread--2 {
+  --hm-thread-left:69%;--hm-thread-rotate:25deg;
+  transition-delay:35ms;
+}
+.hm-silk-button:where(:hover,:focus-visible) > .hm-silk-glint {transform:translateX(140%) skewX(-11deg)}
+.hm-silk-button:where(:hover,:focus-visible) > .hm-silk-thread {opacity:.75;transform:translate3d(0,-4px,0) rotate(var(--hm-thread-rotate)) scaleY(1)}
+.hm-silk-button:active > .hm-silk-glint {opacity:.82;transform:translateX(30%) skewX(-11deg)}
+.hm-silk-button:focus-visible {outline-offset:4px}
+.invite-luxury .minimal-open.hm-silk-button {overflow:visible}
+.invite-luxury .minimal-open.hm-silk-button > .hm-silk-glint {inset:1px;overflow:hidden;border-radius:1px}
+.invite-luxury .minimal-open.hm-silk-button > .hm-silk-thread {top:-23px}
+@media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) {
+  html.hm-cinematic-enabled #story .story-copy.hm-parallax-paper,
+  html.hm-cinematic-enabled .our-promise-photo-shell.hm-parallax-portrait,
+  html.hm-cinematic-enabled #v3SchedulePhotoWrap.hm-parallax-event {
+    transform:perspective(1100px) rotateX(var(--hm-rx,0deg)) rotateY(var(--hm-ry,0deg));
+    transform-style:preserve-3d;
+    transition:transform .28s cubic-bezier(.2,.7,.22,1),box-shadow .32s ease;
+    backface-visibility:hidden;
+    will-change:auto;
+  }
+  html.hm-cinematic-enabled #story .story-copy.hm-parallax-paper.hm-tilting,
+  html.hm-cinematic-enabled .our-promise-photo-shell.hm-parallax-portrait.hm-tilting,
+  html.hm-cinematic-enabled #v3SchedulePhotoWrap.hm-parallax-event.hm-tilting {
+    will-change:transform;
+    box-shadow:var(--hm-card-shadow,0 28px 68px rgba(58,31,43,.20));
+  }
+  html.hm-cinematic-enabled .gallery-section #homeGallery > .home-photo.hm-parallax-gallery img {
+    transform:scale(1.06) translate3d(var(--hm-shift-x,0px),var(--hm-shift-y,0px),0)!important;
+    transition:transform .34s ease-out!important;
+  }
+  html.hm-cinematic-enabled .gallery-section #homeGallery > .home-photo.hm-parallax-gallery:hover img {
+    transform:scale(1.09) translate3d(var(--hm-shift-x,0px),var(--hm-shift-y,0px),0)!important;
+  }
+  html.hm-cinematic-enabled .gallery-section #homeGallery > .home-photo.hm-parallax-gallery {
+    --hm-spot-x:50%;--hm-spot-y:50%;
+  }
+  html.hm-cinematic-enabled .gallery-section #homeGallery > .home-photo.hm-parallax-gallery .hm-photo-glow {
+    position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:radial-gradient(circle at var(--hm-spot-x) var(--hm-spot-y),rgba(255,238,208,.25),transparent 48%);
+    opacity:0;transition:opacity .3s ease;
+  }
+  html.hm-cinematic-enabled .gallery-section #homeGallery > .home-photo.hm-parallax-gallery:is(:hover,:focus-visible) .hm-photo-glow {opacity:1}
+}
+
+/* No motion requires no animated transformations, and the heart remains a
+   readable, static illustration in screen readers/low-power mode. */
+@media (prefers-reduced-motion:reduce) {
+  .hm-forever-scene * {animation:none!important;transition:none!important}
+  .hm-silk-button > .hm-silk-glint,.hm-silk-button > .hm-silk-thread {display:none!important}
+  .hm-forever-particle {opacity:.24!important}
+  .hm-crystal-heart {transform:none!important}
+  .hm-parallax-paper,.hm-parallax-portrait,.hm-parallax-event {transform:none!important;will-change:auto!important}
+}
+html[data-motion="minimal"] .hm-forever-scene *,
+html[data-motion="minimal"] .hm-silk-button > .hm-silk-glint,
+html[data-motion="minimal"] .hm-silk-button > .hm-silk-thread {animation:none!important;transition:none!important}
+html[data-motion="minimal"] .hm-forever-particles {opacity:.35}
+@media(max-width:760px) {
+  .hm-forever-scene {min-height:348px;padding:43px 18px 46px}
+  .hm-forever-scene::before {inset:11px}
+  .hm-crystal-stage {width:205px;height:178px}
+  .hm-forever-heading {font-size:clamp(28px,7.6vw,40px);line-height:1.18}
+  .hm-forever-eyebrow {font-size:9px;letter-spacing:.25em}
+  .hm-forever-caption{letter-spacing:.28em}
+  .hm-forever-particle:nth-child(n+13){display:none}
+  .hm-silk-button > .hm-silk-thread {display:none}
+}
+@media print {
+  .hm-forever-particles,.hm-crystal-halo,.hm-crystal-orbit,.hm-crystal-flare {display:none!important}
+  .hm-forever-scene {background:#fff;color:#432333;min-height:auto}
+  .hm-forever-heading,.hm-forever-eyebrow,.hm-forever-caption {color:#432333}
+}
