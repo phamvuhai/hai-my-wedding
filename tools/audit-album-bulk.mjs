@@ -2,7 +2,7 @@
 /* Offline browser smoke test. Supabase is mocked; no production data is modified. */
 import assert from 'node:assert/strict';
 import {createServer} from 'node:http';
-import {readFileSync, existsSync} from 'node:fs';
+import {readFileSync, existsSync, statSync} from 'node:fs';
 import {resolve,extname} from 'node:path';
 import {webkit} from 'playwright';
 
@@ -11,8 +11,9 @@ const mime={'.html':'text/html','.js':'application/javascript','.css':'text/css'
 const server=createServer((req,res)=>{
   let path=new URL(req.url,'http://localhost').pathname;
   if(path==='/admin'||path==='/admin/')path='/admin/index.html';
+  if(path==='/')path='/index.html';
   const absolute=resolve(root,'.'+decodeURIComponent(path));
-  if(!absolute.startsWith(root+'/')||!existsSync(absolute)){res.writeHead(404).end();return;}
+  if(!absolute.startsWith(root+'/')||!existsSync(absolute)||!statSync(absolute).isFile()){res.writeHead(404).end();return;}
   res.writeHead(200,{'content-type':mime[extname(absolute)]||'application/octet-stream'});
   res.end(readFileSync(absolute));
 });
