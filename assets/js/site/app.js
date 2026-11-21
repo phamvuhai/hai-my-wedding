@@ -612,19 +612,84 @@ function renderLightbox() {
   const title = document.getElementById('photoLightboxTitle');
   const caption = document.getElementById('photoLightboxCaption');
   const counter = document.getElementById('photoLightboxCounter');
+  const prev = document.getElementById('photoLightboxPrev');
+  const next = document.getElementById('photoLightboxNext');
+  const status = document.getElementById('photoLightboxLoading');
+  const retry = document.getElementById('photoLightboxRetry');
   if (!image) return;
-
-  if (window.WeddingAdaptiveImages && galleryClient()) {
-    window.WeddingAdaptiveImages.apply(image,galleryClient(),img,{role:'lightbox',sizes:'100vw',loading:'eager',priority:'high'});
-  } else {
-    image.src = galleryPublicUrl(img,'lightbox');
-  }
+  const index=galleryState.activeIndex;
+  const total=galleryState.activeImages.length;
+  if (prev) {prev.disabled=index<=0;prev.setAttribute('aria-disabled',String(index<=0));}
+  if (next) {next.disabled=index>=total-1;next.setAttribute('aria-disabled',String(index>=total-1));}
   image.alt = loc.alt;
   title.textContent = loc.title;
   caption.textContent = loc.caption;
-  counter.textContent = `${galleryState.activeIndex + 1} / ${galleryState.activeImages.length}`;
-  document.dispatchEvent(new CustomEvent('wedding:gallery-photo-change', {
-    detail: {index: galleryState.activeIndex, total: galleryState.activeImages.length}
+  counter.textContent = `${index + 1} / ${total}`;
+
+  // Language changes update captions without restarting the network request.
+  if (image.dataset.photoId!==String(img.id) || !image.getAttribute('src')) {
+    const ticket=(galleryState.hdTicket||0)+1;
+    galleryState.hdTicket=ticket;
+    if (galleryState.pendingHD) {
+      galleryState.pendingHD.onload=null;
+      galleryState.pendingHD.onerror=null;
+      galleryState.pendingHD.src='';
+      galleryState.pendingHD=null;
+    }
+    image.dataset.photoId=String(img.id);
+    image.removeAttribute('srcset');
+    image.removeAttribute('sizes');
+    image.decoding='async';
+    image.fetchPriority='high';
+    image.loading='eager';
+    const client=galleryClient();
+    const adaptive=window.WeddingAdaptiveImages;
+    const full=adaptive&&client?adaptive.fullUrl(client,img):galleryPublicUrl(img,'lightbox');
+    const preview=adaptive&&client?adaptive.previewUrl(client,img):full;
+    image.src=preview || full;
+    const isCurrent=()=>galleryState.lightboxOpen && galleryState.hdTicket===ticket &&
+      image.dataset.photoId===String(img.id);
+    const language=()=>window.WeddingI18n?.language||'vi';
+    const hdLabel=()=>language()==='ja'?'高画質を読み込み中…':
+      language()==='en'?'Loading full-resolution photo…':'Đang tải ảnh Full HD…';
+    if (status) status.textContent=preview&&preview!==full?hdLabel():'';
+    if (retry) retry.hidden=true;
+    image.classList.toggle('is-hd-pending',Boolean(preview&&preview!==full));
+    const loadFull=()=>{
+      if (!full || !isCurrent())return;
+      const hd=new Image();
+      galleryState.pendingHD=hd;
+      hd.decoding='async';hd.fetchPriority='high';
+      hd.onload=()=>{
+        if(!isCurrent())return;
+        image.src=full; // Already downloaded and decoded by the browser.
+        image.classList.remove('is-hd-pending');
+        if(status)status.textContent='';
+        if(retry)retry.hidden=true;
+        galleryState.pendingHD=null;
+      };
+      hd.onerror=()=>{
+        if(!isCurrent())return;
+        image.classList.remove('is-hd-pending');
+        if(status)status.textContent=language()==='ja'?'高画質を読み込めませんでした':
+          language()==='en'?'Could not load full-resolution photo':'Không tải được ảnh Full HD';
+        if(retry)retry.hidden=false;
+        galleryState.pendingHD=null;
+      };
+      hd.src=full;
+    };
+    if(preview&&preview!==full)loadFull();
+    else{
+      image.classList.remove('is-hd-pending');
+      if(status)status.textContent='';
+    }
+    if(retry)retry.onclick=loadFull;
+  } else if (status && image.classList.contains('is-hd-pending')) {
+    status.textContent=(window.WeddingI18n?.language==='en'?'Loading full-resolution photo…':
+      window.WeddingI18n?.language==='ja'?'高画質を読み込み中…':'Đang tải ảnh Full HD…');
+  }
+  document.dispatchEvent(new CustomEvent('wedding:gallery-photo-change',{
+    detail:{index:galleryState.activeIndex,total:galleryState.activeImages.length}
   }));
 }
 
@@ -658,6 +723,15 @@ function hidePhoto() {
   if (!lightbox || !galleryState.lightboxOpen) return;
   galleryState.lightboxOpen = false;
   galleryState.photoPushed = false;
+  galleryState.hdTicket=(galleryState.hdTicket||0)+1;
+  if (galleryState.pendingHD) {
+    galleryState.pendingHD.onload=null;
+    galleryState.pendingHD.onerror=null;
+    galleryState.pendingHD.src='';
+    galleryState.pendingHD=null;
+  }
+  const photo=document.getElementById('photoLightboxImage');
+  if(photo){photo.removeAttribute('src');delete photo.dataset.photoId;photo.classList.remove('is-hd-pending');}
   lightbox.classList.remove('is-open');
   lightbox.setAttribute('aria-hidden','true');
   document.body.classList.remove('photo-lightbox-open');
@@ -665,7 +739,10 @@ function hidePhoto() {
 
 function movePhoto(delta) {
   if (!galleryState.lightboxOpen || !galleryState.activeImages.length) return;
-  galleryState.activeIndex = (galleryState.activeIndex + delta + galleryState.activeImages.length) % galleryState.activeImages.length;
+  // Stop at both ends: photo 1 cannot wrap to the last photo.
+  const target=galleryState.activeIndex+delta;
+  if (target<0 || target>=galleryState.activeImages.length) return;
+  galleryState.activeIndex = target;
   renderLightbox();
   const img = galleryState.activeImages[galleryState.activeIndex];
   history.replaceState({weddingOverlay:'photo', photoId:img.id}, '', photoRoute(img.id));
