@@ -14,9 +14,9 @@ const defaults={enabled:true,visibility:'public',
  bride:{enabled:false,bank:'',holder:'NGUYEN THI MY',account:'',qrPath:''}};
 let config=structuredClone(defaults),currentLang='vi';
 const dict={
- vi:{eyebrow:'WITH LOVE & GRATITUDE',title:'Thông tin mừng cưới',lead:'Sự hiện diện và những lời chúc của bạn là món quà quý giá nhất với chúng mình. Nếu muốn gửi thêm chút yêu thương từ xa, bạn có thể tham khảo thông tin dưới đây.',groom:'NHÀ TRAI',bride:'NHÀ GÁI',bank:'Ngân hàng',holder:'Chủ tài khoản',account:'Số tài khoản',copy:'Sao chép số tài khoản',copied:'Đã sao chép!',missing:'Thông tin đang được cập nhật',scan:'Quét mã VietQR để chuyển khoản',footer:'Cảm ơn bạn vì những tình cảm dành cho Hải & Mỹ ♡',unavailable:'QR chưa được cung cấp'},
- en:{eyebrow:'WITH LOVE & GRATITUDE',title:'Wedding Gift Information',lead:'Your presence and warm wishes mean more to us than any gift. If you would like to send a little love from afar, you can find our bank details below.',groom:'GROOM',bride:'BRIDE',bank:'Bank',holder:'Account holder',account:'Account number',copy:'Copy account number',copied:'Copied!',missing:'Details coming soon',scan:'Scan this VietQR to transfer',footer:'Thank you for your love and kind wishes ♡',unavailable:'QR not available'},
- ja:{eyebrow:'感謝を込めて',title:'お祝いのご案内',lead:'皆さまのご出席と温かいお祝いのお言葉が、私たちにとって何よりの贈り物です。遠方からお気持ちをお寄せいただく場合は、以下の口座情報をご参照ください。',groom:'新郎',bride:'新婦',bank:'銀行名',holder:'口座名義',account:'口座番号',copy:'口座番号をコピー',copied:'コピーしました',missing:'口座情報は準備中です',scan:'VietQR を読み取ってお振り込みください',footer:'温かいお心遣いに感謝いたします ♡',unavailable:'QRコードは準備中です'}
+ vi:{eyebrow:'WITH LOVE & GRATITUDE',title:'Thông tin mừng cưới',lead:'Sự hiện diện của bạn là món quà quý nhất. Nếu muốn gửi lời chúc từ xa, bạn có thể dùng thông tin dưới đây.',groom:'NHÀ TRAI',bride:'NHÀ GÁI',bank:'Ngân hàng',holder:'Chủ tài khoản',account:'Số tài khoản',copy:'Sao chép số tài khoản',copied:'Đã sao chép!',missing:'Thông tin đang được cập nhật',scan:'Quét mã VietQR để chuyển khoản',footer:'Cảm ơn bạn ♡',unavailable:'QR chưa được cung cấp',zoom:'Phóng to mã QR',close:'Đóng'},
+ en:{eyebrow:'WITH LOVE & GRATITUDE',title:'Wedding Gift Information',lead:'Your presence means the world. If you wish to send love from afar, here are our details.',groom:'GROOM',bride:'BRIDE',bank:'Bank',holder:'Account holder',account:'Account number',copy:'Copy account number',copied:'Copied!',missing:'Details coming soon',scan:'Scan this VietQR to transfer',footer:'With love and thanks ♡',unavailable:'QR not available',zoom:'Enlarge QR code',close:'Close'},
+ ja:{eyebrow:'感謝を込めて',title:'お祝いのご案内',lead:'皆さまのご出席が何よりの贈り物です。遠方からのお祝いは、こちらをご利用ください。',groom:'新郎',bride:'新婦',bank:'銀行名',holder:'口座名義',account:'口座番号',copy:'口座番号をコピー',copied:'コピーしました',missing:'口座情報は準備中です',scan:'VietQR を読み取ってお振り込みください',footer:'心から感謝いたします ♡',unavailable:'QRコードは準備中です',zoom:'QRコードを拡大',close:'閉じる'}
 };
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 function lang(){
@@ -68,7 +68,9 @@ function card(side,id,t){
  if(!valid)return '<article class="wedding-gift-card wedding-gift-unavailable" data-gift-side="'+id+'"><div class="wedding-gift-card-top"><span class="wedding-gift-role">'+name+'</span><span class="wedding-gift-icon" aria-hidden="true">♡</span></div><span class="wedding-gift-person">'+(id==='groom'?'Hải':'Mỹ')+'</span><div class="wedding-gift-pending"><span aria-hidden="true">✧</span><p>'+t.missing+'</p></div></article>';
  const qr=qrSource(side);
  return '<article class="wedding-gift-card" data-gift-side="'+id+'"><div class="wedding-gift-card-top"><span class="wedding-gift-role">'+name+'</span><span class="wedding-gift-icon" aria-hidden="true">♡</span></div><span class="wedding-gift-person">'+(id==='groom'?'Hải':'Mỹ')+'</span>'+
- '<div class="wedding-gift-qr">'+(qr?'<img src="'+escapeHtml(qr)+'" loading="lazy" decoding="async" alt="'+escapeHtml(t.scan)+'">':'<span class="wedding-gift-no-qr">'+t.unavailable+'</span>')+'</div>'+
+ (qr
+   ?'<button type="button" class="wedding-gift-qr" data-gift-zoom="'+id+'" title="'+escapeHtml(t.zoom)+'" aria-label="'+escapeHtml(t.zoom)+'"><img src="'+escapeHtml(qr)+'" loading="lazy" decoding="async" alt="'+escapeHtml(t.scan)+'"></button>'
+   :'<div class="wedding-gift-qr" aria-label="'+escapeHtml(t.unavailable)+'"><span class="wedding-gift-no-qr">'+escapeHtml(t.unavailable)+'</span></div>')+
  '<p class="wedding-gift-bank">'+escapeHtml(side.bank)+'</p>'+
  '<div class="wedding-gift-fields"><div><span>'+t.holder+'</span><strong>'+escapeHtml(side.holder)+'</strong></div><div><span>'+t.account+'</span><strong class="wedding-gift-number">'+escapeHtml(side.account)+'</strong></div></div>'+
  '<button type="button" class="wedding-gift-copy" data-gift-copy="'+id+'"><span aria-hidden="true">⧉</span> '+t.copy+'</button></article>';
@@ -81,7 +83,41 @@ function render(){
  '<div class="wedding-gift-grid">'+card(config.groom,'groom',t)+card(config.bride,'bride',t)+'</div>'+
  '<p class="wedding-gift-footer">'+t.footer+'</p></div>';
 }
+// Reuse the exact QR URL already rendered; a small visible QR remains readable
+// when tapped and expanded to a large, high-contrast dialog.
+function getQrDialog(){
+ let dialog=document.getElementById('weddingQrDialog');
+ if(dialog)return dialog;
+ dialog=document.createElement('dialog');
+ dialog.id='weddingQrDialog';
+ dialog.className='wedding-qr-dialog';
+ dialog.setAttribute('aria-labelledby','weddingQrHeading');
+ dialog.innerHTML='<h3 id="weddingQrHeading"></h3><img id="weddingQrExpanded" alt=""><p id="weddingQrHint"></p><button type="button" class="wedding-qr-close" id="weddingQrClose">Đóng</button>';
+ document.body.appendChild(dialog);
+ dialog.querySelector('#weddingQrClose').addEventListener('click',()=>dialog.close());
+ dialog.addEventListener('click',event=>{
+   if(event.target===dialog)dialog.close();
+ });
+ return dialog;
+}
 root.addEventListener('click',async event=>{
+ const qrButton=event.target.closest('[data-gift-zoom]');
+ if(qrButton && root.contains(qrButton)){
+   const img=qrButton.querySelector('img');
+   if(!img?.getAttribute('src'))return;
+   const t=dict[lang()];
+   const dialog=getQrDialog();
+   dialog.querySelector('#weddingQrHeading').textContent=
+     qrButton.dataset.giftZoom==='groom'?t.groom:t.bride;
+   const expanded=dialog.querySelector('#weddingQrExpanded');
+   expanded.src=img.src;
+   expanded.alt=t.scan;
+   dialog.querySelector('#weddingQrHint').textContent=t.scan;
+   dialog.querySelector('#weddingQrClose').textContent=t.close;
+   if(!dialog.open)dialog.showModal();
+   dialog.querySelector('#weddingQrClose').focus({preventScroll:true});
+   return;
+ }
  const btn=event.target.closest('[data-gift-copy]');if(!btn)return;
  const side=config[btn.dataset.giftCopy];if(!side?.account)return;
  try{

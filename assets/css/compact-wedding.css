@@ -1,0 +1,592 @@
+/* V24 — Compact Luxury Invitation.
+ * One scoped final design layer: preserve the photo-first Hero, essential event
+ * details, RSVP validation, all animations, and personalized invitation data.
+ * Shorter copy lives in i18n.js (VI/EN/JA); this file changes presentation only.
+ */
+:root {
+  --v24-ink:#473239;
+  --v24-rose:#956b72;
+  --v24-soft:#faf4ee;
+  --v24-gold:#c29b7c;
+  --v24-gap:clamp(34px,5vw,74px);
+}
+
+/* Give the couple a cinematic first impression, but remove excess dead space. */
+.hero.hero-v5 .hero-note {
+  max-width:42ch!important;
+  font-size:clamp(13px,1.25vw,16px)!important;
+  line-height:1.65!important;
+}
+.hero.hero-v5 .hero-copy>.btn.btn-primary {
+  margin-top:clamp(14px,2vw,23px)!important;
+}
+.motion-marquee.hero-marquee {min-height:0}
+
+/* Story: one readable, editorial paragraph instead of a long letter. */
+#story.editorial-story.section {
+  min-height:0!important;
+  height:auto!important;
+  padding:clamp(39px,5vw,70px) 0 clamp(42px,5.7vw,76px)!important;
+}
+#story .story-grid {
+  max-width:1080px!important;
+  gap:clamp(18px,3vw,44px)!important;
+}
+#story .story-paper-stack {margin-block:0!important}
+#story .story-paper-stack .story-copy {max-width:750px!important}
+#story .story-paper-stack .story-copy h2 {
+  font-size:clamp(31px,4.4vw,53px)!important;
+  line-height:1.13!important;
+  margin-bottom:clamp(12px,1.6vw,20px)!important;
+  text-wrap:balance;
+}
+#story .story-paper-stack .story-copy p {
+  font-size:clamp(14px,1.15vw,16px)!important;
+  line-height:1.7!important;
+}
+
+/* Countdown is a compact strip, not another full-screen chapter.
+ * The separate date stamp repeats the hero dates, so it is only hidden visually. */
+section.countdown-section.countdown-compact.countdown-v15 {
+  min-height:0!important;
+  padding:clamp(25px,3.8vw,49px) 0!important;
+}
+section.countdown-section.countdown-compact.countdown-v15 .countdown-layout {
+  width:min(1080px,calc(100% - 42px))!important;
+  max-width:1080px!important;
+  min-height:0!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(340px,1.25fr)!important;
+  grid-template-areas:"heading timer"!important;
+  align-items:center!important;
+  gap:clamp(18px,3.4vw,46px)!important;
+}
+section.countdown-section.countdown-compact.countdown-v15 .countdown-heading {
+  grid-area:heading!important;
+  text-align:left!important;
+  margin:0!important;
+}
+section.countdown-section.countdown-compact.countdown-v15 .countdown-heading .eyebrow {
+  justify-content:flex-start!important;
+  margin-bottom:8px!important;
+}
+section.countdown-section.countdown-compact.countdown-v15 .countdown-heading h2 {
+  font-size:clamp(23px,2.8vw,39px)!important;
+  line-height:1.14!important;
+  margin:0!important;
+}
+section.countdown-section.countdown-compact.countdown-v15 .countdown-heading-flourish,
+section.countdown-section.countdown-compact.countdown-v15 .countdown-date-stamp {
+  display:none!important;
+}
+section.countdown-section.countdown-compact.countdown-v15 .countdown {
+  grid-area:timer!important;
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  width:100%!important;
+  min-height:0!important;
+  padding:0!important;
+  border-radius:14px!important;
+}
+section.countdown-section.countdown-compact.countdown-v15 .countdown>div {
+  min-height:86px!important;
+  height:auto!important;
+  padding:12px 4px!important;
+}
+section.countdown-section.countdown-compact.countdown-v15 .countdown strong {
+  font-size:clamp(29px,3.7vw,49px)!important;
+  line-height:1!important;
+}
+section.countdown-section.countdown-compact.countdown-v15 .countdown strong::after {
+  margin:6px auto 5px!important;
+}
+section.countdown-section.countdown-compact.countdown-v15 .countdown span {
+  font-size:10px!important;
+  letter-spacing:.08em!important;
+}
+
+/* Schedule keeps every venue, time and map link readable. */
+#events.v3-events.section {
+  min-height:0!important;
+  padding:clamp(42px,5.4vw,72px) 0 clamp(38px,5.1vw,68px)!important;
+}
+#events .v3-section-heading {margin-bottom:clamp(14px,2.3vw,27px)!important}
+#events .v3-section-heading h2 {
+  font-size:clamp(35px,4.7vw,56px)!important;
+  line-height:1.15!important;
+  margin-bottom:9px!important;
+}
+#events .v3-section-heading p {
+  max-width:52ch!important;
+  font-size:clamp(13px,1.05vw,15px)!important;
+  line-height:1.6!important;
+}
+#events .v3-schedule-photo {
+  width:min(100%,960px)!important;
+  max-width:960px!important;
+  max-height:440px!important;
+  aspect-ratio:16/8.8!important;
+  margin:0 auto clamp(14px,2vw,27px)!important;
+  border-radius:12px!important;
+}
+#events .v3-schedule-intro {display:none!important}
+#events .v3-event-switch {
+  margin:0 auto clamp(13px,2vw,24px)!important;
+  gap:9px!important;
+}
+#events .v3-event-switch button {
+  min-height:44px!important;
+  padding:9px 16px!important;
+}
+#events .v3-event-panel {
+  border-radius:13px!important;
+  overflow:hidden;
+}
+#events .v3-event-panel .v3-day-head {
+  padding:clamp(14px,2.3vw,24px)!important;
+}
+#events .v3-event-panel .v3-date {
+  margin:6px auto!important;
+}
+#events .v3-event-panel .v3-day-items {
+  padding:6px clamp(11px,1.8vw,19px) 12px!important;
+}
+#events .v3-event-panel .v3-event-item {
+  padding-block:clamp(11px,1.6vw,17px)!important;
+}
+#events .v3-arrival-note {
+  margin:clamp(14px,2vw,23px) auto 0!important;
+  font-size:12px!important;
+  line-height:1.55!important;
+}
+
+/* Promise: keep the expressive portrait but present a short letter. */
+#forever.our-promise {
+  padding:clamp(38px,5.2vw,67px) 0!important;
+}
+#forever .our-promise-layout {
+  width:min(1100px,calc(100% - 48px))!important;
+  gap:clamp(23px,4vw,54px)!important;
+}
+#forever .our-promise-photo-shell {
+  max-height:clamp(295px,37vw,470px)!important;
+}
+#forever .our-promise-letter {
+  padding-block:0!important;
+}
+#forever .our-promise-letter h2 {
+  font-size:clamp(34px,4.4vw,54px)!important;
+  line-height:1.14!important;
+  margin-bottom:14px!important;
+}
+#forever .our-promise-letter p:not(.our-promise-kicker):not(.our-promise-signature) {
+  font-size:clamp(14px,1.15vw,16px)!important;
+  line-height:1.7!important;
+  margin-bottom:10px!important;
+}
+
+/* The new V23 animation stays the wow moment; the stage is tighter. */
+#weddingMagic.hm-forever-scene {
+  min-height:315px!important;
+  padding:34px 18px 37px!important;
+}
+#weddingMagic .hm-crystal-stage {
+  width:clamp(165px,21vw,214px)!important;
+  height:clamp(154px,19vw,197px)!important;
+}
+#weddingMagic .hm-forever-heading {
+  font-size:clamp(29px,3.8vw,43px)!important;
+  margin-top:0!important;
+}
+#weddingMagic .hm-forever-caption {margin-top:8px!important}
+
+/* The photography gets visual weight; repeated decorative headings do not. */
+.gallery-section.section {
+  padding:clamp(43px,5.7vw,77px) 0 clamp(46px,5.9vw,80px)!important;
+}
+.gallery-section .gallery-editorial-head {
+  gap:12px!important;
+  margin-bottom:clamp(18px,2.8vw,31px)!important;
+}
+.gallery-section .gallery-display {font-size:clamp(10px,1.3vw,14px)!important}
+.gallery-section .section-heading h2 {
+  font-size:clamp(34px,4.8vw,53px)!important;
+  line-height:1.12!important;
+  margin-bottom:10px!important;
+}
+.gallery-section .section-heading p:not(.eyebrow) {
+  font-size:clamp(13px,1.1vw,15px)!important;
+  line-height:1.65!important;
+  max-width:47ch!important;
+}
+.gallery-section .gallery-cta {margin-top:clamp(16px,2vw,25px)!important}
+
+/* RSVP: keep all existing fields/validation accessible, reduce paper and gaps. */
+#rsvp.rsvp-section.section {padding:clamp(44px,5.5vw,78px) 0!important}
+#rsvp .rsvp-wrap {
+  width:min(1120px,calc(100% - 48px))!important;
+  max-width:1120px!important;
+  gap:clamp(24px,4vw,58px)!important;
+}
+#rsvp .rsvp-copy h2 {
+  font-size:clamp(35px,4.6vw,56px)!important;
+  line-height:1.14!important;
+}
+#rsvp .rsvp-copy>p:not(.eyebrow) {
+  font-size:clamp(13px,1.1vw,15px)!important;
+  line-height:1.65!important;
+}
+#rsvp .rsvp-form {
+  padding:clamp(20px,2.9vw,32px)!important;
+  border-radius:14px!important;
+  box-shadow:0 14px 38px rgba(76,51,41,.07)!important;
+  gap:clamp(10px,1.3vw,16px)!important;
+}
+#rsvp .rsvp-form label,
+#rsvp .rsvp-form .field-group {margin-bottom:0!important}
+#rsvp .rsvp-form input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]),
+#rsvp .rsvp-form select {
+  min-height:44px!important;
+  padding:10px 13px!important;
+}
+/* Restore circular RSVP radios; 44px applies to text/select fields only. */
+#rsvp .rsvp-form .radio-row input[type="radio"] {
+  min-height:0!important;
+  width:20px!important;
+  height:20px!important;
+  padding:0!important;
+  flex:0 0 20px!important;
+}
+#rsvp .rsvp-form textarea {
+  min-height:78px!important;
+  padding:10px 13px!important;
+}
+
+/* Small two-up wedding gift cards on every device, even when a side is pending.
+   QR expands in a modal for scanning; never downsample the actual QR image. */
+#weddingGifts.wedding-gifts {
+  padding:clamp(42px,5vw,68px) clamp(12px,2.5vw,26px) clamp(46px,5.5vw,72px)!important;
+}
+#weddingGifts .wedding-gift-inner {max-width:930px!important}
+#weddingGifts .wedding-gift-heading {
+  margin-bottom:clamp(18px,2.6vw,30px)!important;
+  max-width:650px!important;
+}
+#weddingGifts .wedding-gift-eyebrow {
+  font-size:10px!important;
+  margin-bottom:7px!important;
+}
+#weddingGifts .wedding-gift-heading h2 {
+  font-size:clamp(33px,4.7vw,49px)!important;
+  line-height:1.14!important;
+  margin-bottom:7px!important;
+}
+#weddingGifts .wedding-gift-heading p {
+  font-size:clamp(12px,1.05vw,14px)!important;
+  line-height:1.6!important;
+}
+#weddingGifts .wedding-gift-grid {
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  width:100%!important;
+  max-width:930px!important;
+  gap:clamp(11px,2.1vw,24px)!important;
+  margin:0 auto!important;
+  align-items:stretch!important;
+}
+#weddingGifts .wedding-gift-card {
+  padding:clamp(15px,2.1vw,23px)!important;
+  gap:0!important;
+  border-radius:15px!important;
+  box-shadow:0 9px 23px rgba(80,49,48,.06)!important;
+}
+#weddingGifts .wedding-gift-card::before {inset:5px!important;border-radius:12px!important}
+#weddingGifts .wedding-gift-card-top {margin-bottom:1px!important}
+#weddingGifts .wedding-gift-role {font-size:10px!important;letter-spacing:.11em!important}
+#weddingGifts .wedding-gift-icon {font-size:19px!important}
+#weddingGifts .wedding-gift-person {
+  font-size:clamp(27px,3.2vw,38px)!important;
+  margin:0 0 10px!important;
+}
+#weddingGifts .wedding-gift-qr {
+  display:grid!important;
+  place-items:center!important;
+  width:clamp(120px,16vw,166px)!important;
+  height:auto!important;
+  max-width:100%!important;
+  aspect-ratio:1!important;
+  padding:6px!important;
+  margin:0 auto!important;
+  border:1px solid #e7d8d0!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  cursor:zoom-in;
+  appearance:none;
+  -webkit-appearance:none;
+}
+#weddingGifts .wedding-gift-qr img {display:block!important;width:100%!important;height:100%!important;object-fit:contain!important}
+#weddingGifts .wedding-gift-qr:focus-visible {outline:3px solid #a77987!important;outline-offset:4px!important}
+#weddingGifts .wedding-gift-bank {
+  font-size:clamp(13px,1.6vw,18px)!important;
+  margin:10px 0 4px!important;
+}
+#weddingGifts .wedding-gift-fields {
+  display:grid!important;
+  gap:6px!important;
+  width:100%!important;
+}
+#weddingGifts .wedding-gift-fields>div {gap:2px!important}
+#weddingGifts .wedding-gift-fields>div span {font-size:9px!important;letter-spacing:.04em!important}
+#weddingGifts .wedding-gift-fields>div strong {font-size:clamp(11px,1.1vw,14px)!important;line-height:1.35!important}
+#weddingGifts .wedding-gift-fields .wedding-gift-number {
+  font-size:clamp(14px,2vw,21px)!important;
+  letter-spacing:.02em!important;
+}
+#weddingGifts .wedding-gift-copy {
+  min-height:39px!important;
+  padding:8px 13px!important;
+  margin-top:13px!important;
+  border-radius:24px!important;
+  font-size:11px!important;
+  max-width:100%!important;
+}
+#weddingGifts .wedding-gift-pending {
+  min-height:138px!important;
+  gap:5px!important;
+  padding:13px!important;
+}
+#weddingGifts .wedding-gift-pending>span {font-size:24px!important}
+#weddingGifts .wedding-gift-pending p {font-size:12px!important}
+#weddingGifts .wedding-gift-footer {margin-top:18px!important;font-size:12px!important}
+
+/* Large QR modal: high resolution, large quiet zone, safe areas, and keyboard/ESC. */
+.wedding-qr-dialog {
+  box-sizing:border-box;
+  border:0;
+  border-radius:18px;
+  width:min(92vw,400px);
+  max-height:calc(100dvh - 40px);
+  padding:clamp(18px,4vw,28px);
+  background:#fffdf9;
+  color:#533a43;
+  box-shadow:0 26px 86px rgba(25,15,18,.27);
+  text-align:center;
+}
+.wedding-qr-dialog::backdrop {background:rgba(27,18,23,.73);backdrop-filter:blur(4px)}
+.wedding-qr-dialog h3 {font:600 28px/1.1 "Cormorant Garamond",Georgia,serif;margin:0 0 11px}
+.wedding-qr-dialog img {
+  width:min(74vw,300px);
+  height:auto;
+  aspect-ratio:1;
+  object-fit:contain;
+  display:block;
+  margin:auto;
+  padding:10px;
+  border:1px solid #e7d8d0;
+  border-radius:10px;
+  background:#fff;
+}
+.wedding-qr-dialog p {font:400 13px/1.5 "Lora",Georgia,serif;margin:12px 0}
+.wedding-qr-close {
+  min-height:44px;
+  border-radius:24px;
+  background:#76515b;
+  color:#fff;
+  padding:9px 26px;
+  border:0;
+  font:600 13px/1.4 system-ui,sans-serif;
+  cursor:pointer;
+}
+
+footer.footer {padding:clamp(34px,5vw,64px) 18px max(50px,env(safe-area-inset-bottom))!important}
+footer.footer .footer-names {font-size:clamp(30px,4.2vw,48px)!important}
+footer.footer p[data-i18n="footer.thanks"] {
+  max-width:50ch!important;
+  margin:12px auto!important;
+  font-size:clamp(12px,1.1vw,14px)!important;
+  line-height:1.6!important;
+}
+
+/* Tablet: two-up card layout remains, while the rest flows naturally. */
+@media(min-width:681px) and (max-width:1099px) {
+  section.countdown-section.countdown-compact.countdown-v15 .countdown-layout {
+    grid-template-columns:minmax(0,1fr) minmax(0,1.25fr)!important;
+  }
+  #events .v3-schedule-photo {max-height:340px!important}
+  #forever .our-promise-photo-shell {max-height:400px!important}
+  #rsvp .rsvp-wrap {gap:24px!important}
+}
+
+/* Phones: one compact chapter at a time, with large enough type and tap areas. */
+@media(max-width:767px) {
+  .hero.hero-v5 {
+    min-height:92svh!important;
+  }
+  .hero.hero-v5 .hero-content {
+    min-height:max(590px,92svh)!important;
+    padding:clamp(64px,10vh,100px) 8px 44px!important;
+  }
+  .hero.hero-v5 .hero-note {font-size:13px!important;max-width:35ch!important;line-height:1.55!important}
+  .motion-marquee.hero-marquee {min-height:27px!important}
+  #story.editorial-story.section {padding:35px 0 40px!important}
+  #story .story-grid {width:calc(100% - 28px)!important;gap:8px!important}
+  #story .story-side {margin-bottom:10px!important}
+  #story .story-paper-stack {padding:6px!important;margin:4px auto 0!important}
+  #story .story-paper-stack .story-copy {padding:18px 16px 20px!important}
+  #story .story-paper-stack .story-copy h2 {font-size:clamp(30px,7.5vw,38px)!important}
+  #story .story-paper-stack .story-copy p {font-size:14px!important;line-height:1.63!important}
+  section.countdown-section.countdown-compact.countdown-v15 {padding:23px 0!important}
+  section.countdown-section.countdown-compact.countdown-v15 .countdown-layout {
+    width:calc(100% - 26px)!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-areas:"heading" "timer"!important;
+    gap:14px!important;
+  }
+  section.countdown-section.countdown-compact.countdown-v15 .countdown-heading{text-align:center!important}
+  section.countdown-section.countdown-compact.countdown-v15 .countdown-heading .eyebrow {
+    justify-content:center!important;
+    margin:0 auto 4px!important;
+  }
+  section.countdown-section.countdown-compact.countdown-v15 .countdown-heading h2 {
+    font-size:clamp(25px,6.4vw,31px)!important;
+  }
+  section.countdown-section.countdown-compact.countdown-v15 .countdown>div {
+    min-height:67px!important;
+    padding:9px 2px!important;
+  }
+  section.countdown-section.countdown-compact.countdown-v15 .countdown strong {
+    font-size:clamp(26px,7vw,36px)!important;
+  }
+  section.countdown-section.countdown-compact.countdown-v15 .countdown span {font-size:9px!important}
+  #events.v3-events.section {padding:39px 0 45px!important}
+  #events .v3-section-heading {margin-bottom:14px!important}
+  #events .v3-section-heading h2 {font-size:clamp(31px,8vw,41px)!important}
+  #events .v3-section-heading p {font-size:13px!important}
+  #events .v3-schedule-photo {
+    aspect-ratio:16/10!important;
+    max-height:260px!important;
+    margin-bottom:13px!important;
+    border-radius:11px!important;
+  }
+  #events .v3-event-switch button {min-height:44px!important;padding:8px!important}
+  #events .v3-event-panel .v3-day-head {padding:14px 13px!important}
+  #events .v3-event-panel .v3-date {margin:3px auto!important}
+  #events .v3-event-panel .v3-day-items {padding:2px 10px 10px!important}
+  #events .v3-event-panel .v3-event-item {padding-block:10px!important}
+  #events .v3-arrival-note {font-size:11.5px!important}
+  #forever.our-promise {padding:39px 0 42px!important}
+  #forever .our-promise-layout {
+    width:calc(100% - 28px)!important;
+    max-width:540px!important;
+    gap:17px!important;
+  }
+  #forever .our-promise-photo-shell {
+    aspect-ratio:5/4!important;
+    height:auto!important;
+    max-height:290px!important;
+    border-radius:110px 110px 11px 11px!important;
+  }
+  #forever .our-promise-photo {object-fit:cover!important}
+  #forever .our-promise-letter {padding:0 8px!important}
+  #forever .our-promise-letter h2 {font-size:clamp(32px,8vw,40px)!important;margin-bottom:8px!important}
+  #forever .our-promise-letter p:not(.our-promise-kicker):not(.our-promise-signature) {font-size:14px!important;line-height:1.6!important}
+  #weddingMagic.hm-forever-scene {min-height:265px!important;padding:27px 14px 30px!important}
+  #weddingMagic .hm-crystal-stage {
+    width:155px!important;
+    height:146px!important;
+  }
+  #weddingMagic .hm-forever-heading {font-size:clamp(27px,7vw,35px)!important}
+  .gallery-section.section {padding:40px 0 45px!important}
+  .gallery-section .gallery-editorial-head {gap:8px!important;margin-bottom:18px!important}
+  .gallery-section .gallery-editorial-head .section-heading h2 {font-size:clamp(30px,7.6vw,39px)!important}
+  /* Keep the original motion/test target visible, as a discreet eyebrow. */
+  .gallery-section .gallery-display {
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    flex-wrap:nowrap!important;
+    gap:7px!important;
+    font-size:10px!important;
+    letter-spacing:.16em!important;
+    margin:0 auto 3px!important;
+    max-width:100%!important;
+    overflow:visible!important;
+  }
+  .gallery-section .section-heading p:not(.eyebrow) {font-size:13px!important}
+  .gallery-section .gallery-cta {margin-top:16px!important}
+  #rsvp.rsvp-section.section {padding:43px 0!important}
+  #rsvp .rsvp-wrap {
+    width:calc(100% - 26px)!important;
+    gap:17px!important;
+  }
+  #rsvp .rsvp-display {display:none!important}
+  #rsvp .rsvp-copy h2 {font-size:clamp(32px,7.9vw,42px)!important}
+  #rsvp .rsvp-copy>p:not(.eyebrow) {font-size:13px!important}
+  #rsvp .rsvp-form {padding:17px 16px 20px!important;gap:12px!important}
+  #weddingGifts.wedding-gifts {padding:42px 10px 49px!important}
+  #weddingGifts .wedding-gift-heading {margin-bottom:15px!important}
+  #weddingGifts .wedding-gift-heading h2 {font-size:clamp(29px,7.2vw,37px)!important}
+  #weddingGifts .wedding-gift-heading p {font-size:12px!important}
+  #weddingGifts .wedding-gift-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    max-width:none!important;
+    gap:9px!important;
+  }
+  #weddingGifts .wedding-gift-card {
+    padding:12px 8px 13px!important;
+    border-radius:12px!important;
+  }
+  #weddingGifts .wedding-gift-card-top {gap:1px!important}
+  #weddingGifts .wedding-gift-role {font-size:9px!important;letter-spacing:.02em!important}
+  #weddingGifts .wedding-gift-person {
+    font-size:clamp(24px,6vw,31px)!important;
+    margin:1px 0 7px!important;
+  }
+  #weddingGifts .wedding-gift-qr {
+    width:clamp(93px,28vw,126px)!important;
+    padding:5px!important;
+  }
+  #weddingGifts .wedding-gift-bank {font-size:13px!important;margin:7px 0 5px!important}
+  #weddingGifts .wedding-gift-fields>div span {font-size:8.5px!important}
+  #weddingGifts .wedding-gift-fields>div strong {
+    font-size:11px!important;
+    line-height:1.34!important;
+  }
+  #weddingGifts .wedding-gift-fields .wedding-gift-number {
+    font-size:clamp(12px,3.6vw,15px)!important;
+    letter-spacing:0!important;
+    white-space:normal!important;
+  }
+  #weddingGifts .wedding-gift-copy {
+    width:100%!important;
+    min-height:42px!important;
+    margin-top:9px!important;
+    padding:7px 5px!important;
+    font-size:10px!important;
+  }
+  #weddingGifts .wedding-gift-pending {
+    min-height:115px!important;
+    padding:8px!important;
+  }
+  #weddingGifts .wedding-gift-pending p {font-size:11px!important}
+  #weddingGifts .wedding-gift-footer {font-size:11px!important;margin-top:12px!important}
+  footer.footer {padding:37px 16px max(46px,env(safe-area-inset-bottom))!important}
+  footer.footer .footer-names {font-size:clamp(29px,8vw,38px)!important}
+  footer.footer p[data-i18n="footer.thanks"] {font-size:12px!important}
+}
+@media(max-width:360px) {
+  #weddingGifts .wedding-gift-grid {gap:7px!important}
+  #weddingGifts .wedding-gift-card {padding:10px 6px 11px!important}
+  #weddingGifts .wedding-gift-qr {width:92px!important}
+  #weddingGifts .wedding-gift-role {font-size:8px!important}
+  #weddingGifts .wedding-gift-fields .wedding-gift-number {font-size:12px!important}
+  #weddingGifts .wedding-gift-copy {font-size:9.5px!important}
+}
+@media(prefers-reduced-motion:reduce) {
+  .wedding-qr-dialog::backdrop {backdrop-filter:none!important}
+}
+@media print {
+  .wedding-qr-dialog {display:none!important}
+  #weddingGifts .wedding-gift-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
