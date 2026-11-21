@@ -85,7 +85,7 @@
     failed();
   }
   function drainPreviews(state){
-    if(!state.alive)return;
+    if(!state.alive || state.paused)return;
     while(state.activePreviews<MAX_PREVIEWS && state.previews.length){
       const card=state.previews.shift();
       if(!card.isConnected)continue;
@@ -118,7 +118,7 @@
     state.timers.set(id,timer);
   }
   function drainUpgrades(state) {
-    if(!state.alive)return;
+    if(!state.alive || state.paused)return;
     while(state.activeUpgrades<MAX_UPGRADES && state.upgrades.length) {
       const card=state.upgrades.shift();
       delete card.dataset.upgradeQueued;
@@ -185,7 +185,7 @@
     disconnect();
     if(!grid || !photos?.length)return;
     const state={
-      alive:true,grid,photos,renderCard,client,
+      alive:true,paused:false,grid,photos,renderCard,client,
       images:new Map(photos.map(x=>[String(x.id),x])),
       cards:new Map(), visible:new Set(),timers:new Map(),
       nextIndex:0,previews:[],upgrades:[],
@@ -236,6 +236,14 @@
     }
     if(session.nextIndex<session.photos.length)session.batchObserver?.observe(session.sentinel);
   }
+  function pause(shouldPause=true){
+    if(!session)return;
+    session.paused=Boolean(shouldPause);
+    if(!session.paused){
+      drainPreviews(session);
+      drainUpgrades(session);
+    }
+  }
   function count(){return session?.cards.size||0;}
-  window.WeddingProgressiveGallery={mount,activate,destroy:disconnect,count,slowNetwork};
+  window.WeddingProgressiveGallery={mount,activate,pause,destroy:disconnect,count,slowNetwork};
 })();
