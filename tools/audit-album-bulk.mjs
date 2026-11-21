@@ -127,6 +127,11 @@ try {
   await page.waitForSelector('.bulk-photo-card:nth-child(2)');
   await page.locator('#bulkStartBtn').click();
   await page.waitForFunction(()=>document.getElementById('bulkStatus').textContent.includes('Đã upload'),null,{timeout:35000});
+  console.log('UPLOAD DEBUG',JSON.stringify({
+    status:await page.locator('#bulkStatus').innerText(),
+    errors:await page.locator('.bulk-photo-error').allInnerTexts(),
+    browserErrors:errors
+  }));
   assert.match(await page.locator('#bulkStatus').innerText(),/2\/2 ảnh/);
   assert.equal(await page.evaluate(()=>window.__mockGalleryImages.length),2);
   assert.equal(await page.evaluate(()=>window.__mockGalleryImages.every(x=>!x.is_published&&!x.show_on_homepage)),true);
