@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="/assets/css/romantic-motion.css" />
   <link rel="stylesheet" href="/assets/css/particle-heart.css" />
   <link rel="stylesheet" href="/assets/css/progressive-gallery.css" />
+  <link rel="stylesheet" href="/assets/css/lightbox-zoom.css" />
   <link rel="stylesheet" href="/assets/css/compact-wedding.css" />
   
   
@@ -464,8 +465,11 @@
   <div class="photo-lightbox" id="photoLightbox" aria-hidden="true" role="dialog" aria-modal="true">
     <button class="photo-lightbox-close" id="photoLightboxClose" type="button" data-i18n-aria="album.close" aria-label="Close photo">×</button>
     <button class="photo-lightbox-nav photo-lightbox-prev" id="photoLightboxPrev" type="button" data-i18n-aria="album.prev" aria-label="Previous photo">‹</button>
+    <button class="photo-lightbox-zoom" id="photoLightboxZoom" type="button" aria-label="Phóng to ảnh" aria-pressed="false" title="Phóng to ảnh">+</button>
     <figure class="photo-lightbox-figure">
-      <img id="photoLightboxImage" alt="" />
+      <div class="photo-lightbox-stage" id="photoLightboxStage">
+        <img id="photoLightboxImage" alt="" draggable="false" />
+      </div>
       <figcaption>
         <strong id="photoLightboxTitle"></strong>
         <span id="photoLightboxCaption"></span>
@@ -509,6 +513,7 @@
   <script src="/assets/js/site/personalized.js"></script>
   <script src="/assets/js/site/adaptive-images.js"></script>
   <script src="/assets/js/site/progressive-gallery.js"></script>
+  <script src="/assets/js/site/lightbox-zoom.js"></script>
   <script src="/assets/js/site/app.js"></script>
   <script src="/assets/js/site/motion.js"></script>
   <script src="/assets/js/site/music.js"></script>
