@@ -110,7 +110,7 @@ try{
 
   // Release HD, then lazy-load further batches as the user scrolls.
   await page.locator('#photoLightboxClose').click();
-  await page.waitForSelector('#photoLightbox:not(.is-open)',{timeout:12000});
+  await page.waitForFunction(()=>!document.getElementById('photoLightbox').classList.contains('is-open'),null,{timeout:12000});
   await page.evaluate(()=>{const overlay=document.getElementById('albumOverlay');overlay.scrollTop=overlay.scrollHeight;});
   await page.waitForFunction(()=>document.querySelectorAll('#albumOverlayGrid [data-album-photo-id]').length>10,{timeout:12000});
   assert.equal(errors.filter(x=>/progressive-gallery|adaptive-images|renderLightbox/i.test(x)).length,0,'No gallery JavaScript errors');
