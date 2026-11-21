@@ -113,7 +113,7 @@
       if (publicResult.error) throw new Error(friendlyStorageError(publicResult.error,'Ảnh public',6));
       publicUploaded = true;
 
-      const baseName = String(file.name || 'Ảnh cưới').replace(/\\.[^.]+$/,'').slice(0,120);
+      const baseName = String(file.name || 'Ảnh cưới').replace(/\.[^.]+$/,'').slice(0,120);
       const payload = {
         id,album_id:album.id,original_path:originalPath,image_path:imagePath,
         title:baseName || 'Ảnh cưới',caption:null,alt_text:'Ảnh cưới Hải và Mỹ',
