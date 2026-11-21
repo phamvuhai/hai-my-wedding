@@ -947,3 +947,80 @@ button:disabled.btn{opacity:.45;cursor:not-allowed}
   .adaptive-backfill-actions .btn{width:100%}
   .adaptive-backfill-panel{padding:16px}
 }
+
+
+/* V22 — iPhone Photo Library visibility and reliable image geometry. */
+.v14-picker-grid {
+  grid-auto-rows:max-content;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+.v14-picker-photo {
+  align-self:start;
+  min-height:0;
+  flex-shrink:0;
+}
+.v14-picker-photo .v14-picker-thumb {
+  position:relative;
+  flex:0 0 auto;
+  display:block;
+  width:100%;
+  height:auto;
+  min-height:82px;
+  aspect-ratio:4/3;
+  overflow:hidden;
+  background:linear-gradient(125deg,#eaded6,#f7eee7,#eaded6);
+  background-size:190% 100%;
+}
+.v14-picker-photo .v14-picker-thumb img {
+  display:block;
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:0;
+  transition:opacity .18s ease;
+}
+.v14-picker-photo.is-image-ready .v14-picker-thumb img {opacity:1}
+.v14-picker-photo .v14-picker-image-status,
+.v14-picker-photo .v14-picker-image-error {
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  padding:7px;
+  text-align:center;
+  font:500 11px/1.5 system-ui,sans-serif;
+  color:#947d77;
+}
+.v14-picker-photo .v14-picker-image-error {
+  display:none;
+  color:#794d53;
+  background:#f6ebe5;
+}
+.v14-picker-photo.is-image-error .v14-picker-image-error {display:grid}
+.v14-picker-photo.is-image-error .v14-picker-image-status,
+.v14-picker-photo.is-image-ready .v14-picker-image-status {display:none}
+.v14-picker-photo .v14-picker-photo-name {
+  min-height:1.4em;
+  display:block;
+}
+.v14-picker-photo .v14-picker-photo-label {
+  display:block;
+}
+@media(max-width:720px) {
+  .v14-picker-dialog {
+    min-height:0;
+    max-height:min(91dvh,800px);
+  }
+  .v14-picker-grid {
+    min-height:110px;
+    flex:1 1 auto;
+  }
+  .v14-picker-photo .v14-picker-thumb {min-height:92px}
+  .v14-picker-photo .v14-picker-photo-name {font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  .v14-picker-photo .v14-picker-thumb img {transition:none!important}
+}

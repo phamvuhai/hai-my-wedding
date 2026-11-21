@@ -12,7 +12,11 @@
   const source=()=>Array.isArray(A.images)?A.images.filter(photo=>photo.is_published&&photo.image_path):[];
   const albums=()=>source().filter(photo=>photo.show_in_album!==false);
   const byId=id=>source().find(photo=>photo.id===id);
-  const imageUrl=photo=>A.publicUrl(photo.image_path)+(photo.updated_at?'?v='+encodeURIComponent(photo.updated_at):'');
+  const imageUrl=photo=>{
+    // Editor cards only need a preview, never a 2000px public original.
+    const path=photo.image_variants?.['960']||photo.image_variants?.['480']||photo.image_path;
+    return A.publicUrl(path)+(path===photo.image_path&&photo.updated_at?'?v='+encodeURIComponent(photo.updated_at):'');
+  };
   const attr=value=>esc(value);
   const steps=[
     {number:'01',key:'opening',title:'Mở thiệp',subtitle:'Opening Invitation',note:'Màn hình giới thiệu, tên Hải & Mỹ và nút Mở thiệp.',type:'static',symbol:'✉'},
@@ -29,6 +33,97 @@
     {number:'12',key:'farewell',title:'Lời cảm ơn cuối thiệp',subtitle:'Farewell / Footer',note:'Ảnh kết thúc câu chuyện, nên khác ảnh lịch cưới.',type:'photos',ids:['v3FarewellImageSelect'],labels:['Ảnh cuối thiệp'],settings:'v14AdvancedHero'}
   ];
   let device='desktop',activeSlot='',lastFocus=null;
+
+  // V22: Photo Library thumbnails load from existing compact WebP variants,
+  // not from the 2000px originals. Work around iOS WebKit lazy-loading inside
+  // a scrollable dialog by assigning src only near the visible picker area.
+  let pickerObserver=null,pickerEpoch=0,pickerQueue=[],pickerActive=0;
+  const PICKER_REQUESTS=3;
+  function pickerCandidates(photo){
+    const copies=photo.image_variants||{};
+    const paths=[copies['320'],copies['480'],copies['960'],photo.image_path]
+      .filter(path=>typeof path==='string'&&path.length);
+    return [...new Set(paths)].map(path=>
+      A.publicUrl(path)+(path===photo.image_path&&photo.updated_at
+        ?'?v='+encodeURIComponent(photo.updated_at):''));
+  }
+  function stopPickerThumbnails(){
+    pickerEpoch++;
+    pickerObserver?.disconnect();
+    pickerObserver=null;pickerQueue=[];pickerActive=0;
+    document.querySelectorAll('#v14PickerGrid img').forEach(img=>{
+      img.onload=null;img.onerror=null;
+    });
+  }
+  function pumpPickerThumbnails(){
+    while(pickerActive<PICKER_REQUESTS&&pickerQueue.length){
+      const job=pickerQueue.shift();
+      if(job.epoch!==pickerEpoch||!job.card.isConnected)continue;
+      const image=job.card.querySelector('img');
+      const choices=pickerCandidates(job.photo);
+      pickerActive++;
+      let index=0,settled=false;
+      const finish=()=>{
+        if(settled)return;
+        settled=true;image.onload=null;image.onerror=null;
+        if(job.epoch!==pickerEpoch)return;
+        pickerActive=Math.max(0,pickerActive-1);
+        pumpPickerThumbnails();
+      };
+      image.loading='eager';
+      image.decoding='async';
+      image.fetchPriority='low';
+      image.onload=()=>{
+        if(job.epoch===pickerEpoch&&image.naturalWidth>0){
+          job.card.classList.add('is-image-ready');
+          job.card.classList.remove('is-image-error');
+        }
+        finish();
+      };
+      image.onerror=()=>{
+        if(job.epoch!==pickerEpoch){finish();return}
+        if(index<choices.length){
+          image.src=choices[index++];
+        }else{
+          job.card.classList.add('is-image-error');
+          finish();
+        }
+      };
+      if(choices.length)image.src=choices[index++];
+      else {job.card.classList.add('is-image-error');finish()}
+    }
+  }
+  function queuePickerThumbnail(card,photo,epoch){
+    if(epoch!==pickerEpoch||card.dataset.thumbQueued)return;
+    card.dataset.thumbQueued='1';
+    pickerQueue.push({card,photo,epoch});
+    pumpPickerThumbnails();
+  }
+  function setupPickerThumbnails(photos,epoch){
+    if(epoch!==pickerEpoch||backdrop.hidden)return;
+    const grid=$('v14PickerGrid');
+    if(!grid)return;
+    const cards=[...grid.querySelectorAll('[data-v14-photo-id]')];
+    const photoById=new Map(photos.map(photo=>[String(photo.id),photo]));
+    if('IntersectionObserver' in window){
+      pickerObserver=new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+          if(!entry.isIntersecting)return;
+          pickerObserver?.unobserve(entry.target);
+          const photo=photoById.get(entry.target.dataset.v14PhotoId);
+          if(photo)queuePickerThumbnail(entry.target,photo,epoch);
+        });
+      },{root:grid,rootMargin:'180px 0px',threshold:0});
+      cards.forEach(card=>pickerObserver.observe(card));
+    }
+    // Safari can delay observer callbacks in an overflow container. The first
+    // visible row gets an explicit request immediately; the rest remain lazy.
+    cards.slice(0,Math.min(4,cards.length)).forEach(card=>{
+      const photo=photoById.get(card.dataset.v14PhotoId);
+      if(photo)queuePickerThumbnail(card,photo,epoch);
+    });
+  }
+
   const normalizeText=text=>String(text||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
   const idGroup=id=>id.startsWith('v3Hero')?'hero':id.startsWith('v3Album')?'gallery':null;
   const otherSelectedIds=id=>{
@@ -149,6 +244,8 @@
   function availablePhotos(){return idGroup(activeSlot)==='gallery'?albums():source()}
   function pickerGrid(){
     const grid=$('v14PickerGrid');if(!grid||!activeSlot)return;
+    stopPickerThumbnails();
+    const epoch=pickerEpoch;
     const filter=normalizeText($('v14PickerSearch')?.value);
     const exclusions=otherSelectedIds(activeSlot);
     const albumById=new Map((A.albums||[]).map(a=>[a.id,a.title]));
@@ -160,6 +257,7 @@
       grid.innerHTML='<p class="v14-picker-empty">'+(availablePhotos().length?'Không tìm thấy ảnh phù hợp.':'Chưa có ảnh đã Publish. Vào Album để upload và Publish ảnh.')+'</p>';
       return;
     }
+    grid.scrollTop=0;
     grid.innerHTML=photos.map(photo=>{
       const selected=photo.id===$(activeSlot)?.value;
       const occupied=exclusions.has(photo.id);
@@ -167,12 +265,16 @@
       return '<button type="button" class="v14-picker-photo'+(selected?' is-selected':'')+
         '" data-v14-photo-id="'+attr(photo.id)+'" '+(occupied?'disabled':'')+
         ' aria-pressed="'+(selected?'true':'false')+'">'+
-        '<span class="v14-picker-thumb"><img loading="lazy" decoding="async" src="'+attr(imageUrl(photo))+'" alt="'+attr(desc)+'"></span>'+
+        '<span class="v14-picker-thumb"><img alt="'+attr(desc)+'" decoding="async">'+
+        '<span class="v14-picker-image-status" aria-hidden="true">Đang tải ảnh…</span>'+
+        '<span class="v14-picker-image-error" aria-hidden="true">Không tải được ảnh</span></span>'+
         '<span class="v14-picker-photo-name">'+attr(desc)+'</span>'+
         '<span class="v14-picker-photo-label">'+(occupied?'Đã chọn ở ô khác':photo.show_in_album===false?'Chỉ dùng website':'Website & Album')+'</span>'+
         '</button>';
     }).join('');
+    requestAnimationFrame(()=>setupPickerThumbnails(photos,epoch));
   }
+
   function openPicker(id){
     const input=$(id);if(!input)return;
     activeSlot=id;lastFocus=document.activeElement;
@@ -186,9 +288,16 @@
     backdrop.hidden=false;
     document.body.classList.add('v14-dialog-open');
     pickerGrid();
-    $('v14PickerSearch').focus();
+    // On iPhone opening the keyboard covers the photo grid. Keep it closed
+    // until the user taps Search, and focus the dialog for accessibility.
+    if(window.matchMedia('(pointer: coarse)').matches){
+      backdrop.querySelector('.v14-picker-dialog')?.focus({preventScroll:true});
+    }else{
+      $('v14PickerSearch').focus({preventScroll:true});
+    }
   }
   function closePicker(){
+    stopPickerThumbnails();
     backdrop.hidden=true;activeSlot='';
     document.body.classList.remove('v14-dialog-open');
     if(lastFocus?.isConnected)lastFocus.focus();
