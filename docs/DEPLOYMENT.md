@@ -70,3 +70,14 @@ Do not reintroduce same-path Storage upserts for public wedding images; stale CD
 4. Request a reset from `/admin/login/` using the Admin account, open the email, and check that only a valid, unexpired recovery token reveals the new-password form.
 5. Confirm updating the password signs out and redirects to `/admin/login/?reset=success`; check that the old password no longer works.
 6. Verify `/`, `/vi`, `/en`, `/jp` and private invitation URLs still show the wedding normally. Do not use real tokens in CI.
+
+## V19 romantic motion release (2026-11-21)
+
+Reference-inspired but original additive effects, independent of the existing Admin and RSVP implementations:
+
+- `assets/js/site/romantic-motion.js`: pointer-only parallax for Story paper and photo cards, plus a subtle champagne silk sheen on existing CTAs. Language switching may replace button inner text, so decorations are reattached after `wedding:language`.
+- `assets/css/romantic-motion.css`: responsive crystal-heart SVG scene (between Promise and Memories), subtle depth and sheen. No WebGL, externally fetched animation library, or moving Hero image.
+- `#weddingMagic`: visible without JavaScript as a static illustration. Particle animation pauses offscreen, when the invitation is closed, when the page is hidden, under `prefers-reduced-motion`, or when the CMS animation mode is `minimal`.
+- Original links, RSVP submission, Supabase gallery records, existing Home gallery selection, personal invitation tokens, and the mobile scroll lock remain unchanged.
+
+Verification: GitHub WebKit workflow runs `tools/audit-romantic-motion.mjs` offline, then existing Safari/iPhone and invitation touch regression. Also check VI/EN/JP titles, desktop hover/focus, small-screen overflow and reduced-motion behavior before production merge. No Supabase schema migration is necessary.
