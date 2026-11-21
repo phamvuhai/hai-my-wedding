@@ -167,17 +167,26 @@
     const start=()=>{
       if(!item.alive||item.started)return;
       item.started=true;
+      const startedAt=performance.now();
+      img.addEventListener('load',()=>{
+        if(!item.alive||progressiveNodes.get(img)!==item||!stage.upgrade)return;
+        // Safari lacks Network Information API: use the first small request
+        // as a coarse signal rather than starting HD during a slow download.
+        if(performance.now()-startedAt>1800)return;
+        item.timer=setTimeout(()=>{
+          if(!item.alive||!img.isConnected)return;
+          const sharper=new Image();
+          sharper.decoding='async';sharper.fetchPriority='low';
+          sharper.onload=()=>{
+            if(item.alive&&img.isConnected&&progressiveNodes.get(img)===item)img.src=stage.sharper;
+          };
+          sharper.src=stage.sharper;
+        },Number(options.delay)||900);
+      },{once:true});
+      img.addEventListener('error',()=>{
+        if(item.alive&&stage.sharper!==stage.preview&&img.src===stage.preview)img.src=stage.sharper;
+      },{once:true});
       img.src=stage.preview;
-      if(!stage.upgrade)return;
-      item.timer=setTimeout(()=>{
-        if(!item.alive||!img.isConnected)return;
-        const sharper=new Image();
-        sharper.decoding='async';sharper.fetchPriority='low';
-        sharper.onload=()=>{
-          if(item.alive&&img.isConnected&&progressiveNodes.get(img)===item)img.src=stage.sharper;
-        };
-        sharper.src=stage.sharper;
-      },Number(options.delay)||900);
     };
     if(options.immediate||!('IntersectionObserver'in window))start();
     else {
@@ -200,13 +209,22 @@
       if(item)clearTimeout(item.timer);
       item={key,timer:0,phase:'preview'};
       progressiveSlides.set(layer,item);
+      item.previewLoaded=false;item.previewStarted=performance.now();
+      const representative=tiles.find(x=>x.classList.contains('v6-center-image'))||tiles[0];
+      representative.addEventListener('load',()=>{
+        if(progressiveSlides.get(layer)!==item)return;
+        item.previewLoaded=true;
+        item.previewDuration=performance.now()-item.previewStarted;
+        if(layer.classList.contains('is-current'))progressiveSlide(layer,client,image);
+      },{once:true});
       for(const img of tiles){
         img.removeAttribute('srcset');img.removeAttribute('sizes');
         img.loading='eager';img.decoding='async';
         img.fetchPriority='low';img.src=stage.preview;
       }
     }
-    if(!stage.upgrade||item.phase!=='preview'||item.timer)return;
+    if(!stage.upgrade||item.phase!=='preview'||item.timer||
+       !item.previewLoaded||item.previewDuration>1800)return;
     item.timer=setTimeout(()=>{
       item.timer=0;
       if(!layer.isConnected||!layer.classList.contains('is-current')||item.phase!=='preview')return;
