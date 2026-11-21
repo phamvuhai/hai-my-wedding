@@ -95,6 +95,7 @@
   let finished = false;
   let frameId = 0;
   let frameCounter = 0;
+  let drawnParticles = 0;
 
   function resizeCanvas() {
     if (!ctx) return;
@@ -116,6 +117,7 @@
   }
 
   function paint(ms) {
+    drawnParticles = 0;
     const drawProgress = Math.min(1, Math.max(0, ms / DRAW_MS));
     const dash = (length * (1 - drawProgress)).toFixed(2);
     glowPath.style.strokeDashoffset = dash;
@@ -153,6 +155,7 @@
       ctx.beginPath();
       ctx.arc(x, y, p.radius * (.85 + fraction * .35), 0, Math.PI * 2);
       ctx.fill();
+      drawnParticles++;
     }
     ctx.restore();
     ctx.globalAlpha = 1;
@@ -244,7 +247,7 @@
   window.WeddingParticleHeart = {
     status: () => ({
       visible, finished, running: Boolean(frameId), elapsed: Math.round(elapsed),
-      particles: particles.length, frames: frameCounter, allowed: isAllowed()
+      particles: particles.length, frames: frameCounter, drawnParticles, allowed: isAllowed()
     })
   };
 })();
