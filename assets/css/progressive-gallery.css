@@ -55,6 +55,13 @@
   padding:10px;
 }
 .album-batch-sentinel[hidden] {display:none!important}
+/* The floating music dock sits above the Lightbox and intercepts the Next
+ * arrow on iPhone. Hide controls only while photo detail is open; audio keeps playing. */
+body.photo-lightbox-open #musicDock {
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
 .photo-lightbox-nav:disabled,
 .photo-lightbox-nav[aria-disabled="true"] {
   opacity:.2!important;
