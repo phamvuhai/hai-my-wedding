@@ -72,7 +72,7 @@ try {
   assert.equal(normal.mode,'auto');
   assert.deepEqual(normal.list,[480,960,1440,2400]);
   assert.match(normal.srcset,/480w.*960w.*1440w.*2400w/);
-  assert.ok(normal.src.includes('archival-a-w960.webp'),'Mobile thumbnail resolves within expected pixel width');
+  assert.ok(normal.src.includes('archival-a-w480.webp'),'Mobile thumbnail resolves within expected pixel width');
   assert.equal(normal.sizes,'48vw');
   assert.equal(normal.loading,'lazy');
   assert.equal(normal.heroPriority,'high');
