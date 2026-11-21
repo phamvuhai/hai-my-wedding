@@ -51,7 +51,7 @@
   function select(client,image,desiredWidth=960,role='gallery') {
     const list = sources(client,image,role);
     if (!list.length) return '';
-    const requested = Math.max(1,Number(desiredWidth)||960);
+    const requested = Math.max(1,Number(desiredWidth)||defaultTarget(role));
     const picked = list.find(entry=>entry.width>=requested) || list[list.length-1];
     return resolved(client,picked.path,image);
   }
