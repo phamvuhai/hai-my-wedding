@@ -111,7 +111,8 @@ try {
     }));
     throw error;
   }
-  // Auth stub does not register the sidebar tab controller; show Album directly.\n  await page.evaluate(()=>{
+  // Auth stub does not register the sidebar tab controller; show Album directly.
+  await page.evaluate(()=>{
     const tab=document.getElementById('albumTab');
     tab.classList.remove('hidden');
     tab.style.setProperty('display','block','important');
