@@ -103,7 +103,7 @@ Release only after GitHub CI and Vercel Preview are green, then squash-merge to 
 critical wedding event details, maps, RSVP, personalized invitations, Gallery, or V23
 particle/Crystal Heart animations.
 
-- Added a final CSS layer \`assets/css/compact-wedding-v24.css\`: scope is the public
+- Added a final CSS layer \`assets/css/compact-wedding.css\`: scope is the public
   wedding invitation only (not Admin). Stronger spacing hierarchy and smaller
   headings/cards across four responsive widths; photo Hero and Love Story remain
   the big emotional visual moments.
