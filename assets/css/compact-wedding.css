@@ -492,7 +492,19 @@ footer.footer p[data-i18n="footer.thanks"] {
   .gallery-section.section {padding:40px 0 45px!important}
   .gallery-section .gallery-editorial-head {gap:8px!important;margin-bottom:18px!important}
   .gallery-section .gallery-editorial-head .section-heading h2 {font-size:clamp(30px,7.6vw,39px)!important}
-  .gallery-section .gallery-display {display:none!important}
+  /* Keep the original motion/test target visible, as a discreet eyebrow. */
+  .gallery-section .gallery-display {
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    flex-wrap:nowrap!important;
+    gap:7px!important;
+    font-size:10px!important;
+    letter-spacing:.16em!important;
+    margin:0 auto 3px!important;
+    max-width:100%!important;
+    overflow:visible!important;
+  }
   .gallery-section .section-heading p:not(.eyebrow) {font-size:13px!important}
   .gallery-section .gallery-cta {margin-top:16px!important}
   #rsvp.rsvp-section.section {padding:43px 0!important}
