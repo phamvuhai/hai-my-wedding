@@ -175,3 +175,17 @@ The gallery uses **pre-generated public WebP variants** because this Supabase or
 - Failed thumbnails try a second existing variant, then show a readable placeholder; users can still tap the card to open its original. Images and Gallery state work without an external animation library.
 - Existing photos already have 480/960 variants. New Admin uploads generate **320/480/960/1440px** copies where supported. To add 320px previews to earlier uploads, use **Admin → Album → Tối ưu ảnh cũ**; this reuses the 480px copy to avoid downloading original full files, preserves all earlier variant paths and is resumable.
 - Test \`node tools/audit-v21-gallery.mjs\` in WebKit (offline only) plus all prior Safari, UI and asset integrity suites before promoting a Production commit. Keep RSVP, Hero, personalized invitations, and animations untouched.
+
+
+## V22 — Progressive TOP photos (2026-11-21)
+
+The public TOP page (Hero and the five curated Our Moments tiles) now uses the same uploaded WebP variants as Album without a new storage provider or database migration.
+
+- **Hero:** Preload/decode a small 320/480px preview before revealing the Hero. On non-Save-Data connections, promote to at most a 960px (3G/low bandwidth) or 1440px (other connections) variant only after the preview has loaded. If the preview took over 1.8s, skip the automatic upgrade (important for Safari, which has no Network Information API).
+- **Hero slideshow:** Only the visible slide gets a URL; other slides do not fetch hidden images during initial render. Its decorative four crops share the same preview and eventual higher-quality URL, not four separate originals. Later slides are loaded when selected.
+- **TOP Our Moments:** Cards start with no URL, fetch a 320/480px preview only near the viewport, and optionally upgrade to 960px if the preview loads promptly. Browsers with Save Data/2G do not automatically upgrade.
+- **Other TOP/story photos:** Native responsive candidates are limited to real stored WebP variants, not the original master when variants exist.
+- **Album/Lightbox unchanged:** Album List stays thumbnail-first; the original is only requested after a Photo Lightbox click. Navigation never wraps from first to last.
+- **Legacy uploads:** If an image has no `image_variants`, the original remains the only available source. To benefit from progressive TOP loading, generate variants using **Admin → Album → Tối ưu ảnh cũ**. Avoid bulk backfill near the storage limit.
+
+Verification: the existing WebKit CI `node tools/audit-adaptive-images.mjs` now checks TOP preview URLs and upgrade caps. Confirm the Hero and the five TOP cards on mobile (including slow network and Save Data), then verify Album/RSVP/Admin smoke and deployment status.

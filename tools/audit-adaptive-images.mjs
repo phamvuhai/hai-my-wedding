@@ -59,7 +59,22 @@ try {
     const hero=adaptive.attrs(db,img,{role:'hero',sizes:'100vw',loading:'eager',priority:'high'});
     adaptive.apply(document.getElementById('test'),db,img,{role:'thumb',sizes:'48vw'});
     const legacy=adaptive.attrs(db,{image_path:img.image_path,width:2400},{role:'thumb'});
-    return {
+    const topImage=document.createElement('img');
+    document.body.appendChild(topImage);
+    adaptive.progressiveApply(topImage,db,img,{role:'home',immediate:true});
+    const slide=document.createElement('div');
+    slide.className='is-current';
+    for(let i=0;i<4;i++){
+      const tile=document.createElement('img');
+      tile.className='v5-hero-tile'+(i===0?' v6-center-image':'');
+      slide.appendChild(tile);
+    }
+    document.body.appendChild(slide);
+    adaptive.progressiveSlide(slide,db,img);
+    const topHero=adaptive.topPlan(db,img,'hero');
+    const topHome=adaptive.topPlan(db,img,'home');
+    return {topImageSrc:topImage.src,slideSources:[...slide.querySelectorAll('img')].map(x=>x.src),
+      topHeroSharp:topHero.sharper,topHomeSharp:topHome.sharper,topHeroUpgrades:topHero.upgrade,
       mode:adaptive.bandwidth(),
       list:adaptive.sources(db,img,'thumb').map(x=>x.width),
       src:tags.src,srcset:tags.srcset,sizes:tags.sizes,loading:tags.loading,
@@ -82,6 +97,11 @@ try {
   assert.equal(normal.legacySet,'');
   assert.ok(normal.legacySrc.includes('archival.webp'));
   assert.deepEqual(normal.invalidPaths,['pre-wedding/archival-a-w960.webp']);
+  assert.ok(normal.topImageSrc.includes('archival-a-w480.webp'),'TOP paints small preview first');
+  assert.ok(normal.slideSources.every(x=>x.includes('archival-a-w480.webp')),'All hero crops reuse one preview');
+  assert.ok(normal.topHeroSharp.includes('archival-a-w1440.webp'),'Fast Hero targets 1440, never original');
+  assert.ok(normal.topHomeSharp.includes('archival-a-w960.webp'),'Fast home gallery targets 960');
+  assert.equal(normal.topHeroUpgrades,true);
 
   // Generate actual WebP variants through the same browser canvas path as Admin upload.
   const storage=await page.evaluate(async()=>{
@@ -113,12 +133,15 @@ try {
     const a=window.WeddingAdaptiveImages;
     const db={storage:{from:()=>({getPublicUrl:path=>({data:{publicUrl:'https://test.invalid/'+path}})})}};
     return {mode:a.bandwidth(),items:a.sources(db,img,'thumb').map(x=>x.width),
-      lightbox:a.sources(db,img,'lightbox').map(x=>x.width),fallback:a.sources(db,{image_path:img.image_path,width:2400},'thumb').length};
+      lightbox:a.sources(db,img,'lightbox').map(x=>x.width),fallback:a.sources(db,{image_path:img.image_path,width:2400},'thumb').length,
+      top:a.topPlan(db,img,'hero')};
   },image);
   assert.equal(slowResult.mode,'save');
   assert.deepEqual(slowResult.items,[480,960]);
   assert.deepEqual(slowResult.lightbox,[2400]);
   assert.equal(slowResult.fallback,1);
+  assert.equal(slowResult.top.upgrade,false,'Save Data must never request TOP upgrades');
+  assert.ok(slowResult.top.preview.includes('archival-a-w480.webp'));
   await slow.context.close();
 
   const medium=await testContext({saveData:false,effectiveType:'3g'});
