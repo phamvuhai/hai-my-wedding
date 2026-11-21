@@ -31,7 +31,7 @@ function mockSupabase(){
   }});
   window.supabase={createClient:()=>({
     from:()=>chain(),rpc:async()=>({data:null,error:null}),
-    storage:{from:()=>({getPublicUrl:path=>({data:{publicUrl:origin+'/assets/'+path}})})},
+    storage:{from:()=>({getPublicUrl:path=>({data:{publicUrl:'https://mock.invalid/'+path}})})},
     auth:{getSession:async()=>({data:{session:null},error:null}),
       onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})}
   })};
