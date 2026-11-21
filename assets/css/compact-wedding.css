@@ -244,10 +244,18 @@ section.countdown-section.countdown-compact.countdown-v15 .countdown span {
 }
 #rsvp .rsvp-form label,
 #rsvp .rsvp-form .field-group {margin-bottom:0!important}
-#rsvp .rsvp-form input,
+#rsvp .rsvp-form input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]),
 #rsvp .rsvp-form select {
   min-height:44px!important;
   padding:10px 13px!important;
+}
+/* Restore circular RSVP radios; 44px applies to text/select fields only. */
+#rsvp .rsvp-form .radio-row input[type="radio"] {
+  min-height:0!important;
+  width:20px!important;
+  height:20px!important;
+  padding:0!important;
+  flex:0 0 20px!important;
 }
 #rsvp .rsvp-form textarea {
   min-height:78px!important;
