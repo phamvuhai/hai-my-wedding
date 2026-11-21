@@ -2,6 +2,7 @@
   const dictionaries = {
     vi: {
       "nav.story":"Câu chuyện","nav.events":"Lịch cưới","nav.rsvp":"Xác nhận",
+      "effects.foreverTitle":"Một trái tim, một hành trình",
       "name.groom":"Hải Phạm","name.bride":"Mỹ Nguyễn",
       "hero.note":"Giữa bao cuộc gặp gỡ, thật may mắn khi chúng mình tìm thấy nhau. Và từ hôm nay, hạnh phúc là biết rằng mọi chặng đường phía trước đều có nhau.","hero.cta":"Xem lịch cưới",
       "intro.open":"MỞ THIỆP","intro.tap":"Một lời mời dành cho bạn","intro.hint":"Nhấn vào phong bì hoặc nút bên dưới để mở","intro.invite":"TRÂN TRỌNG KÍNH MỜI","intro.date":"18 · 12 · 2026 — 20 · 12 · 2026","intro.formalLead":"Đến chung vui cùng chúng tôi trong ngày hạnh phúc","intro.eventDate":"18 — 20 · 12 · 2026","intro.eventPlace":"TP. HỒ CHÍ MINH · RẠCH GIÁ","intro.closing":"Sự hiện diện của bạn là niềm vui của chúng tôi.",
@@ -24,6 +25,7 @@
     },
     en: {
       "nav.story":"Our Story","nav.events":"Wedding Events","nav.rsvp":"RSVP",
+      "effects.foreverTitle":"Two hearts, one journey",
       "name.groom":"Hai Pham","name.bride":"My Nguyen",
       "hero.note":"Of all the people we could have met, how lucky we are to have found each other. From this day on, our greatest joy is knowing we will walk every road together.","hero.cta":"View wedding schedule",
       "intro.open":"OPEN INVITATION","intro.tap":"A little invitation for you","intro.hint":"Click the envelope or button below to open","intro.invite":"YOU ARE CORDIALLY INVITED","intro.date":"18 · 12 · 2026 — 20 · 12 · 2026","intro.formalLead":"Join us in celebrating our special day","intro.eventDate":"DECEMBER 18–20, 2026","intro.eventPlace":"HO CHI MINH CITY · RACH GIA","intro.closing":"Your presence would mean so much to us.",
@@ -46,6 +48,7 @@
     },
     ja: {
       "nav.story":"ふたりのストーリー","nav.events":"結婚式の日程","nav.rsvp":"出欠確認",
+      "effects.foreverTitle":"ふたつの心、ひとつの未来",
       "name.groom":"Hai Pham","name.bride":"My Nguyen",
       "hero.note":"たくさんの出会いの中で、私たちはお互いに巡り会いました。これからの何気ない毎日を、ふたりで歩んでいけることが何よりの幸せです。","hero.cta":"結婚式の日程を見る",
       "intro.open":"招待状を開く","intro.tap":"あなたへの招待状","intro.hint":"封筒または下のボタンを押して開く","intro.invite":"心よりご招待申し上げます","intro.date":"2026年12月18日（金）〜20日（日）","intro.formalLead":"私たちの大切な日に、ぜひご一緒にお祝いください","intro.eventDate":"2026年12月18日（金）〜20日（日）","intro.eventPlace":"ホーチミン市 · ラックザー","intro.closing":"お越しいただけることを、心より楽しみにしております。",
