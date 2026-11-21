@@ -111,7 +111,7 @@ try {
     }));
     throw error;
   }
-  await page.locator('[data-tab="album"]').click();
+  // Auth stub does not register the sidebar tab controller; show Album directly.\n  await page.evaluate(()=>document.getElementById('albumTab').classList.remove('hidden'));
   await page.locator('[data-album-mode="bulk"]').click();
   assert.equal(await page.locator('#bulkUploadPanel').isVisible(),true);
   const pixel=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAFklEQVR4nGN8Nm3afwYkwMSABggLAADKCAMZxpQtEgAAAABJRU5ErkJggg==','base64');
