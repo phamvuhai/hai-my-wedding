@@ -124,3 +124,19 @@ Vào **Admin → Thiết kế website → 09 · Thông tin mừng cưới**. Ph�
 - Nếu thay số tài khoản Nhà trai, phải upload QR mới. Trước khi thông báo cho khách, luôn thử quét QR và xác nhận tên/số tài khoản tại ứng dụng ngân hàng.
 
 Các URL mời riêng, Album, RSVP không bị thay đổi. Thông tin số tài khoản và QR khi bật công khai có thể được bất kỳ khách truy cập nào xem và chia sẻ.
+
+## Album V17 — Bulk Import, Photo Ordering and Bulk Management (2026-11-21)
+
+In **Admin → Album**, the three modes are:
+
+- **Thêm 1 ảnh**: existing single-image editor, with zoom/crop, focus and multilingual metadata.
+- **Import hàng loạt**: drop/select JPG, PNG and WebP files; review preview cards; reorder images with drag and drop or up/down controls; select destination Album; optionally Publish. Default is Draft, visible in Album only after Publish, and not selected for Homepage or Hero.
+- **Sắp xếp thứ tự**: select an Album, drag (desktop) or use arrow controls (touch/keyboard); choose **Lưu thứ tự** to persist all positions atomically. **Hoàn tác** reloads saved ordering. Publication status, Featured and Hero remain unchanged.
+
+During Bulk Upload, two images are processed concurrently and uploaded to `wedding-originals` / `wedding-gallery` with UUID-based immutable paths, using existing WebP size and dimension limits. Each successful image is inserted into `gallery_images`. Failed uploads are cleaned from Storage where possible and may be retried individually in the queue. Avoid refreshing before the batch finishes.
+
+The Library section supports multi-select and **Publish, Unpublish, Show in Album, Website only, Move to Album** and **Delete Draft** actions. Bulk delete is restricted to unpublished images not flagged as Hero, Featured, Homepage or Cover. Verify all references before single-image deletion. Move and reorder use two `SECURITY INVOKER` Postgres RPC functions, subject to existing RLS policies.
+
+The public **Album** now orders by `sort_order ASC`, then `created_at DESC` and `id ASC`, independently of Featured. The **Homepage** remains curated separately using the existing Visual Editor's five selected images and is not affected by Album drag ordering.
+
+**Verification checklist**: run `node tools/check-asset-refs.mjs`; GitHub WebKit workflow runs `node tools/audit-album-bulk.mjs` with a mocked Supabase client; test with a real Admin account on Preview before promoting to production. No production images are created by automated smoke tests.
