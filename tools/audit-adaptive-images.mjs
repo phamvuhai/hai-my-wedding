@@ -70,8 +70,9 @@ try {
     };
   },image);
   assert.equal(normal.mode,'auto');
-  assert.deepEqual(normal.list,[480,960,1440,2400]);
-  assert.match(normal.srcset,/480w.*960w.*1440w.*2400w/);
+  assert.deepEqual(normal.list,[480,960]);
+  assert.match(normal.srcset,/480w.*960w/);
+  assert.ok(!normal.srcset.includes('2400w'),'Full HD must not appear in a thumbnail srcset');
   assert.ok(normal.src.includes('archival-a-w480.webp'),'Mobile thumbnail resolves within expected pixel width');
   assert.equal(normal.sizes,'48vw');
   assert.equal(normal.loading,'lazy');
@@ -116,13 +117,13 @@ try {
   },image);
   assert.equal(slowResult.mode,'save');
   assert.deepEqual(slowResult.items,[480,960]);
-  assert.deepEqual(slowResult.lightbox,[480,960,1440]);
+  assert.deepEqual(slowResult.lightbox,[2400]);
   assert.equal(slowResult.fallback,1);
   await slow.context.close();
 
   const medium=await testContext({saveData:false,effectiveType:'3g'});
   const mediumResult=await medium.page.evaluate(img=>window.WeddingAdaptiveImages.sources(null,img,'thumb').map(x=>x.width),image);
-  assert.deepEqual(mediumResult,[480,960,1440]);
+  assert.deepEqual(mediumResult,[480,960]);
   await medium.context.close();
   console.log('PASS: network-aware caps, legacy fallback, WebP upload variants, srcset, DPR and hero priority');
 } finally {
