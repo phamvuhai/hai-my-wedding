@@ -36,17 +36,30 @@
     seen.add(tile);
     const image=tile.querySelector('img');
     if(!image)return;
+    const hasRequest=()=>Boolean(image.currentSrc || image.getAttribute('src') ||
+      image.getAttribute('srcset'));
     const done=()=>{
+      if(!tile.isConnected || !image.naturalWidth)return;
+      // Recovery must be possible after a failed preview followed by a
+      // successful 480/960px fallback, without remounting the gallery.
+      image.hidden=false;
+      tile.disabled=false;
+      tile.removeAttribute('aria-disabled');
       tile.classList.add('album-v12-ready');
       tile.classList.remove('album-v12-error-state');
+      tile.querySelector('.album-v12-error')?.remove();
       maybeReveal(tile);
     };
     const broken=()=>{
+      // HTMLImageElement.complete is true when src is missing. The progressive
+      // loader intentionally assigns src later through IntersectionObserver.
+      if(!hasRequest() || !tile.isConnected)return;
       tile.classList.add('album-v12-error-state');
       tile.classList.remove('album-v12-ready','album-v12-animating');
       image.hidden=true;
-      tile.disabled=true;
-      tile.setAttribute('aria-disabled','true');
+      // Keep the card clickable. A guest can still open Detail or retry.
+      tile.disabled=false;
+      tile.removeAttribute('aria-disabled');
       let label=tile.querySelector('.album-v12-error');
       if(!label){
         label=document.createElement('span');
@@ -56,9 +69,16 @@
       }
       label.textContent=errorLabel();
     };
-    image.addEventListener('load',done,{once:true});
-    image.addEventListener('error',broken,{once:true});
-    if(image.complete)(image.naturalWidth>0?done:broken)();
+    image.addEventListener('load',done);
+    // A progressive source can fail at 320px and still recover at 480/960px.
+    // Show a permanent error only after ALL compact fallback URLs have failed.
+    image.addEventListener('error',()=>{
+      if(image.dataset.homeProgressive!=='loading')broken();
+    });
+    image.addEventListener('wedding:home-photo-error',broken);
+    // Only consider a cached image ready if the browser has a real URL and
+    // decoded pixels. Empty src images must remain pending, not broken.
+    if(hasRequest() && image.complete && image.naturalWidth>0)done();
     if(observer)observer.observe(tile);
     else{tile.dataset.albumV12Visible='true';maybeReveal(tile);}
   }
