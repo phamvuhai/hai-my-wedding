@@ -49,60 +49,45 @@ async function visit(width,height,opts={}){
 try {
   for(const [width,height] of [[390,844],[1280,850],[320,568]]){
     const {context,page,errors}=await visit(width,height);
-    await page.waitForFunction(()=>window.WeddingFindMe.status().frames>3,null,{timeout:9000});
-    const intro=page.locator('#invitationIntro');
     const canvas=page.locator('#findMeCanvas');
     await canvas.scrollIntoViewIfNeeded();
+    await page.waitForFunction(()=>window.WeddingFindMe.status().photoLoaded,{timeout:6000});
     const initial=await page.evaluate(()=>{
-      const r=document.getElementById('findMeCanvas').getBoundingClientRect();
-      return {rect:{x:r.x,y:r.y,width:r.width,height:r.height},
+      const c=document.getElementById('findMeCanvas');
+      const r=c.getBoundingClientRect();
+      return {rect:{width:r.width,height:r.height},
         hint:document.getElementById('findMeHint').textContent,
-        animation:window.WeddingFindMe.status(),
-        buttonVisible:document.getElementById('openInvitation').getBoundingClientRect().width>50};
+        status:window.WeddingFindMe.status(),
+        button:document.getElementById('openInvitation').getBoundingClientRect().width};
     });
-    assert.ok(initial.rect.width>180 && initial.rect.height>=88,'Interactive canvas must be visible');
-    assert.equal(initial.animation.merged,false);
-    assert.ok(initial.buttonVisible,'Open invitation button remains present');
-    assert.ok(initial.hint.includes('Kéo'),'Vietnamese interaction hint is visible');
-    const r=initial.rect;
-    const a={x:r.x+r.width*.28,y:r.y+r.height*.44};
-    const b={x:r.x+r.width*.72-24,y:r.y+r.height*.44};
-    await page.mouse.move(a.x,a.y);
-    await page.mouse.down();
-    await page.mouse.move(b.x,b.y,{steps:14});
-    await page.mouse.up();
-    await page.waitForFunction(()=>window.WeddingFindMe.status().merged,{timeout:8000});
-    assert.equal(await page.locator('#findMeResult').isVisible(),true,'Romantic reveal replaces instruction after merge');
-    const state=await page.evaluate(()=>window.WeddingFindMe.status());
-    assert.equal(state.sparks,width<=500?48:120,'Responsive particle budget');
-    // The interactive scene must not be a required gate for opening.
-    await page.locator('#openInvitation').click();
-    await page.waitForFunction(()=>document.getElementById('invitationIntro').classList.contains('is-opened'),null,{timeout:9000});
-    await page.waitForFunction(()=>window.WeddingFindMe.status().running===false,null,{timeout:5000});
-    assert.deepEqual(errors,[],'No JavaScript runtime errors '+JSON.stringify(errors));
+    assert.ok(initial.rect.width>180&&initial.rect.height>100,'Canvas is visible');
+    assert.ok(initial.button>50,'Open Invitation button is present');
+    assert.ok(initial.hint.includes('Từng điểm sáng'),'Updated static caption');
+    assert.equal(initial.status.automatic,true,'Autoplay without pointer input');
+    assert.ok(initial.status.particles>100,'Particles are generated from the image');
+    assert.equal(await page.locator('#findMeResult').count(),0,'No merge-result element');
+    await page.waitForFunction(()=>window.WeddingFindMe.status().finished,null,{timeout:9000});
+    const final=await page.evaluate(()=>window.WeddingFindMe.status());
+    assert.equal(final.running,false,'RAF must stop after five seconds');
+    assert.equal(final.elapsed,5000,'Full reveal completes');
+    assert.deepEqual(errors,[],'No runtime errors: '+JSON.stringify(errors));
     await context.close();
   }
-  // Guests may always skip the interaction. This also validates the opening
-  // on an actual personal invitation route.
+  // Opening must work immediately, without waiting for the animation to end.
   const direct=await visit(390,844,{path:'/vi/invite/fake-token'});
   await direct.page.locator('#openInvitation').click();
   await direct.page.waitForFunction(()=>document.getElementById('invitationIntro').classList.contains('is-opened'),null,{timeout:9000});
   assert.equal(await direct.page.evaluate(()=>window.WeddingFindMe.status().running),false);
   await direct.context.close();
-
   const reduced=await visit(390,844,{reduce:true});
-  const fallback=await reduced.page.evaluate(()=>window.WeddingFindMe.status());
-  assert.equal(fallback.running,false);
-  assert.equal(fallback.merged,true);
-  assert.equal(fallback.finished,true);
+  await reduced.page.waitForFunction(()=>window.WeddingFindMe.status().photoLoaded,null,{timeout:7000});
+  assert.equal(await reduced.page.evaluate(()=>window.WeddingFindMe.status().finished),true);
   assert.ok(await reduced.page.locator('#openInvitation').isVisible());
   await reduced.context.close();
-
-  // /vi already bypasses the cover; no hidden Canvas loop must run.
   const bypass=await visit(390,844,{path:'/vi'});
   await bypass.page.waitForFunction(()=>!window.WeddingFindMe.status().running,null,{timeout:4000});
   await bypass.context.close();
-  console.log('PASS V25: Canvas meet/merge, small particle budget, skip Open CTA, iPhone SE/13 and desktop, Reduce Motion and bypass route');
+  console.log('PASS V26: automatic sampled-particle reveal, mobile/desktop, full photo finish, instant Open CTA and reduced motion');
 } finally {
   await browser.close();
   await new Promise(resolve=>server.close(resolve));
