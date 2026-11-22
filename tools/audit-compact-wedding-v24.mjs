@@ -61,7 +61,7 @@ async function check(width,brideEnabled=false,locale='vi'){
  });
  await page.goto(origin+'/v24-fixture',{waitUntil:'domcontentloaded'});
  await page.waitForSelector('#weddingGifts .wedding-gift-disclosure',{timeout:8000});
- if(brideEnabled)await page.waitForSelector('#weddingGifts [data-gift-zoom="bride"]',{timeout:8000});
+ if(brideEnabled)await page.waitForFunction(()=>!!document.querySelector('#weddingGifts [data-gift-zoom="bride"]'),null,{timeout:8000});
  assert.equal(await page.locator('#weddingGifts .wedding-gift-disclosure').evaluate(el=>el.open),false,
    'Gift details collapsed by default');
  assert.ok(await page.locator('#weddingGifts summary').isVisible(),'Discreet gift summary is visible');
