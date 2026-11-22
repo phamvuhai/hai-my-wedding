@@ -29,66 +29,44 @@
   }
 
   const souls=[
-    {name:'Hải',x:.28,y:.44,light:'#ffdfba',glow:'#dca89c'},
-    {name:'Mỹ',x:.72,y:.44,light:'#ffe0eb',glow:'#e0a0ba'}
+    {name:'Hải',x:.19,y:.83,light:'#ffdfba',glow:'#dca89c'},
+    {name:'Mỹ',x:.81,y:.83,light:'#ffe0eb',glow:'#e0a0ba'}
   ];
   const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
   // Optional offline-prepared, transparent portrait sketches. Files are created
   // from approved real portraits ahead of deployment, never from visitors.
   // Missing files intentionally retain the original V25 two-souls animation.
-  const portraitPaths=[
-    '/assets/images/find-me/hai-sketch.svg',
-    '/assets/images/find-me/my-sketch.svg'
-  ];
-  const portraits=portraitPaths.map(()=>({image:null,ready:false}));
+  let portraitImage=null;
   let portraitCount=0;
   let portraitStart=performance.now();
   function loadPortraits(){
-    portraitPaths.forEach((src,index)=>{
-      const img=new Image();
-      img.decoding='async';
-      img.onload=()=>{
-        if(!img.naturalWidth||!img.naturalHeight)return;
-        portraits[index]={image:img,ready:true};
-        portraitCount=portraits.filter(p=>p.ready).length;
-        // Restart the elegant reveal once the final asset is decoded.
-        portraitStart=performance.now()-450;
-        paint(performance.now());
-        reconcile();
-      };
-      img.onerror=()=>{};
-      img.src=src;
-    });
+    const src=window.WeddingFindMePortraitData;
+    if(!src)return;
+    const img=new Image();
+    img.decoding='async';
+    img.onload=()=>{
+      portraitImage=img;
+      portraitCount=2;
+      portraitStart=performance.now()-200;
+      paint(performance.now());reconcile();
+    };
+    img.onerror=()=>{};
+    img.src=src;
   }
-  function drawPortrait(index,now){
-    const portrait=portraits[index];
-    if(!portrait.ready||merged)return;
-    const {x}=screenPoint(souls[index]);
-    const artWidth=Math.min(width*.43,height*.93,176);
-    const artHeight=artWidth*112/96;
-    const top=height*.07;
-    const reveal=reduced.matches?1:clamp((now-portraitStart)/1600,0,1);
-    if(reveal<=0)return;
-    const left=x-artWidth*.5;
+  function drawGoldenPortrait(now){
+    if(!portraitImage||merged)return;
+    const image=portraitImage;
+    const scale=Math.min(width/image.naturalWidth,height/image.naturalHeight);
+    const drawW=image.naturalWidth*scale,drawH=image.naturalHeight*scale;
+    const left=(width-drawW)/2,top=(height-drawH)/2;
+    const reveal=reduced.matches?1:clamp((now-portraitStart)/1450,0,1);
     ctx.save();
+    ctx.globalAlpha=Math.min(1,.12+reveal*1.05);
     ctx.beginPath();
-    // Reveal from the upper contour down rather than pixel-by-pixel dithering.
-    ctx.rect(left-7,top-6,artWidth+14,(artHeight+12)*reveal);
+    ctx.rect(left,top,drawW,Math.max(0,drawH*reveal));
     ctx.clip();
-    ctx.globalAlpha=.28+.72*Math.min(1,reveal*1.6);
-    ctx.shadowColor=index===0?'#e7b898':'#ffc3d8';
-    ctx.shadowBlur=8;
-    ctx.drawImage(portrait.image,left,top,artWidth,artHeight);
+    ctx.drawImage(image,left,top,drawW,drawH);
     ctx.restore();
-    if(!reduced.matches&&reveal<1){
-      const sweepY=top+artHeight*reveal;
-      const beam=ctx.createLinearGradient(0,sweepY-9,0,sweepY+6);
-      beam.addColorStop(0,'rgba(255,226,204,0)');
-      beam.addColorStop(.7,'rgba(255,225,202,.5)');
-      beam.addColorStop(1,'rgba(255,225,202,0)');
-      ctx.fillStyle=beam;
-      ctx.fillRect(left,sweepY-9,artWidth,15);
-    }
   }
 
   let width=0,height=0,dpr=1,frameId=0,lastFrame=0;
@@ -168,20 +146,20 @@
   }
   function drawSoul(s,now){
     const {x,y}=screenPoint(s);
-    const radius=portraitCount?Math.min(4,height*.027):Math.min(25,height*.18);
+    const radius=portraitCount?Math.min(5,height*.023):Math.min(25,height*.18);
     const gradient=ctx.createRadialGradient(x,y,1,x,y,radius*2.2);
     gradient.addColorStop(0,s.light);
     gradient.addColorStop(.14,s.light);
     gradient.addColorStop(.33,s.glow+'bb');
     gradient.addColorStop(1,'rgba(205,142,160,0)');
-    ctx.globalAlpha=portraitCount?.22:1;
+    ctx.globalAlpha=portraitCount?.13:1;
     ctx.fillStyle=gradient;ctx.beginPath();
     ctx.arc(x,y,radius*2.2,0,2*Math.PI);ctx.fill();
     if(!portraitCount)circle(x,y,Math.max(4.2,radius*.22),'#fffaf2');
     ctx.textAlign='center';
     ctx.font='500 '+Math.max(10,Math.min(13,height*.09))+'px Georgia,serif';
     ctx.globalAlpha=1;
-    ctx.fillStyle='#ffebdf';ctx.fillText(s.name,x,portraitCount?height*.88:y+radius+21);
+    ctx.fillStyle='#ffebdf';ctx.fillText(s.name,x,portraitCount?height*.92:y+radius+21);
   }
   function paint(now=0){
     if(!width||!height)return;
@@ -203,7 +181,8 @@
       ctx.globalAlpha=clamp(1-gap/(width*.9),.16,.72);
       ctx.strokeStyle='#e6b3a8';ctx.lineWidth=1.3;
       ctx.setLineDash([3,6]);ctx.stroke();ctx.restore();
-      souls.forEach((s,i)=>{drawPortrait(i,now);drawSoul(s,now);});
+      drawGoldenPortrait(now);
+      souls.forEach(s=>drawSoul(s,now));
     } else {
       const cx=width*.5,cy=height*.48;
       const age=reduced.matches?4000:Math.max(0,now-mergeAt);
@@ -265,7 +244,7 @@
     if(!drag||drag.pointerId!==event.pointerId||merged)return;
     const {x,y}=pointerCoords(event);
     souls[drag.index].x=clamp(x/Math.max(1,width),.09,.91);
-    souls[drag.index].y=clamp(y/Math.max(1,height),.17,.68);
+    souls[drag.index].y=clamp(y/Math.max(1,height),.20,.88);
     if(Math.hypot(souls[0].x*width-souls[1].x*width,
                   souls[0].y*height-souls[1].y*height)
        <Math.min(70,width*.21)){
