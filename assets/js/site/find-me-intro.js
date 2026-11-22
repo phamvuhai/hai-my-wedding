@@ -1,291 +1,238 @@
-/* V25 Find Me wedding intro. Original Canvas 2D implementation based on the
- * interaction brief (not copied from an unaudited ZIP).
- * Drag either light toward the other; the connection becomes a rose-gold heart.
- * Zero images, network requests, WebGL or external libraries.
+/* Find Me V26 — automatic golden particle portrait reveal.
+ * Uses the approved wedding image only; no drag, merge, or heart effect.
+ * Particles converge on actual image pixels. A sharp image replaces them at 5s.
  */
 (() => {
   'use strict';
   const intro=document.getElementById('invitationIntro');
-  const scene=document.getElementById('findMeStage');
+  const stage=document.getElementById('findMeStage');
   const canvas=document.getElementById('findMeCanvas');
   const hint=document.getElementById('findMeHint');
   const result=document.getElementById('findMeResult');
-  if(!intro||!scene||!canvas||!hint||!result)return;
-  const ctx=canvas.getContext('2d',{alpha:true});
+  if(!intro||!stage||!canvas)return;
+  const ctx=canvas.getContext('2d',{alpha:false});
   if(!ctx)return;
-  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
   const mobile=window.matchMedia('(max-width:760px), (pointer:coarse)');
-  const translations={
-    vi:{hint:'Kéo hai ánh sáng lại gần nhau ♡',success:'Giữa muôn người, mình tìm thấy nhau ♡'},
-    en:{hint:'Bring the two lights together ♡',success:'Among so many, we found each other ♡'},
-    ja:{hint:'ふたつの光を近づけてみてください ♡',success:'たくさんの出会いの中で、ふたりは巡り会えた ♡'}
+  const TEXT={
+    vi:'Từng điểm sáng, một câu chuyện của Hải & Mỹ',
+    en:'A thousand lights, one story of Hải & Mỹ',
+    ja:'ひとつひとつの光が、ふたりの物語になる'
   };
-  const language=()=>window.WeddingI18n?.language||'vi';
   function localize(){
-    const copy=translations[language()]||translations.vi;
-    hint.textContent=window.WeddingI18n?.t?.('findme.hint')||copy.hint;
-    result.textContent=window.WeddingI18n?.t?.('findme.success')||copy.success;
-    scene.setAttribute('aria-label',copy.hint);
+    const language=window.WeddingI18n?.language||'vi';
+    const label=TEXT[language]||TEXT.vi;
+    if(hint)hint.textContent=label;
+    stage.setAttribute('aria-label',label);
   }
-
-  const souls=[
-    {name:'Hải',x:.19,y:.83,light:'#ffdfba',glow:'#dca89c'},
-    {name:'Mỹ',x:.81,y:.83,light:'#ffe0eb',glow:'#e0a0ba'}
-  ];
-  const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
-  // Optional offline-prepared, transparent portrait sketches. Files are created
-  // from approved real portraits ahead of deployment, never from visitors.
-  // Missing files intentionally retain the original V25 two-souls animation.
-  let portraitImage=null;
-  let portraitCount=0;
-  let portraitStart=performance.now();
-  function loadPortraits(){
+  if(result)result.hidden=true;
+  const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+  const smooth=x=>{x=clamp(x,0,1);return x*x*(3-2*x)};
+  function seeded(seed){
+    let a=seed>>>0;
+    return ()=>{a=(Math.imul(1664525,a)+1013904223)>>>0;return a/4294967296};
+  }
+  let image=null,width=0,height=0,dpr=1,frameId=0,frames=0;
+  let particles=[],stars=[],visible=true,finished=false,startedAt=0,elapsed=0,wasActive=false;
+  let previous=0;
+  const DURATION=5000, FULL_REVEAL_AT=3650;
+  function active(){
+    return !document.hidden &&
+      document.body.classList.contains('invitation-locked') &&
+      !intro.classList.contains('is-opening') &&
+      !intro.classList.contains('is-opened') &&
+      !intro.classList.contains('is-bypassed');
+  }
+  function animated(){return !reduce.matches &&
+    document.documentElement.dataset.motion!=='off' &&
+    document.documentElement.dataset.motion!=='minimal';}
+  function stop(){if(frameId)cancelAnimationFrame(frameId);frameId=0;previous=0;}
+  function imageRect(){
+    if(!image)return {x:0,y:0,w:width,h:height};
+    const scale=Math.min(width/image.naturalWidth,height/image.naturalHeight);
+    const w=image.naturalWidth*scale,h=image.naturalHeight*scale;
+    return {x:(width-w)/2,y:(height-h)/2,w,h};
+  }
+  function prepare(){
+    if(!image||!width||!height)return;
+    const rect=imageRect();
+    const sample=document.createElement('canvas');
+    const sw=236,sh=Math.max(1,Math.round(sw*image.naturalHeight/image.naturalWidth));
+    sample.width=sw;sample.height=sh;
+    const sc=sample.getContext('2d',{willReadFrequently:true});
+    if(!sc)return;
+    sc.drawImage(image,0,0,sw,sh);
+    let data;
+    try{data=sc.getImageData(0,0,sw,sh).data;}catch(_){return;}
+    const rnd=seeded(20261220),candidates=[];
+    const at=(x,y)=>{const i=(y*sw+x)*4;return [data[i],data[i+1],data[i+2],data[i+3]]};
+    // Prefer illuminated outlines / edges, while retaining a few interior pixels.
+    for(let y=2;y<sh-2;y+=2){
+      for(let x=2;x<sw-2;x+=2){
+        const [r,g,b,a]=at(x,y);
+        if(a<75)continue;
+        const light=(r*.3+g*.59+b*.11)/255;
+        const [rr,gg,bb]=at(x+2,y);
+        const [lr,lg,lb]=at(x-2,y);
+        const edge=Math.min(1,(Math.abs(rr-lr)+Math.abs(gg-lg)+Math.abs(bb-lb))/185);
+        const chance=.12+.65*edge+.26*light;
+        if(rnd()>chance)continue;
+        candidates.push({
+          x:rect.x+(x+.5)/sw*rect.w,
+          y:rect.y+(y+.5)/sh*rect.h,
+          color:'rgb('+r+','+g+','+b+')',
+          alpha:clamp(a/255,.3,1),
+          light,edge
+        });
+      }
+    }
+    const budget=mobile.matches?650:1700;
+    // Deterministic shuffle distributes the portrait details evenly over time.
+    for(let i=candidates.length-1;i>0;i--){
+      const j=Math.floor(rnd()*(i+1));
+      [candidates[i],candidates[j]]=[candidates[j],candidates[i]];
+    }
+    particles=candidates.slice(0,budget).map((p,i)=>{
+      const angle=rnd()*Math.PI*2;
+      const spread=Math.max(width,height)*(.45+rnd()*.55);
+      return {...p,
+        fromX:width*.5+Math.cos(angle)*spread,
+        fromY:height*.5+Math.sin(angle)*spread*.65,
+        delay:rnd()*1350,
+        radius:.55+rnd()*.75,
+        drift:rnd()*Math.PI*2,
+        speed:.7+rnd()*.6
+      };
+    });
+    stars=Array.from({length:mobile.matches?16:27},()=>({
+      x:rnd()*width,y:rnd()*height,r:.35+rnd()*.65,phase:rnd()*6.28
+    }));
+  }
+  function background(now){
+    const bg=ctx.createRadialGradient(width*.5,height*.4,0,width*.5,height*.5,Math.max(width,height)*.67);
+    bg.addColorStop(0,'#3b2422');
+    bg.addColorStop(.55,'#24161b');
+    bg.addColorStop(1,'#140e13');
+    ctx.fillStyle=bg;ctx.fillRect(0,0,width,height);
+    for(const s of stars){
+      ctx.fillStyle='rgba(255,205,145,'+(.15+.2*(.5+.5*Math.sin(now*.001+s.phase)))+')';
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();
+    }
+  }
+  function paint(now=0){
+    if(!width||!height)return;
+    background(now);
+    if(!image)return;
+    const rect=imageRect();
+    const t=finished?DURATION:elapsed;
+    const reveal=smooth((t-FULL_REVEAL_AT)/(DURATION-FULL_REVEAL_AT));
+    if(finished||!animated()){
+      ctx.drawImage(image,rect.x,rect.y,rect.w,rect.h);
+      return;
+    }
+    // Low opacity early silhouette gives continuity, but pixels stay crisp at the end.
+    if(t>2150){
+      ctx.save();
+      ctx.globalAlpha=.09*smooth((t-2150)/1050)+.91*reveal;
+      ctx.drawImage(image,rect.x,rect.y,rect.w,rect.h);
+      ctx.restore();
+    }
+    ctx.save();
+    const fade=1-smooth((t-3500)/1300);
+    for(const p of particles){
+      const pt=smooth((t-p.delay)/(2850*p.speed));
+      if(pt<=0)continue;
+      const spiral=(1-pt)*Math.sin(p.drift+t*.002)*15;
+      const x=p.fromX+(p.x-p.fromX)*pt+spiral;
+      const y=p.fromY+(p.y-p.fromY)*pt;
+      const strength=Math.min(1,pt*5)*fade*p.alpha;
+      if(strength<.015)continue;
+      ctx.globalAlpha=strength;
+      ctx.fillStyle=p.color;
+      ctx.beginPath();
+      ctx.arc(x,y,p.radius*(.7+.35*p.light),0,Math.PI*2);
+      ctx.fill();
+      if(p.edge>.5&&p.radius>1.0&&t<3550){
+        ctx.globalAlpha=strength*.2;
+        ctx.beginPath();ctx.arc(x,y,p.radius*2.3,0,Math.PI*2);ctx.fill();
+      }
+    }
+    ctx.restore();
+  }
+  function finish(){
+    finished=true;elapsed=DURATION;
+    stop();paint(performance.now());
+    stage.classList.add('is-complete');
+    if(hint)hint.classList.add('is-complete');
+  }
+  function render(now){
+    frameId=0;
+    if(!active()||!visible){stop();return;}
+    if(!image){stop();return;}
+    if(!animated()){finish();return;}
+    if(!startedAt)startedAt=now-elapsed;
+    const interval=mobile.matches?1000/30:1000/60;
+    if(previous&&now-previous<interval){
+      frameId=requestAnimationFrame(render);return;
+    }
+    previous=now;frames++;
+    elapsed=clamp(now-startedAt,0,DURATION);
+    if(elapsed>=DURATION){finish();return;}
+    paint(now);
+    frameId=requestAnimationFrame(render);
+  }
+  function reconcile(){
+    if(!active()||!visible){stop();return;}
+    if(!image)return;
+    if(!animated()){finish();return;}
+    if(finished){paint(performance.now());return;}
+    if(!frameId){
+      startedAt=performance.now()-elapsed;previous=0;
+      frameId=requestAnimationFrame(render);
+    }
+  }
+  function resize(){
+    const r=canvas.getBoundingClientRect();
+    if(r.width<1||r.height<1)return;
+    width=r.width;height=r.height;
+    dpr=Math.min(2,Math.max(1,window.devicePixelRatio||1));
+    canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    prepare();paint(performance.now());reconcile();
+  }
+  function load(){
     const src=window.WeddingFindMePortraitData;
     if(!src)return;
     const img=new Image();
     img.decoding='async';
     img.onload=()=>{
-      portraitImage=img;
-      portraitCount=2;
-      portraitStart=performance.now()-200;
-      paint(performance.now());reconcile();
+      image=img;prepare();
+      if(!animated())finish();
+      else {paint(performance.now());reconcile();}
     };
-    img.onerror=()=>{};
+    img.onerror=()=>{stage.classList.add('is-image-failed');};
     img.src=src;
   }
-  function drawGoldenPortrait(now){
-    if(!portraitImage||merged)return;
-    const image=portraitImage;
-    const scale=Math.min(width/image.naturalWidth,height/image.naturalHeight);
-    const drawW=image.naturalWidth*scale,drawH=image.naturalHeight*scale;
-    const left=(width-drawW)/2,top=(height-drawH)/2;
-    const reveal=reduced.matches?1:clamp((now-portraitStart)/1450,0,1);
-    ctx.save();
-    ctx.globalAlpha=Math.min(1,.12+reveal*1.05);
-    ctx.beginPath();
-    ctx.rect(left,top,drawW,Math.max(0,drawH*reveal));
-    ctx.clip();
-    ctx.drawImage(image,left,top,drawW,drawH);
-    ctx.restore();
-  }
-
-  let width=0,height=0,dpr=1,frameId=0,lastFrame=0;
-  let visible=true,drag=null,merged=false,mergeAt=0,frameCount=0;
-  let sparkleCount=0,finished=false,stars=[],sparks=[];
-  const seedRandom=seed=>{
-    let value=seed;
-    return ()=>{value=(value*16807)%2147483647;return(value-1)/2147483646};
-  };
-  const random=seedRandom(122026);
-  function createStars(){
-    stars=Array.from({length:mobile.matches?22:40},(_,i)=>({
-      x:random(),y:random()*.9,rad:.35+random()*.9,phase:i*.63
-    }));
-  }
-  function createSparks(){
-    const count=mobile.matches?48:120;
-    sparkleCount=count;
-    const rand=seedRandom(192026);
-    sparks=Array.from({length:count},(_,i)=>({
-      a:rand()*Math.PI*2,
-      speed:.18+rand()*.75,
-      size:.45+rand()*1.7,
-      delay:rand()*.32,
-      color:i%5===0?'#fff7dd':i%3===0?'#f2b5c4':'#eec7a7'
-    }));
-  }
-  function screenPoint(soul){return{x:soul.x*width,y:soul.y*height};}
-  function isCoverActive(){
-    return !document.hidden &&
-      !intro.classList.contains('is-opening') &&
-      !intro.classList.contains('is-opened') &&
-      !intro.classList.contains('is-bypassed') &&
-      document.body.classList.contains('invitation-locked') &&
-      document.documentElement.dataset.motion!=='off';
-  }
-  function shouldAnimate(){return isCoverActive() && visible && !reduced.matches &&
-    document.documentElement.dataset.motion!=='minimal';}
-  function stop(){if(frameId)cancelAnimationFrame(frameId);frameId=0;lastFrame=0;}
-  function resize(){
-    const rect=canvas.getBoundingClientRect();
-    if(rect.width<1||rect.height<1)return;
-    width=rect.width;height=rect.height;
-    dpr=Math.min(2,Math.max(1,window.devicePixelRatio||1));
-    canvas.width=Math.round(width*dpr);
-    canvas.height=Math.round(height*dpr);
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    createStars();
-    if(merged)createSparks();
-    paint(performance.now());
-  }
-  function circle(x,y,r,color,alpha=1){
-    ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle=color;
-    ctx.beginPath();ctx.arc(x,y,r,0,2*Math.PI);ctx.fill();ctx.restore();
-  }
-  function drawHeart(cx,cy,progress=1){
-    const factor=Math.min(width/330,height/150)*2.6;
-    ctx.save();
-    ctx.beginPath();
-    const steps=100;
-    for(let i=0;i<=Math.ceil(steps*progress);i++){
-      const t=2*Math.PI*i/steps;
-      const x=16*Math.pow(Math.sin(t),3);
-      const y=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t));
-      if(i===0)ctx.moveTo(cx+x*factor,cy+y*factor);
-      else ctx.lineTo(cx+x*factor,cy+y*factor);
-    }
-    ctx.strokeStyle='#ffe5d7';
-    ctx.lineWidth=2.1;ctx.lineCap='round';
-    ctx.shadowColor='#f6a7b8';ctx.shadowBlur=13;ctx.stroke();
-    if(progress>=.99){
-      ctx.closePath();
-      ctx.fillStyle='rgba(228,149,173,.38)';
-      ctx.fill();
-    }
-    ctx.restore();
-  }
-  function drawSoul(s,now){
-    const {x,y}=screenPoint(s);
-    const radius=portraitCount?Math.min(5,height*.023):Math.min(25,height*.18);
-    const gradient=ctx.createRadialGradient(x,y,1,x,y,radius*2.2);
-    gradient.addColorStop(0,s.light);
-    gradient.addColorStop(.14,s.light);
-    gradient.addColorStop(.33,s.glow+'bb');
-    gradient.addColorStop(1,'rgba(205,142,160,0)');
-    ctx.globalAlpha=portraitCount?.13:1;
-    ctx.fillStyle=gradient;ctx.beginPath();
-    ctx.arc(x,y,radius*2.2,0,2*Math.PI);ctx.fill();
-    if(!portraitCount)circle(x,y,Math.max(4.2,radius*.22),'#fffaf2');
-    ctx.textAlign='center';
-    ctx.font='500 '+Math.max(10,Math.min(13,height*.09))+'px Georgia,serif';
-    ctx.globalAlpha=1;
-    ctx.fillStyle='#ffebdf';ctx.fillText(s.name,x,portraitCount?height*.92:y+radius+21);
-  }
-  function paint(now=0){
-    if(!width||!height)return;
-    ctx.clearRect(0,0,width,height);
-    // A subtle starfield stays within the original paper invitation, rather
-    // than adding another full-screen black splash.
-    const bg=ctx.createLinearGradient(0,0,width,height);
-    bg.addColorStop(0,'#39252f');
-    bg.addColorStop(.5,'#432b37');
-    bg.addColorStop(1,'#35232e');
-    ctx.fillStyle=bg;ctx.fillRect(0,0,width,height);
-    for(const s of stars)circle(s.x*width,s.y*height,s.rad,'#ffedda',
-      .19+.3*(.5+.5*Math.sin(now*.0015+s.phase)));
-    if(!merged && !reduced.matches){
-      const a=screenPoint(souls[0]),b=screenPoint(souls[1]);
-      ctx.save();ctx.beginPath();ctx.moveTo(a.x,a.y);
-      ctx.quadraticCurveTo(width*.5,height*.15,b.x,b.y);
-      const gap=Math.hypot(a.x-b.x,a.y-b.y);
-      ctx.globalAlpha=clamp(1-gap/(width*.9),.16,.72);
-      ctx.strokeStyle='#e6b3a8';ctx.lineWidth=1.3;
-      ctx.setLineDash([3,6]);ctx.stroke();ctx.restore();
-      drawGoldenPortrait(now);
-      souls.forEach(s=>drawSoul(s,now));
-    } else {
-      const cx=width*.5,cy=height*.48;
-      const age=reduced.matches?4000:Math.max(0,now-mergeAt);
-      const trace=clamp(age/850,0,1);
-      drawHeart(cx,cy,trace);
-      if(!reduced.matches){
-        for(const p of sparks){
-          const t=(age/1000-p.delay);
-          if(t<=0||t>=1.55)continue;
-          const range=Math.min(width*.34,95)*p.speed*t*2;
-          const x=cx+Math.cos(p.a)*range;
-          const y=cy+Math.sin(p.a)*range-13*t*t;
-          circle(x,y,p.size,p.color,(1-t/1.55)*.82);
-        }
-      }
-    }
-  }
-  function render(now){
-    frameId=0;
-    if(!shouldAnimate()){stop();return;}
-    const interval=mobile.matches?1000/30:1000/60;
-    if(!lastFrame||now-lastFrame>=interval){
-      lastFrame=now;frameCount++;
-      paint(now);
-    }
-    if(merged && now-mergeAt>2600){
-      finished=true;paint(now);stop();return;
-    }
-    frameId=requestAnimationFrame(render);
-  }
-  function reconcile(){
-    if(!shouldAnimate() || finished){stop();paint(performance.now());return;}
-    if(!frameId)frameId=requestAnimationFrame(render);
-  }
-  function pointerCoords(event){
-    const r=canvas.getBoundingClientRect();
-    return{x:event.clientX-r.left,y:event.clientY-r.top};
-  }
-  function merge(){
-    if(merged)return;
-    merged=true;finished=false;mergeAt=performance.now();
-    hint.hidden=true;result.hidden=false;
-    createSparks();
-    paint(mergeAt+1);
-    reconcile();
-  }
-  canvas.addEventListener('pointerdown',event=>{
-    if(merged||!shouldAnimate())return;
-    const {x,y}=pointerCoords(event);
-    const candidates=souls.map((s,i)=>({...screenPoint(s),i}))
-      .sort((a,b)=>Math.hypot(a.x-x,a.y-y)-Math.hypot(b.x-x,b.y-y));
-    const closest=candidates[0];
-    if(!closest || Math.hypot(closest.x-x,closest.y-y)>52)return;
-    drag={pointerId:event.pointerId,index:closest.i};
-    canvas.setPointerCapture?.(event.pointerId);
-    event.preventDefault();
-  });
-  canvas.addEventListener('pointermove',event=>{
-    if(!drag||drag.pointerId!==event.pointerId||merged)return;
-    const {x,y}=pointerCoords(event);
-    souls[drag.index].x=clamp(x/Math.max(1,width),.09,.91);
-    souls[drag.index].y=clamp(y/Math.max(1,height),.20,.88);
-    if(Math.hypot(souls[0].x*width-souls[1].x*width,
-                  souls[0].y*height-souls[1].y*height)
-       <Math.min(70,width*.21)){
-      drag=null;merge();
-    }else paint(performance.now());
-    event.preventDefault();
-  });
-  function finishPointer(event){
-    if(drag?.pointerId!==event.pointerId)return;
-    drag=null;
-    if(!merged)paint(performance.now());
-  }
-  canvas.addEventListener('pointerup',finishPointer);
-  canvas.addEventListener('pointercancel',finishPointer);
   window.addEventListener('resize',resize,{passive:true});
-  if('ResizeObserver' in window)new ResizeObserver(resize).observe(scene);
-  if('IntersectionObserver' in window)
-    new IntersectionObserver(entries=>{
-      visible=entries.some(x=>x.isIntersecting);
-      reconcile();
-    },{threshold:.05}).observe(scene);
+  if('ResizeObserver'in window)new ResizeObserver(resize).observe(stage);
+  if('IntersectionObserver'in window)new IntersectionObserver(entries=>{
+    visible=entries.some(e=>e.isIntersecting);
+    reconcile();
+  },{threshold:.01}).observe(stage);
+  document.addEventListener('visibilitychange',reconcile);
   document.addEventListener('wedding:language',localize);
   document.addEventListener('wedding:invitation-opened',stop);
-  document.addEventListener('visibilitychange',reconcile);
   new MutationObserver(reconcile).observe(intro,{attributes:true,attributeFilter:['class']});
   new MutationObserver(reconcile).observe(document.documentElement,{attributes:true,attributeFilter:['data-motion']});
-  reduced.addEventListener?.('change',()=>{if(reduced.matches){merged=true;finished=true;}resize();reconcile()});
-  mobile.addEventListener?.('change',()=>{createStars();if(merged)createSparks();resize();reconcile()});
+  reduce.addEventListener?.('change',()=>{if(reduce.matches)finish();else reconcile();});
+  mobile.addEventListener?.('change',()=>{prepare();reconcile();});
   window.addEventListener('pagehide',stop,{passive:true});
   window.addEventListener('pageshow',reconcile,{passive:true});
-  scene.classList.add('is-enhanced');
-  loadPortraits();
-  localize();
-  resize();
-  if(reduced.matches){
-    merged=true;finished=true;hint.hidden=false;result.hidden=true;
-    paint(performance.now());
-  }
-  reconcile();
+  stage.classList.add('is-enhanced');
+  localize();resize();load();reconcile();
   window.WeddingFindMe={
-    status:()=>({running:Boolean(frameId),merged,finished,frames:frameCount,
-      sparks:sparkleCount,portraits:portraitCount,visible,width:Math.round(width),height:Math.round(height)})
+    status:()=>({running:!!frameId,finished,frames,elapsed:Math.round(elapsed),
+      duration:DURATION,particles:particles.length,photoLoaded:!!image,
+      automatic:true,visible,width:Math.round(width),height:Math.round(height)})
   };
 })();
