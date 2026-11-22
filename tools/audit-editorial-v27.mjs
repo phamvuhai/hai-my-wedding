@@ -63,9 +63,16 @@ try{
     assert.equal(snapshot.outdated,0,'No duplicate story/collage or marquee');
     assert.ok(snapshot.countdown>80&&snapshot.countdown<width,'Compact countdown');
     assert.ok(snapshot.storyWidth<=width,'Editorial Story fits viewport');
-    await page.locator('#events [data-v3-day-button="groom"]').click();
-    assert.equal(await page.locator('#events [data-v3-day-button="groom"]').getAttribute('aria-pressed'),'true');
-    assert.equal(await page.locator('#events [data-event-day="groom"]').evaluate(el=>el.classList.contains('is-active')),true);
+    // Tabs are intentionally mobile/tablet-only; desktop shows both panels at once.
+    const groomTab=page.locator('#events [data-v3-day-button="groom"]');
+    if(await groomTab.isVisible()){
+      await groomTab.click();
+      assert.equal(await groomTab.getAttribute('aria-pressed'),'true');
+      assert.equal(await page.locator('#events [data-event-day="groom"]').evaluate(el=>el.classList.contains('is-active')),true);
+    }else{
+      assert.equal(await page.locator('#events [data-event-day="bride"]').isVisible(),true);
+      assert.equal(await page.locator('#events [data-event-day="groom"]').isVisible(),true);
+    }
     await page.evaluate(()=>window.WeddingI18n.setLanguage('en'));
     assert.equal(await page.locator('#story h2').innerText(),'From us, to family.');
     assert.deepEqual(errors,[],'No page errors at '+width+'px');
