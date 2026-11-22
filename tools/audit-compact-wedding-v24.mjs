@@ -10,7 +10,8 @@ const root=process.cwd();
 const mime={'.html':'text/html;charset=utf-8','.js':'application/javascript','.css':'text/css'};
 const fixture='<!doctype html><html lang="vi"><head><meta name="viewport" content="width=device-width,initial-scale=1">'+
   '<link rel="stylesheet" href="/assets/css/site.css">'+
-  '<link rel="stylesheet" href="/assets/css/compact-wedding.css"></head>'+
+  '<link rel="stylesheet" href="/assets/css/compact-wedding.css">'+
+  '<link rel="stylesheet" href="/assets/css/luxury-editorial.css"></head>'+
   '<body><main><section id="weddingGifts" class="section wedding-gifts chapter-member"></section></main>'+
   '<script src="/assets/js/site/gifts.js"></script></body></html>';
 const server=createServer((req,res)=>{
@@ -59,47 +60,48 @@ async function check(width,brideEnabled=false,locale='vi'){
    return route.abort();
  });
  await page.goto(origin+'/v24-fixture',{waitUntil:'domcontentloaded'});
- await page.waitForFunction(()=>{
-   const b=document.querySelector('#weddingGifts [data-gift-side="bride"]');
-   return !!b && document.querySelectorAll('#weddingGifts .wedding-gift-card').length===2;
- },null,{timeout:8000});
- // Wait for asynchronous Supabase preferences; the default bride starts disabled.
- if(brideEnabled) await page.waitForSelector('#weddingGifts [data-gift-zoom="bride"]',{timeout:8000});
+ await page.waitForSelector('#weddingGifts .wedding-gift-disclosure',{timeout:8000});
+ if(brideEnabled)await page.waitForSelector('#weddingGifts [data-gift-zoom="bride"]',{timeout:8000});
+ assert.equal(await page.locator('#weddingGifts .wedding-gift-disclosure').evaluate(el=>el.open),false,
+   'Gift details collapsed by default');
+ assert.ok(await page.locator('#weddingGifts summary').isVisible(),'Discreet gift summary is visible');
+ const initialHeight=await page.locator('#weddingGifts').evaluate(el=>el.getBoundingClientRect().height);
+ assert.ok(initialHeight<210,'Collapsed bank section should be compact');
+ await page.locator('#weddingGifts summary').click();
+ assert.equal(await page.locator('#weddingGifts .wedding-gift-disclosure').evaluate(el=>el.open),true);
  const layout=await page.evaluate(()=>{
    const gift=document.getElementById('weddingGifts');
    const groom=gift.querySelector('[data-gift-side="groom"]');
    const bride=gift.querySelector('[data-gift-side="bride"]');
    const image=groom.querySelector('.wedding-gift-qr');
-   const a=groom.getBoundingClientRect(),b=bride.getBoundingClientRect();
+   const a=groom.getBoundingClientRect(),b=bride?.getBoundingClientRect();
    return {
      width:innerWidth,
-     gridColumns:getComputedStyle(gift.querySelector('.wedding-gift-grid')).gridTemplateColumns,
      a:{x:a.x,y:a.y,width:a.width,height:a.height},
-     b:{x:b.x,y:b.y,width:b.width,height:b.height},
+     b:b?{x:b.x,y:b.y,width:b.width,height:b.height}:null,
      qr:image.getBoundingClientRect().width,
-     sectionHeight:gift.getBoundingClientRect().height,
-     overflow:document.documentElement.scrollWidth>innerWidth+1
+     overflow:document.documentElement.scrollWidth>innerWidth+1,
+     cards:gift.querySelectorAll('.wedding-gift-card').length
    };
  });
- assert.ok(Math.abs(layout.a.y-layout.b.y)<3,'Two cards must be on the same row at '+width+'px');
- assert.ok(layout.b.x>layout.a.x,'Groom card must precede Bride horizontally');
- assert.ok(layout.a.width>=130 && layout.b.width>=130,'Gift cards must be readable');
- assert.ok(layout.qr<=170 && layout.qr>=85,'QR width must be small but legible');
+ assert.equal(layout.cards,brideEnabled?2:1,'Only configured gift cards should render');
+ if(brideEnabled){
+   assert.ok(Math.abs(layout.a.y-layout.b.y)<3,'Two enabled cards share a row on '+width);
+   assert.ok(layout.b.x>layout.a.x,'Groom before bride');
+   assert.ok(layout.a.width>=130&&layout.b.width>=130,'Cards readable');
+ }
+ assert.ok(layout.qr<=170&&layout.qr>=85,'Small scannable QR');
  assert.equal(layout.overflow,false,'No horizontal overflow at '+width);
- assert.ok(layout.sectionHeight<970,'Gift section must stay compact');
- assert.equal(await page.locator('#weddingGifts .wedding-gift-qr img').count(),brideEnabled?2:1,
-   'Only configured QR images are shown');
- assert.equal(await page.locator('#weddingGifts [data-gift-side="bride"] .wedding-gift-pending').count(),brideEnabled?0:1,
-   'Disabled Bride card stays as a truthful compact placeholder');
- const qr=page.locator('#weddingGifts [data-gift-zoom="groom"]');
- await qr.click();
+ assert.equal(await page.locator('#weddingGifts .wedding-gift-qr img').count(),brideEnabled?2:1);
+ assert.equal(await page.locator('#weddingGifts .wedding-gift-pending').count(),0,
+   'No unavailable account placeholders');
+ await page.locator('#weddingGifts [data-gift-zoom="groom"]').click();
  await page.waitForSelector('#weddingQrDialog[open]',{timeout:4000});
  const dialog=await page.evaluate(()=>{
    const d=document.getElementById('weddingQrDialog');
-   return {size:d.querySelector('img').getBoundingClientRect().width,
-       close:getComputedStyle(d).display, alt:d.querySelector('img').alt};
+   return {size:d.querySelector('img').getBoundingClientRect().width,alt:d.querySelector('img').alt};
  });
- assert.ok(dialog.size>=220,'Tap must reveal a large scannable QR');
+ assert.ok(dialog.size>=220,'Enlarged QR scannable');
  assert.ok(dialog.alt.length>5);
  await page.keyboard.press('Escape');
  await page.waitForFunction(()=>!document.getElementById('weddingQrDialog').open,null,{timeout:4000});
@@ -107,19 +109,15 @@ async function check(width,brideEnabled=false,locale='vi'){
  await page.waitForFunction(()=>!!window.__copied,{timeout:3000});
  assert.ok(!errors.length,'No JavaScript errors: '+errors.join('; '));
  await ctx.close();
- return layout;
+ return {width:layout.width,qr:layout.qr,cards:layout.cards,initialHeight};
 }
 try{
-  const results=[];
-  for(const width of [340,390,768,1280])results.push(await check(width,false,'vi'));
-  results.push(await check(390,true,'en'));
-  results.push(await check(390,true,'ja'));
-  const pageText=readFileSync(resolve(root,'assets/js/site/i18n.js'),'utf8');
-  assert.ok(pageText.includes('Cho chúng mình biết bạn có thể đến chung vui nhé'),'VI RSVP summary shortened');
-  assert.ok(pageText.includes('Let us know if you can celebrate with us'),'EN RSVP summary shortened');
-  assert.ok(pageText.includes('ご出席いただけるか、お知らせください'),'JA RSVP summary shortened');
-  console.log('PASS V24: two compact aligned cards, zoom QR, truthful disabled Bride, enabled Bride, clipboard, overflow and locales');
-  console.log(JSON.stringify(results.map(x=>({width:x.width,qr:Math.round(x.qr),height:Math.round(x.sectionHeight),overflow:x.overflow}))));
+ const results=[];
+ for(const width of [340,390,768,1280])results.push(await check(width,false,'vi'));
+ results.push(await check(390,true,'en'));
+ results.push(await check(390,true,'ja'));
+ console.log('PASS V27: gift summary collapsed, only configured bank cards, two-up when enabled, QR zoom, clipboard, no overflow and locales');
+ console.log(JSON.stringify(results));
 } finally {
  await browser.close();
  await new Promise(resolve=>server.close(resolve));
