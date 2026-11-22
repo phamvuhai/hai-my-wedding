@@ -149,3 +149,35 @@ Keep descriptions and titles readable after switching to EN/JA.
 - Single-finger swipe only switches photos when not zoomed. Two-finger pinch must **never** advance photos, and navigation still stops at the first/last album photo.
 - WebKit offline regression \`tools/audit-v21-gallery.mjs\` now tests the new zoom control, simulated pinch/pan without navigation, zoom reset on next, and fallback on an intentionally missing 5MB original. Safari regression, Asset Integrity and Atelier Visual QA must all pass before merge.
 - Post-release: verify an actual iPhone over 4G with a published album photo and inspect whether the original WebP opens from the Supabase public URL. CI mocks verify interface behavior, not cell-network throughput.
+
+
+## V25 — Find Me opening interaction (2026-11-22)
+
+- Placed a **small two-glowing-souls starfield** inside the existing invitation
+  cover immediately after the wedding date, before personalized guest details.
+  There is NO replacement landing page and the existing **MỞ THIỆP** button is
+  always available as a skip action.
+- Original self-contained Canvas 2D implementation in
+  \`assets/js/site/find-me-intro.js\`, styled by
+  \`assets/css/find-me-intro.css\`. Visitors can drag Hải or Mỹ toward the
+  other to reveal a warm rose-gold thread, particles and a heart.
+- Technical reference: Hxni786/find-me GitHub README documents two souls,
+  red string and a heart. The repository's code is only available inside a
+  binary ZIP that was not readable via the authenticated GitHub connector,
+  and its README links to a LICENSE path that returns 404. As a result this
+  module is **independently implemented from the interaction brief**, not a
+  copy of inaccessible source files. No third-party bundle, assets or licensing
+  files are vendored.
+- Resource envelope: 48 particles / about 30 fps on touch/mobile, 120 /
+  about 60 fps on desktop; stops after the merge animation or immediately
+  when the invitation is opened. Non-entry \`/vi\`, \`/en\`, \`/jp\` routes
+  bypass the cover and never run a Canvas loop. Reduced-motion mode draws
+  a quiet static heart.
+- Three locales VI/EN/JA have short instructions and a brief result message;
+  no new Love Letter overlay that would compete with the existing invitation.
+- Important existing safety: personalized invite information, date/time, RSVP,
+  music click gating, Hero, Gallery and Gift bank details are untouched.
+  Neither the original ZIP nor private guest data is fetched at runtime.
+- Gate with \`node tools/audit-find-me-intro.mjs\` on WebKit for iPhone SE,
+  iPhone 13, desktop, personalized route skip, reduction in motion and
+  post-open cleanup, plus existing full Safari, Visual QA, Asset Integrity.
