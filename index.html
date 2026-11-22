@@ -129,7 +129,15 @@
         <p class="eyebrow">SAVE THE DATE</p>
         <h1 class="kinetic-names hero-couple-names"><span class="hero-name hero-name-left"><span class="hero-name-fit-text" data-i18n="name.groom">Hải Phạm</span></span><span class="hero-amp"><span class="hero-amp-text">&</span></span><span class="hero-name hero-name-right"><span class="hero-name-fit-text" data-i18n="name.bride">Mỹ Nguyễn</span></span></h1>
         <p class="hero-date" data-i18n="intro.eventDate">18 — 20 · 12 · 2026</p>
-        <p class="hero-note" data-i18n="hero.note">Giữa bao cuộc gặp gỡ, thật may mắn khi chúng mình tìm thấy nhau. Từ hôm nay, mọi hành trình đều có nhau.</p>
+        <p class="hero-note" data-i18n="hero.note">May mắn nhất là tìm thấy nhau.</p>
+        <div class="editorial-countdown" id="countdown" aria-label="Đếm ngược đến ngày cưới">
+          <div class="editorial-countdown-values">
+            <div><strong id="days">00</strong><span data-i18n="countdown.days">Ngày</span></div>
+            <div><strong id="hours">00</strong><span data-i18n="countdown.hours">Giờ</span></div>
+            <div><strong id="minutes">00</strong><span data-i18n="countdown.minutes">Phút</span></div>
+            <div><strong id="seconds">00</strong><span data-i18n="countdown.seconds">Giây</span></div>
+          </div>
+        </div>
         <p class="hero-guest-greeting" id="heroGuestGreeting" hidden>
           <span id="heroGuestLabel"></span>
           <strong id="heroGuestName"></strong>
@@ -149,66 +157,24 @@
     <div class="hero-curtain" aria-hidden="true"></div>
   </header>
 
-  <div class="motion-marquee hero-marquee" aria-hidden="true">
-    <div class="marquee-track">
-      <span>HẢI PHẠM & MỸ NGUYỄN</span><i>•</i><span>SAVE THE DATE</span><i>•</i><span>18.12.2026</span><i>•</i><span>20.12.2026</span><i>•</i>
-      <span>HẢI PHẠM & MỸ NGUYỄN</span><i>•</i><span>SAVE THE DATE</span><i>•</i><span>18.12.2026</span><i>•</i><span>20.12.2026</span><i>•</i>
-    </div>
-  </div>
-
   <main>
-    <section class="section intro editorial-story chapter-start chapter-story" id="story" data-chapter="story">
-      <div class="container story-grid">
-        <div class="story-side reveal">
-          <p class="eyebrow">OUR STORY</p>
-          <div class="monogram">H<span>♥</span>M</div>
-        </div>
-        <div class="story-paper-stack reveal">
-          <span class="story-paper-layer story-paper-back" aria-hidden="true"></span>
-          <span class="story-paper-layer story-paper-mid" aria-hidden="true"></span>
-          <div class="story-copy">
-            <span class="story-paper-stitch" aria-hidden="true"></span>
-            <p class="story-paper-kicker">OUR LOVE STORY</p>
-            <h2 data-i18n="story.title" data-motion-lines>Từ những điều bình dị, đến một đời có nhau</h2>
-            <p data-i18n="story.text" data-motion-lines>Từ những lời hỏi han và tiếng cười mỗi ngày, Hải và Mỹ dần trở thành nhà của nhau. Chẳng cần mọi thứ hoàn hảo, chỉ cần cùng nhau đi hết chặng đường phía trước.</p>
-            <span class="story-paper-signature" aria-hidden="true">H ♥ M</span>
+    <section class="section intro editorial-story chapter-start chapter-story editorial-story-v27" id="story" data-chapter="story">
+      <div class="container editorial-story-layout">
+        <figure class="editorial-story-visual reveal" id="forever">
+          <div class="our-promise-photo-shell">
+            <img id="ourPromisePhoto" class="our-promise-photo" src="https://uxyfhgtxfodnjzwlggnc.supabase.co/storage/v1/object/public/wedding-gallery/pre-wedding/0ca51313-ddf9-4d69-a1ec-b72343de79bf.webp" alt="Hải &amp; Mỹ" loading="lazy" decoding="async">
+            <div class="our-promise-fallback" aria-hidden="true"><span>H</span><span>♡</span><span>M</span></div>
           </div>
+          <figcaption data-i18n="promise.caption">MỘT LỜI HẸN · MỘT MÁI NHÀ</figcaption>
+        </figure>
+        <div class="editorial-story-copy reveal">
+          <p class="eyebrow">OUR STORY</p>
+          <h2 data-i18n="story.title" data-motion-lines>Từ chúng mình, thành gia đình.</h2>
+          <p data-i18n="story.text" data-motion-lines>Không cần ngày nào cũng hoàn hảo, chỉ cần mỗi ngày có nhau.</p>
+          <span class="editorial-story-signature" aria-hidden="true">Hải &amp; Mỹ · 2026</span>
         </div>
       </div>
     </section>
-
-    <div class="romance-collage-slot" data-collage-slot="story" hidden></div>
-
-    <section class="section countdown-section countdown-compact countdown-v15 chapter-start chapter-events" data-chapter="events">
-      <div class="container reveal countdown-layout">
-        <div class="countdown-heading">
-          <p class="eyebrow">COUNTDOWN</p>
-          <h2 data-i18n="countdown.short">Ngày mình về chung một nhà</h2>
-          <span class="countdown-heading-flourish" aria-hidden="true">
-            <svg viewBox="0 0 340 38" xmlns="http://www.w3.org/2000/svg" role="presentation">
-              <path d="M1 22 C63 40 120 3 198 19 S295 20 315 19" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-              <path d="M315 19 C310 10 319 5 325 13 C331 3 341 10 336 18 C333 23 327 28 325 30 C322 26 318 22 315 19Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-            </svg>
-          </span>
-        </div>
-        <div class="countdown" id="countdown">
-          <div><strong id="days">00</strong><span data-i18n="countdown.days">Ngày</span></div>
-          <div><strong id="hours">00</strong><span data-i18n="countdown.hours">Giờ</span></div>
-          <div><strong id="minutes">00</strong><span data-i18n="countdown.minutes">Phút</span></div>
-          <div><strong id="seconds">00</strong><span data-i18n="countdown.seconds">Giây</span></div>
-        </div>
-        <div class="countdown-date-stamp" aria-label="Wedding dates">
-          <span class="countdown-stamp-month" data-i18n="countdown.month">THÁNG 12</span>
-          <span class="countdown-stamp-day">18</span>
-          <i aria-hidden="true">♥</i>
-          <span class="countdown-stamp-day">20</span>
-          <small>2026</small>
-        </div>
-      </div>
-    </section>
-
-    <div class="romance-collage-slot" data-collage-slot="promise" hidden></div>
-
 
     <section class="section events chapter-member v3-events" id="events">
       <div class="container">
@@ -216,13 +182,6 @@
           <span class="v3-kicker">OUR SPECIAL DAYS</span>
           <h2 data-i18n="events.title">Lịch cưới</h2>
           <p data-i18n="events.subtitle">Chọn Nhà gái hoặc Nhà trai để xem thời gian, địa điểm và chỉ đường.</p>
-        </div>
-        <figure class="v3-schedule-photo" id="v3SchedulePhotoWrap" hidden>
-          <img id="v3SchedulePhoto" alt="Hải Phạm & Mỹ Nguyễn" loading="lazy" decoding="async">
-          <figcaption><span>HẢI ♡ MỸ</span><strong data-i18n="events.photoCaption">Hai gia đình, một niềm hạnh phúc.</strong></figcaption>
-        </figure>
-        <div class="v3-schedule-intro">
-          <span>✧</span><p data-v3-schedule-tagline>Hai gia đình, một niềm hạnh phúc</p><span>✧</span>
         </div>
         <div class="v3-event-switch" role="group" data-i18n-aria="events.selectDay" aria-label="Chọn lịch cưới nhà gái hoặc nhà trai">
           <button type="button" class="is-active" data-v3-day-button="bride" aria-pressed="true"><span data-i18n="family.bride">Nhà gái</span> <small>18/12</small></button>
@@ -289,98 +248,32 @@
       </div>
     </section>
 
-        <div class="romance-collage-slot" data-collage-slot="events" hidden></div>
-
-    <section class="our-promise chapter-member" id="forever" aria-labelledby="promiseTitle">
-      <div class="container our-promise-layout">
-        <figure class="our-promise-visual">
-          <div class="our-promise-photo-shell">
-            <img id="ourPromisePhoto" class="our-promise-photo" src="https://uxyfhgtxfodnjzwlggnc.supabase.co/storage/v1/object/public/wedding-gallery/pre-wedding/0ca51313-ddf9-4d69-a1ec-b72343de79bf.webp" alt="Hải &amp; Mỹ" loading="lazy" decoding="async">
-            <div class="our-promise-fallback" aria-hidden="true"><span>H</span><span>♡</span><span>M</span></div>
-          </div>
-          <figcaption data-i18n="promise.caption">MỘT LỜI HẸN · MỘT MÁI NHÀ</figcaption>
-        </figure>
-        <div class="our-promise-letter">
-          <p class="our-promise-kicker" data-i18n="promise.kicker">LỜI HẸN CỦA CHÚNG MÌNH</p>
-          <h2 id="promiseTitle" data-i18n="promise.title">Và rồi, mình chọn một đời có nhau.</h2>
-          <span class="our-promise-divider" aria-hidden="true">✦</span>
-          <p data-i18n="promise.body1">Không cần ngày nào cũng hoàn hảo, chỉ mong có nhau để sẻ chia những chuyện nhỏ mỗi ngày.</p>
-          <p data-i18n="promise.body2">Hải và Mỹ chọn cùng xây một mái nhà, nơi yêu thương được gìn giữ bằng sự dịu dàng và thấu hiểu.</p>
-          <p class="our-promise-signature" data-i18n="promise.signature">Hải ♡ Mỹ</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- V19: original SVG crystal-heart scene. Pure decoration; no WebGL or image dependencies. -->
-    <section class="hm-forever-scene chapter-member" id="weddingMagic" aria-labelledby="hmForeverTitle">
-      <div class="hm-forever-particles" aria-hidden="true"></div>
-      <div class="hm-forever-inner">
-        <p class="hm-forever-eyebrow">HẢI &amp; MỸ · 2026</p>
-        <div class="hm-crystal-stage" aria-hidden="true">
-          <span class="hm-crystal-halo"></span>
-          <span class="hm-crystal-orbit"></span>
-          <span class="hm-crystal-orbit hm-crystal-orbit--inner"></span>
-          <svg class="hm-crystal-heart" viewBox="0 0 220 200" focusable="false" role="presentation" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <path id="hm-heart-shape" d="M110 181C91 162 24 117 24 70C24 31 74 16 110 53C146 16 196 31 196 70C196 117 129 162 110 181Z"/>
-              <clipPath id="hm-crystal-clip"><use href="#hm-heart-shape"/></clipPath>
-              <linearGradient id="hm-crystal-base" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#fff3e5"/><stop offset=".24" stop-color="#eab3c3"/>
-                <stop offset=".58" stop-color="#aa5d82"/><stop offset="1" stop-color="#5e304b"/>
-              </linearGradient>
-              <linearGradient id="hm-crystal-glint" x1="0" x2="1" y1="0" y2="1">
-                <stop offset="0" stop-color="#fffaf4" stop-opacity=".94"/>
-                <stop offset="1" stop-color="#ffd4dc" stop-opacity=".03"/>
-              </linearGradient>
-            </defs>
-            <use href="#hm-heart-shape" fill="url(#hm-crystal-base)"/>
-            <g clip-path="url(#hm-crystal-clip)">
-              <path fill="#f4d0d1" opacity=".8" d="M21 70L62 28L108 54L82 110Z"/>
-              <path fill="#ce7e9a" opacity=".93" d="M62 28L110 53L136 28L152 86L82 110Z"/>
-              <path fill="#824463" opacity=".9" d="M136 28L197 60L168 112L152 86Z"/>
-              <path fill="#f8d4d2" opacity=".55" d="M21 70L82 110L110 181L47 126Z"/>
-              <path fill="#d78caa" opacity=".71" d="M82 110L152 86L110 181Z"/>
-              <path fill="#6a3557" opacity=".85" d="M152 86L199 80L168 124L110 181Z"/>
-              <path fill="url(#hm-crystal-glint)" opacity=".88" d="M62 28L110 53L82 110L48 67Z"/>
-              <path class="hm-facet-lines" d="M62 28L108 54L82 110L24 70 M110 53L152 86L82 110L110 181 M152 86L196 70 M82 110L167 123L110 181"/>
-            </g>
-            <use href="#hm-heart-shape" class="hm-crystal-outline"/>
-          </svg>
-          <span class="hm-crystal-flare"></span>
-        </div>
-        <h2 class="hm-forever-heading" id="hmForeverTitle" data-i18n="effects.foreverTitle">Một trái tim, một hành trình</h2>
-        <p class="hm-forever-caption">FOREVER &amp; ALWAYS</p>
-      </div>
-    </section>
-
-    <section class="section gallery-section chapter-member">
+        <section class="section gallery-section chapter-member">
       <div class="container">
         <div class="gallery-editorial-head">
-          <div class="gallery-display reveal" aria-hidden="true"><span>OUR</span><span>MOMENTS</span></div>
+          
           <div class="section-heading reveal">
-            <p class="eyebrow">MEMORIES</p>
-            <h2 data-i18n="gallery.title">Khoảnh khắc của chúng tôi</h2>
-            <p data-i18n="gallery.subtitle">Mỗi tấm ảnh là một khoảnh khắc chúng mình muốn giữ mãi.</p>
+            <p class="eyebrow">OUR MOMENTS</p>
+            <h2 data-i18n="gallery.title">Khoảnh khắc của chúng mình</h2>
+            
           </div>
         </div>
         <div id="homeGallery" class="home-gallery">
           <div class="gallery-empty" data-i18n="gallery.empty">Album đang được chuẩn bị ♡</div>
         </div>
         <div class="gallery-cta">
-          <a class="btn btn-outline" href="/vi/album" data-album-link data-i18n="gallery.view">Xem toàn bộ album →</a>
+          <a class="btn btn-outline" href="/vi/album" data-album-link data-i18n="gallery.view">Xem album →</a>
         </div>
       </div>
     </section>
-
-    <div class="romance-collage-slot" data-collage-slot="moments" hidden></div>
 
     <section class="section rsvp-section chapter-start chapter-rsvp" id="rsvp" data-chapter="rsvp">
       <div class="container rsvp-wrap">
         <div class="rsvp-copy reveal">
           <div class="rsvp-display" aria-hidden="true"><span>SAY</span><em>YES</em></div>
           <p class="eyebrow">RSVP</p>
-          <h2 data-i18n="rsvp.title">Bạn sẽ đến chung vui cùng chúng tôi chứ?</h2>
-          <p data-i18n="rsvp.subtitle">Cho chúng mình biết bạn có thể đến chung vui nhé ♡</p>
+          <h2 data-i18n="rsvp.title">Bạn đến chung vui nhé?</h2>
+          
         </div>
 
         <form class="rsvp-form reveal" id="rsvpForm">
@@ -442,8 +335,6 @@
         </form>
       </div>
     </section>
-    <div class="romance-collage-slot" data-collage-slot="rsvp" hidden></div>
-
     <!-- Công khai thông tin mừng cưới: Nhà trai trước, Nhà gái sau. -->
     <section id="weddingGifts" class="section wedding-gifts chapter-member" aria-label="Thông tin mừng cưới">
       <div class="wedding-gift-inner">
@@ -506,11 +397,10 @@
   <div class="page-progress" aria-hidden="true"><span></span><i></i></div>
 
   <footer class="footer">
-    <div class="v3-farewell" id="v3Farewell" hidden><img id="v3FarewellImage" alt="Hải & Mỹ" loading="lazy"><p>Forever & Always ♡</p></div>
     <div class="container">
       <p class="footer-names signature-name"><span class="footer-name-groom">Hải Phạm</span> <span class="footer-name-amp">&amp;</span> <span class="footer-name-bride">Mỹ Nguyễn</span></p>
       <span class="signature-line" aria-hidden="true"></span>
-      <p data-i18n="footer.thanks">Cảm ơn bạn đã dành những lời chúc và tình thương cho Hải & Mỹ. Hẹn gặp nhau trong ngày vui ♡</p>
+      <p data-i18n="footer.thanks">Cảm ơn vì đã ở đây.</p>
       <p class="footer-small" data-i18n="footer.month">December 2026</p>
     </div>
   </footer>
@@ -536,6 +426,6 @@
   <script src="/assets/js/site/gifts.js"></script>
   <script src="/assets/js/site/scroll-motion.js"></script>
   <script src="/assets/js/site/romantic-motion.js"></script>
-  <script src="/assets/js/site/particle-heart.js"></script>
+
 </body>
 </html>
