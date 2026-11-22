@@ -26,10 +26,8 @@ jobs:
           node --check assets/js/site/romantic-motion.js
           node --check assets/js/site/i18n.js
           node --check tools/audit-romantic-motion.mjs
-          node --check assets/js/site/particle-heart.js
           node --check assets/js/site/find-me-intro.js
           node --check tools/audit-find-me-intro.mjs
-          node --check tools/audit-particle-heart.mjs
           node --check assets/js/site/adaptive-images.js
           node --check assets/js/site/album.js
           node --check tools/audit-home-gallery-images.mjs
@@ -52,8 +50,6 @@ jobs:
         run: node tools/audit-album-bulk.mjs
       - name: Test new romantic motion without production data
         run: node tools/audit-romantic-motion.mjs
-      - name: Test V23 particle heart on Safari with zero external assets
-        run: node tools/audit-particle-heart.mjs
       - name: Test adaptive images on Safari with mock-only Supabase
         run: node tools/audit-adaptive-images.mjs
       - name: Test Homepage Gallery lazy previews and image recovery in Safari
