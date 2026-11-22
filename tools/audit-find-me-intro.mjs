@@ -28,11 +28,12 @@ async function visit(width,height,opts={}){
   page.on('pageerror',error=>errors.push(error.message));
   await page.addInitScript(()=>{
     // This test never uses live Supabase settings or guest tokens.
+    const chain=()=>new Proxy({}, {get(_t,key){
+      if(key==='then')return (resolve,reject)=>Promise.resolve({data:[],error:null}).then(resolve,reject);
+      return ()=>chain();
+    }});
     window.supabase={createClient:()=>({
-      from:()=>new Proxy({}, {get(_t,key){
-        if(key==='then')return resolve=>Promise.resolve({data:[],error:null}).then(resolve);
-        return ()=>({then:resolve=>Promise.resolve({data:[],error:null}).then(resolve)});
-      }}),
+      from:()=>chain(),
       rpc:async()=>({data:null,error:null}),
       storage:{from:()=>({getPublicUrl:p=>({data:{publicUrl:'https://offline.invalid/'+p}})})}
     })};
