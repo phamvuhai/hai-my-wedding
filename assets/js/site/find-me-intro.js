@@ -23,8 +23,8 @@
   const language=()=>window.WeddingI18n?.language||'vi';
   function localize(){
     const copy=translations[language()]||translations.vi;
-    hint.textContent=copy.hint;
-    result.textContent=copy.success;
+    hint.textContent=window.WeddingI18n?.t?.('findme.hint')||copy.hint;
+    result.textContent=window.WeddingI18n?.t?.('findme.success')||copy.success;
     scene.setAttribute('aria-label',copy.hint);
   }
 
@@ -236,6 +236,7 @@
   mobile.addEventListener?.('change',()=>{createStars();if(merged)createSparks();resize();reconcile()});
   window.addEventListener('pagehide',stop,{passive:true});
   window.addEventListener('pageshow',reconcile,{passive:true});
+  scene.classList.add('is-enhanced');
   localize();
   resize();
   if(reduced.matches){
