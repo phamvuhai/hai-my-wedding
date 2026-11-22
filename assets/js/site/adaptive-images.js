@@ -155,38 +155,94 @@
     const key=image.image_path+'|'+(image.updated_at||image.created_at||'');
     const old=progressiveNodes.get(img);
     if(old?.key===key)return;
-    if(old){old.alive=false;old.observer?.disconnect();clearTimeout(old.timer);}
+    if(old){
+      old.alive=false;
+      old.observer?.disconnect();
+      clearTimeout(old.timer);
+      if(old.onLoad)img.removeEventListener('load',old.onLoad);
+      if(old.onError)img.removeEventListener('error',old.onError);
+    }
     const stage=topPlan(client,image,options.role||'home');
     if(!stage.preview)return;
-    const item={key,alive:true,timer:0,observer:null,started:false};
+    // Keep only actual registered compact WebP variants. Never request a
+    // 4–6MB original on the homepage when a thumbnail is available.
+    const compact=variants(image).filter(v=>v.width<=960);
+    const fallbacks=[stage.preview,
+      ...compact.map(v=>resolved(client,v.path,image))]
+      .filter((url,index,all)=>url && all.indexOf(url)===index);
+    const item={
+      key,alive:true,timer:0,observer:null,started:false,
+      attempt:0,loadedUrl:'',hadBaseLoad:false,onLoad:null,onError:null
+    };
     progressiveNodes.set(img,item);
     img.removeAttribute('srcset');img.removeAttribute('sizes');
     img.loading=options.immediate?'eager':'lazy';
     img.decoding='async';
     img.fetchPriority=options.priority||(options.immediate?'high':'low');
+    img.dataset.homeProgressive='pending';
+    const isCurrent=()=>item.alive && progressiveNodes.get(img)===item && img.isConnected;
+    function tryNext() {
+      if(!isCurrent())return;
+      if(item.attempt<fallbacks.length){
+        img.dataset.homeProgressive='loading';
+        img.src=fallbacks[item.attempt++];
+        return;
+      }
+      img.dataset.homeProgressive='error';
+      img.dispatchEvent(new Event('wedding:home-photo-error'));
+    }
+    item.onLoad=()=>{
+      if(!isCurrent() || !img.naturalWidth)return;
+      const firstSuccess=!item.hadBaseLoad;
+      item.hadBaseLoad=true;
+      item.loadedUrl=img.currentSrc||img.src;
+      img.dataset.homeProgressive='ready';
+      if(!firstSuccess||!stage.upgrade||stage.sharper===item.loadedUrl)return;
+      // No HD upgrade on slow 4G or when the viewer has moved away.
+      if(performance.now()-item.startedAt>1800)return;
+      item.timer=setTimeout(()=>{
+        item.timer=0;
+        if(!isCurrent() || !item.hadBaseLoad || img.dataset.homeProgressive!=='ready')return;
+        const sharper=new Image();
+        sharper.decoding='async';sharper.fetchPriority='low';
+        sharper.onload=()=>{
+          if(isCurrent() && img.dataset.homeProgressive==='ready'){
+            // Preserve the already-visible preview until the sharper image
+            // is decoded, then switch without exposing a blank frame.
+            img.dataset.homeProgressive='loading';
+            img.src=stage.sharper;
+          }
+        };
+        sharper.src=stage.sharper;
+      },Number(options.delay)||900);
+    };
+    item.onError=()=>{
+      if(!isCurrent())return;
+      if(item.hadBaseLoad){
+        // A failed optional sharpness upgrade must not erase a good preview.
+        if(img.src!==item.loadedUrl){
+          img.dataset.homeProgressive='loading';
+          img.src=item.loadedUrl;
+          return;
+        }
+        img.dataset.homeProgressive='error';
+        img.dispatchEvent(new Event('wedding:home-photo-error'));
+        return;
+      }
+      // When 320px fails, try 480px and 960px; a genuine terminal error
+      // is announced only after all available compact sources have failed.
+      tryNext();
+    };
+    img.addEventListener('load',item.onLoad);
+    img.addEventListener('error',item.onError);
     const start=()=>{
-      if(!item.alive||item.started)return;
+      if(!isCurrent()||item.started)return;
       item.started=true;
-      const startedAt=performance.now();
-      img.addEventListener('load',()=>{
-        if(!item.alive||progressiveNodes.get(img)!==item||!stage.upgrade)return;
-        // Safari lacks Network Information API: use the first small request
-        // as a coarse signal rather than starting HD during a slow download.
-        if(performance.now()-startedAt>1800)return;
-        item.timer=setTimeout(()=>{
-          if(!item.alive||!img.isConnected)return;
-          const sharper=new Image();
-          sharper.decoding='async';sharper.fetchPriority='low';
-          sharper.onload=()=>{
-            if(item.alive&&img.isConnected&&progressiveNodes.get(img)===item)img.src=stage.sharper;
-          };
-          sharper.src=stage.sharper;
-        },Number(options.delay)||900);
-      },{once:true});
-      img.addEventListener('error',()=>{
-        if(item.alive&&stage.sharper!==stage.preview&&img.src===stage.preview)img.src=stage.sharper;
-      },{once:true});
-      img.src=stage.preview;
+      item.startedAt=performance.now();
+      // IntersectionObserver has already gated the request. Avoid another
+      // layer of native lazy-loading inside Safari's nested scrolling viewport.
+      img.loading='eager';
+      tryNext();
     };
     if(options.immediate||!('IntersectionObserver'in window))start();
     else {
