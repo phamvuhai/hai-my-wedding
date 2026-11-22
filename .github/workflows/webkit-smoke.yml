@@ -27,6 +27,8 @@ jobs:
           node --check assets/js/site/i18n.js
           node --check tools/audit-romantic-motion.mjs
           node --check assets/js/site/particle-heart.js
+          node --check assets/js/site/find-me-intro.js
+          node --check tools/audit-find-me-intro.mjs
           node --check tools/audit-particle-heart.mjs
           node --check assets/js/site/adaptive-images.js
           node --check assets/js/site/album.js
@@ -61,6 +63,8 @@ jobs:
         run: node tools/audit-admin-picker.mjs
       - name: Test V24 compact wedding, QR modal and two-up mobile gift cards
         run: node tools/audit-compact-wedding-v24.mjs
+      - name: Test V25 Find Me interaction on Safari with mocked backend
+        run: node tools/audit-find-me-intro.mjs
       - name: Test iPhone-like Safari browser
         run: node tools/audit-webkit.mjs
       - name: Test touch experience and mocked invited guests
