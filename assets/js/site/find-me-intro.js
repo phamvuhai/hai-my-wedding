@@ -37,8 +37,8 @@
   // from approved real portraits ahead of deployment, never from visitors.
   // Missing files intentionally retain the original V25 two-souls animation.
   const portraitPaths=[
-    '/assets/images/find-me/hai-sketch.webp',
-    '/assets/images/find-me/my-sketch.webp'
+    '/assets/images/find-me/hai-sketch.svg',
+    '/assets/images/find-me/my-sketch.svg'
   ];
   const portraits=portraitPaths.map(()=>({image:null,points:[],ready:false}));
   let portraitCount=0;
@@ -78,18 +78,18 @@
     const portrait=portraits[index];
     if(!portrait.ready || reduced.matches || merged)return;
     const center=screenPoint(souls[index]);
-    const scale=Math.min(width*.29,height*.66);
-    const x=center.x,y=center.y-height*.09;
-    const reveal=clamp((now-(portraitStart||now))/1250,0,1);
+    const scale=Math.min(width*.43,height*1.15);
+    const x=center.x,y=center.y-height*.04;
+    const reveal=clamp((now-(portraitStart||now))/1700,0,1);
     const count=Math.floor(portrait.points.length*reveal);
     ctx.save();
     ctx.shadowColor=index===0?'#efc49e':'#f2adc9';
-    ctx.shadowBlur=3;
+    ctx.shadowBlur=4;
     ctx.fillStyle=index===0?'#ffdfba':'#ffe0eb';
     for(let i=0;i<count;i++){
       const p=portrait.points[i];
-      ctx.globalAlpha=.16+.72*p.a;
-      ctx.fillRect(x+p.x*scale,y+p.y*scale,1.2,1.2);
+      ctx.globalAlpha=.28+.7*p.a;
+      ctx.fillRect(x+p.x*scale,y+p.y*scale,1.5,1.5);
     }
     ctx.restore();
   }
@@ -172,7 +172,7 @@
   }
   function drawSoul(s,now){
     const {x,y}=screenPoint(s);
-    const radius=Math.min(25,height*.18);
+    const radius=portraits.some(p=>p.ready)?Math.min(9,height*.07):Math.min(25,height*.18);
     const gradient=ctx.createRadialGradient(x,y,1,x,y,radius*2.2);
     gradient.addColorStop(0,s.light);
     gradient.addColorStop(.14,s.light);
@@ -183,7 +183,7 @@
     circle(x,y,Math.max(4.2,radius*.22),'#fffaf2');
     ctx.textAlign='center';
     ctx.font='500 '+Math.max(10,Math.min(13,height*.09))+'px Georgia,serif';
-    ctx.fillStyle='#ffebdf';ctx.fillText(s.name,x,y+radius+21);
+    ctx.fillStyle='#ffebdf';ctx.fillText(s.name,x,portraits.some(p=>p.ready)?height*.84:y+radius+21);
   }
   function paint(now=0){
     if(!width||!height)return;
