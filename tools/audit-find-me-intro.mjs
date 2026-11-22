@@ -51,6 +51,7 @@ try {
     await page.waitForFunction(()=>window.WeddingFindMe.status().frames>3,null,{timeout:9000});
     const intro=page.locator('#invitationIntro');
     const canvas=page.locator('#findMeCanvas');
+    await canvas.scrollIntoViewIfNeeded();
     const initial=await page.evaluate(()=>{
       const r=document.getElementById('findMeCanvas').getBoundingClientRect();
       return {rect:{x:r.x,y:r.y,width:r.width,height:r.height},
