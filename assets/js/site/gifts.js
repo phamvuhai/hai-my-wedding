@@ -14,7 +14,7 @@ const defaults={enabled:true,visibility:'public',
  bride:{enabled:false,bank:'',holder:'NGUYEN THI MY',account:'',qrPath:''}};
 let config=structuredClone(defaults),currentLang='vi';
 const dict={
- vi:{eyebrow:'WITH LOVE & GRATITUDE',title:'Thông tin mừng cưới',lead:'Sự hiện diện của bạn là món quà quý nhất. Nếu muốn gửi lời chúc từ xa, bạn có thể dùng thông tin dưới đây.',groom:'NHÀ TRAI',bride:'NHÀ GÁI',bank:'Ngân hàng',holder:'Chủ tài khoản',account:'Số tài khoản',copy:'Sao chép số tài khoản',copied:'Đã sao chép!',missing:'Thông tin đang được cập nhật',scan:'Quét mã VietQR để chuyển khoản',footer:'Cảm ơn bạn ♡',unavailable:'QR chưa được cung cấp',zoom:'Phóng to mã QR',close:'Đóng'},
+ vi:{eyebrow:'WITH LOVE & GRATITUDE',title:'Thông tin mừng cưới',lead:'Cảm ơn vì đã ở đây.',groom:'NHÀ TRAI',bride:'NHÀ GÁI',bank:'Ngân hàng',holder:'Chủ tài khoản',account:'Số tài khoản',copy:'Sao chép số tài khoản',copied:'Đã sao chép!',missing:'Thông tin đang được cập nhật',scan:'Quét mã VietQR để chuyển khoản',footer:'Cảm ơn bạn ♡',unavailable:'QR chưa được cung cấp',zoom:'Phóng to mã QR',close:'Đóng'},
  en:{eyebrow:'WITH LOVE & GRATITUDE',title:'Wedding Gift Information',lead:'Your presence means the world. If you wish to send love from afar, here are our details.',groom:'GROOM',bride:'BRIDE',bank:'Bank',holder:'Account holder',account:'Account number',copy:'Copy account number',copied:'Copied!',missing:'Details coming soon',scan:'Scan this VietQR to transfer',footer:'With love and thanks ♡',unavailable:'QR not available',zoom:'Enlarge QR code',close:'Close'},
  ja:{eyebrow:'感謝を込めて',title:'お祝いのご案内',lead:'皆さまのご出席が何よりの贈り物です。遠方からのお祝いは、こちらをご利用ください。',groom:'新郎',bride:'新婦',bank:'銀行名',holder:'口座名義',account:'口座番号',copy:'口座番号をコピー',copied:'コピーしました',missing:'口座情報は準備中です',scan:'VietQR を読み取ってお振り込みください',footer:'心から感謝いたします ♡',unavailable:'QRコードは準備中です',zoom:'QRコードを拡大',close:'閉じる'}
 };
@@ -65,7 +65,7 @@ function qrSource(side){
 function card(side,id,t){
  const name=id==='groom'?t.groom:t.bride;
  const valid=side.enabled&&side.bank.trim()&&side.holder.trim()&&side.account.trim();
- if(!valid)return '<article class="wedding-gift-card wedding-gift-unavailable" data-gift-side="'+id+'"><div class="wedding-gift-card-top"><span class="wedding-gift-role">'+name+'</span><span class="wedding-gift-icon" aria-hidden="true">♡</span></div><span class="wedding-gift-person">'+(id==='groom'?'Hải':'Mỹ')+'</span><div class="wedding-gift-pending"><span aria-hidden="true">✧</span><p>'+t.missing+'</p></div></article>';
+ if(!valid)return '';
  const qr=qrSource(side);
  return '<article class="wedding-gift-card" data-gift-side="'+id+'"><div class="wedding-gift-card-top"><span class="wedding-gift-role">'+name+'</span><span class="wedding-gift-icon" aria-hidden="true">♡</span></div><span class="wedding-gift-person">'+(id==='groom'?'Hải':'Mỹ')+'</span>'+
  (qr
@@ -78,10 +78,16 @@ function card(side,id,t){
 function render(){
  currentLang=lang();const t=dict[currentLang];
  if(!config.enabled||(config.visibility==='private'&&!privateInvite())){root.hidden=true;root.innerHTML='';return;}
+ const cards=[card(config.groom,'groom',t),card(config.bride,'bride',t)].filter(Boolean);
+ if(!cards.length){root.hidden=true;root.innerHTML='';return;}
  root.hidden=false;
- root.innerHTML='<div class="wedding-gift-inner"><header class="wedding-gift-heading"><span class="wedding-gift-eyebrow">'+t.eyebrow+'</span><h2>'+t.title+'</h2><p>'+t.lead+'</p></header>'+
- '<div class="wedding-gift-grid">'+card(config.groom,'groom',t)+card(config.bride,'bride',t)+'</div>'+
- '<p class="wedding-gift-footer">'+t.footer+'</p></div>';
+ // Keep bank details and QR fully available but out of the main editorial scroll.
+ // Re-rendering on language/config changes preserves an already-open disclosure.
+ const wasOpen=Boolean(root.querySelector('.wedding-gift-disclosure')?.open);
+ root.innerHTML='<div class="wedding-gift-inner"><details class="wedding-gift-disclosure"'+(wasOpen?' open':'')+'>'+
+ '<summary>'+escapeHtml(t.title)+'</summary>'+
+ '<div class="wedding-gift-disclosure-content"><div class="wedding-gift-grid">'+cards.join('')+'</div>'+
+ '<p class="wedding-gift-footer">'+escapeHtml(t.footer)+'</p></div></details></div>';
 }
 // Reuse the exact QR URL already rendered; a small visible QR remains readable
 // when tapped and expanded to a large, high-contrast dialog.
