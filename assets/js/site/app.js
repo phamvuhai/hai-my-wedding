@@ -402,7 +402,7 @@ function renderHomeGallery() {
   const root = document.getElementById('homeGallery');
   if (!root || !galleryState.homeImages.length) return;
 
-  // Show up to nine distinct published photos in an editorial homepage montage; the full Album stays available.
+  // Show up to five curated homepage photos; the complete published Album stays available.
   root.dataset.count = String(galleryState.homeImages.length);
   root.innerHTML = galleryState.homeImages.map((img, index) => {
     const loc = galleryLocalized(img);
@@ -453,23 +453,20 @@ async function loadHomeGallery() {
     let selectedIds = [];
     try {
       const config = designResult.error ? null : JSON.parse(designResult.data?.value_vi || 'null');
-      if (Array.isArray(config?.homePhotoIds)) selectedIds=config.homePhotoIds.slice(0,9);
+      if (Array.isArray(config?.homePhotoIds)) selectedIds=config.homePhotoIds.slice(0,5);
     } catch (error) {
       console.warn('Gallery order: using default ordering.', error);
     }
     const all = (galleryResult.data || []).filter(img=>img.image_path && img.show_in_album !== false);
-    // Respect Admin's explicit homepage order first; then enrich from approved
-    // published album images, excluding Hero/Story copies when supplementing.
-    const pinned=selectedIds.map(id=>all.find(img=>img.id===id)).filter(Boolean);
-    const home=all.filter(img=>img.show_on_homepage);
-    const supplement=all.filter(img=>!img.is_hero && img.id!==config?.promisePhotoId);
-    const candidates=[...pinned,...home,...supplement];
+    const candidates = selectedIds.length
+      ? [...selectedIds.map(id=>all.find(img=>img.id===id)).filter(Boolean), ...all.filter(img=>img.show_on_homepage)]
+      : all.filter(img=>img.show_on_homepage);
     const seen=new Set();
     galleryState.homeImages = candidates.filter(img=>{
       if(seen.has(img.id))return false;
       seen.add(img.id);
       return true;
-    }).slice(0,9).map(img=>({...img, publicUrl: galleryPublicUrl(img)}));
+    }).slice(0,5).map(img=>({...img, publicUrl: galleryPublicUrl(img)}));
     if (galleryState.homeImages.length) renderHomeGallery();
     await syncGalleryRoute();
   } catch (error) {
