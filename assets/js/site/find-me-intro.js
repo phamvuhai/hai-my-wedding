@@ -40,35 +40,21 @@
     '/assets/images/find-me/hai-sketch.svg',
     '/assets/images/find-me/my-sketch.svg'
   ];
-  const portraits=portraitPaths.map(()=>({image:null,points:[],ready:false}));
+  const portraits=portraitPaths.map(()=>({image:null,ready:false}));
   let portraitCount=0;
+  let portraitStart=performance.now();
   function loadPortraits(){
     portraitPaths.forEach((src,index)=>{
       const img=new Image();
       img.decoding='async';
       img.onload=()=>{
-        try{
-          const sample=document.createElement('canvas');
-          sample.width=96;sample.height=112;
-          const c=sample.getContext('2d',{willReadFrequently:true});
-          if(!c)return;
-          c.clearRect(0,0,96,112);
-          const ratio=Math.min(96/img.naturalWidth,112/img.naturalHeight);
-          const w=img.naturalWidth*ratio,h=img.naturalHeight*ratio;
-          c.drawImage(img,(96-w)/2,(112-h)/2,w,h);
-          const data=c.getImageData(0,0,96,112).data;
-          const points=[];
-          for(let y=2;y<110;y+=3)for(let x=2;x<94;x+=3){
-            const offset=(y*96+x)*4,alpha=data[offset+3];
-            const intensity=(data[offset]+data[offset+1]+data[offset+2])/3;
-            if(alpha>65&&intensity>40 && ((x*17+y*13)%7!==0))
-              points.push({x:x/96-.5,y:y/112-.5,a:alpha/255});
-          }
-          if(points.length<25)return;
-          portraits[index]={image:img,points,ready:true};
-          portraitCount=portraits.filter(p=>p.ready).length;
-          paint(performance.now());
-        }catch(_error){/* malformed or inaccessible assets fall back safely */}
+        if(!img.naturalWidth||!img.naturalHeight)return;
+        portraits[index]={image:img,ready:true};
+        portraitCount=portraits.filter(p=>p.ready).length;
+        // Restart the elegant reveal once the final asset is decoded.
+        portraitStart=performance.now()-450;
+        paint(performance.now());
+        reconcile();
       };
       img.onerror=()=>{};
       img.src=src;
@@ -76,24 +62,34 @@
   }
   function drawPortrait(index,now){
     const portrait=portraits[index];
-    if(!portrait.ready || reduced.matches || merged)return;
-    const center=screenPoint(souls[index]);
-    const scale=Math.min(width*.43,height*1.15);
-    const x=center.x,y=center.y-height*.04;
-    const reveal=clamp((now-(portraitStart||now))/1700,0,1);
-    const count=Math.floor(portrait.points.length*reveal);
+    if(!portrait.ready||merged)return;
+    const {x}=screenPoint(souls[index]);
+    const artWidth=Math.min(width*.43,height*.93,176);
+    const artHeight=artWidth*112/96;
+    const top=height*.07;
+    const reveal=reduced.matches?1:clamp((now-portraitStart)/1600,0,1);
+    if(reveal<=0)return;
+    const left=x-artWidth*.5;
     ctx.save();
-    ctx.shadowColor=index===0?'#efc49e':'#f2adc9';
-    ctx.shadowBlur=4;
-    ctx.fillStyle=index===0?'#ffdfba':'#ffe0eb';
-    for(let i=0;i<count;i++){
-      const p=portrait.points[i];
-      ctx.globalAlpha=.28+.7*p.a;
-      ctx.fillRect(x+p.x*scale,y+p.y*scale,1.5,1.5);
-    }
+    ctx.beginPath();
+    // Reveal from the upper contour down rather than pixel-by-pixel dithering.
+    ctx.rect(left-7,top-6,artWidth+14,(artHeight+12)*reveal);
+    ctx.clip();
+    ctx.globalAlpha=.28+.72*Math.min(1,reveal*1.6);
+    ctx.shadowColor=index===0?'#e7b898':'#ffc3d8';
+    ctx.shadowBlur=8;
+    ctx.drawImage(portrait.image,left,top,artWidth,artHeight);
     ctx.restore();
+    if(!reduced.matches&&reveal<1){
+      const sweepY=top+artHeight*reveal;
+      const beam=ctx.createLinearGradient(0,sweepY-9,0,sweepY+6);
+      beam.addColorStop(0,'rgba(255,226,204,0)');
+      beam.addColorStop(.7,'rgba(255,225,202,.5)');
+      beam.addColorStop(1,'rgba(255,225,202,0)');
+      ctx.fillStyle=beam;
+      ctx.fillRect(left,sweepY-9,artWidth,15);
+    }
   }
-  let portraitStart=0;
 
   let width=0,height=0,dpr=1,frameId=0,lastFrame=0;
   let visible=true,drag=null,merged=false,mergeAt=0,frameCount=0;
@@ -172,18 +168,20 @@
   }
   function drawSoul(s,now){
     const {x,y}=screenPoint(s);
-    const radius=portraits.some(p=>p.ready)?Math.min(9,height*.07):Math.min(25,height*.18);
+    const radius=portraitCount?Math.min(4,height*.027):Math.min(25,height*.18);
     const gradient=ctx.createRadialGradient(x,y,1,x,y,radius*2.2);
     gradient.addColorStop(0,s.light);
     gradient.addColorStop(.14,s.light);
     gradient.addColorStop(.33,s.glow+'bb');
     gradient.addColorStop(1,'rgba(205,142,160,0)');
+    ctx.globalAlpha=portraitCount?.22:1;
     ctx.fillStyle=gradient;ctx.beginPath();
     ctx.arc(x,y,radius*2.2,0,2*Math.PI);ctx.fill();
-    circle(x,y,Math.max(4.2,radius*.22),'#fffaf2');
+    if(!portraitCount)circle(x,y,Math.max(4.2,radius*.22),'#fffaf2');
     ctx.textAlign='center';
     ctx.font='500 '+Math.max(10,Math.min(13,height*.09))+'px Georgia,serif';
-    ctx.fillStyle='#ffebdf';ctx.fillText(s.name,x,portraits.some(p=>p.ready)?height*.84:y+radius+21);
+    ctx.globalAlpha=1;
+    ctx.fillStyle='#ffebdf';ctx.fillText(s.name,x,portraitCount?height*.88:y+radius+21);
   }
   function paint(now=0){
     if(!width||!height)return;
@@ -299,7 +297,6 @@
   window.addEventListener('pagehide',stop,{passive:true});
   window.addEventListener('pageshow',reconcile,{passive:true});
   scene.classList.add('is-enhanced');
-  portraitStart=performance.now();
   loadPortraits();
   localize();
   resize();
