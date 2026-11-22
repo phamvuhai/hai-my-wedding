@@ -59,6 +59,13 @@ try{
     assert.equal(snapshot.overflow,false,'No horizontal scroll at '+width+'px');
     assert.ok(snapshot.hero&&snapshot.story&&snapshot.photo&&snapshot.album&&snapshot.rsvp);
     assert.equal(snapshot.events,2,'Both wedding schedules retained');
+    const brideTimes=await page.locator('#events [data-event-day="bride"] .v3-event-time strong').allTextContents();
+    const groomTimes=await page.locator('#events [data-event-day="groom"] .v3-event-time strong').allTextContents();
+    assert.deepEqual(brideTimes.map(x=>x.trim()),['09:00','18:00'],'Bride ceremony stays 09:00 and Gold Palace reception starts at 18:00');
+    assert.deepEqual(groomTimes.map(x=>x.trim()),['09:00','11:00'],'Groom event times remain unchanged');
+    assert.equal(await page.locator('#story .editorial-story-copy p:not(.eyebrow)').count(),2,'Story includes two readable paragraphs');
+    assert.equal(await page.locator('.gallery-section .editorial-gallery-intro').count(),1,'Gallery contains the brief photo introduction');
+    assert.equal(await page.locator('#rsvp .editorial-rsvp-lead').count(),1,'RSVP contains a warm one-sentence invitation');
     assert.equal(snapshot.magic,0,'Redundant crystal heart removed');
     assert.equal(snapshot.outdated,0,'No duplicate story/collage or marquee');
     assert.ok(snapshot.countdown>80&&snapshot.countdown<width,'Compact countdown');
@@ -75,6 +82,8 @@ try{
     }
     await page.evaluate(()=>window.WeddingI18n.setLanguage('en'));
     assert.equal(await page.locator('#story h2').innerText(),'From us, to family.');
+    assert.ok((await page.locator('#story .editorial-story-second').innerText()).includes('family'),'Second English story paragraph translates correctly');
+    assert.ok((await page.locator('#rsvp .editorial-rsvp-lead').innerText()).includes('celebrate'),'English RSVP lead translates correctly');
     assert.deepEqual(errors,[],'No page errors at '+width+'px');
     await context.close();
   }
@@ -82,7 +91,7 @@ try{
   await direct.page.locator('#openInvitation').click();
   await direct.page.waitForFunction(()=>document.getElementById('invitationIntro').classList.contains('is-opened'),null,{timeout:9000});
   await direct.context.close();
-  console.log('PASS V27: editorial compact layout, two schedules, countdown, story, gallery, RSVP, four viewports, languages and Open Invitation');
+  console.log('PASS V27.1: Bride restaurant at 18:00, restored story, responsive gallery, RSVP, four viewports, languages and Open Invitation');
 }finally{
   await browser.close();
   await new Promise(resolve=>server.close(resolve));
