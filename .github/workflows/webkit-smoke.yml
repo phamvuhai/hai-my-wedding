@@ -43,6 +43,7 @@ jobs:
           node --check tools/audit-admin-picker.mjs
           node --check assets/js/site/gifts.js
           node --check tools/audit-compact-wedding-v24.mjs
+          node --check tools/audit-editorial-v27.mjs
       - name: Install WebKit browser and its dependencies
         run: |
           npm install --no-save --package-lock=false playwright@1.56.0
@@ -61,10 +62,12 @@ jobs:
         run: node tools/audit-v21-gallery.mjs
       - name: Test Admin photo picker on iPhone Safari and desktop
         run: node tools/audit-admin-picker.mjs
-      - name: Test V24 compact wedding, QR modal and two-up mobile gift cards
+      - name: Test V27 compact gift disclosure, QR modal and two-up enabled cards
         run: node tools/audit-compact-wedding-v24.mjs
       - name: Test V25 Find Me interaction on Safari with mocked backend
         run: node tools/audit-find-me-intro.mjs
+      - name: Test V27 editorial compact wedding layout on four WebKit viewports
+        run: node tools/audit-editorial-v27.mjs
       - name: Test iPhone-like Safari browser
         run: node tools/audit-webkit.mjs
       - name: Test touch experience and mocked invited guests
