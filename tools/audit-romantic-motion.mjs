@@ -10,7 +10,48 @@ const root=process.cwd();
 const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml'};
 const server=createServer((req,res)=>{
   let url;
-  try {
+  try{url=new URL(req.url,'http://localhost');}catch{res.writeHead(400).end();return;}
+  let path=url.pathname;
+  if(path==='/'||/^\/(?:vi|en|jp)\/?$/.test(path))path='/index.html';
+  let file;
+  try{file=resolve(root,'.'+decodeURIComponent(path));}catch{res.writeHead(400).end();return;}
+  if(!file.startsWith(root+'/')||!existsSync(file)||!statSync(file).isFile()){res.writeHead(404).end();return;}
+  res.writeHead(200,{'content-type':mime[extname(file)]||'application/octet-stream'});
+  res.end(readFileSync(file));
+});
+await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+const origin='http://127.0.0.1:'+server.address().port;
+const browser=await webkit.launch({headless:true});
+
+function mockSupabase(){
+  const chain=()=>new Proxy({}, {get(_obj,key){
+    if(key==='then')return resolve=>Promise.resolve({data:[],error:null}).then(resolve);
+    if(key==='maybeSingle'||key==='single')return async()=>({data:null,error:null});
+    return ()=>chain();
+  }});
+  window.supabase={createClient:()=>({
+    from:()=>chain(),rpc:async()=>({data:null,error:null}),
+    storage:{from:()=>({getPublicUrl:path=>({data:{publicUrl:'https://mock.invalid/'+path}})})},
+    auth:{getSession:async()=>({data:{session:null},error:null}),
+      onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})}
+  })};
+}
+async function visit(context,path='/vi'){
+  const page=await context.newPage();
+  const errors=[];
+  page.on('pageerror',e=>errors.push(e.message));
+  await page.route('**/*',route=>{
+    const url=route.request().url();
+    if(url.startsWith(origin+'/')||url.startsWith('blob:')||url.startsWith('data:'))return route.continue();
+    return route.abort();
+  });
+  await page.addInitScript(mockSupabase);
+  await page.goto(origin+path,{waitUntil:'domcontentloaded',timeout:20000});
+  await page.waitForFunction(()=>Boolean(window.WeddingRomanticMotion&&window.WeddingI18n),
+    null,{timeout:12000});
+  return {page,errors};
+}
+try {
   const desktop=await browser.newContext({viewport:{width:1440,height:900},deviceScaleFactor:1});
   const {page,errors}=await visit(desktop);
   assert.equal(await page.locator('#weddingMagic').count(),0,'Redundant crystal scene removed in V27');
