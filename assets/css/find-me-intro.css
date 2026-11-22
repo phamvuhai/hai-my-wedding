@@ -111,3 +111,35 @@
 @media (max-width:390px) and (max-height:730px) {
   .invitation-intro .find-me-stage {height:133px}
 }
+
+/* V25.3: original user-selected portrait is the hero, no invented faces. */
+.invitation-intro .find-me-stage {
+  width:min(100%,490px);
+  height:clamp(205px,29vh,315px);
+  border:1px solid rgba(215,168,136,.56);
+  border-radius:16px;
+  background:#2b1d27;
+  box-shadow:0 16px 38px rgba(64,33,45,.19),inset 0 0 0 1px rgba(255,230,201,.09);
+}
+.invitation-intro .find-me-stage::after {
+  height:21%;
+  background:linear-gradient(to bottom,transparent,rgba(31,18,27,.86));
+}
+.invitation-intro .find-me-hint,.invitation-intro .find-me-result {
+  bottom:7px;
+  font-size:clamp(10px,1.12vw,12px);
+  text-shadow:0 2px 8px rgba(10,5,9,.95);
+}
+@media(max-width:680px) {
+  .invitation-intro .find-me-stage {
+    width:min(100%,365px);
+    height:clamp(178px,26vh,243px);
+    margin:7px auto 11px;
+  }
+}
+@media(max-width:390px) and (max-height:730px) {
+  .invitation-intro .find-me-stage {height:clamp(164px,26vh,187px)}
+}
+@media(orientation:landscape) and (max-height:580px) {
+  .invitation-intro .find-me-stage {height:160px;max-width:320px}
+}
