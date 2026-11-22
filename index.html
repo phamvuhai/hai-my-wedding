@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="/assets/css/progressive-gallery.css" />
   <link rel="stylesheet" href="/assets/css/lightbox-zoom.css" />
   <link rel="stylesheet" href="/assets/css/compact-wedding.css" />
+  <link rel="stylesheet" href="/assets/css/find-me-intro.css" />
   
   
   
@@ -59,6 +60,15 @@
         </h2>
         <div class="luxury-date-frame">
           <p class="minimal-date" data-i18n="intro.eventDate">18 — 20 · 12 · 2026</p>
+        </div>
+        <!-- V25: lightweight interactive meeting-of-two-lights scene.
+             Never required to open the invitation or view personalized details. -->
+        <div class="find-me-stage" id="findMeStage" role="group"
+             aria-label="Kéo hai ánh sáng lại gần nhau">
+          <canvas class="find-me-canvas" id="findMeCanvas" aria-hidden="true"></canvas>
+          <span class="find-me-fallback" aria-hidden="true">♡</span>
+          <p class="find-me-hint" id="findMeHint" data-i18n="findme.hint">Kéo hai ánh sáng lại gần nhau ♡</p>
+          <p class="find-me-result" id="findMeResult" data-i18n="findme.success" aria-live="polite" hidden>Giữa muôn người, mình tìm thấy nhau ♡</p>
         </div>
         <div class="personal-guest-feature" id="personalGuestFeature" hidden aria-live="polite">
           <span class="guest-label" id="personalGuestLabel"></span>
@@ -519,6 +529,7 @@
   <script src="/assets/js/site/music.js"></script>
   <script src="/assets/js/site/particles.js"></script>
   <script src="/assets/js/site/invitation.js"></script>
+  <script src="/assets/js/site/find-me-intro.js"></script>
   <script src="/assets/js/site/touch-effects.js"></script>
   <script src="/assets/js/site/wedding.js"></script>
   <script src="/assets/js/site/reveal.js"></script>
