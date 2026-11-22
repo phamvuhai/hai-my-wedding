@@ -33,6 +33,68 @@
     {name:'Mỹ',x:.72,y:.44,light:'#ffe0eb',glow:'#e0a0ba'}
   ];
   const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+  // Optional offline-prepared, transparent portrait sketches. Files are created
+  // from approved real portraits ahead of deployment, never from visitors.
+  // Missing files intentionally retain the original V25 two-souls animation.
+  const portraitPaths=[
+    '/assets/images/find-me/hai-sketch.webp',
+    '/assets/images/find-me/my-sketch.webp'
+  ];
+  const portraits=portraitPaths.map(()=>({image:null,points:[],ready:false}));
+  let portraitCount=0;
+  function loadPortraits(){
+    portraitPaths.forEach((src,index)=>{
+      const img=new Image();
+      img.decoding='async';
+      img.onload=()=>{
+        try{
+          const sample=document.createElement('canvas');
+          sample.width=96;sample.height=112;
+          const c=sample.getContext('2d',{willReadFrequently:true});
+          if(!c)return;
+          c.clearRect(0,0,96,112);
+          const ratio=Math.min(96/img.naturalWidth,112/img.naturalHeight);
+          const w=img.naturalWidth*ratio,h=img.naturalHeight*ratio;
+          c.drawImage(img,(96-w)/2,(112-h)/2,w,h);
+          const data=c.getImageData(0,0,96,112).data;
+          const points=[];
+          for(let y=2;y<110;y+=3)for(let x=2;x<94;x+=3){
+            const offset=(y*96+x)*4,alpha=data[offset+3];
+            const intensity=(data[offset]+data[offset+1]+data[offset+2])/3;
+            if(alpha>65&&intensity>40 && ((x*17+y*13)%7!==0))
+              points.push({x:x/96-.5,y:y/112-.5,a:alpha/255});
+          }
+          if(points.length<25)return;
+          portraits[index]={image:img,points,ready:true};
+          portraitCount=portraits.filter(p=>p.ready).length;
+          paint(performance.now());
+        }catch(_error){/* malformed or inaccessible assets fall back safely */}
+      };
+      img.onerror=()=>{};
+      img.src=src;
+    });
+  }
+  function drawPortrait(index,now){
+    const portrait=portraits[index];
+    if(!portrait.ready || reduced.matches || merged)return;
+    const center=screenPoint(souls[index]);
+    const scale=Math.min(width*.29,height*.66);
+    const x=center.x,y=center.y-height*.09;
+    const reveal=clamp((now-(portraitStart||now))/1250,0,1);
+    const count=Math.floor(portrait.points.length*reveal);
+    ctx.save();
+    ctx.shadowColor=index===0?'#efc49e':'#f2adc9';
+    ctx.shadowBlur=3;
+    ctx.fillStyle=index===0?'#ffdfba':'#ffe0eb';
+    for(let i=0;i<count;i++){
+      const p=portrait.points[i];
+      ctx.globalAlpha=.16+.72*p.a;
+      ctx.fillRect(x+p.x*scale,y+p.y*scale,1.2,1.2);
+    }
+    ctx.restore();
+  }
+  let portraitStart=0;
+
   let width=0,height=0,dpr=1,frameId=0,lastFrame=0;
   let visible=true,drag=null,merged=false,mergeAt=0,frameCount=0;
   let sparkleCount=0,finished=false,stars=[],sparks=[];
@@ -143,7 +205,7 @@
       ctx.globalAlpha=clamp(1-gap/(width*.9),.16,.72);
       ctx.strokeStyle='#e6b3a8';ctx.lineWidth=1.3;
       ctx.setLineDash([3,6]);ctx.stroke();ctx.restore();
-      souls.forEach(s=>drawSoul(s,now));
+      souls.forEach((s,i)=>{drawPortrait(i,now);drawSoul(s,now);});
     } else {
       const cx=width*.5,cy=height*.48;
       const age=reduced.matches?4000:Math.max(0,now-mergeAt);
@@ -237,6 +299,8 @@
   window.addEventListener('pagehide',stop,{passive:true});
   window.addEventListener('pageshow',reconcile,{passive:true});
   scene.classList.add('is-enhanced');
+  portraitStart=performance.now();
+  loadPortraits();
   localize();
   resize();
   if(reduced.matches){
@@ -246,6 +310,6 @@
   reconcile();
   window.WeddingFindMe={
     status:()=>({running:Boolean(frameId),merged,finished,frames:frameCount,
-      sparks:sparkleCount,visible,width:Math.round(width),height:Math.round(height)})
+      sparks:sparkleCount,portraits:portraitCount,visible,width:Math.round(width),height:Math.round(height)})
   };
 })();
