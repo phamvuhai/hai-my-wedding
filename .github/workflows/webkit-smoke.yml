@@ -29,6 +29,8 @@ jobs:
           node --check assets/js/site/particle-heart.js
           node --check tools/audit-particle-heart.mjs
           node --check assets/js/site/adaptive-images.js
+          node --check assets/js/site/album.js
+          node --check tools/audit-home-gallery-images.mjs
           node --check assets/js/site/wedding.js
           node --check assets/js/admin/image-backfill.js
           node --check tools/audit-adaptive-images.mjs
@@ -51,6 +53,8 @@ jobs:
         run: node tools/audit-particle-heart.mjs
       - name: Test adaptive images on Safari with mock-only Supabase
         run: node tools/audit-adaptive-images.mjs
+      - name: Test Homepage Gallery lazy previews and image recovery in Safari
+        run: node tools/audit-home-gallery-images.mjs
       - name: Test V21 progressive gallery, click-only HD and bounded navigation
         run: node tools/audit-v21-gallery.mjs
       - name: Test Admin photo picker on iPhone Safari and desktop
