@@ -147,7 +147,7 @@ for(const entry of scenarios){
   );
   // Current V7 wedding schedule uses .v3-event-panel, not the deleted
   // .event-day-panel/.event-card timeline. Validate visible text and touch links.
-  await page.locator('.gallery-display').scrollIntoViewIfNeeded();
+  await page.locator('.gallery-section .section-heading h2').scrollIntoViewIfNeeded();
   await page.waitForTimeout(760);
   await page.locator('#events .v3-event-panel.is-active').scrollIntoViewIfNeeded();
   await page.waitForTimeout(760);
@@ -165,7 +165,7 @@ for(const entry of scenarios){
       fontPx:Math.round(parseFloat(getComputedStyle(el).fontSize)),
       intrinsicWidth:Math.round(el.scrollWidth)
     }));
-    const gallery=[...document.querySelectorAll('.gallery-display span')].map(el=>({
+    const gallery=[...document.querySelectorAll('.gallery-section .section-heading h2')].map(el=>({
       text:el.textContent.trim(),left:Math.round(rect(el)?.left||0),
       right:Math.round(rect(el)?.right||0)
     }));
@@ -193,7 +193,7 @@ for(const entry of scenarios){
     const nameFits=names.length===2&&names.every(x=>
       x.left>=-1&&x.right<=viewport+1&&x.width>20&&
       x.intrinsicWidth<=viewport-18);
-    const galleryFits=gallery.length===2&&gallery.every(x=>
+    const galleryFits=gallery.length===1&&gallery.every(x=>
       x.left>=-1&&x.right<=viewport+1);
     const largeNames=names.length===2&&names.every(x=>x.fontPx>=
       (viewport>=390?30:29));
@@ -209,7 +209,7 @@ for(const entry of scenarios){
   if(lang==='jp'){
     await page.locator('.hero-copy').scrollIntoViewIfNeeded();
     await page.screenshot({path:join(out,entry.name+'-japanese-hero-font.png')});
-    await page.locator('.gallery-display').scrollIntoViewIfNeeded();
+    await page.locator('.gallery-section .section-heading h2').scrollIntoViewIfNeeded();
     await page.screenshot({path:join(out,entry.name+'-gallery-layout.png')});
     await page.locator('#events .v3-event-panel[data-event-day="bride"]').scrollIntoViewIfNeeded();
     await page.screenshot({path:join(out,entry.name+'-schedule-layout.png')});
