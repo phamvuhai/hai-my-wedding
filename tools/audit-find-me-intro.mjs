@@ -66,7 +66,19 @@ try {
     assert.equal(initial.status.automatic,true,'Autoplay without pointer input');
     assert.ok(initial.status.particles>100,'Particles are generated from the image');
     assert.equal(await page.locator('#findMeResult').count(),0,'No merge-result element');
-    await page.waitForFunction(()=>window.WeddingFindMe.status().finished,null,{timeout:9000});
+    await page.bringToFront();
+    await page.waitForFunction(()=>window.WeddingFindMe.status().finished,null,{timeout:16000}).catch(async error=>{
+      console.error('Find Me diagnostic',JSON.stringify(await page.evaluate(()=>({
+        state:window.WeddingFindMe.status(),
+        hidden:document.hidden,
+        locked:document.body.classList.contains('invitation-locked'),
+        intro:document.getElementById('invitationIntro').className,
+        scrollY:window.scrollY,
+        stage:document.getElementById('findMeStage').getBoundingClientRect().toJSON(),
+        viewport:{width:innerWidth,height:innerHeight}
+      }))));
+      throw error;
+    });
     const final=await page.evaluate(()=>window.WeddingFindMe.status());
     assert.equal(final.running,false,'RAF must stop after five seconds');
     assert.equal(final.elapsed,5000,'Full reveal completes');
