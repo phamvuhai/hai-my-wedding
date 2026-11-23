@@ -44,6 +44,7 @@ jobs:
           node --check assets/js/site/gifts.js
           node --check tools/audit-compact-wedding-v24.mjs
           node --check tools/audit-v26-1-luxury.mjs
+          node --check tools/audit-full-hero-contain.mjs
       - name: Verify full-content wedding and Gold Palace 18:00
         run: node tools/audit-v26-1-luxury.mjs
       - name: Install WebKit browser and its dependencies
@@ -68,6 +69,8 @@ jobs:
         run: node tools/audit-compact-wedding-v24.mjs
       - name: Test V25 Find Me interaction on Safari with mocked backend
         run: node tools/audit-find-me-intro.mjs
+      - name: Verify full uncropped Hero on WebKit mobile, tablet and desktop
+        run: node tools/audit-full-hero-contain.mjs
       - name: Test iPhone-like Safari browser
         run: node tools/audit-webkit.mjs
       - name: Test touch experience and mocked invited guests

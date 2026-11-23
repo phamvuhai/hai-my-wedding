@@ -285,7 +285,7 @@
       item.timer=0;
       if(!layer.isConnected||!layer.classList.contains('is-current')||item.phase!=='preview')return;
       item.phase='loading';
-      // One shared request for all four decorative crops of this slide.
+      // One shared request for the blurred backdrop and the contained full photo.
       const sharper=new Image();
       sharper.decoding='async';sharper.fetchPriority='low';
       sharper.onload=()=>{

@@ -218,7 +218,7 @@
   }
   function buildTile(img,role,index){
     const tile=document.createElement('img');
-    tile.className='v5-hero-tile '+(role==='center'?'v6-center-image':role==='underlay'?'v6-center-underlay':'v6-side');
+    tile.className='v5-hero-tile '+(role==='center'?'v6-center-image':'v6-center-underlay');
     // Do not assign src to all slides during construction. Hidden slide
     // requests otherwise compete with the visible Hero on mobile connections.
     if(!window.WeddingAdaptiveImages?.progressiveSlide)
@@ -226,8 +226,7 @@
     tile.alt='';tile.setAttribute('aria-hidden','true');
     tile.draggable=false;tile.decoding='async';
     tile.loading='lazy';
-    // Both side copies reuse the exact same image as the full, uncropped center.
-    tile.style.setProperty('--tile-focus',role==='left'?'20% 50%':role==='right'?'80% 50%':'50% 50%');
+    // One crisp contained photo plus one blurred copy; no duplicated side crops.
     return tile;
   }
   function createSlides(){
@@ -256,13 +255,11 @@
       chosen.forEach((photo,i)=>{
         const layer=document.createElement('div');layer.className='v5-gallery-layer';
         layer.dataset.slide=String(i);
-        layer.appendChild(buildTile(photo,'left',i));
         const center=document.createElement('div');
         center.className='v6-center-panel';
         center.appendChild(buildTile(photo,'underlay',i));
         center.appendChild(buildTile(photo,'center',i));
         layer.appendChild(center);
-        layer.appendChild(buildTile(photo,'right',i));
         gallery.appendChild(layer);
       });
       background.appendChild(gallery);
