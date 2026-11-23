@@ -114,11 +114,19 @@
       image.hidden=false;
       if(fallback)fallback.hidden=true;
       image.parentElement?.classList.add('is-photo-loaded');
+      // Preserve the original photo and select an editorial composition
+      // based on the ACTUAL loaded image, not its CMS metadata.
+      const section=image.closest('#forever');
+      if(section&&image.naturalWidth&&image.naturalHeight){
+        section.dataset.promiseLayout=
+          image.naturalWidth/image.naturalHeight>=1.12?'landscape':'portrait';
+      }
     };
     const failed=()=>{
       image.hidden=true;
       if(fallback)fallback.hidden=false;
       image.parentElement?.classList.remove('is-photo-loaded');
+      image.closest('#forever')?.removeAttribute('data-promise-layout');
     };
     const attempt=()=>{
       const photo=candidates[current++];
