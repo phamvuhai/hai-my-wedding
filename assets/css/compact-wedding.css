@@ -168,9 +168,6 @@ section.countdown-section.countdown-compact.countdown-v15 .countdown span {
   width:min(1100px,calc(100% - 48px))!important;
   gap:clamp(23px,4vw,54px)!important;
 }
-#forever .our-promise-photo-shell {
-  max-height:clamp(295px,37vw,470px)!important;
-}
 #forever .our-promise-letter {
   padding-block:0!important;
 }
@@ -481,13 +478,6 @@ footer.footer p[data-i18n="footer.thanks"] {
     max-width:540px!important;
     gap:17px!important;
   }
-  #forever .our-promise-photo-shell {
-    aspect-ratio:5/4!important;
-    height:auto!important;
-    max-height:290px!important;
-    border-radius:110px 110px 11px 11px!important;
-  }
-  #forever .our-promise-photo {object-fit:cover!important}
   #forever .our-promise-letter {padding:0 8px!important}
   #forever .our-promise-letter h2 {font-size:clamp(32px,8vw,40px)!important;margin-bottom:8px!important}
   #forever .our-promise-letter p:not(.our-promise-kicker):not(.our-promise-signature) {font-size:14px!important;line-height:1.6!important}
