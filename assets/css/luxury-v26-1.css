@@ -312,7 +312,7 @@ section.countdown-section.countdown-compact.countdown-v15 .countdown span {
   display:grid!important;
   grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr)!important;
   gap:clamp(29px,4.5vw,62px)!important;
-  align-items:center!important;
+  align-items:start!important;
 }
 #forever .our-promise-visual {
   width:100%!important;
@@ -371,6 +371,7 @@ section.countdown-section.countdown-compact.countdown-v15 .countdown span {
 #forever .our-promise-letter {
   min-width:0!important;
   max-width:530px!important;
+  align-self:center!important;
   padding:0!important;
 }
 #forever .our-promise-kicker {
