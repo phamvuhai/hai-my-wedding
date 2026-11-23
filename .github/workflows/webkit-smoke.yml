@@ -26,8 +26,10 @@ jobs:
           node --check assets/js/site/romantic-motion.js
           node --check assets/js/site/i18n.js
           node --check tools/audit-romantic-motion.mjs
+          node --check assets/js/site/particle-heart.js
           node --check assets/js/site/find-me-intro.js
           node --check tools/audit-find-me-intro.mjs
+          node --check tools/audit-particle-heart.mjs
           node --check assets/js/site/adaptive-images.js
           node --check assets/js/site/album.js
           node --check tools/audit-home-gallery-images.mjs
@@ -41,7 +43,6 @@ jobs:
           node --check tools/audit-admin-picker.mjs
           node --check assets/js/site/gifts.js
           node --check tools/audit-compact-wedding-v24.mjs
-          node --check tools/audit-editorial-v27.mjs
       - name: Install WebKit browser and its dependencies
         run: |
           npm install --no-save --package-lock=false playwright@1.56.0
@@ -50,6 +51,8 @@ jobs:
         run: node tools/audit-album-bulk.mjs
       - name: Test new romantic motion without production data
         run: node tools/audit-romantic-motion.mjs
+      - name: Test V23 particle heart on Safari with zero external assets
+        run: node tools/audit-particle-heart.mjs
       - name: Test adaptive images on Safari with mock-only Supabase
         run: node tools/audit-adaptive-images.mjs
       - name: Test Homepage Gallery lazy previews and image recovery in Safari
@@ -58,12 +61,10 @@ jobs:
         run: node tools/audit-v21-gallery.mjs
       - name: Test Admin photo picker on iPhone Safari and desktop
         run: node tools/audit-admin-picker.mjs
-      - name: Test V27 compact gift disclosure, QR modal and two-up enabled cards
+      - name: Test V24 compact wedding, QR modal and two-up mobile gift cards
         run: node tools/audit-compact-wedding-v24.mjs
       - name: Test V25 Find Me interaction on Safari with mocked backend
         run: node tools/audit-find-me-intro.mjs
-      - name: Test V27 editorial compact wedding layout on four WebKit viewports
-        run: node tools/audit-editorial-v27.mjs
       - name: Test iPhone-like Safari browser
         run: node tools/audit-webkit.mjs
       - name: Test touch experience and mocked invited guests
