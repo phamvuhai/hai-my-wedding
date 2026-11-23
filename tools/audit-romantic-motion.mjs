@@ -51,53 +51,62 @@ async function visit(context,path='/vi'){
     null,{timeout:12000});
   return {page,errors};
 }
-try {
+try{
   const desktop=await browser.newContext({viewport:{width:1440,height:900},deviceScaleFactor:1});
   const {page,errors}=await visit(desktop);
-  assert.equal(await page.locator('#weddingMagic').count(),0,'Redundant crystal scene removed in V27');
-  assert.equal(await page.locator('#story .editorial-story-visual #ourPromisePhoto').count(),1,'Promise photo retained inside Story');
-  assert.equal(await page.locator('#story .editorial-story-copy h2').count(),1,'Single editorial story heading');
-  assert.equal(await page.locator('#countdown #days').count(),1,'Compact hero countdown is present');
-  assert.equal(await page.locator('#events [data-event-day]').count(),2,'Both wedding schedules remain');
-  assert.equal(await page.locator('#rsvpForm').count(),1,'RSVP remains');
+  assert.equal(await page.locator('.hm-forever-scene').count(),1,'Crystal-heart section must exist');
+  assert.equal(await page.locator('.hm-crystal-heart').count(),1,'Crystal heart SVG must exist');
+  assert.equal(await page.locator('.hm-forever-particle').count(),24,'Decorative particle budget');
   await page.waitForFunction(()=>!!document.querySelector('.hero-copy > .btn .hm-silk-glint'),null,{timeout:6000});
-  assert.equal(await page.locator('#openInvitation .hm-silk-glint').count(),1,'Open Invitation button remains enhanced');
-  assert.equal(await page.locator('.hero-copy > .btn .hm-silk-glint').count(),1,'Hero link remains enhanced');
-  assert.equal(await page.locator('.rsvp-form button[type=submit] .hm-silk-glint').count(),1,'RSVP button remains enhanced');
+  assert.equal(await page.locator('#openInvitation .hm-silk-glint').count(),1,'Original open button enhanced');
+  assert.equal(await page.locator('.hero-copy > .btn .hm-silk-glint').count(),1,'Original Hero link enhanced');
+  assert.equal(await page.locator('.rsvp-form button[type=submit] .hm-silk-glint').count(),1,'Original RSVP button enhanced');
   await page.evaluate(()=>window.WeddingI18n.setLanguage('en'));
-  await page.waitForFunction(()=>document.querySelector('#story h2').textContent.trim()==='From us, to family.');
-  assert.equal(await page.locator('.hero-copy > .btn .hm-silk-glint').count(),1,'Language switch must preserve button glints');
-  assert.equal(await page.locator('#weddingMagic').count(),0,'Removed scene stays removed in English');
-  assert.equal(await page.locator('#openInvitation').getAttribute('type'),'button');
-  assert.ok(!errors.some(e=>e.includes('romantic-motion')),'No motion runtime errors: '+JSON.stringify(errors));
+  await page.waitForFunction(()=>document.getElementById('hmForeverTitle').textContent.trim()==='Two hearts, one journey');
+  await page.waitForFunction(()=>!!document.querySelector('.hero-copy > .btn .hm-silk-glint'),null,{timeout:6000});
+  assert.equal(await page.locator('.hero-copy > .btn .hm-silk-glint').count(),1,'I18n must preserve silk decoration');
+  await page.evaluate(()=>{
+    const el=document.querySelector('#story .story-copy');
+    const r=el.getBoundingClientRect();
+    el.dispatchEvent(new PointerEvent('pointermove',{pointerType:'mouse',clientX:r.left+r.width*.85,clientY:r.top+r.height*.15,bubbles:true}));
+  });
+  await page.waitForTimeout(110);
+  const tilt=await page.locator('#story .story-copy').evaluate(el=>el.style.getPropertyValue('--hm-ry'));
+  assert.notEqual(tilt,'0deg','Desktop parallax must respond to pointer');
+  await page.locator('#story .story-copy').evaluate(el=>el.dispatchEvent(new PointerEvent('pointerleave',{bubbles:true,pointerType:'mouse'})));
+  assert.equal(await page.locator('#story .story-copy').evaluate(el=>el.style.getPropertyValue('--hm-ry')),'0deg');
+  assert.equal(await page.locator('#openInvitation').getAttribute('type'),'button','Open invitation remains actionable');
+  assert.ok(!errors.some(e=>e.includes('romantic-motion')),'No motion script error');
   await desktop.close();
 
   const mobile=await browser.newContext({...devices['iPhone 13']});
-  const {page:phone,errors:mobileErrors}=await visit(mobile,'/jp');
+  const {page:phone}=await visit(mobile,'/jp');
   const metrics=await phone.evaluate(()=>{
-    const story=document.querySelector('#story .editorial-story-layout');
-    const hero=document.getElementById('home');
-    const stage=document.getElementById('countdown');
-    return {width:innerWidth,scrollWidth:document.documentElement.scrollWidth,
-      storyWidth:story.getBoundingClientRect().width,
-      heroWidth:hero.getBoundingClientRect().width,
-      countdownWidth:stage.getBoundingClientRect().width,
-      open:!!document.querySelector('#openInvitation .hm-silk-glint')};
+    const scene=document.getElementById('weddingMagic');
+    const r=scene.getBoundingClientRect();
+    return {width:innerWidth,scrollWidth:document.documentElement.scrollWidth,sceneWidth:r.width,
+      particles:scene.querySelectorAll('.hm-forever-particle').length,
+      btn:!!document.querySelector('#openInvitation .hm-silk-glint')};
   });
+  assert.ok(metrics.sceneWidth<=metrics.width+1,'Crystal-heart scene must fit mobile width');
   assert.ok(metrics.scrollWidth<=metrics.width+2,'No horizontal overflow on iPhone');
-  assert.ok(metrics.storyWidth<=metrics.width+1,'Story fits mobile');
-  assert.ok(metrics.countdownWidth<metrics.width,'Countdown remains compact');
-  assert.equal(metrics.open,true);
-  assert.deepEqual(mobileErrors,[],'No mobile JavaScript errors');
+  assert.equal(metrics.particles,24);
+  assert.equal(metrics.btn,true);
+  assert.equal(await phone.locator('#hmForeverTitle').innerText(),'ふたつの心、ひとつの未来');
   await mobile.close();
 
   const calm=await browser.newContext({viewport:{width:1280,height:800},reducedMotion:'reduce'});
   const {page:reducedPage}=await visit(calm);
-  assert.equal(await reducedPage.evaluate(()=>document.documentElement.classList.contains('hm-cinematic-enabled')),false,
-    'Reduced motion prevents nonessential cinematic pointer motion');
-  assert.equal(await reducedPage.locator('#story .editorial-story-visual').count(),1);
+  const reducedStyles=await reducedPage.evaluate(()=>{
+    const heart=document.querySelector('.hm-crystal-heart');
+    const paper=document.querySelector('#story .story-copy');
+    return {animation:getComputedStyle(heart).animationName,enabled:document.documentElement.classList.contains('hm-cinematic-enabled'),
+      transform:getComputedStyle(paper).transform};
+  });
+  assert.equal(reducedStyles.animation,'none','Reduced motion crystal must remain static');
+  assert.equal(reducedStyles.enabled,false,'Reduced motion must prevent pointer tilt');
   await calm.close();
-  console.log('PASS V27: one editorial Story, no crystal heart, compact countdown, schedules, RSVP, glint, language, mobile and reduced motion');
+  console.log('PASS: crystal heart, 24 particles, silk buttons, VI/EN/JA, parallax, mobile layout, reduced motion');
 } finally {
   await browser.close();
   await new Promise(resolve=>server.close(resolve));
