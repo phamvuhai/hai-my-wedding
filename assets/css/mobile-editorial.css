@@ -1,0 +1,298 @@
+/* Mobile-first invitation layout: one canonical responsive layer.
+ * Public invitation only. Keep full photography, content, RSVP, tabs and QR data.
+ * Loaded last, after luxury-v26-1.css. Breakpoints: phone <768, tablet 768–1023.
+ */
+@media (max-width:1023px) {
+  html { scroll-padding-top:68px; }
+  #home, #story, #events, #forever, #weddingMagic, #rsvp, #weddingGifts {
+    scroll-margin-top:68px;
+  }
+  main > section, .hero.hero-v5 { max-width:100%; }
+  .nav .nav-inner { width:calc(100% - 28px)!important; max-width:100%!important; }
+  .nav .brand { white-space:nowrap; }
+  .nav .language-switcher { flex-shrink:0; }
+  .hero.hero-v5 .hero-full-photo,
+  .hero.hero-v5 .v5-gallery,
+  .hero.hero-v5 .v5-gallery-layer,
+  .hero.hero-v5 .v6-center-panel { width:100%!important; max-width:100%!important; }
+  /* Use all screen width/height for the original photo, with blur only behind it. */
+  .hero.hero-v5 .v6-center-image,
+  .hero.hero-v5 #heroFullImage { object-fit:contain!important; object-position:center!important; }
+  .hero.hero-v5 .v6-center-underlay { object-fit:cover!important; }
+  #story .story-grid,
+  #events .container,
+  #rsvp .rsvp-wrap { min-width:0!important; }
+  #story .story-paper-stack .story-copy p,
+  #forever .our-promise-letter p,
+  #events .v3-event-detail p,
+  #rsvp .rsvp-copy p { overflow-wrap:break-word; }
+  #forever .our-promise-photo,
+  #forever .our-promise-photo-shell {
+    max-height:none!important;
+  }
+  #rsvp .rsvp-form, #rsvp .rsvp-form label { min-width:0; }
+}
+@media (max-width:767px) {
+  :root { --mobile-gutter:clamp(16px,4.8vw,21px); }
+  html { scroll-padding-top:64px; }
+  #home, #story, #events, #forever, #weddingMagic, #rsvp, #weddingGifts {
+    scroll-margin-top:64px;
+  }
+  .nav { height:64px!important; min-height:64px!important; }
+  .nav .nav-inner { width:calc(100% - 2*var(--mobile-gutter))!important; gap:8px!important; }
+  .nav .brand { font-size:clamp(18px,5.5vw,23px)!important; letter-spacing:.09em; }
+  .nav .nav-right { gap:6px!important; }
+  .nav .nav-language { display:flex!important; padding:2px!important; white-space:nowrap; }
+  .nav .nav-language button { min-width:30px!important; min-height:32px!important; padding:0 5px!important; font-size:10px!important; }
+
+  /* Hero — a readable bottom-aligned invitation without a tall blank poster. */
+  .hero.hero-v5 { min-height:100svh!important; height:auto!important; }
+  .hero.hero-v5 .hero-content {
+    width:calc(100% - 2*var(--mobile-gutter))!important;
+    min-height:max(555px,100svh)!important;
+    max-width:520px!important;
+    box-sizing:border-box!important;
+    margin:0 auto!important;
+    padding:clamp(94px,16svh,145px) 0 clamp(55px,8svh,75px)!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:flex-end!important;
+  }
+  .hero.hero-v5 .hero-copy {
+    margin:auto auto 0!important;
+    width:100%!important;
+    max-width:460px!important;
+    padding:0 2px!important;
+    text-align:center!important;
+  }
+  .hero.hero-v5 .hero-overlay {
+    background:linear-gradient(to bottom,rgba(25,14,25,.27) 0%,rgba(25,14,25,.035) 30%,rgba(25,14,25,.28) 53%,rgba(19,10,18,.80) 100%)!important;
+  }
+  .hero.hero-v5 .hero-copy>.eyebrow {
+    margin:0 auto 8px!important;
+    font-size:10px!important;
+    letter-spacing:.22em!important;
+  }
+  .hero.hero-v5 .hero-couple-names {
+    max-width:100%!important;
+    margin:0 auto 7px!important;
+    gap:0!important;
+  }
+  .hero.hero-v5 .hero-couple-names .hero-name-fit-text {
+    font-size:min(var(--hero-fit-size,47px),clamp(31px,8.5vw,47px))!important;
+    line-height:1.08!important;
+    text-shadow:0 3px 13px rgba(18,8,16,.5)!important;
+  }
+  .hero.hero-v5 .hero-date {
+    font-size:clamp(11px,3.2vw,13px)!important;
+    letter-spacing:.14em!important;
+    margin:7px auto 8px!important;
+  }
+  .hero.hero-v5 .hero-note {
+    font-size:clamp(12px,3.5vw,14px)!important;
+    line-height:1.5!important;
+    max-width:36ch!important;
+    margin:0 auto 11px!important;
+    text-wrap:pretty;
+  }
+  .hero.hero-v5 .hero-copy>.btn.btn-primary {
+    min-height:48px!important;
+    min-width:155px;
+    padding:12px 21px!important;
+    margin:2px auto 0!important;
+    font-size:13px!important;
+    white-space:normal;
+  }
+  .hero.hero-v5 .scroll-curiosity { bottom:9px!important; opacity:.7; }
+  .motion-marquee.hero-marquee { padding-block:5px!important; }
+  .motion-marquee.hero-marquee .marquee-track { font-size:9px!important; }
+
+  /* A letter with enough breathing room, not three overlapping cards. */
+  #story.editorial-story.section { padding:37px 0 43px!important; }
+  #story .story-grid {
+    width:calc(100% - 2*var(--mobile-gutter))!important;
+    max-width:540px!important;
+    margin:0 auto!important;
+    gap:11px!important;
+  }
+  #story .story-side { padding:0!important; margin:0!important; }
+  #story .story-side .eyebrow { font-size:10px!important; letter-spacing:.21em!important; margin-bottom:5px!important; }
+  #story .monogram { font-size:clamp(26px,7.5vw,34px)!important; }
+  #story .story-paper-stack { width:100%!important; max-width:100%!important; }
+  #story .story-paper-stack .story-copy {
+    padding:clamp(23px,6vw,32px) clamp(17px,5vw,25px)!important;
+    border-radius:12px!important;
+  }
+  #story .story-paper-stack .story-copy h2 {
+    font-size:clamp(29px,7.7vw,39px)!important;
+    line-height:1.18!important;
+    margin-bottom:13px!important;
+    text-wrap:balance;
+  }
+  #story .story-paper-stack .story-copy p { font-size:14px!important; line-height:1.72!important; }
+  #story .story-paper-signature { margin-top:12px!important; }
+
+  /* Countdown remains a full section, but uses a compact four-value strip. */
+  section.countdown-section.countdown-compact.countdown-v15 { padding:27px 0 31px!important; }
+  section.countdown-section .countdown-layout {
+    width:calc(100% - 2*var(--mobile-gutter))!important;
+    max-width:540px!important;
+    margin-inline:auto!important;
+    gap:13px!important;
+  }
+  section.countdown-section .countdown-heading h2 {
+    font-size:clamp(26px,6.7vw,34px)!important;
+    line-height:1.18!important;
+    margin-bottom:4px!important;
+  }
+  section.countdown-section #countdown {
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:3px!important;
+    width:100%!important;
+    padding:8px 3px!important;
+    border-radius:13px!important;
+  }
+  section.countdown-section #countdown>div { min-width:0!important; min-height:60px!important; padding:5px 1px!important; }
+  section.countdown-section #countdown strong { font-size:clamp(22px,6vw,30px)!important; line-height:1.05!important; }
+  section.countdown-section #countdown span { font-size:clamp(9px,2.5vw,11px)!important; white-space:nowrap; }
+  section.countdown-section .countdown-date-stamp { margin-top:7px!important; }
+
+  /* Wedding Day — readable tabs, no lost date/time/place on narrow phones. */
+  #events.v3-events.section { padding:38px 0 45px!important; }
+  #events .container {
+    width:calc(100% - 2*var(--mobile-gutter))!important;
+    max-width:540px!important;
+    margin:0 auto!important;
+  }
+  #events .v3-section-heading { margin-bottom:16px!important; }
+  #events .v3-section-heading h2 { font-size:clamp(34px,9vw,43px)!important; line-height:1.12!important; }
+  #events .v3-section-heading p { font-size:13px!important; line-height:1.55!important; margin-top:8px!important; }
+  #events .v3-schedule-intro { padding:0 4px!important; margin-bottom:13px!important; font-size:12px!important; }
+  #events .v3-event-switch {
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    width:100%!important;
+    gap:8px!important;
+    margin:0 auto 17px!important;
+  }
+  #events .v3-event-switch button {
+    min-width:0!important;
+    min-height:48px!important;
+    border-radius:999px!important;
+    padding:9px 7px!important;
+    line-height:1.3!important;
+    font-size:13px!important;
+  }
+  #events .v3-event-switch button small { font-size:11px!important; }
+  #events .v3-event-panel { border-radius:15px!important; overflow:hidden!important; min-width:0!important; }
+  #events .v3-day-head { padding:17px 16px!important; }
+  #events .v3-date>strong { font-size:clamp(39px,12vw,52px)!important; }
+  #events .v3-day-items { padding:9px 14px 15px!important; }
+  #events .v3-event-item { grid-template-columns:72px minmax(0,1fr)!important; column-gap:11px!important; padding:16px 0!important; }
+  #events .v3-event-time strong { font-size:clamp(18px,5.4vw,23px)!important; }
+  #events .v3-event-time small { font-size:9px!important; letter-spacing:.025em!important; }
+  #events .v3-event-detail { min-width:0!important; }
+  #events .v3-event-detail h4 { font-size:clamp(17px,4.7vw,21px)!important; line-height:1.25!important; }
+  #events .v3-event-detail p { font-size:12px!important; line-height:1.55!important; }
+  #events .v3-event-map { min-height:44px!important; min-width:0!important; padding:9px 11px!important; }
+
+  /* Our Promise — photo stays complete and balanced with the letter. */
+  #forever.our-promise { padding:32px 0 44px!important; }
+  #forever .our-promise-layout { width:calc(100% - 2*var(--mobile-gutter))!important; gap:19px!important; }
+  #forever .our-promise-visual { max-width:min(100%,365px)!important; margin:0 auto!important; }
+  #forever[data-promise-layout="landscape"] .our-promise-visual { max-width:100%!important; }
+  #forever .our-promise-photo { display:block!important; width:100%!important; height:auto!important; object-fit:contain!important; }
+  #forever .our-promise-visual figcaption { margin-top:11px!important; padding:0 3px!important; font-size:10px!important; }
+  #forever .our-promise-letter { padding:0 3px!important; }
+  #forever .our-promise-letter h2 {
+    font-size:clamp(31px,8.2vw,41px)!important;
+    line-height:1.17!important;
+    text-wrap:balance;
+  }
+  #forever .our-promise-letter p:not(.our-promise-kicker):not(.our-promise-signature) {
+    font-size:14px!important; line-height:1.7!important; margin-bottom:12px!important;
+  }
+  #weddingMagic.hm-forever-scene { min-height:0!important; padding:27px 12px 35px!important; }
+  #weddingMagic .hm-crystal-stage { max-width:178px!important; max-height:178px!important; }
+
+  /* Gallery — asymmetric first photo, balanced rows, no item overflows. */
+  .gallery-section.section { padding:43px 0 51px!important; }
+  .gallery-section .container {
+    width:calc(100% - 2*var(--mobile-gutter))!important;
+    max-width:540px!important;
+    margin-inline:auto!important;
+  }
+  .gallery-section .gallery-editorial-head { margin:0 auto 18px!important; gap:4px!important; }
+  .gallery-section .section-heading h2 { font-size:clamp(33px,8.9vw,42px)!important; line-height:1.16!important; }
+  .gallery-section .section-heading p:not(.eyebrow) { font-size:13px!important; line-height:1.6!important; margin:8px auto 0!important; }
+  .gallery-section #homeGallery.home-gallery { grid-template-columns:repeat(2,minmax(0,1fr))!important; gap:8px!important; }
+  .gallery-section #homeGallery .home-photo { max-width:100%!important; min-width:0!important; border-radius:12px!important; }
+  .gallery-section .gallery-cta { margin-top:20px!important; }
+  .gallery-section .gallery-cta .btn { min-height:45px!important; padding:10px 20px!important; }
+
+  /* RSVP — remove the feeling of a cramped form and avoid iOS focus zoom. */
+  #rsvp.rsvp-section.section { padding:42px 0 60px!important; }
+  #rsvp .rsvp-wrap {
+    width:calc(100% - 2*var(--mobile-gutter))!important;
+    max-width:540px!important;
+    margin:auto!important;
+    gap:19px!important;
+  }
+  #rsvp .rsvp-copy { padding:0 2px!important; }
+  #rsvp .rsvp-copy h2 { font-size:clamp(33px,8.6vw,42px)!important; line-height:1.18!important; }
+  #rsvp .rsvp-copy p:not(.eyebrow) { font-size:14px!important; line-height:1.6!important; }
+  #rsvp .rsvp-form { padding:clamp(18px,5vw,25px)!important; border-radius:16px!important; }
+  #rsvp .rsvp-form input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]),
+  #rsvp .rsvp-form select,
+  #rsvp .rsvp-form textarea { width:100%!important; max-width:100%!important; min-height:46px!important; font-size:16px!important; box-sizing:border-box!important; }
+  #rsvp .rsvp-form input[type="radio"], #rsvp .rsvp-form input[type="checkbox"] { min-width:17px; min-height:17px; }
+  #rsvp .rsvp-form .radio { min-height:44px; align-items:center; }
+  #rsvp .rsvp-form button[type="submit"] { min-height:48px!important; width:100%!important; }
+  #weddingGifts.wedding-gifts { padding:38px var(--mobile-gutter) 45px!important; }
+  #weddingGifts .wedding-gift-inner { max-width:540px!important; width:100%!important; margin:auto; }
+  #weddingGifts .wedding-gift-heading h2 { font-size:clamp(30px,8vw,39px)!important; }
+  #weddingGifts .wedding-gift-card { min-width:0!important; border-radius:15px!important; }
+  #weddingGifts .wedding-gift-qr { max-width:min(100%,148px)!important; margin-inline:auto!important; }
+  footer.footer { padding-top:42px!important; }
+  footer.footer .footer-names { font-size:clamp(30px,9vw,44px)!important; }
+}
+@media (max-width:359px) {
+  .nav .brand { font-size:17px!important; }
+  .nav .nav-language button { min-width:28px!important; font-size:9px!important; padding:0 4px!important; }
+  #events .v3-event-item { grid-template-columns:65px minmax(0,1fr)!important; column-gap:8px!important; }
+  #events .v3-day-items { padding-inline:11px!important; }
+  .hero.hero-v5 .hero-couple-names .hero-name-fit-text { font-size:min(var(--hero-fit-size,40px),clamp(29px,8.5vw,40px))!important; }
+}
+@media (min-width:768px) and (max-width:1023px) {
+  /* Tablet is an editorial single-column invitation rather than a scaled desktop. */
+  #story .story-grid, #events .container, #rsvp .rsvp-wrap {
+    width:min(700px,calc(100% - 56px))!important;
+    max-width:700px!important;
+    margin-inline:auto!important;
+  }
+  .hero.hero-v5 .hero-content { width:min(700px,calc(100% - 64px))!important; min-height:85svh!important; padding-bottom:70px!important; }
+  .hero.hero-v5 .hero-copy { max-width:610px!important; margin:auto auto 0!important; }
+  #story.editorial-story.section { padding:53px 0 60px!important; }
+  #events.v3-events.section { padding:53px 0 65px!important; }
+  #events .v3-event-switch { max-width:560px!important; margin:0 auto 22px!important; }
+  #events .v3-event-switch button { min-height:48px!important; }
+  #events .v3-event-grid { max-width:700px!important; }
+  #forever.our-promise { padding:50px 0 59px!important; }
+  #forever .our-promise-layout { width:min(680px,calc(100% - 56px))!important; gap:22px!important; }
+  #forever .our-promise-visual { max-width:420px!important; margin-inline:auto!important; }
+  #forever[data-promise-layout="landscape"] .our-promise-visual { max-width:640px!important; }
+  .gallery-section.section { padding:53px 0 66px!important; }
+  .gallery-section .container { width:min(730px,calc(100% - 52px))!important; }
+  #rsvp.rsvp-section.section { padding:55px 0 70px!important; }
+  #rsvp .rsvp-form { max-width:100%!important; }
+}
+@media (max-width:767px) and (orientation:landscape) and (max-height:500px) {
+  .hero.hero-v5 .hero-content { min-height:540px!important; padding-top:65px!important; padding-bottom:45px!important; }
+  .hero.hero-v5 .hero-note { max-width:47ch!important; }
+  #forever .our-promise-visual { max-width:min(100%,300px)!important; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .hero.hero-v5 .hero-copy>.btn.btn-primary,
+  #events .v3-event-switch button { animation:none!important; transition:none!important; }
+}
