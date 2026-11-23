@@ -651,3 +651,136 @@ footer.footer p {color:#efdbce!important}
 @media(prefers-reduced-motion:reduce){
   .hero.hero-v5 .hero-copy>.btn.btn-primary{transition:none!important}
 }
+
+/* V26.2 | Promise composition — choose layout from the loaded photo's
+   aspect ratio. Keep natural pixels, never crop or stretch the couple. */
+#forever.our-promise {
+  overflow:clip!important;
+}
+#forever .our-promise-layout {
+  justify-items:stretch!important;
+}
+#forever .our-promise-visual {
+  align-self:start!important;
+}
+#forever .our-promise-letter {
+  width:100%!important;
+  overflow-wrap:break-word;
+}
+#forever .our-promise-visual figcaption {
+  max-width:100%;
+  text-wrap:balance;
+}
+/* A standing portrait is the classic side-by-side editorial spread. */
+@media(min-width:1024px) {
+  #forever.our-promise[data-promise-layout="portrait"] .our-promise-layout {
+    width:min(1040px,calc(100% - 88px))!important;
+    grid-template-columns:minmax(0,.91fr) minmax(0,1.09fr)!important;
+    gap:clamp(38px,5vw,70px)!important;
+    align-items:center!important;
+  }
+  #forever.our-promise[data-promise-layout="portrait"] .our-promise-visual {
+    width:100%!important;
+    max-width:430px!important;
+    align-self:center!important;
+  }
+  #forever.our-promise[data-promise-layout="portrait"] .our-promise-letter {
+    max-width:530px!important;
+    align-self:center!important;
+  }
+  /* A wide photo should not occupy a narrow column leaving empty space
+     beneath it. Present the whole image as a centered art print. */
+  #forever.our-promise[data-promise-layout="landscape"] .our-promise-layout {
+    width:min(820px,calc(100% - 88px))!important;
+    max-width:820px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    gap:24px!important;
+  }
+  #forever.our-promise[data-promise-layout="landscape"] .our-promise-visual {
+    width:100%!important;
+    max-width:760px!important;
+    align-self:center!important;
+    margin-inline:auto!important;
+  }
+  #forever.our-promise[data-promise-layout="landscape"] .our-promise-photo-shell {
+    border-radius:23px!important;
+  }
+  #forever.our-promise[data-promise-layout="landscape"] .our-promise-letter {
+    width:100%!important;
+    max-width:700px!important;
+    align-self:center!important;
+    padding:0 5px!important;
+  }
+  #forever.our-promise[data-promise-layout="landscape"] .our-promise-letter h2 {
+    max-width:22ch!important;
+    font-size:clamp(38px,4vw,51px)!important;
+  }
+}
+/* Tablet: center the photo, then the letter; give landscape shots more width. */
+@media(min-width:768px) and (max-width:1023px) {
+  #forever.our-promise .our-promise-layout {
+    align-items:center!important;
+    gap:21px!important;
+  }
+  #forever.our-promise[data-promise-layout="landscape"] .our-promise-layout {
+    width:min(740px,calc(100% - 44px))!important;
+    max-width:740px!important;
+  }
+  #forever.our-promise[data-promise-layout="landscape"] .our-promise-visual {
+    max-width:640px!important;
+  }
+  #forever.our-promise[data-promise-layout="landscape"] .our-promise-photo-shell {
+    border-radius:20px!important;
+  }
+  #forever.our-promise .our-promise-letter {
+    width:100%!important;
+    max-width:620px!important;
+    align-self:center!important;
+  }
+}
+/* Phones: photo centered, text starts beneath its caption with measured gaps. */
+@media(max-width:767px) {
+  #forever.our-promise {
+    padding-top:clamp(28px,5.2vw,38px)!important;
+    padding-bottom:clamp(37px,7vw,50px)!important;
+  }
+  #forever.our-promise .our-promise-layout {
+    gap:clamp(17px,4.2vw,23px)!important;
+    align-items:center!important;
+  }
+  #forever.our-promise .our-promise-visual {
+    align-self:center!important;
+  }
+  #forever.our-promise .our-promise-letter {
+    align-self:stretch!important;
+    max-width:520px!important;
+    margin-inline:auto!important;
+  }
+  #forever.our-promise .our-promise-kicker {
+    margin-bottom:10px!important;
+  }
+  #forever.our-promise .our-promise-letter h2 {
+    margin-bottom:12px!important;
+    line-height:1.17!important;
+  }
+  #forever.our-promise .our-promise-divider {
+    margin-bottom:17px!important;
+  }
+  #forever.our-promise[data-promise-layout="landscape"] .our-promise-visual {
+    max-width:min(100%,520px)!important;
+  }
+  #forever.our-promise[data-promise-layout="landscape"] .our-promise-photo-shell {
+    border-radius:16px!important;
+  }
+  #forever.our-promise[data-promise-layout="landscape"] .our-promise-layout {
+    max-width:600px!important;
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  #forever.our-promise .our-promise-photo,
+  #forever.our-promise .our-promise-photo-shell {
+    transition:none!important;
+  }
+}
