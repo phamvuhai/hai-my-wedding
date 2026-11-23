@@ -38,8 +38,10 @@ try{
       const context=await browser.newContext({viewport:{width,height},reducedMotion:'reduce',deviceScaleFactor:1});
       const page=await context.newPage();
       const data=svg(naturalW,naturalH);
+      const orientation=naturalW/naturalH>=1.12?'landscape':'portrait';
+      const stacked=columns===1||orientation==='landscape';
       await page.setContent(`<!doctype html><html lang="vi"><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><main>
-      <section class="our-promise chapter-member" id="forever" aria-labelledby="promiseTitle">
+      <section class="our-promise chapter-member" id="forever" aria-labelledby="promiseTitle" data-promise-layout="${orientation}">
         <div class="container our-promise-layout">
           <figure class="our-promise-visual">
             <div class="our-promise-photo-shell is-photo-loaded">
@@ -93,16 +95,20 @@ try{
       assert.ok(result.caption.top>=result.photo.bottom-2,tag+' caption below full photo');
       assert.ok(result.letter.left>=0&&result.letter.right<=width+2,tag+' text fits viewport');
       assert.ok(result.figure.left>=0&&result.figure.right<=width+2,tag+' figure fits viewport');
-      if(columns===1){
+      if(stacked){
         assert.ok(result.letter.top>=result.caption.bottom-3,tag+' stacked text follows caption');
-        assert.ok(result.figure.width<=430,tag+' photo has controlled mobile/tablet width');
+        assert.ok(result.figure.width<=Math.min(width,orientation==='landscape'?763:457),
+          tag+' photo is sized to its orientation');
+        assert.ok(Math.abs((result.figure.left+result.figure.right)/2-width/2)<8,
+          tag+' stacked photography is centered');
       }else{
-        assert.ok(result.letter.left>=result.figure.right-5,tag+' desktop has side-by-side copy');
+        assert.ok(result.letter.left>=result.figure.right-5,tag+' portrait desktop has side-by-side copy');
         assert.ok(result.figure.width<=457,tag+' portrait stays editorial-sized');
+        assert.ok(result.letter.top>=result.figure.top-10,tag+' letter does not float above the portrait');
       }
       assert.ok(result.figure.top-result.section.top<125,tag+' no excessive blank top gap');
       await context.close();
     }
   }
-  console.log('PASS Promise: uncropped portrait/landscape, 9 viewports, balanced desktop/tablet/mobile, no horizontal overflow');
+  console.log('PASS Promise V26.2: both orientations x 9 viewports, centered editorial layout, no crop or overflow');
 }finally{await browser.close();}
