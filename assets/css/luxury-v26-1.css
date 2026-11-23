@@ -299,23 +299,79 @@ section.countdown-section.countdown-compact.countdown-v15 .countdown span {
   transition:background .2s ease,color .2s ease!important;
 }
 
-/* Distinctive portrait arch and quieter handwritten promise. */
+/* Our Promise: responsive, genuinely uncropped photo + readable letter.
+ * Unlike the old fixed-height 5:4 mobile crop, the photo's natural aspect
+ * ratio controls the frame after load. The fallback retains a stable arch. */
 #forever.our-promise {
   background:linear-gradient(120deg,#f5eae2,#fbf6f0 50%,#f7ece6)!important;
-  padding:clamp(51px,6.3vw,86px) 0!important;
+  padding:clamp(42px,5vw,65px) 0!important;
 }
-#forever .our-promise-layout {gap:clamp(28px,5.4vw,77px)!important}
+#forever .our-promise-layout {
+  width:min(1080px,calc(100% - 64px))!important;
+  max-width:1080px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr)!important;
+  gap:clamp(29px,4.5vw,62px)!important;
+  align-items:center!important;
+}
+#forever .our-promise-visual {
+  width:100%!important;
+  max-width:455px!important;
+  min-width:0!important;
+  margin:0 auto!important;
+}
 #forever .our-promise-photo-shell {
-  border-radius:48% 48% 12px 12px!important;
-  overflow:hidden;
-  box-shadow:0 20px 46px rgba(66,39,39,.14)!important;
+  position:relative!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  aspect-ratio:auto!important;
+  border-radius:47% 47% 12px 12px!important;
+  overflow:hidden!important;
+  background:#eee2d7!important;
   border:1px solid rgba(255,254,251,.65)!important;
+  box-shadow:0 20px 46px rgba(66,39,39,.14)!important;
+}
+#forever .our-promise-photo {
+  position:relative!important;
+  inset:auto!important;
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  max-height:none!important;
+  aspect-ratio:auto!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  transform:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  background:transparent!important;
+}
+#forever .our-promise-photo-shell:not(.is-photo-loaded) {
+  aspect-ratio:3/4!important;
+}
+#forever .our-promise-photo-shell:not(.is-photo-loaded) .our-promise-photo {
+  position:absolute!important;
+  inset:0!important;
+  height:100%!important;
+}
+/* Keep the fallback visible for failed/lazy images without stretching it. */
+#forever .our-promise-photo-shell .our-promise-photo[hidden] {
+  display:none!important;
 }
 #forever .our-promise-visual figcaption {
+  padding:14px 3px 0!important;
+  margin:0!important;
   letter-spacing:.17em!important;
   color:#91746e!important;
-  margin-top:13px!important;
   font-size:10px!important;
+  line-height:1.6!important;
+}
+#forever .our-promise-letter {
+  min-width:0!important;
+  max-width:530px!important;
+  padding:0!important;
 }
 #forever .our-promise-kicker {
   color:#a77976!important;
@@ -323,17 +379,29 @@ section.countdown-section.countdown-compact.countdown-v15 .countdown span {
 }
 #forever .our-promise-letter h2 {
   color:#563941!important;
-  font-size:clamp(35px,4.7vw,58px)!important;
+  font-size:clamp(35px,4.4vw,57px)!important;
   line-height:1.12!important;
   margin-bottom:16px!important;
 }
 #forever .our-promise-letter p:not(.our-promise-kicker):not(.our-promise-signature) {
   color:#695454!important;
-  max-width:49ch;
+  max-width:49ch!important;
   line-height:1.8!important;
 }
 #forever .our-promise-signature {color:#9d747c!important}
-
+@media(min-width:768px) and (max-width:1023px) {
+  #forever.our-promise {padding:43px 0 54px!important}
+  #forever .our-promise-layout {
+    width:min(680px,calc(100% - 48px))!important;
+    max-width:680px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    gap:23px!important;
+  }
+  #forever .our-promise-visual {max-width:420px!important}
+  #forever .our-promise-letter {width:100%!important;max-width:620px!important}
+  #forever .our-promise-letter h2 {font-size:clamp(38px,5vw,47px)!important}
+}
 /* Crystal scene remains, with less aggressive framing/empty vertical space. */
 #weddingMagic.hm-forever-scene {
   background:radial-gradient(ellipse at 50% 48%,#49313c,#2c1e2b 76%)!important;
@@ -508,11 +576,27 @@ footer.footer p {color:#efdbce!important}
   #events .v3-section-heading h2 {font-size:clamp(35px,9vw,45px)!important}
   #events .v3-event-panel {border-radius:14px!important}
   #events .v3-event-time strong {font-size:22px!important}
-  #forever.our-promise {padding:43px 0 49px!important}
-  #forever .our-promise-layout {gap:22px!important}
+  #forever.our-promise {padding:35px 0 47px!important}
+  #forever .our-promise-layout {
+    width:calc(100% - 32px)!important;
+    max-width:560px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    gap:22px!important;
+    align-items:stretch!important;
+  }
+  #forever .our-promise-visual {max-width:min(100%,365px)!important}
   #forever .our-promise-photo-shell {
-    border-radius:110px 110px 12px 12px!important;
-    max-height:320px!important;
+    height:auto!important;
+    max-height:none!important;
+    aspect-ratio:auto!important;
+    border-radius:45% 45% 11px 11px!important;
+  }
+  #forever .our-promise-photo-shell:not(.is-photo-loaded) {aspect-ratio:3/4!important}
+  #forever .our-promise-letter {
+    width:100%!important;
+    max-width:540px!important;
+    padding:0 4px!important;
   }
   #forever .our-promise-letter h2 {font-size:clamp(34px,8vw,43px)!important}
   #weddingMagic.hm-forever-scene{padding:28px 14px 36px!important}
@@ -555,9 +639,13 @@ footer.footer p {color:#efdbce!important}
   footer.footer{padding-top:45px!important}
 }
 @media(max-width:360px){
+  #forever .our-promise-visual {max-width:min(100%,300px)!important}
   #story .story-paper-stack .story-copy h2{font-size:30px!important}
   #events .v3-event-time strong{font-size:20px!important}
   .gallery-section #homeGallery.home-gallery{gap:7px!important}
+}
+@media(max-height:500px) and (orientation:landscape){
+  #forever .our-promise-visual {max-width:min(100%,285px)!important}
 }
 @media(prefers-reduced-motion:reduce){
   .hero.hero-v5 .hero-copy>.btn.btn-primary{transition:none!important}
