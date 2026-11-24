@@ -266,14 +266,55 @@
   /* Wedding V5 full-bleed poster: gallery-only background, no foreground cards or viewer. */
   const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
   const phonePortrait=window.matchMedia('(max-width: 767px) and (orientation: portrait)');
-  // A dedicated, published portrait from the album. Its UUID remains stable
-  // when the Admin replaces the underlying photo file.
-  const defaultMobileHeroId='203cb03b-70a3-453a-b37b-b168695a7ff8';
-  let failedMobileId='';
-  function mobilePortrait(){
-    if(!phonePortrait.matches)return null;
-    const photo=choose(state.config?.mobileHeroId || defaultMobileHeroId);
-    return photo&&photo.id!==failedMobileId&&Number(photo.height)>Number(photo.width)?photo:null;
+  // Three published portraits, in location order: Asakusa, Tokyo, Showa.
+  // Keep the UUIDs stable when a photo is replaced in the Admin.
+  const defaultMobileHeroIds=['c3c004dc-180b-4798-abd4-d7d135b9f4a5','73c8fe5a-5738-4e17-92a8-cfeb3c08fb30','bd229772-86bf-4d7a-9033-38bf6d82ab81'];
+  const failedMobileIds=new Set();
+  const mobileHeroIds=()=>Array.isArray(state.config?.mobileHeroIds)&&state.config.mobileHeroIds.length
+    ?state.config.mobileHeroIds:state.config?.mobileHeroId?[state.config.mobileHeroId]:defaultMobileHeroIds;
+  function lowerPhotoIds(){
+    const config=state.config||{};
+    return new Set([config.schedulePhotoId,config.farewellPhotoId,config.promisePhotoId,
+      ...(config.homePhotoIds||[]),...state.photos.filter(p=>p.show_on_homepage).map(p=>p.id),
+      ...blocks().flatMap(b=>[b.imageId,...(b.imageIds||[])])].filter(Boolean));
+  }
+  function mobilePortraits(){
+    if(!phonePortrait.matches)return [];
+    const lower=lowerPhotoIds();
+    return [...new Set(mobileHeroIds())].map(choose)
+      .filter(photo=>photo&&!failedMobileIds.has(photo.id)&&!lower.has(photo.id)&&Number(photo.height)>Number(photo.width))
+      .slice(0,3);
+  }
+  function updateMobileControls(){
+    const controls=document.getElementById('mobileHeroControls');if(!controls)return;
+    controls.querySelectorAll('[data-mobile-slide]').forEach((button,i)=>{
+      button.classList.toggle('is-active',i===state.heroIndex);
+      button.setAttribute('aria-pressed',String(i===state.heroIndex));
+    });
+    const pause=controls.querySelector('[data-mobile-pause]');
+    if(pause){
+      pause.hidden=reducedMotion.matches;
+      pause.textContent=state.heroPaused?'▶':'Ⅱ';
+      pause.setAttribute('aria-label',state.heroPaused?copy[language()].play:copy[language()].pause);
+      pause.setAttribute('aria-pressed',String(state.heroPaused));
+    }
+  }
+  function renderMobileControls(hero,photos){
+    document.getElementById('mobileHeroControls')?.remove();
+    if(photos.length<2)return;
+    const host=hero.querySelector('.hero-copy');if(!host)return;
+    const bar=document.createElement('div');bar.id='mobileHeroControls';bar.className='mobile-hero-controls';
+    bar.setAttribute('role','group');
+    bar.setAttribute('aria-label',({vi:'Ảnh mở đầu',en:'Hero photos',ja:'トップ写真'})[language()]);
+    photos.forEach((photo,i)=>{
+      const b=document.createElement('button');b.type='button';b.dataset.mobileSlide=String(i);
+      b.setAttribute('aria-label',(i+1)+' / '+photos.length+' · '+alt(photo));
+      b.addEventListener('click',()=>{setBackdrop(i);tick();});
+      bar.appendChild(b);
+    });
+    const pause=document.createElement('button');pause.type='button';pause.dataset.mobilePause='';
+    pause.addEventListener('click',()=>{state.heroPaused=!state.heroPaused;updateMobileControls();tick();});
+    bar.appendChild(pause);host.appendChild(bar);updateMobileControls();
   }
   // Override legacy Hero geometry only while the dedicated phone portrait is active.
   // Save individual inline declarations so orientation changes restore desktop styling.
@@ -323,20 +364,33 @@
     }
   }
   const slides=()=>[...document.querySelectorAll('#home .v5-gallery-layer')];
+  let heroSwitchTicket=0;
   function setBackdrop(index){
     const nodes=slides();
     if(!nodes.length)return;
-    state.heroIndex=(index+nodes.length)%nodes.length;
-    nodes.forEach((layer,i)=>layer.classList.toggle('is-current',i===state.heroIndex));
-    // Images for unopened slides are intentionally left without src.
-    // The current slide uses one small WebP, then a larger cached variant.
-    const active=nodes[state.heroIndex];
-    const photo=choose(state.heroUrls[state.heroIndex]);
-    window.WeddingAdaptiveImages?.progressiveSlide?.(active,state.db,photo);
+    const next=(index+nodes.length)%nodes.length,ticket=++heroSwitchTicket;
+    const active=nodes[next],photo=choose(state.heroUrls[next]);
+    const apply=()=>{
+      if(ticket!==heroSwitchTicket||!active.isConnected)return;
+      state.heroIndex=next;
+      nodes.forEach((layer,i)=>layer.classList.toggle('is-current',i===next));
+      updateMobileControls();
+      window.WeddingAdaptiveImages?.progressiveSlide?.(active,state.db,photo);
+    };
+    // On mobile, retain the current photo until the next preview has decoded.
+    // This avoids a blank flash on slow cellular connections.
+    const current=nodes.find(layer=>layer.classList.contains('is-current'));
+    const tile=active.querySelector('.v6-center-image');
+    if(phonePortrait.matches&&current&&current!==active&&tile&&!(tile.complete&&tile.naturalWidth)){
+      tile.addEventListener('load',apply,{once:true});
+      window.WeddingAdaptiveImages?.progressiveSlide?.(active,state.db,photo);
+      return;
+    }
+    apply();
   }
   function tick(){
     stop();
-    if(state.heroUrls.length<2||reducedMotion.matches||document.hidden||document.body.classList.contains('invitation-locked'))return;
+    if(state.heroUrls.length<2||reducedMotion.matches||(phonePortrait.matches&&state.heroPaused)||document.hidden||document.body.classList.contains('invitation-locked'))return;
     state.heroTimer=setInterval(()=>setBackdrop(state.heroIndex+1),7000);
   }
   function heroPhotos(){
@@ -363,9 +417,9 @@
     const hero=document.getElementById('home');
     const background=hero?.querySelector('.hero-full-photo');
     if(!hero||!background)return;
-    const portrait=mobilePortrait();
-    const chosen=portrait?[portrait]:heroPhotos();if(!chosen.length)return;
-    applyMobileHeroLayout(hero,portrait);
+    const portraits=mobilePortraits();
+    const chosen=portraits.length?portraits:heroPhotos();if(!chosen.length)return;
+    applyMobileHeroLayout(hero,portraits[0]||null);
     const ids=chosen.map(i=>i.id);
     const oldIds=state.heroUrls;
     const unchanged=ids.length===oldIds.length&&ids.every((id,i)=>id===oldIds[i])&&slides().length===ids.length;
@@ -392,9 +446,9 @@
         center.appendChild(buildTile(photo,'underlay',i));
         const mainTile=buildTile(photo,'center',i);
         center.appendChild(mainTile);
-        if(portrait)mainTile.addEventListener('error',()=>{
-          if(!layer.isConnected||failedMobileId===photo.id)return;
-          failedMobileId=photo.id;
+        if(portraits.length)mainTile.addEventListener('error',()=>{
+          if(!layer.isConnected||failedMobileIds.has(photo.id))return;
+          failedMobileIds.add(photo.id);
           createSlides();
         },{once:true});
         layer.appendChild(center);
@@ -403,6 +457,7 @@
       background.appendChild(gallery);
     }
     hero.classList.add('v5-gallery-ready');
+    renderMobileControls(hero,portraits);
     setBackdrop(originalIndex);
     if(!unchanged)document.dispatchEvent(new Event('hero:layout-changed'));
     tick();
@@ -424,12 +479,12 @@
     }catch(error){console.error('Wedding V3 loading error',error);}
   }
   document.addEventListener('wedding:hero-ready',()=>{state.heroReady=true;if(initialLoaded)createSlides();});
-  document.addEventListener('wedding:language',()=>{renderStories();renderSchedule();renderPromisePhoto();});
+  document.addEventListener('wedding:language',()=>{renderStories();renderSchedule();renderPromisePhoto();const hero=document.getElementById('home');if(hero?.classList.contains('mobile-photo-first'))renderMobileControls(hero,mobilePortraits());});
   document.addEventListener('wedding:invitation-opened',tick);
   document.addEventListener('visibilitychange',tick);
   if(phonePortrait.addEventListener)phonePortrait.addEventListener('change',createSlides);
   else phonePortrait.addListener?.(createSlides);
-  reduced.addEventListener?.('change',tick);
+  reduced.addEventListener?.('change',()=>{updateMobileControls();tick();});
   if(window.WeddingHeroReady)state.heroReady=true;
   setDay('bride');
   if(state.db)load();

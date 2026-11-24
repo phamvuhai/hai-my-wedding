@@ -81,6 +81,8 @@ try {
     const errors=[];page.on('pageerror',e=>errors.push(e.message));
     const photo=(id,w,h)=>({id,width:w,height:h,is_published:true,image_path:id+'.webp',title:id,sort_order:0});
     const portrait=photo('mobile-test',800,1200);
+    const tokyo=photo('mobile-tokyo',800,1200),showa=photo('mobile-showa',800,1200);
+    const lower=photo('lower-section',800,1200);
     const landscape=photo('desktop-test',1200,800);
     await page.setContent(`<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body class="hero-image-ready">
       <nav class="nav" aria-label="Navigation">H &amp; M</nav>
@@ -91,13 +93,13 @@ try {
           <p class="hero-date">2026年12月18日（金）〜20日（日）</p><p class="hero-note">これからも、ふたりで歩んでいけることが何よりの幸せです。</p><a class="btn btn-primary" href="#events">結婚式の日程を見る</a>
         </div></div></header><div class="hero-marquee">Next section</div></body></html>`);
     for(const content of [site,compact,luxury,mobile])await page.addStyleTag({content});
-    await page.evaluate(({portrait,landscape})=>{
-      const photos=[portrait,landscape];
+    await page.evaluate(({portrait,tokyo,showa,lower,landscape})=>{
+      const photos=[portrait,tokyo,showa,lower,landscape];
       window.WEDDING_CONFIG={supabaseUrl:'https://mock.invalid',supabaseAnonKey:'test'};
       window.WeddingHeroReady=true;
       window.supabase={createClient:()=>({from:table=>{
         const api={select:()=>api,eq:()=>api,order:()=>api,limit:()=>api,
-          maybeSingle:async()=>({data:{value_vi:JSON.stringify({heroIds:[landscape.id],mobileHeroId:portrait.id})},error:null}),
+          maybeSingle:async()=>({data:{value_vi:JSON.stringify({heroIds:[landscape.id],mobileHeroIds:[portrait.id,lower.id,tokyo.id,showa.id],homePhotoIds:[lower.id],blocks:[]})},error:null}),
           then:(resolve,reject)=>Promise.resolve({data:photos,error:null}).then(resolve,reject)};
         return api;
       }})};
@@ -105,7 +107,7 @@ try {
         const svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+photo.width+'" height="'+photo.height+'"><rect width="100%" height="100%" fill="#b28e71"/></svg>';
         layer.querySelectorAll('img').forEach(el=>{el.src='data:image/svg+xml,'+encodeURIComponent(svg)});
       }};
-    },{portrait,landscape});
+    },{portrait,tokyo,showa,lower,landscape});
     await page.addScriptTag({content:wedding});
     await page.waitForSelector('#home.mobile-photo-first .v5-gallery-layer.is-current');
     await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
@@ -120,6 +122,9 @@ try {
         overflow:document.documentElement.scrollWidth>innerWidth+2};
     });
     assert.equal(m.active,'mobile-test');
+    assert.deepEqual(await page.locator('.v5-gallery-layer').evaluateAll(els=>els.map(el=>el.dataset.photoId)),['mobile-test','mobile-tokyo','mobile-showa'],'Three portrait slides in order; exclude a lower-section duplicate');
+    assert.equal(await page.locator('#mobileHeroControls [data-mobile-slide]').count(),3);
+    assert.equal(await page.locator('#mobileHeroControls [data-mobile-pause]').isVisible(),false,'Reduced motion disables autoplay');
     assert.equal(m.fit,'cover','Dedicated portrait fills the mobile photo frame');
     console.log('Mobile overlay geometry',width,height,JSON.stringify(m));
     assert.ok(Math.abs(m.heroHeight-height)<=2&&Math.abs(m.marqueeTop-height)<=2,'Hero and next section align exactly with initial viewport');
@@ -129,9 +134,15 @@ try {
     assert.ok(m.date<=m.note+2&&m.note<m.cta,'Date, note and CTA ordered');
     assert.ok(m.ctaBottom<=m.photo+2&&m.ctaBottom<=height+2,'Entire invitation copy and CTA remain inside first viewport');
     assert.equal(m.overflow,false);
+    for(const [i,id] of [[1,'mobile-tokyo'],[2,'mobile-showa'],[0,'mobile-test']]){
+      await page.locator('#mobileHeroControls [data-mobile-slide="'+i+'"]').click();
+      await page.waitForFunction(expected=>document.querySelector('.v5-gallery-layer.is-current')?.dataset.photoId===expected,id);
+      assert.equal(await page.locator('#mobileHeroControls [data-mobile-slide="'+i+'"]').getAttribute('aria-pressed'),'true');
+    }
     await page.setViewportSize({width:1024,height:768});
     await page.waitForFunction(()=>!document.getElementById('home').classList.contains('mobile-photo-first')&&document.querySelector('.v5-gallery-layer.is-current')?.dataset.photoId==='desktop-test');
     assert.equal(await page.locator('.hero-mobile-title').count(),0,'Desktop restores original title DOM');
+    assert.equal(await page.locator('#mobileHeroControls').count(),0,'Mobile controls removed on desktop');
     assert.equal(await page.locator('.hero-content').evaluate(el=>el.style.getPropertyValue('inset')),'','Desktop restores prior inline layout');
     assert.equal(await page.locator('.v6-center-image').evaluate(el=>getComputedStyle(el).objectFit),'contain','Desktop retains full uncropped photo');
     assert.deepEqual(errors,[]);
