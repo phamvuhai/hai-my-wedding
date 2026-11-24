@@ -440,3 +440,113 @@
  #home.hero.mobile-photo-first .hero-note{font-size:11px!important;line-height:1.35!important;margin:5px auto 7px!important}
  #home.hero.mobile-photo-first .mobile-hero-controls{height:24px;margin-top:2px}
 }
+
+/* Mobile regression fixes: one sticky Album header, no overlapping filters,
+   independent photo controls and safe-area-aware touch targets. */
+@media (max-width: 1023px) {
+  body.gallery-overlay-open #musicDock,
+  body.photo-lightbox-open #musicDock {
+    opacity:0!important; visibility:hidden!important; pointer-events:none!important;
+  }
+  #albumOverlay { z-index:3500!important; }
+  #photoLightbox { z-index:4400!important; }
+}
+@media (max-width: 767px) {
+  #albumOverlay {
+    padding:0!important;
+    overscroll-behavior:contain;
+    scroll-padding-top:84px;
+  }
+  #albumOverlay .album-overlay-shell {
+    width:100%!important;
+    box-sizing:border-box!important;
+    padding:0 max(8px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))!important;
+  }
+  #albumOverlay .album-overlay-header {
+    position:sticky!important; top:0!important; z-index:8!important;
+    display:grid!important; grid-template-columns:minmax(0,1fr) 44px!important;
+    align-items:center!important; gap:8px!important;
+    padding:calc(8px + env(safe-area-inset-top)) 4px 8px!important;
+    margin:0!important; background:#faf6f2!important;
+    border-bottom:1px solid rgba(111,75,60,.12);
+    backdrop-filter:none!important; -webkit-backdrop-filter:none!important;
+  }
+  #albumOverlay .album-overlay-header>div { min-width:0!important; }
+  #albumOverlay .album-overlay-header .eyebrow {
+    font-size:9px!important; line-height:1.3!important;
+    letter-spacing:.17em!important; margin:0 0 3px!important;
+  }
+  #albumOverlay .album-overlay-header h2 {
+    font-size:clamp(17px,4.8vw,22px)!important;
+    line-height:1.2!important; letter-spacing:-.025em!important;
+    margin:0!important; overflow-wrap:anywhere; text-wrap:wrap;
+  }
+  #albumOverlay #albumOverlayClose {
+    width:44px!important; height:44px!important; min-width:44px!important;
+    padding:0!important; font-size:28px!important; box-shadow:none!important;
+    border:1px solid rgba(111,75,60,.10);
+  }
+  /* Filters scroll with the content; never stick underneath a variable-height
+     multilingual header using an unrelated navigation height. */
+  #albumOverlay .album-overlay-filters {
+    position:static!important; top:auto!important; z-index:auto!important;
+    box-sizing:border-box!important; margin:0 0 8px!important;
+    padding:7px 2px!important; gap:6px!important;
+    background:transparent!important; backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+  #albumOverlay .album-overlay-filters[hidden] { display:none!important; }
+  #albumOverlay .album-filter-btn {
+    min-height:44px!important; padding:6px 12px!important;
+    font-size:12px!important; white-space:nowrap;
+  }
+  #albumOverlay #albumOverlayGrid { gap:8px!important; }
+  #albumOverlay #albumOverlayGrid>.album-overlay-photo { border-radius:10px!important; }
+  #albumOverlay #albumOverlayGrid .album-overlay-photo>span {
+    padding:24px 8px 8px!important;
+    background:linear-gradient(transparent,rgba(24,18,15,.59))!important;
+  }
+  #albumOverlay #albumOverlayGrid .album-overlay-photo strong {
+    font-size:clamp(12px,3.5vw,14px)!important;
+    line-height:1.25!important; overflow-wrap:anywhere;
+  }
+  /* Preserve the balanced two-column thumbnails and their tail-row logic.
+     Original aspect ratios remain available in the detail viewer. */
+  #photoLightbox {
+    box-sizing:border-box!important;
+    padding:calc(56px + env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))!important;
+  }
+  #photoLightbox .photo-lightbox-figure {
+    width:100%!important; height:100%!important;
+    max-width:100%!important; min-height:0!important;
+    grid-template-rows:minmax(0,1fr) auto!important; gap:7px!important;
+  }
+  #photoLightbox .photo-lightbox-stage { max-height:none!important; }
+  #photoLightbox #photoLightboxImage {
+    max-width:100%!important; max-height:100%!important;
+    object-fit:contain!important;
+  }
+  #photoLightbox .photo-lightbox-figure figcaption {
+    box-sizing:border-box!important; width:100%!important;
+    padding:0 50px!important; margin:0!important;
+    max-height:35dvh; overflow-y:auto; overflow-wrap:anywhere;
+  }
+  #photoLightbox :is(.photo-lightbox-close,.photo-lightbox-zoom,.photo-lightbox-nav) {
+    width:44px!important; height:44px!important; min-width:44px!important;
+    touch-action:manipulation; z-index:10!important;
+  }
+  #photoLightbox .photo-lightbox-nav {
+    top:auto!important; bottom:calc(10px + env(safe-area-inset-bottom))!important;
+    transform:none!important;
+  }
+  #photoLightbox .photo-lightbox-prev { left:max(6px,env(safe-area-inset-left))!important; }
+  #photoLightbox .photo-lightbox-next { right:max(6px,env(safe-area-inset-right))!important; }
+  .nav .nav-language button { min-height:44px!important; }
+  #home.hero.mobile-photo-first .mobile-hero-controls button { min-width:44px!important; }
+  #rsvp .rsvp-form :is(input,select,textarea) { min-width:0!important; }
+  #weddingGifts .wedding-gift-fields>div strong { overflow-wrap:anywhere; }
+  #weddingGifts .wedding-gift-qr { max-width:100%!important; }
+}
+@media (max-width: 767px) and (orientation:landscape) and (max-height:500px) {
+  #photoLightbox .photo-lightbox-figure figcaption { max-height:30dvh; }
+}
