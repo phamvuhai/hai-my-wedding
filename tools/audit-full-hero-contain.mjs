@@ -120,11 +120,11 @@ try {
     assert.equal(m.active,'mobile-test');
     assert.equal(m.fit,'cover','Dedicated portrait fills the mobile photo frame');
     console.log('Mobile overlay geometry',width,height,JSON.stringify(m));
-    assert.ok(m.heroHeight>=height-2&&m.marqueeTop>=height-2,'First viewport contains only Hero, not the next section');
+    assert.ok(Math.abs(m.heroHeight-height)<=2&&Math.abs(m.marqueeTop-height)<=2,'Hero and next section align exactly with initial viewport');
     assert.ok(Math.abs(m.photoWidth-width)<2&&Math.abs(m.photoTop-m.navBottom)<2&&Math.abs(m.photo-m.heroBottom)<2,'Photo fills from below navigation to bottom edge');
     assert.ok(m.title>=m.photoTop+(m.photo-m.photoTop)*.25,'Upper portion of photograph stays clear');
     assert.ok(m.date<=m.note+2&&m.note<m.cta,'Date, note and CTA ordered');
-    assert.ok(m.ctaBottom<=m.photo+2,'Entire invitation copy remains over the photo');
+    assert.ok(m.ctaBottom<=m.photo+2&&m.ctaBottom<=height+2,'Entire invitation copy and CTA remain inside first viewport');
     assert.equal(m.overflow,false);
     await page.setViewportSize({width:1024,height:768});
     await page.waitForFunction(()=>!document.getElementById('home').classList.contains('mobile-photo-first')&&document.querySelector('.v5-gallery-layer.is-current')?.dataset.photoId==='desktop-test');

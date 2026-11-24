@@ -51,7 +51,7 @@ try{
       id:'p'+String(i+1).padStart(2,'0'), album_id:'album-1',
       title:'Photo '+(i+1),caption:'Caption '+(i+1),image_path:'pre/full-'+i+'.webp',
       image_variants:{480:'pre/preview-'+i+'-w480.webp',960:'pre/medium-'+i+'-w960.webp'},
-      width:2000,height:3000,sort_order:i*10,focus_x:50,focus_y:50,
+      width:i%3===0?3000:2000,height:i%3===0?2000:3000,display_size:i%3===0?'wide':i%3===1?'tall':'auto',sort_order:i*10,focus_x:50,focus_y:50,
       is_published:true,show_in_album:true,show_on_homepage:false,is_hero:false,created_at:'2026-11-21'
     }));
     const album={id:'album-1',title:'Pre-Wedding',slug:'pre-wedding',sort_order:0};
@@ -91,6 +91,27 @@ try{
   assert.ok(initial>=10 && initial<25,'Album renders batches, not all 25 images at once');
   assert.equal(await page.locator('#albumOverlayGrid [data-album-chapter="asakusa"]').count(),1);
   assert.equal(await page.locator('#albumOverlayGrid [data-album-photo-id="p01"] > span small').count(),0,'Caption is detail-only');
+  async function assertPacked(){
+    const geometry=await page.evaluate(()=>{
+      const grid=document.getElementById('albumOverlayGrid'),g=grid.getBoundingClientRect();
+      const rows=new Map();
+      for(const el of grid.querySelectorAll('[data-album-photo-id]')){
+        const r=el.getBoundingClientRect(),y=Math.round(r.top);
+        if(!rows.has(y))rows.set(y,[]);
+        rows.get(y).push({left:r.left,right:r.right,id:el.dataset.albumPhotoId});
+      }
+      return {left:g.left,right:g.right,rows:[...rows.values()]};
+    });
+    for(const row of geometry.rows){
+      assert.ok(Math.abs(row[0].left-geometry.left)<2,'Row begins at left edge');
+      assert.ok(Math.abs(row.at(-1).right-geometry.right)<2,'Row fills right edge: '+JSON.stringify(row));
+    }
+  }
+  await assertPacked();
+  await page.setViewportSize({width:1280,height:900});
+  await assertPacked();
+  await page.setViewportSize({width:390,height:844});
+  await assertPacked();
   await page.waitForSelector('#albumOverlayGrid .is-photo-ready',{timeout:12000});
   assert.ok(imageRequests.some(x=>x.includes('-w480.webp')),'Preview loaded');
   assert.ok(!imageRequests.some(x=>x.includes('/full-')),'No full image before clicking detail');
@@ -163,6 +184,13 @@ try{
   await page.evaluate(()=>{const overlay=document.getElementById('albumOverlay');overlay.scrollTop=overlay.scrollHeight;});
   await page.waitForFunction(()=>document.querySelectorAll('#albumOverlayGrid [data-album-photo-id]').length>10,{timeout:12000});
   assert.equal(await page.locator('#albumOverlayGrid [data-album-chapter="tokyo"]').count(),1,'Chapter heading follows lazy batch');
+  await assertPacked();
+  await page.evaluate(()=>{const overlay=document.getElementById('albumOverlay');overlay.scrollTop=overlay.scrollHeight;});
+  await page.waitForFunction(()=>document.querySelectorAll('#albumOverlayGrid [data-album-photo-id]').length===25,null,{timeout:12000});
+  await assertPacked();
+  await page.setViewportSize({width:1280,height:900});
+  await assertPacked();
+  assert.deepEqual(await page.locator('#albumOverlayGrid [data-album-photo-id]').evaluateAll(els=>els.map(e=>e.dataset.albumPhotoId)),Array.from({length:25},(_,i)=>'p'+String(i+1).padStart(2,'0')),'Album DOM order preserved');
   assert.equal(errors.filter(x=>/progressive-gallery|adaptive-images|renderLightbox/i.test(x)).length,0,'No gallery JavaScript errors');
   console.log('PASS: V21 + Album Detail zoom: pinch/pan, no gesture swipe, image reset, HD 404 fallback, bounded arrows and batched scroll');
 } finally {
