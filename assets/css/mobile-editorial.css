@@ -550,3 +550,33 @@
 @media (max-width: 767px) and (orientation:landscape) and (max-height:500px) {
   #photoLightbox .photo-lightbox-figure figcaption { max-height:30dvh; }
 }
+
+/* Replay invitation: separate controls for home and the original cover. */
+.nav .nav-invite-replay {
+  flex:0 0 44px; width:44px; height:44px; padding:0;
+  display:grid; place-items:center; border:1px solid currentColor;
+  border-color:color-mix(in srgb,currentColor 30%,transparent);
+  border-radius:50%; background:transparent; color:inherit;
+  cursor:pointer; touch-action:manipulation; box-sizing:border-box;
+}
+.nav .nav-invite-replay svg { display:block; }
+.nav .nav-invite-replay:focus-visible,
+.footer .footer-invite-replay:focus-visible { outline:2px solid currentColor; outline-offset:3px; }
+.footer .footer-invite-replay {
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  min-height:44px; max-width:100%; margin:10px auto 0; padding:8px 14px;
+  border:1px solid currentColor; border-color:color-mix(in srgb,currentColor 28%,transparent);
+  border-radius:999px; background:transparent; color:inherit; font:inherit;
+  font-size:12px; cursor:pointer; touch-action:manipulation;
+}
+.footer .footer-invite-replay svg { flex:none; }
+@media(max-width:767px) {
+  .nav .nav-right { gap:5px!important; min-width:0; }
+  .nav .nav-inner { gap:6px!important; }
+  .nav .nav-invite-replay svg { width:19px; height:19px; }
+  .nav .nav-language { flex-shrink:0; }
+}
+@media(max-width:359px) {
+  .nav .nav-inner { width:calc(100% - 20px)!important; }
+  .nav .nav-right { gap:3px!important; }
+}
