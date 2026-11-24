@@ -75,7 +75,7 @@ try {
   }
   // Exercise the actual Hero selection code on a test-only album and check
   // the compact overlay geometry at common phone widths.
-  for(const {width,height} of [{width:320,height:568},{width:390,height:844},{width:430,height:932}]){
+  for(const {width,height} of [{width:320,height:568},{width:375,height:667},{width:390,height:844},{width:430,height:932}]){
     const ctx=await browser.newContext({viewport:{width,height},reducedMotion:'reduce'});
     const page=await ctx.newPage();
     const errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -108,10 +108,12 @@ try {
     },{portrait,landscape});
     await page.addScriptTag({content:wedding});
     await page.waitForSelector('#home.mobile-photo-first .v5-gallery-layer.is-current');
+    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
     const m=await page.evaluate(()=>{
       const r=s=>document.querySelector(s).getBoundingClientRect();
       return {photo:r('.hero-full-photo').bottom,photoTop:r('.hero-full-photo').top,title:r('.hero-mobile-title').top,
-        heroHeight:r('#home').height,heroBottom:r('#home').bottom,navBottom:r('.nav').bottom,photoWidth:r('.hero-full-photo').width,marqueeTop:r('.hero-marquee').top,
+        heroHeight:r('#home').height,heroTop:r('#home').top,heroBottom:r('#home').bottom,navBottom:r('.nav').bottom,photoWidth:r('.hero-full-photo').width,marqueeTop:r('.hero-marquee').top,
+        contentBottom:r('.hero-content').bottom,copyBottom:r('.hero-copy').bottom,
         date:r('.hero-date').bottom,note:r('.hero-note').top,cta:r('.hero-copy>.btn').top,ctaBottom:r('.hero-copy>.btn').bottom,
         active:document.querySelector('.v5-gallery-layer.is-current').dataset.photoId,
         fit:getComputedStyle(document.querySelector('.v6-center-image')).objectFit,
@@ -121,14 +123,16 @@ try {
     assert.equal(m.fit,'cover','Dedicated portrait fills the mobile photo frame');
     console.log('Mobile overlay geometry',width,height,JSON.stringify(m));
     assert.ok(Math.abs(m.heroHeight-height)<=2&&Math.abs(m.marqueeTop-height)<=2,'Hero and next section align exactly with initial viewport');
-    assert.ok(Math.abs(m.photoWidth-width)<2&&Math.abs(m.photoTop-m.navBottom)<2&&Math.abs(m.photo-m.heroBottom)<2,'Photo fills from below navigation to bottom edge');
-    assert.ok(m.title>=m.photoTop+(m.photo-m.photoTop)*.25,'Upper portion of photograph stays clear');
+    assert.ok(Math.abs(m.photoWidth-width)<2&&Math.abs(m.photoTop-m.heroTop)<2&&Math.abs(m.photo-m.heroBottom)<2,'Photo fills viewport behind navigation without any blank strip');
+    assert.ok(Math.abs(m.contentBottom-m.heroBottom)<2&&Math.abs(m.copyBottom-m.heroBottom)<2,'Copy anchored to actual bottom edge of Hero');
+    assert.ok(m.title>=Math.max(m.navBottom,m.photoTop+(m.photo-m.photoTop)*.25),'Upper portion of photograph stays clear');
     assert.ok(m.date<=m.note+2&&m.note<m.cta,'Date, note and CTA ordered');
     assert.ok(m.ctaBottom<=m.photo+2&&m.ctaBottom<=height+2,'Entire invitation copy and CTA remain inside first viewport');
     assert.equal(m.overflow,false);
     await page.setViewportSize({width:1024,height:768});
     await page.waitForFunction(()=>!document.getElementById('home').classList.contains('mobile-photo-first')&&document.querySelector('.v5-gallery-layer.is-current')?.dataset.photoId==='desktop-test');
     assert.equal(await page.locator('.hero-mobile-title').count(),0,'Desktop restores original title DOM');
+    assert.equal(await page.locator('.hero-content').evaluate(el=>el.style.getPropertyValue('inset')),'','Desktop restores prior inline layout');
     assert.equal(await page.locator('.v6-center-image').evaluate(el=>getComputedStyle(el).objectFit),'contain','Desktop retains full uncropped photo');
     assert.deepEqual(errors,[]);
     await ctx.close();

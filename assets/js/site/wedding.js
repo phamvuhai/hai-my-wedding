@@ -275,6 +275,27 @@
     const photo=choose(state.config?.mobileHeroId || defaultMobileHeroId);
     return photo&&photo.id!==failedMobileId&&Number(photo.height)>Number(photo.width)?photo:null;
   }
+  // Override legacy Hero geometry only while the dedicated phone portrait is active.
+  // Save individual inline declarations so orientation changes restore desktop styling.
+  let mobileGeometry=[];
+  function restoreMobileGeometry(){
+    for(const [el,key,value,priority] of mobileGeometry){
+      if(value)el.style.setProperty(key,value,priority);else el.style.removeProperty(key);
+    }
+    mobileGeometry=[];
+  }
+  function anchorMobileGeometry(hero){
+    restoreMobileGeometry();
+    const content=hero.querySelector('.hero-content'),copy=hero.querySelector('.hero-copy');
+    const set=(el,props)=>{if(!el)return;for(const [key,value] of Object.entries(props)){
+      mobileGeometry.push([el,key,el.style.getPropertyValue(key),el.style.getPropertyPriority(key)]);
+      el.style.setProperty(key,value,'important');
+    }};
+    const fill={position:'absolute',inset:'0px',width:'100%',height:'100%','min-height':'0px','max-height':'none',margin:'0px',padding:'0px',transform:'none',translate:'none',scale:'none'};
+    set(hero.querySelector('.hero-full-photo'),fill);set(hero.querySelector('.hero-overlay'),fill);
+    set(content,{...fill,display:'block','max-width':'none','box-sizing':'border-box'});
+    set(copy,{position:'absolute',inset:'auto 0px 0px 0px',height:'auto','min-height':'0px',width:'100%','max-width':'none',margin:'0px',transform:'none',translate:'none',scale:'none'});
+  }
   function applyMobileHeroLayout(hero,photo){
     const copy=hero.querySelector('.hero-copy');
     if(!copy)return;
@@ -295,7 +316,9 @@
     hero.classList.toggle('mobile-photo-first',Boolean(photo&&title));
     if(photo&&title){
       hero.dataset.mobileHeroId=photo.id;
+      anchorMobileGeometry(hero);
     }else{
+      restoreMobileGeometry();
       delete hero.dataset.mobileHeroId;
     }
   }
