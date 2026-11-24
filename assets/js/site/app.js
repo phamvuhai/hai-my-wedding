@@ -321,6 +321,7 @@ const galleryState = {
   client: null,
   homeImages: [],
   albumImages: [],
+  albumChapters: [],
   albums: [],
   albumFilter: 'all',
   albumLoadedAt: 0,
@@ -523,6 +524,14 @@ async function loadAlbumImages({force=false} = {}) {
   if (albumResult.error) throw albumResult.error;
   if (imageResult.error) throw imageResult.error;
   galleryState.albumImages = (imageResult.data || []).map(img => ({...img, publicUrl: galleryPublicUrl(img)}));
+  // Keep chapter metadata independent of album membership and photo UUIDs.
+  try {
+    const design = await client.from('site_content').select('value_vi').eq('key','v3_design').maybeSingle();
+    if (!design.error) {
+      const config=JSON.parse(design.data?.value_vi || 'null');
+      galleryState.albumChapters=Array.isArray(config?.albumChapters)?config.albumChapters.filter(c=>c&&Array.isArray(c.photoIds)):[]; 
+    }
+  } catch (error) { console.warn('Album chapter metadata unavailable',error); }
   galleryState.albumLoadedAt = Date.now();
   const usedAlbumIds = new Set(galleryState.albumImages.map(img => String(img.album_id)));
   galleryState.albums = (albumResult.data || []).filter(album => usedAlbumIds.has(String(album.id)));
@@ -542,10 +551,23 @@ function renderAlbumOverlay() {
     grid.innerHTML = `<p class="album-overlay-empty">${galleryEsc(tr('album.empty','Album đang được chuẩn bị ♡'))}</p>`;
     return;
   }
+  const chapterStarts=new Map();
+  const visibleIds=new Set(visibleAlbumImages.map(img=>String(img.id)));
+  const lang=window.WeddingI18n?.language || 'vi';
+  const chapters=galleryState.albumChapters || [];
+  chapters.forEach((chapter,i)=>{
+    const members=chapter.photoIds.filter(id=>visibleIds.has(String(id)));
+    const first=visibleAlbumImages.find(img=>members.includes(String(img.id)));
+    if(!first)return;
+    const title=chapter.title?.[lang]||chapter.title?.vi||chapter.id;
+    const location=({asakusa:'Asakusa · 浅草',tokyo:'Tokyo Station · 東京駅',showa:'Showa Kinen Park · 昭和記念公園'})[chapter.id]||'';
+    chapterStarts.set(String(first.id),`<div class="album-editorial-chapter" data-album-chapter="${galleryEsc(chapter.id)}"><span>CHAPTER ${['I','II','III','IV','V'][i]||i+1} · ${members.length} ${lang==='ja'?'枚':lang==='en'?'PHOTOS':'ẢNH'}</span><h3>${galleryEsc(title)}</h3><small>${galleryEsc(location)}</small></div>`);
+  });
+  grid.classList.toggle('has-editorial-chapters',chapterStarts.size>0);
   const renderCard = (img) => {
     const loc = galleryLocalized(img);
     const size = gallerySize(img);
-    return `
+    return `${chapterStarts.get(String(img.id))||''}
       <button type="button" class="album-overlay-photo size-${size} album-progressive-card"
         data-album-photo-id="${galleryEsc(img.id)}"
         data-photo-title="${galleryEsc(loc.alt)}"
@@ -555,7 +577,7 @@ function renderAlbumOverlay() {
           style="object-position:${Number(img.focus_x ?? 50)}% ${Number(img.focus_y ?? 50)}%">
         <i class="album-progressive-indicator" aria-hidden="true"></i>
         <i class="album-progressive-error" aria-hidden="true">Ảnh chưa tải được · Chạm để mở</i>
-        <span><strong>${galleryEsc(loc.title)}</strong><small>${galleryEsc(loc.caption)}</small></span>
+        <span><strong>${galleryEsc(loc.title)}</strong>${chapterStarts.size?'':`<small>${galleryEsc(loc.caption)}</small>`}</span>
       </button>`;
   };
   if (window.WeddingProgressiveGallery && galleryClient()) {
