@@ -222,6 +222,11 @@
   document.addEventListener('visibilitychange',reconcile);
   document.addEventListener('wedding:language',localize);
   document.addEventListener('wedding:invitation-opened',stop);
+  document.addEventListener('wedding:invitation-replay',()=>{
+    stop();finished=false;elapsed=0;startedAt=0;frames=0;
+    stage.classList.remove('is-complete');hint?.classList.remove('is-complete');
+    requestAnimationFrame(()=>{if(active())resize();});
+  });
   new MutationObserver(reconcile).observe(intro,{attributes:true,attributeFilter:['class']});
   new MutationObserver(reconcile).observe(document.documentElement,{attributes:true,attributeFilter:['data-motion']});
   reduce.addEventListener?.('change',()=>{if(reduce.matches)finish();else reconcile();});
