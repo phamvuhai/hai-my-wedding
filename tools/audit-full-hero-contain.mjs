@@ -74,7 +74,7 @@ try {
     }
   }
   // Exercise the actual Hero selection code on a test-only album and check
-  // the separate photo and copy geometry at common phone widths.
+  // the compact overlay geometry at common phone widths.
   for(const width of [320,390,430]){
     const ctx=await browser.newContext({viewport:{width,height:844},reducedMotion:'reduce'});
     const page=await ctx.newPage();
@@ -109,17 +109,18 @@ try {
     await page.waitForSelector('#home.mobile-photo-first .v5-gallery-layer.is-current');
     const m=await page.evaluate(()=>{
       const r=s=>document.querySelector(s).getBoundingClientRect();
-      return {photo:r('.hero-full-photo').bottom,title:r('.hero-mobile-title').bottom,
-        date:r('.hero-date').bottom,note:r('.hero-note').top,cta:r('.hero-copy>.btn').top,
+      return {photo:r('.hero-full-photo').bottom,photoTop:r('.hero-full-photo').top,title:r('.hero-mobile-title').top,
+        date:r('.hero-date').bottom,note:r('.hero-note').top,cta:r('.hero-copy>.btn').top,ctaBottom:r('.hero-copy>.btn').bottom,
         active:document.querySelector('.v5-gallery-layer.is-current').dataset.photoId,
         fit:getComputedStyle(document.querySelector('.v6-center-image')).objectFit,
         overflow:document.documentElement.scrollWidth>innerWidth+2};
     });
     assert.equal(m.active,'mobile-test');
     assert.equal(m.fit,'contain');
-    assert.ok(Math.abs(m.title-m.photo)<2,'Photo and title stage heights agree');
-    assert.ok(m.date<=m.photo+2,'Date stays inside photo');
-    assert.ok(m.note>=m.photo+8&&m.cta>m.note,'Note and CTA below photograph');
+    console.log('Mobile overlay geometry',width,JSON.stringify(m));
+    assert.ok(m.title>=m.photoTop+(m.photo-m.photoTop)*.30,'Top portion of photograph stays clear');
+    assert.ok(m.date<=m.note+2&&m.note<m.cta,'Date, note and CTA ordered');
+    assert.ok(m.ctaBottom<=m.photo+2,'Entire invitation copy remains over the photo');
     assert.equal(m.overflow,false);
     await page.setViewportSize({width:1024,height:768});
     await page.waitForFunction(()=>!document.getElementById('home').classList.contains('mobile-photo-first')&&document.querySelector('.v5-gallery-layer.is-current')?.dataset.photoId==='desktop-test');
@@ -127,5 +128,5 @@ try {
     assert.deepEqual(errors,[]);
     await ctx.close();
   }
-  console.log('PASS: full-size contain on all devices; dedicated mobile portrait, separate copy/CTA and desktop restore');
+  console.log('PASS: full-size contain on all devices; dedicated mobile portrait, compact overlaid copy/CTA and desktop restore');
 }finally{await browser.close();}
