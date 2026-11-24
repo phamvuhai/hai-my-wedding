@@ -322,3 +322,81 @@
     filter:brightness(1.045);scale:1.025;
   }
 }
+
+/* Mobile portrait Hero: keep the photograph intact and move the letter below it.
+   The class is enabled only when a dedicated published portrait resolves. */
+@media(max-width:767px) and (orientation:portrait){
+  #home.hero.hero-v5.mobile-photo-first{
+    --mobile-hero-photo-height:min(150vw,78svh);
+    position:relative!important;display:block!important;min-height:0!important;
+    height:auto!important;padding:0!important;background:#faf6f0!important;
+    color:#503740!important;overflow:hidden!important;
+  }
+  #home.hero.mobile-photo-first::before,#home.hero.mobile-photo-first::after{display:none!important}
+  #home.hero.mobile-photo-first .hero-full-photo,
+  #home.hero.mobile-photo-first .hero-overlay{
+    position:absolute!important;inset:0 0 auto!important;width:100%!important;
+    height:var(--mobile-hero-photo-height)!important;min-height:0!important;max-height:none!important;
+    transform:none!important;
+  }
+  #home.hero.mobile-photo-first .hero-overlay{
+    background:linear-gradient(180deg,transparent 0%,transparent 56%,rgba(25,16,22,.06) 67%,rgba(25,16,22,.63) 100%)!important;
+  }
+  #home.hero.mobile-photo-first .hero-content{
+    display:block!important;position:relative!important;min-height:0!important;height:auto!important;
+    width:100%!important;max-width:none!important;padding:0!important;margin:0!important;
+    transform:none!important;
+  }
+  #home.hero.mobile-photo-first .hero-copy{
+    position:relative!important;display:flex!important;flex-direction:column!important;
+    justify-content:flex-start!important;align-items:center!important;
+    width:100%!important;max-width:none!important;min-height:0!important;
+    height:auto!important;padding:0 0 26px!important;margin:0!important;gap:0!important;
+    color:#503740!important;transform:none!important;background:transparent!important;
+    box-shadow:none!important;text-align:center!important;
+  }
+  #home.hero.mobile-photo-first .hero-mobile-title{
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+    box-sizing:border-box;flex:none;width:100%;height:var(--mobile-hero-photo-height);
+    padding:12px 18px 14px;color:#fff6e9;
+  }
+  #home.hero.mobile-photo-first .hero-mobile-title>.eyebrow{
+    color:#f9e5c9!important;font-size:9px!important;letter-spacing:.25em!important;
+    margin:0 0 4px!important;text-shadow:0 1px 8px #37252b!important;
+  }
+  #home.hero.mobile-photo-first .hero-couple-names{
+    margin:0 auto!important;padding:0!important;gap:0!important;
+    max-width:100%!important;line-height:1!important;justify-items:center!important;
+    text-align:center!important;color:#fff6e9!important;
+  }
+  #home.hero.mobile-photo-first .hero-couple-names .hero-name-fit-text{
+    font-size:min(var(--hero-fit-size,32px),clamp(26px,7.5vw,35px))!important;
+    padding:.04em .09em .06em!important;line-height:1.04!important;
+    text-shadow:0 2px 12px #291a24!important;
+  }
+  #home.hero.mobile-photo-first .hero-couple-names .hero-amp{
+    margin:0!important;line-height:.78!important;
+  }
+  #home.hero.mobile-photo-first .hero-couple-names .hero-amp-text{font-size:20px!important}
+  #home.hero.mobile-photo-first .hero-date{
+    color:#fff1d9!important;font-size:clamp(10px,2.9vw,12px)!important;
+    letter-spacing:.10em!important;line-height:1.35!important;margin:7px auto 0!important;
+    text-shadow:0 1px 8px #2b1c26!important;
+  }
+  #home.hero.mobile-photo-first .hero-date::before{display:none!important}
+  #home.hero.mobile-photo-first .hero-note{
+    max-width:38ch!important;width:calc(100% - 44px)!important;
+    font-size:clamp(13px,3.55vw,15px)!important;line-height:1.7!important;
+    color:#705b58!important;text-shadow:none!important;
+    margin:22px auto 16px!important;
+  }
+  #home.hero.mobile-photo-first .hero-guest-greeting{
+    color:#705b58!important;text-shadow:none!important;margin:0 18px 12px!important;
+  }
+  #home.hero.mobile-photo-first .hero-copy>.btn.btn-primary{
+    min-height:46px!important;margin:0 auto!important;padding:12px 24px!important;
+    background:#70434e!important;color:#fff9f2!important;border:1px solid #70434e!important;
+    box-shadow:0 5px 14px rgba(83,49,58,.14)!important;text-shadow:none!important;
+  }
+  #home.hero.mobile-photo-first .scroll-curiosity,#home.hero.mobile-photo-first .hero-curtain{display:none!important}
+}

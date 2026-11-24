@@ -40,6 +40,7 @@
     return {version:3,heroIds:Array.isArray(raw.heroIds)?raw.heroIds.filter(v=>typeof v==='string').slice(0,3):[],
       homePhotoIds:Array.isArray(raw.homePhotoIds)?raw.homePhotoIds.filter(v=>typeof v==='string').slice(0,5):[],
       heroAutoplay:true,
+      mobileHeroId:typeof raw.mobileHeroId==='string'?raw.mobileHeroId:'',
       // Preserve album chapter metadata and original file keys when publishing design edits.
       albumChapters:Array.isArray(raw.albumChapters)?raw.albumChapters.filter(c=>c&&typeof c.id==='string'&&Array.isArray(c.photoIds)).map(c=>({id:c.id,title:{vi:String(c.title?.vi||''),en:String(c.title?.en||''),ja:String(c.title?.ja||'')},photoIds:c.photoIds.filter(id=>typeof id==='string')})):[],
       photoFileKeys:raw.photoFileKeys&&typeof raw.photoFileKeys==='object'&&!Array.isArray(raw.photoFileKeys)?Object.fromEntries(Object.entries(raw.photoFileKeys).filter(([id,key])=>typeof key==='string')):{},
