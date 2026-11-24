@@ -112,3 +112,14 @@ html[data-motion="minimal"] .album-progressive-indicator {animation:none!importa
   .album-progressive-error{font-size:.69rem;padding:7px}
   .album-batch-sentinel{font-size:.72rem}
 }
+/* Three-chapter editorial album. Scoped to configured albums only. */
+.album-overlay-grid.has-editorial-chapters{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;grid-auto-flow:row}
+.album-editorial-chapter{grid-column:1/-1;text-align:center;padding:28px 10px 16px;border-top:1px solid rgba(153,105,111,.22);color:#79515a}
+.album-editorial-chapter:first-child{border-top:0;padding-top:8px}
+.album-editorial-chapter>span{display:block;font:600 10px/1.5 system-ui,sans-serif;letter-spacing:.18em;color:#9b7779}
+.album-editorial-chapter h3{margin:6px 0 3px;font:500 clamp(25px,4vw,39px)/1.12 "Cormorant Garamond",Georgia,serif;color:inherit}
+.album-editorial-chapter small{font:400 11px/1.5 system-ui,sans-serif;letter-spacing:.06em}
+.has-editorial-chapters .album-overlay-photo>span{padding:24px 12px 9px}
+.has-editorial-chapters .album-overlay-photo img{object-fit:contain;background:#eae0d6}
+@media(max-width:900px){.album-overlay-grid.has-editorial-chapters{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}}
+@media(max-width:680px){.album-overlay-grid.has-editorial-chapters{gap:8px}.album-editorial-chapter{padding:20px 4px 12px}.has-editorial-chapters .album-overlay-photo.size-wide,.has-editorial-chapters .album-overlay-photo.size-large{grid-column:span 2;aspect-ratio:3/2}.has-editorial-chapters .album-overlay-photo>span{padding:20px 8px 7px}}

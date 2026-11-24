@@ -49,12 +49,13 @@ try{
   await page.addInitScript(()=>{
     const photos=Array.from({length:25},(_,i)=>({
       id:'p'+String(i+1).padStart(2,'0'), album_id:'album-1',
-      title:'Photo '+(i+1),image_path:'pre/full-'+i+'.webp',
+      title:'Photo '+(i+1),caption:'Caption '+(i+1),image_path:'pre/full-'+i+'.webp',
       image_variants:{480:'pre/preview-'+i+'-w480.webp',960:'pre/medium-'+i+'-w960.webp'},
       width:2000,height:3000,sort_order:i*10,focus_x:50,focus_y:50,
       is_published:true,show_in_album:true,show_on_homepage:false,is_hero:false,created_at:'2026-11-21'
     }));
     const album={id:'album-1',title:'Pre-Wedding',slug:'pre-wedding',sort_order:0};
+    const design={albumChapters:[{id:'asakusa',title:{vi:'Duyên lành',en:'Asakusa',ja:'浅草'},photoIds:photos.slice(0,10).map(x=>x.id)},{id:'tokyo',title:{vi:'Hẹn giữa Tokyo',en:'Tokyo',ja:'東京'},photoIds:photos.slice(10,20).map(x=>x.id)},{id:'showa',title:{vi:'Mùa thu có nhau',en:'Autumn',ja:'秋'},photoIds:photos.slice(20).map(x=>x.id)}]};
     function from(table){
       const state={filters:[],select:'',limit:Infinity};
       const run=()=>{
@@ -67,7 +68,7 @@ try{
         select:columns=>{state.select=columns;return api;},
         eq:(key,value)=>{state.filters.push([key,value]);return api;},
         order:()=>api,limit:n=>{state.limit=n;return api;},
-        maybeSingle:async()=>({data:null,error:null}),
+        maybeSingle:async()=>({data:table==='site_content'&&state.filters.some(([k,v])=>k==='key'&&v==='v3_design')?{value_vi:JSON.stringify(design)}:null,error:null}),
         single:async()=>({data:null,error:null}),
         then:(resolve,reject)=>run().then(resolve,reject)
       };
@@ -88,6 +89,8 @@ try{
   await page.waitForFunction(()=>document.querySelectorAll('#albumOverlayGrid [data-album-photo-id]').length>=10,{timeout:12000});
   const initial=await page.locator('#albumOverlayGrid [data-album-photo-id]').count();
   assert.ok(initial>=10 && initial<25,'Album renders batches, not all 25 images at once');
+  assert.equal(await page.locator('#albumOverlayGrid [data-album-chapter="asakusa"]').count(),1);
+  assert.equal(await page.locator('#albumOverlayGrid [data-album-photo-id="p01"] > span small').count(),0,'Caption is detail-only');
   await page.waitForSelector('#albumOverlayGrid .is-photo-ready',{timeout:12000});
   assert.ok(imageRequests.some(x=>x.includes('-w480.webp')),'Preview loaded');
   assert.ok(!imageRequests.some(x=>x.includes('/full-')),'No full image before clicking detail');
@@ -100,6 +103,7 @@ try{
   await page.waitForFunction(()=>document.getElementById('photoLightboxCounter').textContent.trim()==='1 / 25');
   await page.waitForFunction(()=>document.getElementById('photoLightboxImage').getAttribute('src')?.includes('full-0.webp'),{timeout:10000});
   assert.ok(imageRequests.some(x=>x.includes('/full-0.webp')),'Full image starts after opening detail');
+  assert.equal(await page.locator('#photoLightboxCaption').textContent(),'Caption 1');
   assert.ok(await page.locator('#photoLightboxImage').evaluate(el=>el.naturalWidth>0),'Image visible in detail');
   assert.ok(await page.locator('#photoLightboxZoom').isVisible(),'Zoom button visible on iPhone');
   await page.locator('#photoLightboxZoom').click();
@@ -158,6 +162,7 @@ try{
   await page.waitForFunction(()=>!document.getElementById('photoLightbox').classList.contains('is-open'),null,{timeout:12000});
   await page.evaluate(()=>{const overlay=document.getElementById('albumOverlay');overlay.scrollTop=overlay.scrollHeight;});
   await page.waitForFunction(()=>document.querySelectorAll('#albumOverlayGrid [data-album-photo-id]').length>10,{timeout:12000});
+  assert.equal(await page.locator('#albumOverlayGrid [data-album-chapter="tokyo"]').count(),1,'Chapter heading follows lazy batch');
   assert.equal(errors.filter(x=>/progressive-gallery|adaptive-images|renderLightbox/i.test(x)).length,0,'No gallery JavaScript errors');
   console.log('PASS: V21 + Album Detail zoom: pinch/pan, no gesture swipe, image reset, HD 404 fallback, bounded arrows and batched scroll');
 } finally {
