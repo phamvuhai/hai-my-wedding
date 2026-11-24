@@ -123,3 +123,22 @@ html[data-motion="minimal"] .album-progressive-indicator {animation:none!importa
 .has-editorial-chapters .album-overlay-photo img{object-fit:contain;background:#eae0d6}
 @media(max-width:900px){.album-overlay-grid.has-editorial-chapters{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}}
 @media(max-width:680px){.album-overlay-grid.has-editorial-chapters{gap:8px}.album-editorial-chapter{padding:20px 4px 12px}.has-editorial-chapters .album-overlay-photo.size-wide,.has-editorial-chapters .album-overlay-photo.size-large{grid-column:span 2;aspect-ratio:3/2}.has-editorial-chapters .album-overlay-photo>span{padding:20px 8px 7px}}
+
+/* Balanced editorial rows. Mixed CMS size flags no longer create blank cells.
+   Thumbnails fill their cards; original uncropped photos remain in lightbox. */
+#albumOverlayGrid.album-balanced-grid{grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-flow:row;align-items:stretch;gap:12px}
+#albumOverlayGrid.album-balanced-grid>.album-overlay-photo{grid-column:span 2;aspect-ratio:4/5;width:100%;height:auto;min-height:0;border-radius:14px}
+#albumOverlayGrid.album-balanced-grid>.album-tail-three-half{grid-column:span 3;aspect-ratio:4/3}
+#albumOverlayGrid.album-balanced-grid>.album-tail-three-full{grid-column:span 6;aspect-ratio:3/2}
+#albumOverlayGrid.album-balanced-grid .album-overlay-photo img{object-fit:cover;object-position:center}
+#albumOverlayGrid.album-balanced-grid>.album-editorial-chapter,#albumOverlayGrid.album-balanced-grid>.album-batch-sentinel{grid-column:1/-1}
+@media(max-width:900px){
+ #albumOverlayGrid.album-balanced-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ #albumOverlayGrid.album-balanced-grid>.album-overlay-photo{grid-column:span 1;aspect-ratio:4/5;border-radius:12px}
+ #albumOverlayGrid.album-balanced-grid>.album-tail-two-full{grid-column:span 2;aspect-ratio:3/2}
+}
+@media(max-width:680px){
+ #albumOverlay .album-overlay-header h2{font-size:clamp(1.35rem,6.2vw,1.8rem)!important;line-height:1.12!important}
+ #albumOverlay .album-overlay-header{padding-bottom:10px!important;gap:10px!important}
+ #albumOverlay .album-overlay-header .eyebrow{font-size:10px!important;margin-bottom:6px!important}
+}

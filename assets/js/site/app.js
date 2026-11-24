@@ -564,11 +564,31 @@ function renderAlbumOverlay() {
     chapterStarts.set(String(first.id),`<div class="album-editorial-chapter" data-album-chapter="${galleryEsc(chapter.id)}"><span>CHAPTER ${['I','II','III','IV','V'][i]||i+1} · ${members.length} ${lang==='ja'?'枚':lang==='en'?'PHOTOS':'ẢNH'}</span><h3>${galleryEsc(title)}</h3><small>${galleryEsc(location)}</small></div>`);
   });
   grid.classList.toggle('has-editorial-chapters',chapterStarts.size>0);
+  grid.classList.add('album-balanced-grid');
+  // Rows are packed in DOM order rather than dense CSS placement, so
+  // reading order and lightbox navigation stay in the same sequence.
+  const runs=[];
+  visibleAlbumImages.forEach((img,index)=>{
+    if(!runs.length||chapterStarts.has(String(img.id)))runs.push([]);
+    runs[runs.length-1].push({id:String(img.id),index});
+  });
+  const tailClasses=new Map(), rowBreaks=new Set();
+  for(const run of runs){
+    run.forEach(({id,index},i)=>{
+      const classes=[];
+      if(run.length%2===1&&i===run.length-1)classes.push('album-tail-two-full');
+      const rem=run.length%3;
+      if(rem===1&&i===run.length-1)classes.push('album-tail-three-full');
+      if(rem===2&&i>=run.length-2)classes.push('album-tail-three-half');
+      tailClasses.set(id,classes.join(' '));
+      if((i+1)%6===0||i===run.length-1)rowBreaks.add(index+1);
+    });
+  }
   const renderCard = (img) => {
     const loc = galleryLocalized(img);
     const size = gallerySize(img);
     return `${chapterStarts.get(String(img.id))||''}
-      <button type="button" class="album-overlay-photo size-${size} album-progressive-card"
+      <button type="button" class="album-overlay-photo size-${size} album-progressive-card ${tailClasses.get(String(img.id))||''}"
         data-album-photo-id="${galleryEsc(img.id)}"
         data-photo-title="${galleryEsc(loc.alt)}"
         aria-label="${galleryEsc(loc.alt)}">
@@ -581,7 +601,7 @@ function renderAlbumOverlay() {
       </button>`;
   };
   if (window.WeddingProgressiveGallery && galleryClient()) {
-    window.WeddingProgressiveGallery.mount(grid,visibleAlbumImages,renderCard,galleryClient());
+    window.WeddingProgressiveGallery.mount(grid,visibleAlbumImages,renderCard,galleryClient(),{rowBreaks});
   } else {
     grid.innerHTML = visibleAlbumImages.map(img => {
       const markup=renderCard(img);

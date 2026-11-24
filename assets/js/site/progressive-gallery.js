@@ -132,6 +132,7 @@
       higher.decoding='async';higher.fetchPriority='low';
       higher.className='album-progressive-sharp';
       higher.alt='';
+      higher.style.objectPosition=oldImg.style.objectPosition;
       higher.setAttribute('aria-hidden','true');
       const finish=()=>{
         state.activeUpgrades=Math.max(0,state.activeUpgrades-1);
@@ -167,7 +168,9 @@
   }
   function appendBatch(state){
     if(!state.alive || state.nextIndex>=state.photos.length)return;
-    const end=Math.min(state.nextIndex+NEXT_COUNT,state.photos.length);
+    let end=Math.min(state.nextIndex+NEXT_COUNT,state.photos.length);
+    // Stop only at a complete row on both two- and three-column layouts.
+    while(state.rowBreaks&&end<state.photos.length&&!state.rowBreaks.has(end))end++;
     const items=state.photos.slice(state.nextIndex,end);
     state.nextIndex=end;
     const template=document.createElement('template');
@@ -181,11 +184,11 @@
     if(remaining>0)state.sentinel.textContent='Đang chuẩn bị thêm ảnh...';
     if(!state.batchObserver && remaining>0)appendBatch(state);
   }
-  function mount(grid,photos,renderCard,client){
+  function mount(grid,photos,renderCard,client,options={}){
     disconnect();
     if(!grid || !photos?.length)return;
     const state={
-      alive:true,paused:false,grid,photos,renderCard,client,
+      alive:true,paused:false,grid,photos,renderCard,client,rowBreaks:options.rowBreaks||null,
       images:new Map(photos.map(x=>[String(x.id),x])),
       cards:new Map(), visible:new Set(),timers:new Map(),
       nextIndex:0,previews:[],upgrades:[],
