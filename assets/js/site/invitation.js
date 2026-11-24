@@ -11,6 +11,7 @@
   let pendingHash = validAnchors.has(location.hash) ? location.hash : '';
   let invitationOpened = !isEntryRoute;
   let opening = false;
+  let replaying = false;
 
   function getHashTarget(hash = location.hash) {
     if (!validAnchors.has(hash)) return null;
@@ -89,11 +90,12 @@
     );
   }
 
-  function dispatchOpened() {
+  function dispatchOpened(replay = false) {
     document.dispatchEvent(new CustomEvent('wedding:invitation-opened', {
       detail:{
         lang:window.WeddingI18n?.language || 'vi',
-        hash:pendingHash || location.hash || ''
+        hash:pendingHash || location.hash || '',
+        replay
       }
     }));
   }
@@ -104,7 +106,7 @@
     document.body.classList.remove('invitation-locked');
     document.body.classList.remove('invitation-opening');
     invitationOpened = true;
-    opening = false;
+    const wasReplay = replaying;
 
     await waitForLayout();
 
@@ -116,7 +118,10 @@
     replayHeroEntrance();
 
     intro?.setAttribute('aria-hidden','true');
-    dispatchOpened();
+    replaying = false;
+    opening = false;
+    dispatchOpened(wasReplay);
+    if (wasReplay) document.querySelector('.nav .brand')?.focus({preventScroll:true});
 
     setTimeout(() => {
       if (invitationOpened) goTop('auto');
@@ -124,17 +129,17 @@
   }
 
   function openInvitation() {
-    if (!isEntryRoute || opening || invitationOpened || !intro) return;
+    if ((!isEntryRoute && !replaying) || opening || invitationOpened || !intro) return;
     opening = true;
 
     if (openButton) openButton.disabled = true;
     intro.classList.add('is-opening');
     document.body.classList.add('invitation-opening');
-    canonicalizeAfterOpen();
+    if (!replaying) canonicalizeAfterOpen();
 
     // Music still starts from the user's click, as required by mobile browsers.
     const lang = window.WeddingI18n?.language || 'vi';
-    window.WeddingMusic?.start?.(lang);
+    if (!replaying) window.WeddingMusic?.start?.(lang);
 
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
       finishOpening();
@@ -146,10 +151,43 @@
     setTimeout(finishOpening, 280);
   }
 
+  function replayInvitation() {
+    if (!intro || !openButton || opening || !invitationOpened) return;
+    replaying = true;
+    invitationOpened = false;
+    pendingHash = '';
+    if (location.hash && validAnchors.has(location.hash)) {
+      history.replaceState(history.state || {}, '', location.pathname + location.search);
+    }
+    window.WeddingPersonalized?.dismissWelcome?.();
+    document.body.classList.remove('invitation-opening');
+    document.body.classList.add('invitation-locked');
+    intro.classList.remove('is-bypassed','is-opened','is-opening','is-exiting');
+    intro.classList.add('is-ready');
+    intro.setAttribute('aria-hidden','false');
+    openButton.disabled = false;
+    intro.scrollTop = 0;
+    goTop('auto');
+    document.dispatchEvent(new Event('wedding:invitation-replay'));
+    openButton.focus({preventScroll:true});
+  }
+
   function bindEntryInteractions() {
     openButton?.addEventListener('click', event => {
       event.preventDefault();
       openInvitation();
+    });
+    document.querySelectorAll('[data-invite-replay]').forEach(button => {
+      button.addEventListener('click', replayInvitation);
+    });
+    document.querySelector('.nav .brand')?.addEventListener('click', event => {
+      if (!invitationOpened || opening) return;
+      event.preventDefault();
+      pendingHash = '';
+      if (location.hash && validAnchors.has(location.hash)) {
+        history.replaceState(history.state || {}, '', location.pathname + location.search);
+      }
+      if (window.scrollY > 1) goTop(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth');
     });
   }
 
@@ -189,6 +227,8 @@
     return;
   }
 
+  bindEntryInteractions();
+
   // Standard localized URLs are already "inside" the invitation. Personalized invite URLs
   // intentionally keep the cover so each guest receives the full invitation experience.
   if (!isEntryRoute) {
@@ -202,7 +242,6 @@
 
   // "/" is the one true entry route: always restart from the cover.
   goTop('auto');
-  bindEntryInteractions();
 
   addEventListener('load', () => {
     if (!invitationOpened) goTop('auto');
