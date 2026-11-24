@@ -296,3 +296,29 @@
   .hero.hero-v5 .hero-copy>.btn.btn-primary,
   #events .v3-event-switch button { animation:none!important; transition:none!important; }
 }
+
+/* V27 — repeatable editorial chapters and scroll-safe photo interaction. */
+:is([data-collage-slot="story"],[data-collage-slot="moments"]) img[data-story-photo]{
+  cursor:zoom-in;outline-offset:-4px;
+}
+:is([data-collage-slot="story"],[data-collage-slot="moments"]) img[data-story-photo]:focus-visible{
+  outline:2px solid #b88978;
+}
+[data-collage-slot="story"] .v3-story-copy{
+  position:relative;
+}
+[data-collage-slot="story"] .v3-story-copy::after{
+  content:"";position:absolute;inset:12px;border:1px solid rgba(184,137,120,.24);
+  border-radius:4px;pointer-events:none;opacity:.6;
+}
+[data-collage-slot="moments"] .v3-film-images img:nth-child(3){
+  object-fit:contain!important;background:#efe6dc;
+}
+@media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+  html:not([data-motion="minimal"]):not([data-motion="off"]) :is([data-collage-slot="story"],[data-collage-slot="moments"]) img[data-story-photo]{
+    transition:filter .35s ease,scale .45s ease;
+  }
+  html:not([data-motion="minimal"]):not([data-motion="off"]) :is([data-collage-slot="story"],[data-collage-slot="moments"]) img[data-story-photo]:hover{
+    filter:brightness(1.045);scale:1.025;
+  }
+}

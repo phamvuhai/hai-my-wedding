@@ -119,6 +119,10 @@ try{
   assert.equal(completed.opacity,'1');
   assert.deepEqual(d.external,[],'No external animation network requests');
   assert.deepEqual(d.errors,[],'No browser script errors');
+  await page.evaluate(()=>{document.body.style.minHeight='3000px';window.scrollTo(0,1800);});
+  await page.waitForFunction(()=>!window.WeddingParticleHeart.status().visible && window.WeddingParticleHeart.status().elapsed===0);
+  await page.evaluate(()=>window.scrollTo(0,0));
+  await page.waitForFunction(()=>window.WeddingParticleHeart.status().running && window.WeddingParticleHeart.status().elapsed>200);
   await d.context.close();
 
   const m=await open({mobile:true,viewport:{width:390,height:844}});

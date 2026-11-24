@@ -64,7 +64,7 @@
       const attributes=adapt
         ? adapt.htmlAttrs(state.db,i,{role:'story',sizes:'(max-width:760px) 94vw, (max-width:1100px) 49vw, 36vw',loading:'lazy',priority:'low'})
         : 'loading="lazy" decoding="async" src="'+safe(url(i))+'"';
-      return '<img '+attributes+' alt="'+safe(alt(i))+'" style="object-position:'+Math.max(0,Math.min(100,Number(i.focus_x??50)))+'% '+Math.max(0,Math.min(100,Number(i.focus_y??50)))+'%">';
+      return '<img '+attributes+' data-story-photo="'+safe(i.id)+'" alt="'+safe(alt(i))+'" style="object-position:'+Math.max(0,Math.min(100,Number(i.focus_x??50)))+'% '+Math.max(0,Math.min(100,Number(i.focus_y??50)))+'%">';
     };
     if(b.style==='film'){
       const configured=Array.isArray(b.imageIds)?b.imageIds.map(choose).filter(Boolean):[];
@@ -78,6 +78,70 @@
     }
     return '<div class="v3-story-block v3-story-'+b.style+(idx%2?' v3-story-reversed':'')+'"><div class="v3-story-visual">'+photo(img)+'</div>'+caption+'</div>';
   }
+  // CMS content can be replaced on language changes; delegated interaction survives.
+  const editorialScope='[data-collage-slot="story"], [data-collage-slot="moments"]';
+  const editorialMotion=()=>!window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+    !['minimal','off'].includes(document.documentElement.dataset.motion) &&
+    !document.hidden && !document.body.classList.contains('invitation-locked');
+  const editorialAnimations=new WeakMap();
+  function editorialPlay(el,frames,options){
+    if(!editorialMotion()||!el?.animate)return;
+    editorialAnimations.get(el)?.cancel();
+    editorialAnimations.set(el,el.animate(frames,options));
+  }
+  const editorialObserver='IntersectionObserver' in window ? new IntersectionObserver(entries=>{
+    for(const entry of entries){
+      if(!entry.isIntersecting || !entry.intersectionRatio){
+        entry.target.querySelectorAll('img, .v3-story-copy > *').forEach(el=>editorialAnimations.get(el)?.cancel());
+        continue;
+      }
+      entry.target.querySelectorAll('img').forEach((el,i)=>editorialPlay(el,[
+        {opacity:.55,clipPath:'inset(0 8% 0 0)'},{opacity:1,clipPath:'inset(0 0 0 0)'}
+      ],{duration:650,delay:i*110,easing:'cubic-bezier(.2,.7,.2,1)'}));
+      entry.target.querySelectorAll('.v3-story-copy > *').forEach((el,i)=>editorialPlay(el,[
+        {opacity:.55,translate:'0 8px'},{opacity:1,translate:'0 0'}
+      ],{duration:500,delay:i*90,easing:'ease-out'}));
+    }
+  },{threshold:[0,.01]}) : null;
+  const editorialBlocks=new Set();
+  function bindEditorial(){
+    editorialBlocks.forEach(el=>{if(!el.isConnected){editorialObserver?.unobserve(el);editorialBlocks.delete(el);}});
+    document.querySelectorAll(editorialScope).forEach(host=>{
+      host.querySelectorAll('.v3-story-block').forEach((block,i)=>{
+        if(editorialBlocks.has(block))return;
+        editorialBlocks.add(block);
+        const chapter=block.querySelector('.v3-story-chapter');
+        if(chapter && host.dataset.collageSlot==='story')chapter.textContent=String(i+1).padStart(2,'0')+' — '+chapter.textContent;
+        block.querySelectorAll('img[data-story-photo]').forEach(img=>{
+          img.tabIndex=0;img.setAttribute('role','button');
+          img.setAttribute('aria-label',img.alt);
+        });
+        editorialObserver?.observe(block);
+      });
+    });
+  }
+  document.addEventListener('pointerdown',event=>{
+    const target=event.target.closest?.('img[data-story-photo], .v3-story-copy');
+    if(!target?.closest(editorialScope))return;
+    editorialPlay(target,[{filter:'brightness(1)'},{filter:'brightness(1.12) sepia(.1)'},{filter:'brightness(1)'}],{duration:460,easing:'ease-out'});
+  },{passive:true});
+  function openEditorialPhoto(event){
+    const img=event.target.closest?.('img[data-story-photo]');
+    if(!img?.closest(editorialScope)||typeof showPhotoByIndex!=='function')return;
+    if(event.type==='keydown'){
+      if(!['Enter',' '].includes(event.key))return;
+      event.preventDefault();
+    }
+    if(document.body.classList.contains('invitation-locked'))return;
+    const host=img.closest(editorialScope);
+    const images=[...new Set([...host.querySelectorAll('img[data-story-photo]')].map(el=>el.dataset.storyPhoto))].map(choose).filter(Boolean);
+    const index=images.findIndex(item=>String(item.id)===img.dataset.storyPhoto);
+    if(index>=0)showPhotoByIndex(index,images);
+  }
+  document.addEventListener('click',openEditorialPhoto);
+  document.addEventListener('keydown',openEditorialPhoto);
+  document.querySelectorAll(editorialScope).forEach(host=>new MutationObserver(bindEditorial).observe(host,{childList:true}));
+  bindEditorial();
   function renderStories(){
     const all=blocks();
     for(const slot of SLOTS){
