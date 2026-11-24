@@ -45,6 +45,8 @@ try {
   await page.addInitScript(()=>{
     const album={id:'00000000-0000-0000-0000-000000000001',title:'Pre-wedding',slug:'pre-wedding',sort_order:0};
     const images=[];
+    const objects=new Map();
+    window.__mockStorage=objects;
     const clone=x=>structuredClone(x);
     function from(table){
       const state={table,operation:'select',filter:null,input:null,single:false};
@@ -83,11 +85,11 @@ try {
       auth:{getUser:async()=>({data:{user:{email:'phamvuhai23@gmail.com'}},error:null}),
         getSession:async()=>({data:{session:{user:{email:'phamvuhai23@gmail.com'}}}}),
         onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}}),signOut:async()=>({})},
-      from, storage:{from:()=>({
-        upload:async()=>({data:{path:'mock'},error:null}),
-        remove:async()=>({data:[],error:null}),
+      from, storage:{from:bucket=>({
+        upload:async(path,blob)=>{objects.set(bucket+'/'+path,blob);return {data:{path},error:null};},
+        remove:async(paths)=>{paths.forEach(path=>objects.delete(bucket+'/'+path));return {data:[],error:null};},
         getPublicUrl:path=>({data:{publicUrl:'https://example.test/'+path}}),
-        download:async()=>({data:null,error:new Error('not needed in smoke test')})
+        download:async(path)=>({data:objects.get(bucket+'/'+path),error:objects.has(bucket+'/'+path)?null:new Error('missing mock object')})
       })},
       rpc:async(name,args)=>{
         if(name==='reorder_gallery_images'){
@@ -161,6 +163,36 @@ try {
   await page.locator('#bulkLibraryApply').click();
   await page.waitForFunction(()=>document.getElementById('bulkLibraryStatus').textContent.includes('thành công'));
   assert.equal(await page.evaluate(()=>window.__mockGalleryImages.every(x=>x.is_published)),true);
+  // Regression: choose another file while editing an existing published photo.
+  const before=await page.evaluate(()=>({...window.__mockGalleryImages[0]}));
+  await page.evaluate(id=>{
+    window.AdminAlbumModes.switchMode('single');
+    const item=window.AdminApp.images.find(x=>x.id===id);
+    document.dispatchEvent(new CustomEvent('admin:edit',{detail:item}));
+  },before.id);
+  await page.waitForFunction(()=>window.AdminApp.editRecord && !document.getElementById('saveImageBtn').disabled);
+  const replacement=await page.evaluate(()=>{
+    const c=document.createElement('canvas');c.width=36;c.height=24;
+    const ctx=c.getContext('2d');ctx.fillStyle='#ec1843';ctx.fillRect(0,0,36,24);
+    return c.toDataURL('image/png').split(',')[1];
+  });
+  await page.locator('#fileInput').setInputFiles({name:'replacement.png',mimeType:'image/png',buffer:Buffer.from(replacement,'base64')});
+  await page.waitForFunction(()=>document.getElementById('uploadStatus').textContent.includes('Đang thay ảnh hiện có'));
+  assert.equal(await page.evaluate(()=>window.AdminApp.editRecord.id),before.id);
+  await page.locator('#saveImageBtn').click();
+  await page.waitForFunction(()=>document.getElementById('uploadStatus').textContent.includes('Đã lưu thành công'),null,{timeout:35000});
+  const after=await page.evaluate(id=>window.__mockGalleryImages.find(x=>x.id===id),before.id);
+  assert.equal(await page.evaluate(()=>window.__mockGalleryImages.length),2,'Replacement must not insert a third row');
+  for(const key of ['id','album_id','sort_order','is_published','show_on_homepage','is_hero','is_featured','title'])assert.equal(after[key],before[key],key);
+  assert.notEqual(after.image_path,before.image_path);
+  assert.notEqual(after.original_path,before.original_path);
+  const storage=await page.evaluate(({before,after})=>({
+    old:window.__mockStorage.has('wedding-originals/'+before.original_path),
+    master:window.__mockStorage.has('wedding-originals/'+after.original_path),
+    public:window.__mockStorage.has('wedding-gallery/'+after.image_path)
+  }),{before,after});
+  assert.deepEqual(storage,{old:false,master:true,public:true});
+  console.log('PASS: replacement keeps ID and metadata, updates master and public paths, no duplicate row');
   assert.deepEqual(errors,[]);
   console.log('PASS: upload, draft defaults, photo order, save RPC, bulk publish, no JS errors');
 } finally {
