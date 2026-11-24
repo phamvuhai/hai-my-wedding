@@ -323,22 +323,29 @@
   }
 }
 
-/* Mobile portrait Hero: keep the photograph intact with a compact bottom overlay.
+/* Mobile portrait Hero: fill the first visible viewport with a compact bottom overlay.
    The class is enabled only when a dedicated published portrait resolves. */
 @media(max-width:767px) and (orientation:portrait){
   #home.hero.hero-v5.mobile-photo-first{
-    --mobile-hero-photo-height:min(150vw,78svh);
-    position:relative!important;display:block!important;min-height:0!important;
+    --mobile-hero-viewport:100svh;
+    --mobile-hero-nav:64px;
+    position:relative!important;display:block!important;min-height:var(--mobile-hero-viewport)!important;
     height:auto!important;padding:0!important;background:#382b2e!important;
     color:#fff6e9!important;overflow:hidden!important;
   }
   #home.hero.mobile-photo-first::before,#home.hero.mobile-photo-first::after{display:none!important}
   #home.hero.mobile-photo-first .hero-full-photo,
   #home.hero.mobile-photo-first .hero-overlay{
-    position:absolute!important;inset:0!important;width:100%!important;
-    height:100%!important;min-height:0!important;max-height:none!important;
+    position:absolute!important;inset:var(--mobile-hero-nav) 0 0!important;width:100%!important;
+    height:auto!important;min-height:0!important;max-height:none!important;
     transform:none!important;
   }
+  /* Only the dedicated phone Hero uses edge-to-edge cover. Preserve the
+     uncropped desktop/tablet Hero and original images in the album. */
+  #home.hero.mobile-photo-first .v6-center-panel .v6-center-image{
+    object-fit:cover!important;object-position:50% 15%!important;
+  }
+  #home.hero.mobile-photo-first .v6-center-panel .v6-center-underlay{visibility:hidden!important}
   #home.hero.mobile-photo-first .hero-overlay{
     background:linear-gradient(180deg,transparent 0%,transparent 35%,rgba(25,16,22,.12) 52%,rgba(25,16,22,.54) 76%,rgba(25,16,22,.86) 100%)!important;
   }
@@ -350,8 +357,8 @@
   #home.hero.mobile-photo-first .hero-copy{
     position:relative!important;display:flex!important;flex-direction:column!important;
     justify-content:flex-end!important;align-items:center!important;
-    width:100%!important;max-width:none!important;min-height:var(--mobile-hero-photo-height)!important;
-    box-sizing:border-box!important;height:auto!important;padding:0 16px 22px!important;margin:0!important;gap:0!important;
+    width:100%!important;max-width:none!important;min-height:var(--mobile-hero-viewport)!important;
+    box-sizing:border-box!important;height:auto!important;padding:calc(var(--mobile-hero-nav) + 16px) 16px max(24px,env(safe-area-inset-bottom))!important;margin:0!important;gap:0!important;
     color:#fff6e9!important;transform:none!important;background:transparent!important;
     box-shadow:none!important;text-align:center!important;
   }

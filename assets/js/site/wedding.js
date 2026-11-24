@@ -294,10 +294,8 @@
     }
     hero.classList.toggle('mobile-photo-first',Boolean(photo&&title));
     if(photo&&title){
-      hero.style.setProperty('--mobile-hero-photo-height','min('+Math.round(Number(photo.height)/Number(photo.width)*100)+'vw, 78svh)');
       hero.dataset.mobileHeroId=photo.id;
     }else{
-      hero.style.removeProperty('--mobile-hero-photo-height');
       delete hero.dataset.mobileHeroId;
     }
   }
