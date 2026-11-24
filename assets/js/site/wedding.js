@@ -265,6 +265,42 @@
 
   /* Wedding V5 full-bleed poster: gallery-only background, no foreground cards or viewer. */
   const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const phonePortrait=window.matchMedia('(max-width: 767px) and (orientation: portrait)');
+  // A dedicated, published portrait from the album. Its UUID remains stable
+  // when the Admin replaces the underlying photo file.
+  const defaultMobileHeroId='203cb03b-70a3-453a-b37b-b168695a7ff8';
+  let failedMobileId='';
+  function mobilePortrait(){
+    if(!phonePortrait.matches)return null;
+    const photo=choose(state.config?.mobileHeroId || defaultMobileHeroId);
+    return photo&&photo.id!==failedMobileId&&Number(photo.height)>Number(photo.width)?photo:null;
+  }
+  function applyMobileHeroLayout(hero,photo){
+    const copy=hero.querySelector('.hero-copy');
+    if(!copy)return;
+    let title=copy.querySelector('.hero-mobile-title');
+    if(photo&&!title){
+      const nodes=[copy.querySelector('.eyebrow'),copy.querySelector('.hero-couple-names'),copy.querySelector('.hero-date')];
+      if(nodes.every(Boolean)){
+        title=document.createElement('div');
+        title.className='hero-mobile-title';
+        copy.insertBefore(title,nodes[0]);
+        nodes.forEach(node=>title.appendChild(node));
+      }
+    }else if(!photo&&title){
+      while(title.firstChild)copy.insertBefore(title.firstChild,title);
+      title.remove();
+      title=null;
+    }
+    hero.classList.toggle('mobile-photo-first',Boolean(photo&&title));
+    if(photo&&title){
+      hero.style.setProperty('--mobile-hero-photo-height','min('+Math.round(Number(photo.height)/Number(photo.width)*100)+'vw, 78svh)');
+      hero.dataset.mobileHeroId=photo.id;
+    }else{
+      hero.style.removeProperty('--mobile-hero-photo-height');
+      delete hero.dataset.mobileHeroId;
+    }
+  }
   const slides=()=>[...document.querySelectorAll('#home .v5-gallery-layer')];
   function setBackdrop(index){
     const nodes=slides();
@@ -306,7 +342,9 @@
     const hero=document.getElementById('home');
     const background=hero?.querySelector('.hero-full-photo');
     if(!hero||!background)return;
-    const chosen=heroPhotos();if(!chosen.length)return;
+    const portrait=mobilePortrait();
+    const chosen=portrait?[portrait]:heroPhotos();if(!chosen.length)return;
+    applyMobileHeroLayout(hero,portrait);
     const ids=chosen.map(i=>i.id);
     const oldIds=state.heroUrls;
     const unchanged=ids.length===oldIds.length&&ids.every((id,i)=>id===oldIds[i])&&slides().length===ids.length;
@@ -327,10 +365,17 @@
       chosen.forEach((photo,i)=>{
         const layer=document.createElement('div');layer.className='v5-gallery-layer';
         layer.dataset.slide=String(i);
+        layer.dataset.photoId=photo.id;
         const center=document.createElement('div');
         center.className='v6-center-panel';
         center.appendChild(buildTile(photo,'underlay',i));
-        center.appendChild(buildTile(photo,'center',i));
+        const mainTile=buildTile(photo,'center',i);
+        center.appendChild(mainTile);
+        if(portrait)mainTile.addEventListener('error',()=>{
+          if(!layer.isConnected||failedMobileId===photo.id)return;
+          failedMobileId=photo.id;
+          createSlides();
+        },{once:true});
         layer.appendChild(center);
         gallery.appendChild(layer);
       });
@@ -361,6 +406,8 @@
   document.addEventListener('wedding:language',()=>{renderStories();renderSchedule();renderPromisePhoto();});
   document.addEventListener('wedding:invitation-opened',tick);
   document.addEventListener('visibilitychange',tick);
+  if(phonePortrait.addEventListener)phonePortrait.addEventListener('change',createSlides);
+  else phonePortrait.addListener?.(createSlides);
   reduced.addEventListener?.('change',tick);
   if(window.WeddingHeroReady)state.heroReady=true;
   setDay('bride');
