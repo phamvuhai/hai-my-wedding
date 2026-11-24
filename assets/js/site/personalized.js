@@ -520,7 +520,8 @@
     });
   }
 
-  document.addEventListener('wedding:invitation-opened', () => {
+  document.addEventListener('wedding:invitation-opened', event => {
+    if (event.detail?.replay) return;
     showWelcome();
     markOpened();
   });
