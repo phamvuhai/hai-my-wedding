@@ -542,12 +542,27 @@
       updated_at:new Date().toISOString()
     };
 
+    // The database permits only one hero. Clear the prior hero before saving
+    // a newly selected hero, but leave flags untouched when replacing the current hero.
+    const priorHero = hero ? A.images.find(row => row.is_hero && row.id !== id) : null;
+    if (priorHero) {
+      const cleared = await db.from('gallery_images').update({is_hero:false}).eq('id',priorHero.id);
+      if (cleared.error) {
+        await Promise.all([
+          db.storage.from('wedding-gallery').remove([imagePath,...P.variantPaths(imageVariants)]),
+          createdOriginal ? db.storage.from('wedding-originals').remove([originalPath]) : Promise.resolve()
+        ]);
+        return A.setStatus(status,cleared.error.message,'error');
+      }
+    }
+
     const op = editing
       ? db.from('gallery_images').update(payload).eq('id', id).eq('image_path', editing.image_path)
       : db.from('gallery_images').insert({ ...payload, id });
 
     const { data: saved, error } = await op.select('id,image_path,original_path');
     if (error || saved?.length !== 1 || saved[0].id !== id || saved[0].image_path !== imagePath) {
+      if (priorHero) await db.from('gallery_images').update({is_hero:true}).eq('id',priorHero.id);
       await Promise.all([
         db.storage.from('wedding-gallery').remove([imagePath,...P.variantPaths(imageVariants)]),
         createdOriginal
@@ -555,11 +570,6 @@
           : Promise.resolve()
       ]);
       return A.setStatus(status, error?.message || 'Không xác nhận được ảnh đã cập nhật. Hãy tải lại thư viện rồi thử lại.', 'error');
-    }
-
-    if (hero) {
-      const result = await db.from('gallery_images').update({ is_hero:false }).neq('id', id);
-      if (result.error) console.warn('Could not clear previous hero flags:', result.error);
     }
 
     if (oldImagePath && oldImagePath !== imagePath) {
