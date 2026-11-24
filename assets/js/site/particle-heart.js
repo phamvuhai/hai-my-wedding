@@ -1,5 +1,5 @@
 /* V23 — Rose-gold Particle Heart, original SVG + Canvas 2D.
- * Adds a one-time reveal to the existing Crystal Heart, with no network assets,
+ * Adds a replayable viewport reveal to the existing Crystal Heart, with no network assets,
  * WebGL, external packages, or interactions overlaid on the invitation.
  */
 (() => {
@@ -213,11 +213,21 @@
     }
   }
 
+  function resetHeart() {
+    stopFrame();
+    elapsed = 0;
+    lastPaint = 0;
+    finished = false;
+    scene.classList.remove('hm-particle-complete');
+    paint(0);
+  }
   if ('IntersectionObserver' in window) {
     const observer = new IntersectionObserver(entries => {
-      visible = entries.some(entry => entry.isIntersecting);
+      const next = entries.some(entry => entry.isIntersecting && entry.intersectionRatio > 0);
+      if (visible && !next) resetHeart();
+      visible = next;
       reconcile();
-    }, {threshold: .12, rootMargin: '50px 0px'});
+    }, {threshold: [0, .01]});
     observer.observe(scene);
   } else {
     // No IntersectionObserver: show the static heart instead of running a loop.
@@ -240,6 +250,10 @@
   window.addEventListener('pageshow', reconcile, {passive: true});
   reduced.addEventListener?.('change', reconcile);
   mobile.addEventListener?.('change', () => {particles = buildParticles(); reconcile();});
+  stage.addEventListener('click', () => {
+    if (!isAllowed() || !visible || !finished || !stage.animate) return;
+    stage.animate([{filter:'drop-shadow(0 0 0 transparent)'},{filter:'drop-shadow(0 0 16px #f1cead)'},{filter:'drop-shadow(0 0 0 transparent)'}],{duration:700,easing:'ease-out'});
+  });
   resizeCanvas();
   reconcile();
 
