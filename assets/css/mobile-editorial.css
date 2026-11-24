@@ -418,3 +418,25 @@
  #home.hero.mobile-photo-first .hero-date{margin:4px auto 0!important}
  #home.hero.mobile-photo-first .hero-copy>.btn.btn-primary{padding:8px 18px!important;min-height:44px!important}
 }
+
+/* Three-location mobile editorial opening. Only the portrait Hero changes. */
+@media(max-width:767px) and (orientation:portrait){
+ body:has(#home.mobile-photo-first) .nav.nav-hero-active{background:linear-gradient(180deg,rgba(38,25,27,.72),rgba(38,25,27,.24))!important;box-shadow:none!important;border-bottom-color:rgba(255,255,255,.12)!important;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+ #home.hero.mobile-photo-first .hero-overlay{background:linear-gradient(180deg,rgba(28,18,22,.12) 0%,transparent 20%,transparent 40%,rgba(25,16,22,.08) 50%,rgba(25,16,22,.5) 76%,rgba(25,16,22,.83) 100%)!important}
+ #home.hero.mobile-photo-first .v6-center-panel .v6-center-image{object-position:50% 30%!important}
+ #home.hero.mobile-photo-first .hero-copy{padding-bottom:max(13px,env(safe-area-inset-bottom))!important}
+ #home.hero.mobile-photo-first .hero-note{max-width:35ch!important;font-size:clamp(12px,3.2vw,13px)!important;line-height:1.4!important;margin:7px auto 10px!important}
+ #home.hero.mobile-photo-first .hero-couple-names .hero-amp{min-height:12px!important}
+ #home.hero.mobile-photo-first .mobile-hero-controls{display:flex;justify-content:center;align-items:center;gap:3px;height:28px;flex:none;margin-top:4px}
+ #home.hero.mobile-photo-first .mobile-hero-controls button{border:0;background:transparent;color:#fff4e6;padding:0;min-width:30px;height:28px;display:grid;place-items:center;cursor:pointer;touch-action:manipulation}
+ #home.hero.mobile-photo-first .mobile-hero-controls button[data-mobile-slide]::before{content:"";width:6px;height:6px;border:1px solid #fff4e6;border-radius:50%;background:transparent;opacity:.8;transition:width .25s ease,background .25s ease}
+ #home.hero.mobile-photo-first .mobile-hero-controls button[data-mobile-slide].is-active::before{width:17px;border-radius:8px;background:#fff4e6;opacity:1}
+ #home.hero.mobile-photo-first .mobile-hero-controls button[data-mobile-pause]{font:600 11px/1 system-ui;opacity:.9}
+ #home.hero.mobile-photo-first .mobile-hero-controls button[hidden]{display:none!important}
+ #home.hero.mobile-photo-first .mobile-hero-controls button:focus-visible{outline:1px solid white;outline-offset:1px;border-radius:6px}
+}
+@media(max-width:767px) and (orientation:portrait) and (max-height:650px){
+ #home.hero.mobile-photo-first .hero-copy{padding-bottom:8px!important}
+ #home.hero.mobile-photo-first .hero-note{font-size:11px!important;line-height:1.35!important;margin:5px auto 7px!important}
+ #home.hero.mobile-photo-first .mobile-hero-controls{height:24px;margin-top:2px}
+}

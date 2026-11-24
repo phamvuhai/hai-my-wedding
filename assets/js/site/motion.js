@@ -538,6 +538,7 @@
         const theme = entry.target.dataset.navTheme || 'light';
         nav.classList.toggle('nav-theme-light', theme === 'light');
         nav.classList.toggle('nav-theme-dark', theme === 'dark');
+        nav.classList.toggle('nav-hero-active',entry.target.id==='home');
       });
     }, { rootMargin:'-25% 0px -65% 0px', threshold:0 });
 
