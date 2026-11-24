@@ -1,7 +1,7 @@
 (() => {
   const dictionaries = {
     vi: {
-      "nav.story":"Câu chuyện","nav.events":"Lịch cưới","nav.rsvp":"Xác nhận",
+      "intro.replay":"Xem lại thiệp cưới","nav.story":"Câu chuyện","nav.events":"Lịch cưới","nav.rsvp":"Xác nhận",
       "effects.foreverTitle":"Một trái tim, một hành trình",
       "name.groom":"Hải Phạm","name.bride":"Mỹ Nguyễn",
       "hero.note":"Giữa bao cuộc gặp gỡ, thật may mắn khi chúng mình tìm thấy nhau. Từ hôm nay, mọi hành trình đều có nhau.","hero.cta":"Xem lịch cưới",
@@ -25,7 +25,7 @@
       "album.prewedding":"Pre-Wedding","album.bride":"Nhà gái","album.groom":"Nhà trai"
     },
     en: {
-      "nav.story":"Our Story","nav.events":"Wedding Events","nav.rsvp":"RSVP",
+      "intro.replay":"Replay invitation","nav.story":"Our Story","nav.events":"Wedding Events","nav.rsvp":"RSVP",
       "effects.foreverTitle":"Two hearts, one journey",
       "name.groom":"Hai Pham","name.bride":"My Nguyen",
       "hero.note":"Of all the people we could meet, how lucky we are to find each other. Every journey feels better together.","hero.cta":"View wedding schedule",
@@ -49,7 +49,7 @@
       "album.prewedding":"Pre-Wedding","album.bride":"Bride's Family","album.groom":"Groom's Family"
     },
     ja: {
-      "nav.story":"ふたりのストーリー","nav.events":"結婚式の日程","nav.rsvp":"出欠確認",
+      "intro.replay":"招待状をもう一度見る","nav.story":"ふたりのストーリー","nav.events":"結婚式の日程","nav.rsvp":"出欠確認",
       "effects.foreverTitle":"ふたつの心、ひとつの未来",
       "name.groom":"Hai Pham","name.bride":"My Nguyen",
       "hero.note":"数ある出会いの中で、ふたりが巡り会えたことに感謝しています。これからも、一緒に歩んでいきます。","hero.cta":"結婚式の日程を見る",
