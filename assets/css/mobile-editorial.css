@@ -580,3 +580,73 @@
   .nav .nav-inner { width:calc(100% - 20px)!important; }
   .nav .nav-right { gap:3px!important; }
 }
+
+/* Slim mobile navigation: 48px bar, smaller visual controls, 44px touch height. */
+@media (max-width:767px) {
+  :root { --header-h:48px; }
+  html { scroll-padding-top:var(--header-h); }
+  #home, #story, #events, #forever, #weddingMagic, #rsvp, #weddingGifts {
+    scroll-margin-top:8px;
+  }
+  .nav {
+    height:48px!important; min-height:48px!important;
+    box-sizing:border-box!important;
+    border-bottom:0!important; box-shadow:none!important;
+  }
+  .nav .nav-inner {
+    width:calc(100% - 24px)!important; height:100%!important;
+    gap:5px!important;
+  }
+  .nav .brand {
+    display:flex; align-items:center; min-height:44px;
+    flex:0 0 auto; font-size:clamp(16px,4.4vw,19px)!important;
+    line-height:1!important; letter-spacing:.075em!important;
+  }
+  .nav .nav-right { gap:2px!important; align-items:center!important; }
+  .nav .nav-invite-replay {
+    flex:0 0 44px; width:44px; height:44px;
+    position:relative; border:0!important; background:transparent!important;
+  }
+  .nav .nav-invite-replay::before {
+    content:""; position:absolute; inset:7px;
+    border:1px solid currentColor; border-radius:50%;
+    opacity:.26; pointer-events:none;
+  }
+  .nav .nav-invite-replay svg { width:16px!important; height:16px!important; }
+  .nav .nav-language {
+    display:flex!important; flex:0 0 auto!important; gap:0!important;
+    padding:0!important; border:0!important; border-radius:0!important;
+    background:transparent!important; backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important; max-width:none!important;
+  }
+  .nav .nav-language button {
+    position:relative; isolation:isolate;
+    height:44px!important; min-height:44px!important;
+    min-width:34px!important; padding:0 5px!important;
+    font-size:10px!important; line-height:1!important;
+    color:inherit!important; background:transparent!important;
+    box-shadow:none!important;
+  }
+  .nav .nav-language button[data-lang="ja"] { min-width:44px!important; }
+  .nav .nav-language button.active { color:#4d3c33!important; }
+  .nav .nav-language button.active::before {
+    content:""; position:absolute; inset:8px 2px; z-index:-1;
+    background:#fff; border-radius:999px; pointer-events:none;
+  }
+  .nav.nav-theme-light .nav-language button.active { color:#fff!important; }
+  .nav.nav-theme-light .nav-language button.active::before { background:var(--cocoa,#594139); }
+  .nav.nav-theme-light { background:rgba(255,253,252,.94)!important; }
+  body:has(#home.mobile-photo-first) .nav.nav-hero-active {
+    background:linear-gradient(180deg,rgba(38,25,27,.55),rgba(38,25,27,.16))!important;
+    backdrop-filter:blur(2px)!important; -webkit-backdrop-filter:blur(2px)!important;
+    color:#fff!important;
+  }
+  body:has(#home.mobile-photo-first) .nav.nav-hero-active .nav-language button.active {
+    color:#4d3c33!important;
+  }
+  body:has(#home.mobile-photo-first) .nav.nav-hero-active .nav-language button.active::before { background:#fff!important; }
+}
+@media(max-width:359px) {
+  .nav .nav-inner { width:calc(100% - 20px)!important; }
+  .nav .brand { font-size:16px!important; }
+}
