@@ -29,6 +29,15 @@
   const heroMobilePreview = document.querySelector('.hero-setting-preview.mobile img');
 
   A.fileQueue = [];
+  let replacingSource = false;
+  let busy = false;
+  const saveButton = document.getElementById('saveImageBtn');
+  function setBusy(value) {
+    busy = value;
+    saveButton.disabled = value;
+    file.disabled = value;
+    document.getElementById('cancelEditBtn').disabled = value;
+  }
   A.focusX = 50;
   A.focusY = 50;
 
@@ -256,17 +265,31 @@
     }
   }
 
-  file.onchange = async () => {
-    if (!file.files.length) return;
-    A.fileQueue = [...file.files];
-    await loadNextQueued();
-  };
+  async function selectFiles(files) {
+    if (busy || !files.length) return;
+    if (A.editRecord) {
+      if (files.length !== 1) return A.setStatus(status, 'Chỉ chọn một ảnh để thay thế ảnh đang sửa.', 'error');
+      setBusy(true);
+      try {
+        await loadBlob(files[0], files[0].name);
+        replacingSource = true;
+        A.fileQueue = [];
+        A.setStatus(status, 'Đang thay ảnh hiện có — giữ nguyên ID, vị trí và cài đặt.', 'success');
+      } catch (error) {
+        A.setStatus(status, error.message, 'error');
+      } finally { setBusy(false); file.value = ''; }
+      return;
+    }
+    A.fileQueue = files;
+    setBusy(true);
+    try { await loadNextQueued(); } finally { setBusy(false); }
+  }
+  file.onchange = async () => selectFiles([...file.files]);
 
   stage.ondragover = e => e.preventDefault();
   stage.ondrop = async e => {
     e.preventDefault();
-    A.fileQueue = [...e.dataTransfer.files].filter(x => x.type.startsWith('image/'));
-    if (A.fileQueue.length) await loadNextQueued();
+    await selectFiles([...e.dataTransfer.files].filter(x => x.type.startsWith('image/')));
   };
 
   ratio.onchange = draw;
@@ -303,16 +326,24 @@
   }
 
   document.addEventListener('admin:edit', async e => {
+    if (busy) return;
     const img = e.detail;
+    setBusy(true);
+    try {
     A.setStatus(status, 'Đang tải ảnh master...');
     const { data, error } = await db.storage.from('wedding-originals').download(img.original_path);
     if (error) return A.setStatus(status, error.message, 'error');
 
     A.editRecord = img;
+    replacingSource = false;
+    A.fileQueue = [];
+    file.value = '';
+    file.multiple = false;
     A.focusX = Number(img.focus_x ?? 50);
     A.focusY = Number(img.focus_y ?? 50);
     ratio.value = chooseRatioFromSize(img.width, img.height);
     await loadBlob(data, img.original_path.split('/').pop());
+    window.AdminAlbumModes?.switchMode('single');
 
     album.value = img.album_id;
     document.getElementById('imageTitle').value = img.title || '';
@@ -341,13 +372,17 @@
     draw();
     updateHeroSettingsUI();
     document.querySelector('.upload-panel').scrollIntoView({ behavior:'smooth' });
-    A.setStatus(status, 'Đang chỉnh sửa ảnh hiện có.', 'success');
+    A.setStatus(status, 'Đang chỉnh sửa ảnh hiện có. Chọn file khác để thay ảnh, không tạo ảnh mới.', 'success');
+    } catch (error) { reset(); A.setStatus(status, error.message, 'error'); }
+    finally { setBusy(false); }
   });
 
   document.getElementById('cancelEditBtn').onclick = reset;
 
   function reset(clearQueue=true) {
     A.editRecord = null;
+    replacingSource = false;
+    file.multiple = true;
     A.sourceImage = null;
     A.sourceBlob = null;
     A.sourceName = '';
@@ -381,7 +416,10 @@
     A.setStatus(status, '');
   }
 
-  document.getElementById('saveImageBtn').onclick = async () => {
+  saveButton.onclick = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
     if (!A.sourceImage || !A.sourceBlob) return A.setStatus(status, 'Hãy chọn ảnh trước.', 'error');
     const al = A.albums.find(x => x.id === album.value);
     if (!al) return;
@@ -423,17 +461,23 @@
 
     let id, originalPath, imagePath;
     let oldImagePath = null;
+    const editing = A.editRecord;
+    const oldMasterPath = replacingSource ? editing?.original_path : null;
     let masterOptimized = null;
     let createdOriginal = false;
     if (A.editRecord) {
       id = A.editRecord.id;
       originalPath = A.editRecord.original_path;
       oldImagePath = A.editRecord.image_path;
-      imagePath = `${al.slug}/${id}-${Date.now()}.webp`;
+      const version = crypto.randomUUID();
+      imagePath = `${al.slug}/${id}-${version}.webp`;
+      if (replacingSource) originalPath = `${al.slug}/${id}-${version}-master.webp`;
     } else {
       id = crypto.randomUUID();
       originalPath = `${al.slug}/${id}-master.webp`;
       imagePath = `${al.slug}/${id}.webp`;
+    }
+    if (!editing || replacingSource) {
       A.setStatus(status, 'Đang tối ưu bản master...');
       try {
         masterOptimized = await optimizeMasterBlob();
@@ -443,7 +487,7 @@
       if (!masterOptimized?.blob) return A.setStatus(status, 'Không tạo được bản master.', 'error');
 
       const u = await db.storage.from('wedding-originals').upload(originalPath, masterOptimized.blob, {
-        contentType:'image/webp'
+        contentType:'image/webp', upsert:false
       });
       if (u.error) {
         return A.setStatus(status, friendlyStorageError(u.error, 'Ảnh master', 20), 'error');
@@ -464,10 +508,6 @@
     }
 
     const imageVariants = await P.uploadResponsiveVariants(db,rendered.blob,imagePath,rendered.width);
-
-    if (hero) {
-      await db.from('gallery_images').update({ is_hero:false }).neq('id', id || '00000000-0000-0000-0000-000000000000');
-    }
 
     const payload = {
       album_id:al.id,
@@ -502,39 +542,51 @@
       updated_at:new Date().toISOString()
     };
 
-    const op = A.editRecord
-      ? db.from('gallery_images').update(payload).eq('id', id)
+    const op = editing
+      ? db.from('gallery_images').update(payload).eq('id', id).eq('image_path', editing.image_path)
       : db.from('gallery_images').insert({ ...payload, id });
 
-    const { error } = await op;
-    if (error) {
+    const { data: saved, error } = await op.select('id,image_path,original_path');
+    if (error || saved?.length !== 1 || saved[0].id !== id || saved[0].image_path !== imagePath) {
       await Promise.all([
         db.storage.from('wedding-gallery').remove([imagePath,...P.variantPaths(imageVariants)]),
-        !A.editRecord && createdOriginal
+        createdOriginal
           ? db.storage.from('wedding-originals').remove([originalPath])
           : Promise.resolve()
       ]);
-      return A.setStatus(status, error.message, 'error');
+      return A.setStatus(status, error?.message || 'Không xác nhận được ảnh đã cập nhật. Hãy tải lại thư viện rồi thử lại.', 'error');
+    }
+
+    if (hero) {
+      const result = await db.from('gallery_images').update({ is_hero:false }).neq('id', id);
+      if (result.error) console.warn('Could not clear previous hero flags:', result.error);
     }
 
     if (oldImagePath && oldImagePath !== imagePath) {
-      const previousPaths=[oldImagePath,...P.variantPaths(A.editRecord?.image_variants)];
+      const previousPaths=[oldImagePath,...P.variantPaths(editing?.image_variants)];
       const cleanup = await db.storage.from('wedding-gallery').remove(previousPaths);
       if (cleanup.error) console.warn('Could not remove previous public images:', cleanup.error);
     }
 
+    if (oldMasterPath && oldMasterPath !== originalPath &&
+        !A.images.some(row => row.id !== id && row.original_path === oldMasterPath)) {
+      const cleanup = await db.storage.from('wedding-originals').remove([oldMasterPath]);
+      if (cleanup.error) console.warn('Could not remove previous master:', cleanup.error);
+    }
     await A.loadData();
     if (A.fileQueue.length) {
       reset(false);
       await loadNextQueued();
     } else {
-      reset();
       const originalInfo = A.sourceBlob ? `Ảnh nguồn ${formatMb(A.sourceBlob.size)} MB · ` : '';
+      reset();
       const publicInfo = `Public ${formatMb(rendered.blob.size)} MB · ${rendered.width}×${rendered.height} · WebP ${Math.round(rendered.quality * 100)}%`;
       const masterInfo = masterOptimized
         ? ` · Master ${formatMb(masterOptimized.blob.size)} MB · ${masterOptimized.width}×${masterOptimized.height} · WebP ${Math.round(masterOptimized.quality * 100)}%`
         : '';
       A.setStatus(status, `${originalInfo}${publicInfo}${masterInfo} · Đã lưu thành công.`, 'success');
     }
+    } catch (error) { A.setStatus(status, error.message || 'Không lưu được ảnh.', 'error'); }
+    finally { setBusy(false); }
   };
 })();
