@@ -650,3 +650,74 @@
   .nav .nav-inner { width:calc(100% - 20px)!important; }
   .nav .brand { font-size:16px!important; }
 }
+
+/* Full-frame homepage gallery: retain every pixel, captions outside photos. */
+html body .gallery-section #homeGallery.home-gallery {
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ grid-template-rows:none!important;grid-auto-rows:auto!important;grid-auto-flow:row!important;
+ align-items:start!important;gap:clamp(12px,2vw,24px)!important;
+ height:auto!important;max-height:none!important;overflow:visible!important;
+}
+html body .gallery-section #homeGallery.home-gallery[data-count] > button.home-photo {
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;
+ grid-column:auto!important;grid-row:auto!important;width:100%!important;height:auto!important;
+ min-height:0!important;max-height:none!important;min-width:0!important;max-width:100%!important;
+ aspect-ratio:auto!important;padding:0!important;border:1px solid rgba(109,76,62,.12)!important;
+ border-radius:clamp(12px,1.6vw,20px)!important;overflow:hidden!important;
+ background:#fffaf5!important;color:#62483e!important;text-align:left!important;
+ transform:none!important;translate:none!important;scale:none!important;filter:none!important;
+ animation:none!important;box-shadow:0 9px 26px rgba(73,46,49,.07)!important;
+ transition:box-shadow .22s ease!important;
+}
+html body .gallery-section #homeGallery.home-gallery:is([data-count="1"],[data-count="3"],[data-count="5"]) > button.home-photo:first-child {
+ grid-column:1/-1!important;
+}
+html body .gallery-section #homeGallery.home-gallery[data-count] > button.home-photo > img {
+ order:0;position:static!important;inset:auto!important;display:block!important;
+ width:100%!important;height:auto!important;min-height:0!important;
+ max-height:clamp(220px,44vw,540px)!important;max-width:100%!important;
+ aspect-ratio:auto;flex:0 0 auto!important;object-fit:contain!important;
+ object-position:center!important;background:#f1e9e1!important;
+ transform:none!important;translate:none!important;scale:none!important;filter:none!important;
+ animation:none!important;transition:none!important;
+}
+html body .gallery-section #homeGallery.home-gallery[data-count] > button.home-photo > img:not([src]),html body .gallery-section #homeGallery.home-gallery[data-count] > button.home-photo > img[data-home-progressive="pending"] {
+ aspect-ratio:4/3!important;color:transparent!important;
+}
+html body .gallery-section #homeGallery.home-gallery[data-count] > button.home-photo.album-v12-error-state > img {display:none!important}
+html body .gallery-section #homeGallery.home-gallery[data-count] > button.home-photo::before,html body .gallery-section #homeGallery.home-gallery[data-count] > button.home-photo::after,html body .gallery-section #homeGallery.home-gallery[data-count] > button.home-photo > .photo-curtain,html body .gallery-section #homeGallery.home-gallery[data-count] > button.home-photo > .hm-photo-glow {
+ content:none!important;display:none!important;animation:none!important;
+}
+html body .gallery-section #homeGallery.home-gallery[data-count] > button.home-photo > .home-photo-index {
+ order:1;position:static!important;inset:auto!important;align-self:flex-start!important;
+ margin:clamp(12px,1.5vw,18px) clamp(13px,2vw,24px) 0!important;
+ padding:0 0 4px!important;border-bottom:1px solid rgba(139,102,83,.32)!important;
+ color:#8b6653!important;text-shadow:none!important;font-size:10px!important;
+}
+html body .gallery-section #homeGallery.home-gallery[data-count] > button.home-photo > .home-photo-copy {
+ order:2;position:static!important;inset:auto!important;display:block!important;
+ margin:0!important;padding:7px clamp(13px,2vw,24px) clamp(15px,2vw,23px)!important;
+ width:auto!important;color:#62483e!important;text-shadow:none!important;
+ transform:none!important;opacity:1!important;background:none!important;
+}
+html body .gallery-section #homeGallery.home-gallery[data-count] > button.home-photo > .home-photo-copy strong {
+ display:block!important;color:#62483e!important;font-size:clamp(20px,2.4vw,32px)!important;
+ line-height:1.18!important;white-space:normal!important;overflow:visible!important;
+ overflow-wrap:anywhere!important;-webkit-line-clamp:unset!important;
+}
+html body .gallery-section #homeGallery.home-gallery[data-count] > button.home-photo > .home-photo-copy small {
+ display:block!important;color:#826c60!important;font-size:clamp(11px,1.2vw,14px)!important;
+ line-height:1.55!important;max-width:none!important;white-space:normal!important;
+ overflow:visible!important;overflow-wrap:anywhere!important;-webkit-line-clamp:unset!important;
+}
+html body .gallery-section #homeGallery.home-gallery[data-count] > button.home-photo > .album-v12-error {
+ order:0;position:static!important;min-height:160px;background:#f1e9e1;
+}
+@media(hover:hover) and (pointer:fine) {
+ html body .gallery-section #homeGallery.home-gallery[data-count] > button.home-photo:hover {box-shadow:0 14px 32px rgba(73,46,49,.13)!important}
+}
+@media(max-width:600px) {
+ html body .gallery-section #homeGallery.home-gallery {grid-template-columns:minmax(0,1fr)!important;gap:14px!important}
+ html body .gallery-section #homeGallery.home-gallery[data-count] > button.home-photo > img {max-height:min(110vw,520px)!important}
+ html body .gallery-section #homeGallery.home-gallery[data-count] > button.home-photo > .home-photo-copy strong {font-size:clamp(22px,6vw,29px)!important}
+}
