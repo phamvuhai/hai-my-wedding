@@ -144,9 +144,16 @@ html[data-motion="minimal"] .album-progressive-indicator {animation:none!importa
 }
 
 
-/* Balanced desktop rows: preserve native landscape and portrait proportions. */
-@media(min-width:768px){
-html body .gallery-section #homeGallery.home-gallery.home-gallery[data-count="5"]{--album-gap:clamp(10px,1.35vw,17px);--album-narrow:calc((100% - var(--album-gap)) * .3076923);grid-template-columns:minmax(0,var(--album-narrow)) minmax(0,1fr) minmax(0,var(--album-narrow))!important;grid-template-rows:auto auto auto!important;gap:var(--album-gap)!important}
+/* Balanced responsive rows. Preserve full photos, using the native ratios
+   of the five curated images (3:2 landscapes and 2:3 portraits). */
+html body .gallery-section #homeGallery.home-gallery.home-gallery[data-count="5"]{
+ --album-gap:clamp(8px,1.35vw,17px);
+ --album-narrow:calc((100% - var(--album-gap)) * .3076923077);
+ grid-template-columns:minmax(0,var(--album-narrow)) minmax(0,1fr) minmax(0,var(--album-narrow))!important;
+ grid-template-rows:auto auto auto!important;
+ gap:var(--album-gap)!important;
+ align-items:start!important;
+}
 html body .gallery-section #homeGallery.home-gallery.home-gallery[data-count="5"] > button.home-photo:nth-child(1){grid-column:1/-1!important;grid-row:1!important}
 html body .gallery-section #homeGallery.home-gallery.home-gallery[data-count="5"] > button.home-photo:nth-child(2){grid-column:1!important;grid-row:2!important}
 html body .gallery-section #homeGallery.home-gallery.home-gallery[data-count="5"] > button.home-photo:nth-child(3){grid-column:2/-1!important;grid-row:2!important}
@@ -155,4 +162,32 @@ html body .gallery-section #homeGallery.home-gallery.home-gallery[data-count="5"
 html body .gallery-section #homeGallery.home-gallery.home-gallery[data-count="5"] > button.home-photo:is(:nth-child(2),:nth-child(5))>img{aspect-ratio:auto 2/3!important}
 html body .gallery-section #homeGallery.home-gallery.home-gallery[data-count="5"] > button.home-photo:is(:nth-child(1),:nth-child(3),:nth-child(4))>img{aspect-ratio:auto 3/2!important}
 html body .gallery-section #homeGallery.home-gallery.home-gallery[data-count="5"] > button.home-photo:is(:nth-child(2),:nth-child(5))>.home-photo-copy strong{font-size:clamp(17px,2vw,26px)!important}
+@media (max-width:767px){
+ html body .gallery-section #homeGallery.home-gallery.home-gallery[data-count="5"] > button.home-photo:not(:first-child)>.home-photo-index{top:8px!important;left:8px!important;font-size:9px!important;padding-bottom:4px!important;letter-spacing:.04em!important}
+ html body .gallery-section #homeGallery.home-gallery.home-gallery[data-count="5"] > button.home-photo:not(:first-child)>.home-photo-index i{width:8px!important;margin-inline:3px!important}
+ html body .gallery-section #homeGallery.home-gallery.home-gallery[data-count="5"] > button.home-photo:not(:first-child)>.home-photo-copy{left:8px!important;right:8px!important;bottom:9px!important}
+ html body .gallery-section #homeGallery.home-gallery.home-gallery[data-count="5"] > button.home-photo:not(:first-child)>.home-photo-copy strong{font-size:clamp(14px,3.8vw,21px)!important;line-height:1.15!important;overflow-wrap:anywhere!important}
+ html body .gallery-section #homeGallery.home-gallery.home-gallery[data-count="5"] > button.home-photo:is(:nth-child(2),:nth-child(5))>.home-photo-copy strong{font-size:clamp(13px,3.4vw,19px)!important}
+ .gallery-section .gallery-editorial-head .section-heading{min-width:0}
+ .gallery-section .gallery-editorial-head .section-heading h2{overflow-wrap:anywhere;text-wrap:balance}
+ .gallery-section .gallery-cta .btn{max-width:100%;white-space:normal;text-align:center}
+}
+@media(max-width:359px){
+ html body .gallery-section #homeGallery.home-gallery.home-gallery[data-count="5"]{grid-template-columns:minmax(0,1fr)!important;grid-template-rows:none!important;grid-auto-rows:auto!important}
+ html body .gallery-section #homeGallery.home-gallery.home-gallery[data-count="5"] > button.home-photo:nth-child(n){grid-column:1/-1!important;grid-row:auto!important}
+ html body .gallery-section #homeGallery.home-gallery.home-gallery[data-count="5"] > button.home-photo:not(:first-child)>.home-photo-copy strong{font-size:clamp(19px,5.5vw,25px)!important}
+}
+/* Tablet and small landscape phones: compact floating music control,
+   retaining the existing toggle and audio behavior. */
+@media (min-width:681px) and (max-width:1023px){
+ body #musicDock.music-dock{width:46px!important;height:46px!important;min-width:0!important;border-radius:50%!important;overflow:visible!important}
+ body #musicDock.music-dock .music-toggle{width:46px!important;height:46px!important;min-height:46px!important;padding:4px!important;display:grid!important;grid-template-columns:1fr!important;place-items:center!important}
+ body #musicDock.music-dock .music-disc{width:36px!important;height:36px!important;margin:0!important}
+ body #musicDock.music-dock :is(.music-copy,.music-state){display:none!important}
+}
+/* Keep section anchors clear of the sticky tablet navigation without
+   adding the header height twice. */
+@media(min-width:768px) and (max-width:1023px){
+ html:root{scroll-padding-top:var(--header-h,76px)}
+ body :is(#home,#story,#events,#forever,#weddingMagic,#rsvp,#weddingGifts){scroll-margin-top:8px}
 }
