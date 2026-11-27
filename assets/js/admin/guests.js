@@ -148,7 +148,7 @@
     // Capture the first visible card only on data refresh, not while typing.
     // Native document scrolling on phones avoids a second scrolling container.
     const anchor=preservePosition&&isPhone()&&listEl.offsetWidth
-      ? [...listEl.querySelectorAll('.guest-card')].find(card=>card.getBoundingClientRect().bottom>0)
+      ? [...listEl.querySelectorAll('.guest-card')].find(card=>{const r=card.getBoundingClientRect();return r.bottom>0&&r.top<window.innerHeight;})
       : null;
     const anchorId=anchor?.dataset.id;
     const anchorTop=anchor?.getBoundingClientRect().top;
