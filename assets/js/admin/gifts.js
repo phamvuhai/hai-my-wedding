@@ -28,7 +28,13 @@
   const side=cfg[id.toLowerCase()],img=$('gift'+id+'QrPreview'),note=$('gift'+id+'QrNote');
   if(side.qrPath){
    img.src=A.publicUrl(side.qrPath);img.hidden=false;note.hidden=true;
-  }else{img.hidden=true;img.removeAttribute('src');note.hidden=false;}
+  }else{img.hidden=true;img.removeAttribute('src');note.hidden=false;
+   if(id==='Bride'){
+    const builtIn=side.account.replace(/[\s-]/g,'')==='19073632205013'&&side.bank.trim().toLowerCase()==='techcombank';
+    note.textContent=builtIn?'Đã có QR Techcombank từ ảnh đã cung cấp':'Chưa có QR của Nhà gái';
+    $('giftBrideQrStatus').textContent=builtIn?'QR mặc định đã được kiểm tra từ mã VietQR gốc. Upload mã mới nếu đổi tài khoản.':'Upload QR đúng tài khoản trước khi công bố.';
+   }
+  }
  }
  function updateConfig(){
   cfg.enabled=$('giftEnabled').checked;
@@ -94,6 +100,9 @@
   }
   if(cfg.groom.enabled&&cfg.groom.account.replace(/[\s-]/g,'')!=='04480062888'&&!cfg.groom.qrPath){
    status('Số tài khoản Nhà trai đã thay đổi. Hãy upload QR mới để tránh mã QR trỏ đến tài khoản cũ.','error');return;
+  }
+  if(cfg.bride.enabled&&!cfg.bride.qrPath&&(cfg.bride.account.replace(/[\s-]/g,'')!=='19073632205013'||cfg.bride.bank.trim().toLowerCase()!=='techcombank')){
+   status('Hãy upload QR mới cho tài khoản Nhà gái.','error');return;
   }
   $('giftSave').disabled=true;status('Đang lưu & công bố...');
   try{
