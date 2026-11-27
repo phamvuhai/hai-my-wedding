@@ -247,8 +247,8 @@
           </section>
 
           <div class="dashboard-grid guest-admin-grid">
-            <section class="panel">
-              <div class="panel-head"><div><p class="eyebrow">PERSONAL INVITATION</p><h3>Tạo khách mời</h3></div></div>
+            <section class="panel guest-form-panel">
+              <div class="panel-head"><div><p class="eyebrow">PERSONAL INVITATION</p><h3>Tạo khách mời</h3></div><button class="btn ghost compact guest-form-toggle" id="guestFormToggle" type="button" aria-expanded="false" aria-controls="guestForm">＋ Tạo mới</button></div>
               <form id="guestForm" class="guest-form">
                 <input id="guestEditId" type="hidden">
                 <label>Tên khách<input id="guestName" maxlength="120" required placeholder="Nguyễn Văn A"></label>
@@ -281,10 +281,11 @@
               </form>
             </section>
 
-            <section class="panel">
-              <div class="panel-head"><div><p class="eyebrow">INVITE LINKS</p><h3>Danh sách khách</h3></div></div>
+            <section class="panel guest-list-panel">
+              <div class="panel-head"><div><p class="eyebrow">INVITE LINKS</p><h3>Danh sách khách</h3></div><span id="guestResultCount" class="guest-result-count" aria-live="polite"></span></div>
               <div class="guest-bulk-bar">
                 <label class="check"><input id="guestSelectAll" type="checkbox"> Chọn tất cả</label>
+                <span id="guestSelectionCount" class="guest-selection-count" aria-live="polite">0 đã chọn</span>
                 <select id="guestBulkEvent">
                   <option value="">Đổi sự kiện...</option>
                   <option value="bride">Nhà gái</option>
