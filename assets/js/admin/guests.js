@@ -21,9 +21,49 @@
 
   let csvRows = [];
   let rsvpByInvite = new Map();
+  let expandedGuest = '';
+  let searchTimer = 0;
+  let loadVersion = 0;
+  const formToggle = document.getElementById('guestFormToggle');
+  const bulkBar = document.querySelector('#guestsTab .guest-bulk-bar');
+  const isPhone = () => window.matchMedia('(max-width:767px)').matches;
 
+  function setFormOpen(open) {
+    form?.closest('.guest-form-panel')?.classList.toggle('is-form-open',open);
+    if(formToggle){
+      formToggle.setAttribute('aria-expanded',String(open));
+      formToggle.textContent=open?'Thu gọn':'＋ Tạo mới';
+    }
+  }
+  formToggle?.addEventListener('click',()=>setFormOpen(formToggle.getAttribute('aria-expanded')!=='true'));
   document.addEventListener('admin:guests', load);
-  [searchEl,eventFilterEl,rsvpFilterEl,activeFilterEl].forEach(el => el?.addEventListener('input', render));
+  searchEl?.addEventListener('input',()=>{
+    clearTimeout(searchTimer);
+    searchTimer=setTimeout(()=>render(),140);
+  });
+  [eventFilterEl,rsvpFilterEl,activeFilterEl].forEach(el => el?.addEventListener('change',()=>{
+    clearTimeout(searchTimer);render();
+  }));
+  listEl?.addEventListener('click',event=>{
+    const btn=event.target.closest('button[data-action]');
+    if(!btn||!listEl.contains(btn))return;
+    if(btn.dataset.action==='more'){
+      expandedGuest=expandedGuest===btn.dataset.id?'':btn.dataset.id;
+      listEl.querySelectorAll('.guest-card.is-expanded').forEach(card=>{
+        card.classList.remove('is-expanded');
+        card.querySelector('[data-action="more"]')?.setAttribute('aria-expanded','false');
+      });
+      if(expandedGuest){
+        btn.closest('.guest-card')?.classList.add('is-expanded');
+        btn.setAttribute('aria-expanded','true');
+      }
+      return;
+    }
+    act(btn.dataset.action,btn.dataset.id);
+  });
+  listEl?.addEventListener('change',event=>{
+    if(event.target.matches('.guest-row-check'))syncSelection();
+  });
   document.getElementById('guestSelectAll')?.addEventListener('change', toggleSelectAll);
   document.getElementById('guestBulkEvent')?.addEventListener('change', bulkChangeEvent);
   document.getElementById('guestBulkEnable')?.addEventListener('click', () => bulkToggle(true));
@@ -71,10 +111,12 @@
 
   async function load() {
     if (!db) return;
+    const version=++loadVersion;
     const [{data:guests,error:guestError},{data:rsvps,error:rsvpError}] = await Promise.all([
       db.from('guest_invites').select('*').order('created_at',{ascending:false}),
       db.from('rsvp').select('invite_id,attendance,guest_count,event_choice,created_at').not('invite_id','is',null).order('created_at',{ascending:false})
     ]);
+    if(version!==loadVersion)return;
     if (guestError) {
       listEl.innerHTML = '<p class="muted">Không tải được danh sách khách.</p>';
       return;
@@ -82,7 +124,7 @@
     if (rsvpError) console.warn('Guest RSVP status unavailable:', rsvpError);
     A.guests = guests || [];
     rsvpByInvite = latestRsvpRows(rsvps || []);
-    render();
+    render(true);
   }
 
   function filteredGuests() {
@@ -102,7 +144,14 @@
     });
   }
 
-  function render() {
+  function render(preservePosition=false) {
+    // Capture the first visible card only on data refresh, not while typing.
+    // Native document scrolling on phones avoids a second scrolling container.
+    const anchor=preservePosition&&isPhone()&&listEl.offsetWidth
+      ? [...listEl.querySelectorAll('.guest-card')].find(card=>card.getBoundingClientRect().bottom>0)
+      : null;
+    const anchorId=anchor?.dataset.id;
+    const anchorTop=anchor?.getBoundingClientRect().top;
     const guests = A.guests || [];
     const rows = filteredGuests();
     const active = guests.filter(g => g.is_active).length;
@@ -120,30 +169,36 @@
       '<div class="stat"><span>Dự kiến tham dự</span><strong>' + attending + '</strong></div>' +
       '<div class="stat"><span>Link hoạt động</span><strong>' + active + '</strong></div>';
 
+    const count=document.getElementById('guestResultCount');
+    if(count)count.textContent=rows.length+' / '+guests.length+' khách';
+    if(!rows.some(g=>g.id===expandedGuest))expandedGuest='';
     listEl.innerHTML = rows.length ? rows.map(g => {
       const latest = rsvpByInvite.get(g.id);
       const status = latest?.attendance || 'pending';
       const source = g.import_source === 'csv' ? 'CSV' : 'Manual';
       return `
-        <article class="guest-card" data-id="${g.id}">
+        <article class="guest-card${g.id===expandedGuest?' is-expanded':''}" data-id="${g.id}">
           <div class="guest-card-main">
-            <label class="guest-select check"><input type="checkbox" class="guest-row-check" value="${g.id}"><span></span></label>
+            <label class="guest-select check"><input type="checkbox" class="guest-row-check" value="${g.id}" aria-label="Chọn ${A.esc(g.display_name || g.guest_name)}"><span></span></label>
             <div class="guest-card-copy">
               <strong>${A.esc(g.display_name || g.guest_name)}${g.companion_name ? ' & ' + A.esc(g.companion_name) : ''}</strong>
-              <small>${A.esc(g.guest_name)} · ${A.esc(g.phone || 'Không có SĐT')} · ${eventLabel(g.event_choice)} · tối đa ${g.max_guests} người · ${source}</small>
+              <small class="guest-meta-desktop">${A.esc(g.guest_name)} · ${A.esc(g.phone || 'Không có SĐT')} · ${eventLabel(g.event_choice)} · tối đa ${g.max_guests} người · ${source}</small>
+              <small class="guest-meta-mobile">${eventLabel(g.event_choice)} · Tối đa ${g.max_guests} người${g.phone?' · '+A.esc(g.phone):''}</small>
               <div class="guest-status-line">
                 <span class="status-pill ${status === 'pending' ? 'maybe' : status}">RSVP: ${rsvpLabel(status)}${latest?.attendance === 'yes' ? ' · ' + latest.guest_count + ' người' : ''}</span>
-                <span class="status-pill ${g.sent_at ? 'yes' : 'maybe'}">${g.sent_at ? 'Đã gửi' : 'Chưa đánh dấu gửi'}</span>
+                <span class="status-pill ${g.sent_at ? 'yes' : 'maybe'}"><span class="guest-status-desktop">${g.sent_at ? 'Đã gửi' : 'Chưa đánh dấu gửi'}</span><span class="guest-status-mobile">${g.sent_at ? 'Đã gửi' : 'Chưa gửi'}</span></span>
                 <span class="status-pill ${g.opened_at ? 'yes' : 'maybe'}">${g.opened_at ? 'Đã mở · ' + (g.open_count || 1) + ' lần' : 'Chưa mở'}</span>
-                <span class="status-pill ${g.is_active ? 'yes' : 'no'}">${g.is_active ? 'Link active' : 'Link disabled'}</span>
+                <span class="status-pill ${g.is_active ? 'yes' : 'no'}"><span class="guest-status-desktop">${g.is_active ? 'Link active' : 'Link disabled'}</span><span class="guest-status-mobile">${g.is_active ? 'Link bật' : 'Link tắt'}</span></span>
               </div>
             </div>
           </div>
-          ${g.internal_note ? '<p>' + A.esc(g.internal_note) + '</p>' : ''}
+          ${g.internal_note ? '<p class="guest-note">' + A.esc(g.internal_note) + '</p>' : ''}
           <div class="invite-link-row">
-            <input readonly value="${A.esc(inviteUrl(g))}">
-            <button class="btn ghost compact" data-action="edit" data-id="${g.id}">Edit</button>
-            <button class="btn ghost compact" data-action="copy" data-id="${g.id}">Copy</button>
+            <input readonly aria-label="Link thiệp mời" value="${A.esc(inviteUrl(g))}">
+            <button class="btn ghost compact" data-action="edit" data-id="${g.id}"><span class="guest-status-desktop">Edit</span><span class="guest-status-mobile">Sửa</span></button>
+            <button class="btn ghost compact" data-action="copy" data-id="${g.id}"><span class="guest-status-desktop">Copy</span><span class="guest-status-mobile">Copy link</span></button>
+            <button class="btn ghost compact guest-more" type="button" data-action="more" data-id="${g.id}" aria-expanded="${g.id===expandedGuest}">Thêm ▾</button>
+            <small class="guest-extra-meta">${A.esc(g.guest_name)} · ${A.esc(g.phone || 'Không có SĐT')} · ${source}</small>
             <button class="btn ghost compact" data-action="sent" data-id="${g.id}">${g.sent_at ? 'Đã gửi ✓' : 'Đánh dấu đã gửi'}</button>
             <button class="btn ghost compact" data-action="toggle" data-id="${g.id}">${g.is_active ? 'Tắt' : 'Bật'}</button>
             <button class="btn ghost compact danger-text" data-action="delete" data-id="${g.id}">Xóa</button>
@@ -151,15 +206,30 @@
         </article>`;
     }).join('') : '<p class="muted">Chưa có khách phù hợp.</p>';
 
-    listEl.querySelectorAll('button[data-action]').forEach(btn => btn.onclick = () => act(btn.dataset.action, btn.dataset.id));
+    syncSelection();
+    if(anchorId){
+      const next=[...listEl.querySelectorAll('.guest-card')].find(card=>card.dataset.id===anchorId);
+      if(next)window.scrollBy({top:next.getBoundingClientRect().top-anchorTop,left:0,behavior:'instant'});
+    }
   }
 
   function selectedIds() {
     return [...document.querySelectorAll('.guest-row-check:checked')].map(x => x.value);
   }
 
+  function syncSelection() {
+    const boxes=[...listEl.querySelectorAll('.guest-row-check')];
+    const n=boxes.filter(cb=>cb.checked).length;
+    const all=document.getElementById('guestSelectAll');
+    if(all){all.checked=boxes.length>0&&n===boxes.length;all.indeterminate=n>0&&n<boxes.length;}
+    const count=document.getElementById('guestSelectionCount');
+    if(count)count.textContent=n+' đã chọn';
+    bulkBar?.classList.toggle('has-selection',n>0);
+  }
+
   function toggleSelectAll(e) {
     listEl.querySelectorAll('.guest-row-check').forEach(cb => cb.checked = e.target.checked);
+    syncSelection();
   }
 
   async function bulkChangeEvent(e) {
@@ -207,14 +277,32 @@
       saveBtn.textContent = 'Lưu thay đổi';
       cancelEditBtn.classList.remove('hidden');
       A.setStatus(formStatus,'Đang chỉnh sửa. Token/link thiệp sẽ được giữ nguyên.');
-      form.scrollIntoView({behavior:'smooth',block:'center'});
+      setFormOpen(true);
+      form.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:isPhone()?'start':'center'});
       return;
     }
 
     if (action === 'copy') {
-      await navigator.clipboard.writeText(inviteUrl(row));
+      try{
+        await navigator.clipboard.writeText(inviteUrl(row));
+      }catch{
+        const input=listEl.querySelector(`.guest-card[data-id="${id}"] .invite-link-row input`);
+        if(!input)return alert('Không thể sao chép link trên trình duyệt này.');
+        const field=document.createElement('textarea');
+        field.value=inviteUrl(row);field.style.cssText='position:fixed;left:0;top:0;opacity:0;pointer-events:none';
+        document.body.appendChild(field);field.select();
+        let copied=false;
+        try{copied=document.execCommand('copy');}catch{}
+        field.remove();
+        if(!copied){alert('Không thể sao chép tự động. Hãy mở mục Thêm và sao chép link.');return;}
+      }
       const btn = listEl.querySelector(`button[data-id="${id}"][data-action="copy"]`);
-      if (btn) { btn.textContent='Đã copy'; setTimeout(() => btn.textContent='Copy',1200); }
+      if (btn) {
+        const original=btn.copyOriginal??(btn.copyOriginal=btn.innerHTML);
+        btn.textContent='Đã copy';
+        clearTimeout(btn.copyFeedbackTimer);
+        btn.copyFeedbackTimer=setTimeout(()=>{btn.innerHTML=original;},1200);
+      }
       return;
     }
 
