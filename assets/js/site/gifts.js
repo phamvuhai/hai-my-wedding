@@ -9,6 +9,8 @@ if(!root)return;
 const db=window.WEDDING_CONFIG?.supabaseUrl && window.supabase
   ?window.supabase.createClient(window.WEDDING_CONFIG.supabaseUrl,window.WEDDING_CONFIG.supabaseAnonKey):null;
 const QR65='AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/jsUaA2jP4BBK9iqNiyQQC6EgZ4tNsugF0Bq1MiwJdALrVcX7hVS6AQRDfcbglEEA/qqqqqqqv4AASHAx/kTAAAznxi+xy5oAGRkqbxfllkAFbP7r6SNeKALKXt2lVB1YAvsgTeuGvl4AqgpX2VyIbQDjhl1AS3jHAHp2YsD4EWkAOr/qFGqTB6AMKnJtnL7bYA50CAaEsh9gBm5AmfOT4RQDSceoodzIhAH6RjdwasFDABaJsP09VEmAaKyv9ALI10A2scufDt3IgBGSgHUHaGKABf58u/ENn5AHxu3dEIZ8VAHrYZuuE0qyAZEVNEbHJRIAv77Ifvml+wBkw1t8GSQHgC7pfOrMpLfgDqspbTSGS1AO9LVFFkyBSANv0iJwfdVIA8oOBXJVPkgAObeSJtJhRQAeAsGOTJvEgAx1mf2QyUmAGakh7kOSzSAEMkD9FpyvAAMlctbOUlq4BYzq1E4S6WQDKToczwTqgAFy/qoLZ52kAKe2ChooQbqAfFoDtYlO1cAA7ojfqJM/oAAStQR9qRGQD+/RsrnJqtAEEdQnG2A0TALoXKL6gd/qAXUz0NHJF1IAuo/b0H9kDgBBOVUVyxfxwD+G0RXIzIpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==';
+// Bride VietQR: exact decoded bank payload re-encoded with a four-module quiet zone.
+const BRIDE_QR41='AAAAAAAAAAAAAAAAAAAAAAAAAAAA/oMgv4BBYWaQQC6dokugF14E9dALpIwa6AQQLNEEA/qqqv4AAScxAAC3TwulgHaWug1AGrceUOAEkQJKAAapNz0IBgjwUkQCyNrJNAGI1loMAEssCXaAQBlaBoAAxQlkgAs3JeGwBasjLZAEKfMogAD42TyKAKgkfsAAh7g4/QAAUTXHQD+tC+rgEFIYkVALpwlvuAXVjLLoAutZEjgBBKxxQwD+gjpdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==';
 const defaults={enabled:true,visibility:'public',
  groom:{enabled:true,bank:'TPBank',holder:'PHAM VU HAI',account:'04480062888',qrPath:''},
  bride:{enabled:false,bank:'',holder:'NGUYEN THI MY',account:'',qrPath:''}};
@@ -37,11 +39,11 @@ function normalize(saved){
 function privateInvite(){
  return /^\/(?:vi|en|jp)\/invite\/[a-zA-Z0-9_-]+(?:\/|$)/.test(location.pathname);
 }
-function makeQr(){
+function makeQr(encoded=QR65,dim=65){
  try{
-  const bytes=atob(QR65);
-  if(bytes.length!==529)throw Error('Invalid QR size');
-  const canvas=document.createElement('canvas'),cell=6,dim=65;
+  const bytes=atob(encoded);
+  if(bytes.length!==Math.ceil(dim*dim/8))throw Error('Invalid QR size');
+  const canvas=document.createElement('canvas'),cell=8;
   canvas.width=canvas.height=cell*dim;
   const ctx=canvas.getContext('2d');
   if(!ctx)return null;
@@ -53,14 +55,17 @@ function makeQr(){
   return canvas.toDataURL('image/png');
  }catch(err){console.error('Gift QR initialization:',err);return null;}
 }
-let defaultQr=null;
+let defaultQr=null,brideQr=null;
 function qrSource(side){
  if(side.qrPath){
   if(/^wedding-gifts\/[\w./-]+\.(png|jpe?g|webp)$/i.test(side.qrPath))
     return db?.storage.from('wedding-gallery').getPublicUrl(side.qrPath)?.data?.publicUrl||'';
   return '';
  }
- return side===config.groom&&side.account.replace(/[\s-]/g,'')==='04480062888'?(defaultQr??(defaultQr=makeQr())):'';
+ const account=side.account.replace(/[\s-]/g,'');
+ if(side===config.groom&&account==='04480062888')return defaultQr??(defaultQr=makeQr());
+ if(side===config.bride&&account==='19073632205013'&&side.bank.trim().toLowerCase()==='techcombank')return brideQr??(brideQr=makeQr(BRIDE_QR41,41));
+ return '';
 }
 function card(side,id,t){
  const name=id==='groom'?t.groom:t.bride;
